@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/base.xml" />
+	<include resource="org/springframework/boot/logging/defaults.xml" />
+	<include resource="org/springframework/boot/logging/console-appender.xml" />
+
+	<!-- <include resource="org/springframework/cloud/gcp/autoconfigure/logging/logback-appender.xml" /> -->
+
+	<springProperty scope="context" name="springAppName" source="spring.application.name"/>
+
+	<property name="CONSOLE_LOG_PATTERN" value="%d{dddd-MM-dd HH:mm:ss.SSS} %5p [${springAppName}, TraceId:%X{traceId:-}, SpanId:%X{spanId:-}] [process_id:${PID:- }] [Thread:%thread] %class{36}.%M-%L %m%n" />  
+	
+	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender"> 
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+	<logger name="org.imageconverter" level="INFO" />
+
+	<logger name="org.springframework" level="INFO" />
+	
+    <!-- LOG everything at INFO level -->
+    <root level="info">
+        <appender-ref ref="Console" />
+    </root>	
+
+</configuration>

@@ -1,0 +1,80 @@
+stages:
+    - package
+    - test
+    - build
+    - publish
+
+variables:
+  DOCKER_IMAGE_TAG: 'gcr.io/myProject1/general/image-converter-service/$CI_COMMIT_BRANCH'
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  MAVEN_CLI_OPTS: "--batch-mode"
+  APP_NAME: image-converter-service
+
+package:
+  stage: package
+  image: maven:latest
+  cache:
+    paths:
+      - .m2/repository/
+      - target
+  script:
+    - mvn clean package
+  artifacts:
+    paths:
+      - target/*.jar
+
+test:
+  stage: test
+  image: maven:latest
+  cache:
+    paths:
+      - .m2/respository/
+      - target/
+  script:
+    - mvn verify
+  dependencies:
+    - package
+
+build:
+  stage: test
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+  - ls
+  - /kaniko/executor --context=./ --dockerfile=src/main/docker/Dockerfile --destination=$DOCKER_IMAGE_TAG:latest --destination=$DOCKER_IMAGE_TAG:${CI_COMMIT_SHORT_SHA}
+  only:
+  - develop
+  - homolog
+  - master
+
+develop:
+  stage: publish
+  image: google/cloud-sdk:257.0.0
+  environment: develop
+  script:
+    - gcloud auth activate-service-account --key-file $GKE_PUBLISH_DEV
+    - gcloud config set project fernando-cluster-4t02
+    - gcloud condig set compute/zone southamerica-east1
+    - gcloud container clusters get-credentials gke-fernando-cluster
+    - kubectl appy -k src/main/k8s/develop
+    - kubectl rollout restart deployment.apps/image-converter-service --namespace=general
+  only:
+    - develop
+
+production:
+  stage: publish
+  image: google/cloud-sdk:257.0.0
+  environment: production
+  script:
+    - gcloud auth activate-service-account --key-file $GKE_PUBLISH_DEV
+    - gcloud config set project fernando-cluster-4t02
+    - gcloud condig set compute/zone southamerica-east1
+    - gcloud container clusters get-credentials gke-fernando-cluster
+    - kubectl appy -k src/main/k8s/production
+    - kubectl rollout restart deployment.apps/image-converter-service --namespace=general
+  only:
+    - master
+  when: manual
+    
+    

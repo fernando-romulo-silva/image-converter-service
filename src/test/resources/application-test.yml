@@ -1,0 +1,35 @@
+#=====================================================================================================
+#
+#               IMAGE-CONVERTER-SERVICE-TEST
+#
+#============== Applicaton ===========================================================================
+application:
+    user_login: user
+    user_password: password
+
+#============== Tesseract ============================================================================
+tesseract:
+    language: eng
+    folder : /home/fernando/Development/tools/tesseract/tessdata/
+
+#============== Data Source ===========================================================================
+spring:
+    datasource:
+        schema: classpath:db-test.sql
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
+        username: sa
+        password: password
+    h2:
+        console:
+            enabled: true   
+    jpa:
+        database-plataform: org.hibernate.dialect.H2Dialect
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                generated_statistics: false
+                show_sql: true
+                jdbc:
+                    time_zone: GMT-3               

@@ -1,0 +1,44 @@
+#=====================================================================================================
+#
+#               IMAGE-CONVERTER-SERVICE-LOCAL
+#
+#============== Applicaton ===========================================================================
+application:
+    user_login: user
+    user_password: password
+
+#============== Tesseract ============================================================================
+tesseract:
+    language: ${TESSERACT_LANG:eng}
+    folder: ${TESSERACT_FOLDER:/home/fernando/Development/tools/tesseract/tessdata/}
+
+#============== Server ==============================================================================
+server:
+    port: 8080
+
+#============== Actuator ==============================================================================
+management:
+    server:
+        port: 8181
+
+#============== Data Source ===========================================================================
+spring: 
+    datasource:
+        schema: classpath:db-local.sql
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
+        username: sa
+        password: password
+    h2:
+        console:
+            enabled: true   
+    jpa:
+        database-plataform: org.hibernate.dialect.H2Dialect
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                generated_statistics: false
+                show_sql: true
+                jdbc:
+                    time_zone: GMT-3               

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:  
+  name: simple-fanout-example  
+  annotations:    
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:  
+  rules:  
+  - host: example.local
+    http:      
+      paths:      
+      - path: /example1       
+        backend:          
+          serviceName: example-webserver          
+          servicePort: 80      
+      - path: /example2        
+        backend:          
+          serviceName: another-service          
+          servicePort: 8080

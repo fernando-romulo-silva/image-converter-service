@@ -1,0 +1,5 @@
+*
+!target/*-runner
+!target/*-javadoc.jar
+!target/*-sources.jar
+!target/*-test.jar

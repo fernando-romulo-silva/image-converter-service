@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Service
+metada:
+  name: image-convert-service-svc #${PROJECT_NAME}-svc
+  namespace: general #${PROJECT_NAMESPACE}
+ # annotations: 
+ #   cloud.google.com/load-balancer-type: "Internal"
+ #   networking.gke.io/internal-load-balancer-allow-global-access: "true"
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector: 
+    app: image-converter-service #${PROJECT_NAME}
+  type: LoadBalancer

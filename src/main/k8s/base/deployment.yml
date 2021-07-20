@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metada:
+  name: image-converter-service # ${PROJECT_NAME}
+  namespace: general # ${PROJECT_NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-converter-service # ${PROJECT_NAME}
+  strategy:
+      rollingUpdate:
+         maxSurge: 50%   
+  template:
+    metadata:
+      labels:
+        app: image-converter-service # ${PROJECT_NAME}
+        cmdbname: gke # ${CLOUD}
+        commit: commit_branch # ${COMMIT_BRANCH}
+        project: image-converter-service # ${PROJECT_NAME}
+        squad: tech-infra # ${SQUAD}
+        type: support # ${TYPE}
+    spec:
+      containers:
+      - name: image-convert-service
+        image: IMAGE # ${DOCKER_IMAGE}:${APP_VERSION}
+        envFrom:
+        - configMapRef:
+            name: image-convert-service-configmap # ${PROJECT_NAME}-configmap
+        - secretRef:
+            name: image-convert-service-secrets # ${PROJECT_NAME}-secrets
+      ports:
+      - containerPort: 8080
+      readinessProbe:
+        httpGet:
+          path: image-convert-service/health # ${PROJECT_NAME}/actuator
+          port: 8090
+        initialDelaySeconts: 30
+        periodSeconds: 30
+        timeoutSeconds: 10
+      livenessProbe:
+        httpGet:
+          path: image-convert-service/health # ${PROJECT_NAME}/actuator
+          port: 8090
+        initialDelaySeconts: 30
+        periodSeconds: 30
+        timeoutSeconds: 10
+      resources:
+        requests: 
+          memory: "1Gi"
+          cpu: "200m"
+        limits:
+          memory: "2Gi"
+          cpu: "500m"          
+      volumes:
+      - name: my-secret-volume   
+        secret:
+          secretName: image-converter-service-account-volume # ${PROJECT_NAME}-account-volume     

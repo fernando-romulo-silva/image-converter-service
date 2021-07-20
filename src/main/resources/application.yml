@@ -1,0 +1,107 @@
+#=====================================================================================================
+#
+#               IMAGE-CONVERTER-SERVICE
+#
+#============== Applicaton ===========================================================================
+application:
+    user_login: ${APPLICATION_USER_LOGIN}
+    user_password: ${APPLICATION_USER_PASSWORD}
+
+#============== Tesseract ============================================================================
+tesseract:
+    language: ${TESSERACT_LANG}
+    folder : ${TESSERACT_FOLDER}
+
+#============== Actuator ==============================================================================
+management:
+    endpoint:
+        health:
+            show-details: always
+    endpoints:
+        web:
+            base-path:
+            path-mapping:
+                health: '/health'
+            exposure:
+                include: '*'                   
+    server:
+       add-application-context-header: true
+       port: 5090
+#    metrics:
+#       export:
+#             graphite:
+#                step: 3s
+# 
+#============== Server ==============================================================================
+server:
+    http2:
+        enable: true
+    port: 5000
+    servlet:
+        context-path: /image-converter
+        encoding:
+            charset: UTF-8
+            enabled: true
+            force: true
+            force-response: true
+    jmx:
+        enabled: true
+        unique-names: true
+#    ssl:
+#        key-store: classpath:sb2-recipes.pfx
+#        key-store-type: pkcs12
+#        key-store-password: password
+#        key-password: password
+#        key-alias: sb2-recipes
+
+#============== Spring ==============================================================================
+spring:
+    application:
+        name: image-converter-service
+#    mvc:
+#        throw-exception-if-no-handler-found: true
+#        static-path-pattern: /swagger*
+#    cloud:
+#        gcp:
+#             logging: 
+#                 enabled: true
+#             trace:
+#                 enabled: true
+    sleuth:
+        enabled: true
+        web.client.enabled: true
+
+#============== Data Source ===========================================================================
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        hikari:
+            poolName: SpringBootJPAHikariCP
+            connectionTimeout: 60000
+            idleTimeout: 30000
+            maxLifetime: 2000000
+            maximumPoolSize: 20
+            minimumIdle: 5
+        url: ${DATABASE_URL}
+        username: ${DATABASE_USER}
+        password: ${DATABASE_PASSWORD}
+   
+    jpa:
+        database-plataform: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: update
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+        properties:
+            hibernate:
+                jdbc:
+                    time_zone: GMT-3
+            cache:
+               region:
+                     factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+               use_query_cache: true
+               use_second_level_cache: true
+            javax:
+                persistence:
+                    retrieveMode:
+                        mode: ENABLE_SELECTIVE
+                    sharedCache:
+                        mode: ENABLE_SELECTIVE
