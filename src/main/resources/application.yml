@@ -73,7 +73,10 @@ spring:
 
 #============== Data Source ===========================================================================
     datasource:
-        driver-class-name: org.postgresql.Driver
+        driver-class-name: ${DATABASE_DRIVER}
+        url: ${DATABASE_URL}
+        username: ${DATABASE_USER}
+        password: ${DATABASE_PASSWORD}
         hikari:
             poolName: SpringBootJPAHikariCP
             connectionTimeout: 60000
@@ -81,15 +84,11 @@ spring:
             maxLifetime: 2000000
             maximumPoolSize: 20
             minimumIdle: 5
-        url: ${DATABASE_URL}
-        username: ${DATABASE_USER}
-        password: ${DATABASE_PASSWORD}
    
     jpa:
-        database-plataform: org.hibernate.dialect.PostgreSQLDialect
+        database-platform: ${DATABASE_PLATFORM}
         hibernate:
             ddl-auto: update
-            dialect: org.hibernate.dialect.PostgreSQLDialect
         properties:
             hibernate:
                 jdbc:

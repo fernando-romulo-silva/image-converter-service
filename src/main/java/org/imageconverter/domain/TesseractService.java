@@ -9,10 +9,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.imageconverter.infra.ConvertionImageException;
-import org.imageconverter.infra.ImageConvertServiceException;
-import org.imageconverter.infra.TesseractConvertionException;
-import org.imageconverter.util.ImageConverterRequest;
+import org.imageconverter.infra.exceptions.ConvertionException;
+import org.imageconverter.infra.exceptions.ImageConvertServiceException;
+import org.imageconverter.infra.exceptions.TesseractConvertionException;
+import org.imageconverter.util.controllers.ImageConverterRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,7 +71,7 @@ public final class TesseractService {
 
 	    final var msg = format("Image {0} has IO error {1}.", image, getRootCauseMessage(ex));
 	    log.info("Ends with error: {}", msg);
-	    throw new ConvertionImageException(msg, ex);
+	    throw new ConvertionException(msg, ex);
 
 	} catch (final TesseractException | Error ex) {
 

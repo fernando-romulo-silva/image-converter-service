@@ -1,4 +1,4 @@
-package org.imageconverter.util;
+package org.imageconverter.util.jpaconverters;
 
 import static org.apache.commons.lang3.StringUtils.upperCase;
 

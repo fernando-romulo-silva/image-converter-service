@@ -1,4 +1,4 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.mvc;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

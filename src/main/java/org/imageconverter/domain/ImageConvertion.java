@@ -1,41 +1,37 @@
 package org.imageconverter.domain;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "IMAGE_CONVERTION")
 public class ImageConvertion {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IMGC_ID")
     private Long id;
 
-    @Column(name = "IMGC_NAME")
     private String name;
 
-    @Column(name = "IMGC_IMG_TYPE")
     private ImageType type;
 
-    @Column(name = "IMGC_SIZE")
     private Long size;
 
-    @Column(name = "IMGC_DATE")
     private LocalDate executionDate;
 
-    @Column(name = "IMGC_TYPE")
     private ExecutionType executionType;
 
-    @Column(name = "IMGC_TEXT")
     private String text;
 
     ImageConvertion() {
@@ -52,30 +48,41 @@ public class ImageConvertion {
 	this.executionDate = LocalDate.now();
     }
 
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "IMGC_ID")
     public Long getId() {
 	return id;
     }
 
+    @Column(name = "IMGC_NAME")
     public String getName() {
 	return name;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "IMT_ID", foreignKey = @ForeignKey(name = "FK_IMT_IMGC"))
     public ImageType getType() {
 	return type;
     }
 
+    @Column(name = "IMGC_SIZE")
     public Long getSize() {
 	return size;
     }
 
+    @Column(name = "IMGC_DATE")
     public LocalDate getExecutionDate() {
 	return executionDate;
     }
 
+    @NotNull
+    @Column(name = "IMGC_TYPE")
     public ExecutionType getExecutionType() {
 	return executionType;
     }
 
+    @Column(name = "IMGC_TEXT")
     public String getText() {
 	return text;
     }
@@ -92,11 +99,9 @@ public class ImageConvertion {
 	    return true;
 	}
 
-	if (!(obj instanceof ImageConvertion)) {
+	if (!(obj instanceof ImageConvertion other)) {
 	    return false;
 	}
-
-	final var other = (ImageConvertion) obj;
 
 	return Objects.equals(name, other.name) && type == other.type;
     }
@@ -125,7 +130,7 @@ public class ImageConvertion {
 	public Long size;
 
 	public ExecutionType executionType;
-	
+
 	public String text;
 
 	public Builder with(final Consumer<Builder> function) {

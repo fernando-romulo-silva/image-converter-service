@@ -12,9 +12,11 @@ RUN java -Djarmode=layertools -jar application.jar extract \
 #=================================================================================
 
 FROM adoptopenjdk/openjdk16:alpine-jre
-RUN apk add --update --no-cache tesseract-ocr
+#RUN apk add --update --no-cache tesseract-ocr \
+#      && addgroup --system javauser \ 
+#      && adduser -S -s /bin/false -G javauser javauser
 
-RUN tesseract --version 
+#RUN tesseract --version 
 WORKDIR /application
 COPY --from=builder application/tesseract/tessdata/ ./tesseract/tessdata/
 COPY --from=builder application/dependencies/ ./
@@ -23,7 +25,15 @@ COPY --from=builder application/internal-dependencies ./
 COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
+RUN apk add --update --no-cache tesseract-ocr dumb-init \
+      && addgroup --system javauser \
+      && adduser -S -s /bin/false -G javauser javauser \
+      && chown -R javauser:javauser /application
+
+USER javauser
+
 ENTRYPOINT [\
+               "dumb-init",\
                "java",\
                "--enable-preview",\
                "-Dspring.profiles.active=local",\

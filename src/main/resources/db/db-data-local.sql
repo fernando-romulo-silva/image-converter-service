@@ -1,0 +1,1 @@
+insert into  image_type (imt_extension, imt_name) values ('png', 'Portable Network Graphics');

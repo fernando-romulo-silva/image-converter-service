@@ -2,13 +2,14 @@ package org.imageconverter;
 
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.imageconverter.util.ImageConverterConst.BASE_URL;
-import static org.imageconverter.util.ImageConverterConst.REST_URL;
+import static org.imageconverter.util.controllers.ImageConverterConst.BASE_URL;
+import static org.imageconverter.util.controllers.ImageConverterConst.REST_URL;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpStatus.CREATED;
 
 import java.io.File;
 
-import org.imageconverter.util.ImageConverterResponse;
+import org.imageconverter.util.controllers.ImageConverterResponse;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.web.client.RestClientException;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@Tag("integration")
 public class ImageConvertControllerTest {
 
     @LocalServerPort
@@ -35,7 +37,6 @@ public class ImageConvertControllerTest {
     @Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate(new RestTemplateBuilder());
 
-    @Tag("integration")
     @Test
     public void pingTest() throws RestClientException {
 
@@ -44,7 +45,6 @@ public class ImageConvertControllerTest {
 	assertThat(HttpStatus.OK.value()).isEqualTo(result.getStatusCodeValue());
     }
 
-    @Tag("integration")
     @Test
     public void convertTest() throws RestClientException {
 
@@ -61,13 +61,12 @@ public class ImageConvertControllerTest {
 
 	final var httpEntity = new HttpEntity<MultiValueMap<String, Object>>(parametersBody, headers);
 
-	final var result = restTemplate.<String>postForEntity("http://localhost:" + port + BASE_URL + REST_URL + "/convert", httpEntity, String.class);
+	final var result = restTemplate.<String>postForEntity("http://localhost:" + port + BASE_URL + REST_URL, httpEntity, String.class);
 
-	assertThat(HttpStatus.OK.value()) //
+	assertThat(CREATED.value()) //
 			.isEqualTo(result.getStatusCodeValue());
     }
 
-    @Tag("integration")
     @Test
     public void convertWithAreaTest() throws RestClientException {
 
@@ -88,9 +87,9 @@ public class ImageConvertControllerTest {
 
 	final var httpEntity = new HttpEntity<MultiValueMap<String, Object>>(parametersBody, headers);
 
-	final var resultEntity = restTemplate.<ImageConverterResponse>postForEntity("http://localhost:" + port + BASE_URL + REST_URL + "/convertWithArea", httpEntity, ImageConverterResponse.class);
+	final var resultEntity = restTemplate.<ImageConverterResponse>postForEntity("http://localhost:" + port + BASE_URL + REST_URL + "/area", httpEntity, ImageConverterResponse.class);
 
-	assertThat(HttpStatus.OK.value()) //
+	assertThat(CREATED.value()) //
 			.isEqualTo(resultEntity.getStatusCodeValue());
 
 	assertThat("03399905748110000007433957701015176230000017040") //

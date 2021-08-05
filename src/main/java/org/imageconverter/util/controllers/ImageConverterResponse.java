@@ -1,10 +1,10 @@
-package org.imageconverter.util;
+package org.imageconverter.util.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "ImageConverterResponse", description = "Image Converter Response")
+@Schema(name = "ImageConverterResponse", description = "Response to convert image")
 public final record ImageConverterResponse( //
 		//
 		@JsonProperty(value = "id", required = true) //
@@ -17,5 +17,6 @@ public final record ImageConverterResponse( //
 		//
 		@JsonProperty(value = "text", required = true) //
 		@Schema(name = "txt", required = true) //
-		String text) { //
+		String text //
+) {
 }

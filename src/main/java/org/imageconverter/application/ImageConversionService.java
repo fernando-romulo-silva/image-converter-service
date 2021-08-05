@@ -6,13 +6,14 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 import java.util.List;
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import org.imageconverter.domain.ImageConvertion;
 import org.imageconverter.domain.ImageConvertionRepository;
-import org.imageconverter.domain.ImageType;
 import org.imageconverter.domain.TesseractService;
-import org.imageconverter.infra.ConvertionImageException;
-import org.imageconverter.util.ImageConverterRequest;
-import org.imageconverter.util.ImageConverterResponse;
+import org.imageconverter.infra.exceptions.ConvertionException;
+import org.imageconverter.util.controllers.ImageConverterRequest;
+import org.imageconverter.util.controllers.ImageConverterResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,35 +27,40 @@ public class ImageConversionService {
 
     private final TesseractService tesseractService;
 
+    private final ImageTypeService imageTypeService;
+
     private final ImageConvertionRepository repository;
 
     @Autowired
-    public ImageConversionService(final TesseractService tesseractService, final ImageConvertionRepository repository) {
+    public ImageConversionService(final TesseractService tesseractService, final ImageTypeService imageTypeService, final ImageConvertionRepository repository) {
 	super();
 	this.tesseractService = tesseractService;
 	this.repository = repository;
+	this.imageTypeService = imageTypeService;
     }
 
     @Transactional
-    public ImageConverterResponse convert(final ImageConverterRequest imageConverterRequest) {
+    public ImageConverterResponse convert(@Valid final ImageConverterRequest request) {
 
-	log.info("Starts image request {}.", imageConverterRequest);
-	
-	final var file = imageConverterRequest.data();
-	
+	log.info("Starts with request {}.", request);
+
+	final var file = request.data();
+
 	if (Objects.isNull(file) || file.isEmpty()) {
-	    throw new ConvertionImageException("Empty file to convert!");
+	    throw new ConvertionException("Empty file to convert!");
 	}
 
-	final var extension = getExtension(file.getOriginalFilename());
-	
-	final var text = tesseractService.convert(imageConverterRequest);
+	final var extensionTxt = getExtension(file.getOriginalFilename());
+
+	final var extension = imageTypeService.findImageType(extensionTxt);
+
+	final var text = tesseractService.convert(request);
 
 	final var imageConvertionNewBuilder = new ImageConvertion.Builder().with($ -> {
-	    $.executionType = imageConverterRequest.executionType();
-	    $.name = imageConverterRequest.data().getName() + "." + extension;
-	    $.size = imageConverterRequest.data().getSize() / 1024;
-	    $.type = ImageType.from(extension);
+	    $.executionType = request.executionType();
+	    $.name = request.data().getName() + "." + extensionTxt;
+	    $.size = request.data().getSize() / 1024;
+	    $.type = extension;
 	    $.text = text;
 	});
 
@@ -62,7 +68,7 @@ public class ImageConversionService {
 
 	final var result = new ImageConverterResponse(imageConvertion.getId(), imageConvertion.getName(), imageConvertion.getText());
 
-	log.info("Ends result {}.", result);
+	log.info("Ends with result {}.", result);
 
 	return result;
     }

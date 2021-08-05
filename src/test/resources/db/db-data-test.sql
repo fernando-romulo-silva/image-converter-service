@@ -1,0 +1,2 @@
+insert into  image_type (imt_id, imt_extension, imt_name) values (1000, 'png', 'Portable Network Graphics');
+insert into  image_type (imt_id, imt_extension, imt_name) values (1001, 'jpg', 'Joint Photographics Experts Group');
