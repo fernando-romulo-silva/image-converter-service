@@ -33,6 +33,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Description("Controller for image converstion API")
 @RequestMapping(value = REST_URL)
+//
 @Tag( //
 		name = "Image Convert", //
 		description = """
@@ -41,7 +42,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 				Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
 				     """ //
 )
-
+//
 @Loggable(showArgs = true, showResult = true, unit = ChronoUnit.MILLIS)
 class ImageConverterRestController {
 
@@ -114,6 +115,7 @@ class ImageConverterRestController {
 
     }
 
+    @Operation(summary = "Convert the image with specific area")
     @GetMapping("/ping")
     @ResponseStatus(OK)
     public String ping() {

@@ -9,7 +9,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 public final record ImageConverterRequest(MultipartFile data, ExecutionType executionType, int x, int y, int width, int height) {
 
-    public ImageConverterRequest(@NotNull final MultipartFile data, @NotNull final ExecutionType executionType, final int x, final int y, final int width, final int height) {
+    public ImageConverterRequest(//
+		    @NotNull final MultipartFile data, //
+		    @NotNull final ExecutionType executionType, //
+		    final int x, //
+		    final int y, //
+		    final int width, //
+		    final int height) {
+
 	this.data = data;
 	this.x = x;
 	this.y = y;
@@ -18,7 +25,9 @@ public final record ImageConverterRequest(MultipartFile data, ExecutionType exec
 	this.executionType = executionType;
     }
 
-    public ImageConverterRequest(@NotNull final MultipartFile data, @NotNull final ExecutionType executionType) {
+    public ImageConverterRequest( //
+		    @NotNull final MultipartFile data, //
+		    @NotNull final ExecutionType executionType) {
 	this(data, executionType, 0, 0, 0, 0);
     }
 
