@@ -1,19 +1,20 @@
 package org.imageconverter.controller.rest;
 
-import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.imageconverter.domain.ExecutionType.WS;
 import static org.imageconverter.util.controllers.ImageConverterConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+import java.time.temporal.ChronoUnit;
+
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.util.controllers.ImageConverterRequest;
 import org.imageconverter.util.controllers.ImageConverterResponse;
+import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.ApiResponseError500;
 import org.imageconverter.util.openapi.imageconverter.ApiResponse201;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +28,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Description("Controller for API image converstion")
+@Description("Controller for image converstion API")
 @RequestMapping(value = REST_URL)
 @Tag( //
 		name = "Image Convert", //
@@ -42,13 +41,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 				Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
 				     """ //
 )
-final class ImageConverterRestController {
+
+@Loggable(showArgs = true, showResult = true, unit = ChronoUnit.MILLIS)
+class ImageConverterRestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ImageConversionService imageConversionService;
 
-    @Autowired
     public ImageConverterRestController(final ImageConversionService imageConversionService) {
 	super();
 	this.imageConversionService = imageConversionService;
@@ -65,24 +65,16 @@ final class ImageConverterRestController {
 		    @RequestParam(required = true) //
 		    final MultipartFile file) {
 
-	try {
+	final var kilobytes = (file.getSize() / 1024);
 
-	    final var kilobytes = (file.getSize() / 1024);
+	logger.info("begin with image {}, size {}", file.getName(), kilobytes);
 
-	    logger.info("begin with image {}, size {}", file.getName(), kilobytes);
+	final var result = imageConversionService.convert(new ImageConverterRequest(file, WS));
 
-	    final var result = imageConversionService.convert(new ImageConverterRequest(file, WS));
+	logger.info("end with result {}", result);
 
-	    logger.info("end with result {}", result);
+	return result;
 
-	    return result;
-
-	} catch (final Throwable ex) {
-
-	    logger.info("error: {}", getRootCauseMessage(ex));
-
-	    throw ex;
-	}
     }
 
     @Operation(summary = "Convert the image with specific area")
@@ -112,39 +104,19 @@ final class ImageConverterRestController {
 		    @RequestParam(required = false, defaultValue = "0") //
 		    final int height) {
 
-	try {
+	final var kilobytes = (file.getSize() / 1024);
 
-	    final var kilobytes = (file.getSize() / 1024);
+	logger.info("begin with image {}, size {}, x {}, y {}, width {}, height {}", file.getName(), kilobytes, x, y, width, height);
 
-	    logger.info("begin with image {}, size {}, x {}, y {}, width {}, height {}", file.getName(), kilobytes, x, y, width, height);
+	final var result = imageConversionService.convert(new ImageConverterRequest(file, WS, x, y, width, height));
 
-	    final var result = imageConversionService.convert(new ImageConverterRequest(file, WS, x, y, width, height));
+	return result;
 
-	    logger.info("end with result {}", result);
-
-	    return result;
-
-	} catch (final Throwable ex) {
-
-	    logger.info("error {}", getRootCauseMessage(ex));
-
-	    throw ex;
-	}
     }
 
-    // http://localhost:8080/image-converter/rest/images/ping
     @GetMapping("/ping")
     @ResponseStatus(OK)
     public String ping() {
-
-	logger.info("begin");
-
-	final var result = "ping!";
-
-	logger.info("end");
-
-//	throw new IllegalArgumentException("Error tests");
-
-	return result;
+	return "ping!";
     }
 }

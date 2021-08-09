@@ -20,18 +20,29 @@ import javax.validation.constraints.NotNull;
 @Table(name = "IMAGE_CONVERTION")
 public class ImageConvertion {
 
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "IMGC_ID")
     private Long id;
 
+    @Column(name = "IMGC_NAME")
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "IMT_ID", foreignKey = @ForeignKey(name = "FK_IMT_IMGC"))
     private ImageType type;
 
+    @Column(name = "IMGC_SIZE")
     private Long size;
 
+    @Column(name = "IMGC_DATE")
     private LocalDate executionDate;
 
+    @NotNull
+    @Column(name = "IMGC_TYPE")
     private ExecutionType executionType;
 
+    @Column(name = "IMGC_TEXT")
     private String text;
 
     ImageConvertion() {
@@ -48,41 +59,30 @@ public class ImageConvertion {
 	this.executionDate = LocalDate.now();
     }
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "IMGC_ID")
     public Long getId() {
 	return id;
     }
 
-    @Column(name = "IMGC_NAME")
     public String getName() {
 	return name;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "IMT_ID", foreignKey = @ForeignKey(name = "FK_IMT_IMGC"))
     public ImageType getType() {
 	return type;
     }
 
-    @Column(name = "IMGC_SIZE")
     public Long getSize() {
 	return size;
     }
 
-    @Column(name = "IMGC_DATE")
     public LocalDate getExecutionDate() {
 	return executionDate;
     }
 
-    @NotNull
-    @Column(name = "IMGC_TYPE")
     public ExecutionType getExecutionType() {
 	return executionType;
     }
 
-    @Column(name = "IMGC_TEXT")
     public String getText() {
 	return text;
     }

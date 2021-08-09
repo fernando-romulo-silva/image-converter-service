@@ -8,10 +8,12 @@
 		<maven.compiler.source>16</maven.compiler.source>
 		<maven.compiler.target>16</maven.compiler.target>
 
-		<spring-boot.version>2.5.0</spring-boot.version>
+		<spring-boot.version>2.5.3</spring-boot.version>
 		<spring-boot-cloud.version>2020.0.3</spring-boot-cloud.version>
 
 		<junit-platform.version>5.3.1</junit-platform.version>
+
+		<aspectj.version>1.9.7</aspectj.version>
 	</properties>
 
 	<dependencyManagement>
@@ -61,21 +63,25 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
 		<dependency>
@@ -104,6 +110,18 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<!-- <version>${aspectj.version}</version>  -->
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Tests -->
@@ -155,6 +173,7 @@
 			<version>4.0</version>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>

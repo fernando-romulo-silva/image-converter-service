@@ -78,7 +78,7 @@ public class ImageTypeRestControllerTest {
 	mvc.perform(post(REST_URL) //
 			.content("") //
 			.contentType(APPLICATION_JSON) //
-			.accept(TEXT_PLAIN)) //
+			.accept(TEXT_PLAIN, APPLICATION_JSON)) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
 	;

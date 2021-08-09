@@ -1,6 +1,7 @@
 package org.imageconverter.domain;
 
 import static javax.persistence.GenerationType.IDENTITY;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -12,18 +13,26 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "IMAGE_TYPE", uniqueConstraints = @UniqueConstraint(columnNames = "IMT_EXTENSION", name = "UK_IMT_EXTENSION"))
 public class ImageType {
 
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "IMT_ID", nullable = false)
     private Long id;
 
+    // PNG, BMP, JPEG, JPG ...
+    @NotBlank
+    @Column(name = "IMT_EXTENSION", nullable = false)
     private String extension;
 
+    @NotBlank
+    @Column(name = "IMT_NAME", nullable = false)
     private String name;
 
+    @Column(name = "IMT_DESC", nullable = true)
     private String description;
 
     ImageType() {
@@ -37,27 +46,33 @@ public class ImageType {
 	this.description = description;
     }
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "IMT_ID", nullable = false)
+    public void update(final String extension, final String name, final String description) {
+
+	if (isNoneBlank(extension)) {
+	    this.extension = extension;
+	}
+
+	if (isNoneBlank(name)) {
+	    this.name = name;
+	}
+
+	if (isNoneBlank(description)) {
+	    this.description = description;
+	}
+    }
+
     public Long getId() {
 	return id;
     }
 
-    // PNG, BMP, JPEG, JPG ...
-    @NotBlank
-    @Column(name = "IMT_EXTENSION", nullable = false)
     public String getExtension() {
 	return extension;
     }
 
-    @NotBlank
-    @Column(name = "IMT_NAME", nullable = false)
     public String getName() {
 	return name;
     }
 
-    @Column(name = "IMT_NAME", nullable = true) 
     public Optional<String> getDescription() {
 	return Optional.ofNullable(description);
     }
