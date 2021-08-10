@@ -11,12 +11,14 @@ import org.imageconverter.infra.exceptions.ImageTypeNotFoundException;
 import org.imageconverter.util.controllers.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.ImageTypeResponse;
 import org.imageconverter.util.controllers.UpdateImageTypeRequest;
+import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Loggable
 public class ImageTypeService {
 
     public final ImageTypeRespository repository;

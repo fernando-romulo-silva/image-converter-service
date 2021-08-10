@@ -6,8 +6,6 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
-import java.time.temporal.ChronoUnit;
-
 import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
@@ -41,8 +39,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 				Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
 				     """ //
 )
-
-@Loggable(showArgs = true, showResult = true, unit = ChronoUnit.MILLIS)
+//
+@Loggable
 public class ImageTypeRestController {
 
     private final ImageTypeService imageTypeService;
@@ -64,7 +62,7 @@ public class ImageTypeRestController {
 
 	final var result = imageTypeService.createImageType(request);
 
-	return format("Image Type ''{0}'' Created", result.id());
+	return format("Image Type ''{0}'' created", result.id());
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -80,7 +78,7 @@ public class ImageTypeRestController {
 
 	final var result = imageTypeService.updateImageType(id, request);
 
-	return format("Image Type ''{0}'' Update", result.id());
+	return format("Image Type ''{0}'' updated", result.id());
     }
 
     @GetMapping("/ping")

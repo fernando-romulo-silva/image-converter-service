@@ -4,7 +4,6 @@ import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Loggable(showArgs = true, showResult = true, unit = ChronoUnit.MILLIS)
+@Loggable
 public class ImageConversionService {
 
     private final TesseractService tesseractService;

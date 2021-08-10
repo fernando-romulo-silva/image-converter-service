@@ -18,11 +18,11 @@ public @interface Loggable {
 
   LogLevel value() default LogLevel.INFO;
 
-  ChronoUnit unit() default ChronoUnit.SECONDS;
+  ChronoUnit unit() default ChronoUnit.MILLIS;
 
-  boolean showArgs() default false;
+  boolean showArgs() default true;
 
-  boolean showResult() default false;
+  boolean showResult() default true;
 
   boolean showExecutionTime() default true;
 }

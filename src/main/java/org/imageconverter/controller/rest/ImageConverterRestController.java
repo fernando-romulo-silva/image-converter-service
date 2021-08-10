@@ -5,8 +5,6 @@ import static org.imageconverter.util.controllers.ImageConverterConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-import java.time.temporal.ChronoUnit;
-
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.util.controllers.ImageConverterRequest;
 import org.imageconverter.util.controllers.ImageConverterResponse;
@@ -43,7 +41,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 				     """ //
 )
 //
-@Loggable(showArgs = true, showResult = true, unit = ChronoUnit.MILLIS)
+@Loggable
 class ImageConverterRestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -107,7 +105,7 @@ class ImageConverterRestController {
 
 	final var kilobytes = (file.getSize() / 1024);
 
-	logger.info("begin with image {}, size {}, x {}, y {}, width {}, height {}", file.getName(), kilobytes, x, y, width, height);
+	logger.info("Image with size {}", file.getName(), kilobytes, x, y, width, height);
 
 	final var result = imageConversionService.convert(new ImageConverterRequest(file, WS, x, y, width, height));
 
