@@ -76,13 +76,13 @@ public class LoggableAspect {
 
 	    return response;
 
-	} catch (final Throwable ex) {
+	} catch (final Exception ex) {
 
 	    final var end = Instant.now();
 
 	    final var duration = format("%s %s", unit.between(start, end), unit.name().toLowerCase());
 
-	    log(logger, WARN, error(methodName, duration, ex, showResult, showExecutionTime));
+	    log(logger, WARN, error(methodName, duration, ex, showExecutionTime));
 
 	    throw ex;
 	}
@@ -120,7 +120,7 @@ public class LoggableAspect {
 	return message.toString();
     }
 
-    static String error(final String methodName, final String duration, final Throwable ex, final boolean showResult, final boolean showExecutionTime) {
+    static String error(final String methodName, final String duration, final Throwable ex, final boolean showExecutionTime) {
 
 	final var message = new StringJoiner(" ").add("Finished").add(methodName).add("method").add("with").add("error").add(getRootCauseMessage(ex));
 

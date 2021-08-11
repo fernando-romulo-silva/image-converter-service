@@ -2,6 +2,8 @@ package org.imageconverter.controller.rest;
 
 import static java.text.MessageFormat.format;
 import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
@@ -14,7 +16,6 @@ import org.imageconverter.util.controllers.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -51,7 +52,7 @@ public class ImageTypeRestController {
 	this.imageTypeService = imageTypeService;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
     public String create(//
 
@@ -65,7 +66,7 @@ public class ImageTypeRestController {
 	return format("Image Type ''{0}'' created", result.id());
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(NO_CONTENT)
     @PutMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
     public String update( //
 		    @Parameter(description = "The image type id's") //
