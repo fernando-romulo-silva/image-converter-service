@@ -1,6 +1,7 @@
 package org.imageconverter.controller.mvc;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -46,5 +47,32 @@ class ImageConverterGuiController {
 //    public void error() {
 //	throw new NullPointerException("Dummy NullPointerException.");
 //    }
-
+//    
+//    @ModelAttribute
+//    protected Person modelPerson(@PathVariable Long id){
+//    }
+//    
+//    @GetMapping
+//    @ResponseStatus(HttpStatus.OK)
+//    public String show() {
+//        return "persons/show";
+//    }
+//    @PutMapping
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public String update(@Validated Person person, BindingResult result){
+//        // do some logic
+//        return "redirect:/persons/" + person.getId();
+//    }
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public String create(@Validated Person person, BindingResult result){
+//        //do some logic
+//        return "redirect:/persons/" + person.getId();
+//    }
+//    @DeleteMapping
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public String delete(){
+//        //do some logic
+//        return "redirect:/persons/list";
+//    }    
 }
