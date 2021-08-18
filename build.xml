@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="image-converter-service">
+	<import>
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-build.xml" />
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-test.xml" />
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-site.xml" />
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-report.xml" />
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-check.xml" />
+	</import>
+</project>

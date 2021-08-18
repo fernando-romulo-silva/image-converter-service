@@ -1,8 +1,8 @@
 package org.imageconverter.util.logging;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.springframework.boot.logging.LogLevel.WARN;
 
@@ -27,10 +27,12 @@ public class LoggableAspect {
 
     @Pointcut("@annotation(org.imageconverter.util.logging.Loggable)")
     public void annotatedMethod() {
+	// just to execute the point cut
     }
 
     @Pointcut("@within(org.imageconverter.util.logging.Loggable)")
     public void annotatedClass() {
+	// just to execute the point cut
     }
 
     @Around("execution(* *(..)) && (annotatedMethod() || annotatedClass())")
@@ -44,11 +46,8 @@ public class LoggableAspect {
 
 	final var logger = LoggerFactory.getLogger(declaringClass);
 
-	var annotation = method.getAnnotation(Loggable.class);
-
-	if (isNull(annotation)) {
-	    annotation = declaringClass.getAnnotation(Loggable.class);
-	}
+	final var annotation = ofNullable(method.getAnnotation(Loggable.class)) //
+			.orElse(declaringClass.getAnnotation(Loggable.class));
 
 	final var level = annotation.value();
 	final var unit = annotation.unit();
@@ -66,7 +65,8 @@ public class LoggableAspect {
 
 	try {
 
-	    final var response = point.proceed();
+	    final var response = ofNullable(point.proceed()) //
+			    .orElse("void");
 
 	    final var end = Instant.now();
 
@@ -133,11 +133,11 @@ public class LoggableAspect {
 
     static void log(final Logger logger, final LogLevel level, final String message) {
 	switch (level) {
-        	case DEBUG -> logger.debug(message);
-        	case TRACE -> logger.trace(message);
-        	case WARN -> logger.warn(message);
-        	case ERROR, FATAL -> logger.error(message);
-        	default -> logger.info(message);
+	case DEBUG -> logger.debug(message);
+	case TRACE -> logger.trace(message);
+	case WARN -> logger.warn(message);
+	case ERROR, FATAL -> logger.error(message);
+	default -> logger.info(message);
 	}
     }
 }

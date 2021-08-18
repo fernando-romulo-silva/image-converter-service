@@ -47,7 +47,9 @@ import org.springframework.web.context.WebApplicationContext;
 public class ImageTypeRestControllerTest {
 
     private static final String USER = "user"; // application-test.yml-application.user_login: user
-
+    
+    // JSqlParser
+    
     @LocalServerPort
     private int port;
 
