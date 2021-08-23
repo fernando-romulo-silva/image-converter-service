@@ -27,12 +27,12 @@ public class LoggableAspect {
 
     @Pointcut("@annotation(org.imageconverter.util.logging.Loggable)")
     public void annotatedMethod() {
-	// just to execute the point cut
+	// just to execute the Around
     }
 
     @Pointcut("@within(org.imageconverter.util.logging.Loggable)")
     public void annotatedClass() {
-	// just to execute the point cut
+	// just to execute the Around
     }
 
     @Around("execution(* *(..)) && (annotatedMethod() || annotatedClass())")

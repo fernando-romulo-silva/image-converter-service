@@ -35,7 +35,7 @@ management:
 #============== Server ==============================================================================
 server:
     http2:
-        enable: true
+        enabled: true
     port: 5000
     servlet:
         context-path: /image-converter
@@ -87,8 +87,6 @@ spring:
    
     jpa:
         database-platform: ${DATABASE_PLATFORM}
-        hibernate:
-            ddl-auto: update
         properties:
             hibernate:
                 jdbc:

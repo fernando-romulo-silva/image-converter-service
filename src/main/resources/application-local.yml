@@ -23,9 +23,10 @@ management:
 
 #============== Data Source ===========================================================================
 spring: 
+    sql.init:
+        schema-locations: classpath:db/db-schema-local.sql
+        data-locations: classpath:db/db-data-local.sql
     datasource:
-        schema: classpath:db/db-schema-local.sql
-        data: classpath:db/db-data-local.sql
         driver-class-name: org.h2.Driver
         url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
         username: sa
