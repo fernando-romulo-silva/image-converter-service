@@ -18,6 +18,8 @@
 		<spring-boot-cloud.version>2020.0.3</spring-boot-cloud.version>
 
 		<junit-platform.version>5.3.1</junit-platform.version>
+		
+		<project.argLine> -Xms2G -Xmx5G	--enable-preview </project.argLine>
 	</properties>
 
 	<dependencyManagement>
@@ -181,13 +183,13 @@
 
 	<build>
 		<plugins>
-
+		<!-- 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<compilerArgs>
-						--enable-preview
+						-enable-preview
 					</compilerArgs>
 				</configuration>
 			</plugin>
@@ -196,10 +198,10 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<useSystemClassLoader>false</useSystemClassLoader>
-					<argLine>--enable-preview</argLine>
+					<argLine>-enable-preview</argLine>
 				</configuration>
 			</plugin>
-
+         -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

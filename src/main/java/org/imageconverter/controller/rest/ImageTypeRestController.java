@@ -17,6 +17,7 @@ import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,6 +81,12 @@ public class ImageTypeRestController {
 	final var result = imageTypeService.updateImageType(id, request);
 
 	return format("Image Type ''{0}'' updated", result.id());
+    }
+
+    @ResponseStatus(OK)
+    @GetMapping(value = "/{id:[\\d]*}")
+    public void show(@PathVariable final Long id) {
+
     }
 
     @GetMapping("/ping")
