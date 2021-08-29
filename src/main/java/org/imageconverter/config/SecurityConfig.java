@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.stereotype.Controller;
@@ -24,7 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-public class AuthenticationConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
+public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     @Value("${application.user_login}")
     private String applicationUser;
@@ -32,7 +34,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter implement
     @Value("${application.user_password}")
     private String applicationPassword;
 
-    public AuthenticationConfig() {
+    public SecurityConfig() {
 	super(true); // disable default configuration
     }
 
@@ -54,6 +56,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter implement
 			//
 			.and().headers() //
 			.and().csrf() //
+			/*------*/.csrfTokenRepository(repo())
 			//
 			.and().anonymous() //
 			/*-*/.principal("guest") //
@@ -116,6 +119,14 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter implement
     public void configure(final WebSecurity web) throws Exception {
 	super.configure(web);
 	web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
+    }
+
+    @Bean
+    public CsrfTokenRepository repo() {
+	HttpSessionCsrfTokenRepository repo = new HttpSessionCsrfTokenRepository();
+	repo.setParameterName("_csrf");
+	repo.setHeaderName("X-CSRF-TOKEN");
+	return repo;
     }
 
     @Controller
