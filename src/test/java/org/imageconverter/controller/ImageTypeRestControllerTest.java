@@ -25,6 +25,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.Resource;
@@ -38,7 +39,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+//@SpringBootTest(webEnvironment = RANDOM_PORT)
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
+
 //
 @Tag("integration")
 @DisplayName("Test the image type controller")
@@ -59,15 +64,16 @@ public class ImageTypeRestControllerTest {
     @Value("classpath:db/db-data-test.sql")
     private Resource dbDataTest;
 
+    @Autowired
     private MockMvc mvc;
 
-    @BeforeAll
-    public void beforeAll() {
-	mvc = MockMvcBuilders //
-			.webAppContextSetup(context) //
-			.apply(springSecurity()) //
-			.build();
-    }
+//    @BeforeAll
+//    public void beforeAll() {
+//	mvc = MockMvcBuilders //
+//			.webAppContextSetup(context) //
+//			.apply(springSecurity()) //
+//			.build();
+//    }
 
     @Test
     @Order(1)

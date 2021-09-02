@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+// https://freecontent.manning.com/five-awkward-things-about-spring-security-that-actually-make-sense/
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
@@ -53,6 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 			//
 			.and().logout() //
 			/*------*/.logoutSuccessUrl("/") //
+			/*------*/.invalidateHttpSession(true)
+			/*------*/.clearAuthentication(true)
 			//
 			.and().headers() //
 			.and().csrf() //
@@ -79,9 +83,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 			/*--*/.antMatchers(DELETE, "/images*") //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
-			/*--*/.antMatchers( //
+			/*--*/.mvcMatchers( //
 					"/health/**", //
-					"/v2/api-docs/**", //
 					"/v3/api-docs/**", //
 					"/configuration/**", //
 					"/swagger-resources/**", //

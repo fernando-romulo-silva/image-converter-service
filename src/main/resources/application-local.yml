@@ -12,7 +12,7 @@ tesseract:
     language: ${TESSERACT_LANG:eng}
     folder: ${TESSERACT_FOLDER:/home/fernando/Development/tools/tesseract/tessdata/}
 
-#============== Server ==============================================================================
+#============== Server ===============================================================================
 server:
     port: 8080
 
