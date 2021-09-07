@@ -59,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 			/*------*/.clearAuthentication(true)//
 			//
 			.and().headers() //
+			//
 			.and().csrf() //
 			/*------*/.csrfTokenRepository(repo())
 			//
@@ -75,10 +76,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 			/*------*/.permitAll() //
 			//
 			.and().authorizeRequests() //
-			/*--*/.antMatchers(GET, "/rest/*") //
-			/*------*/.hasAnyRole("USER", "GUEST") //
+			/*--*/.mvcMatchers(GET, "/rest/**") // /rest/images/type
+			/*------*/.hasAnyRole("USER") // , "GUEST"
 			//
-			/*--*/.antMatchers(POST, "/rest/*") //
+			/*--*/.antMatchers(POST, "/rest/**") //
 			/*------*/.hasRole("USER") //
 			//
 			/*--*/.antMatchers(DELETE, "/rest/*") //

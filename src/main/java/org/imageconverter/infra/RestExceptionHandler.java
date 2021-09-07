@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
@@ -17,14 +18,14 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.imageconverter.infra.exceptions.ConvertionException;
+import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
+import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.infra.exceptions.ImageConvertServiceException;
-import org.imageconverter.infra.exceptions.ImageTypeNotFoundException;
 import org.imageconverter.infra.exceptions.TesseractConvertionException;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,10 +36,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ImageTypeNotFoundException.class)
-    public ResponseEntity<Object> handleImageTypeNotFoundException(final ImageTypeNotFoundException ex, final WebRequest request) {
+    @ExceptionHandler(ElementNotFoundException.class)
+    public ResponseEntity<Object> handleElementTypeNotFoundException(final ElementNotFoundException ex, final WebRequest request) {
 
 	return handleObjectException(ex, request, NOT_FOUND);
+    }
+
+    @ExceptionHandler(ElementAlreadyExistsException.class)
+    public ResponseEntity<Object> handleIElementAlreadyExistsException(final ElementAlreadyExistsException ex, final WebRequest request) {
+
+	return handleObjectException(ex, request, CONFLICT);
     }
 
     @ExceptionHandler(ConvertionException.class)
@@ -66,8 +73,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	final var errors = new HashMap<String, String>();
 
-	ex.getBindingResult().getAllErrors().forEach((error) -> {
-	    final var fieldName = ((FieldError) error).getField();
+	ex.getBindingResult().getFieldErrors().forEach((error) -> {
+	    final var fieldName = error.getField();
 	    final var errorMessage = error.getDefaultMessage();
 	    errors.put(fieldName, errorMessage);
 	});

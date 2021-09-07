@@ -2,7 +2,7 @@ package org.imageconverter.infra;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.imageconverter.infra.exceptions.NotFoundException;
+import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;

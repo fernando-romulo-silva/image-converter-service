@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.ArrayUtils.toArray;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -16,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.util.controllers.CreateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -36,7 +36,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -118,30 +117,14 @@ public class ImageTypeRestControllerTest {
 	;
 
 	mvc.perform(get(REST_URL) //
-			.accept(APPLICATION_JSON)) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].extension").value(arrayContainingInAnyOrder(toArray("png", type.extension())))) //
+			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder("png", "jpg", type.extension()))) //
 	;
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("get a image type by id")
-    @WithMockUser(username = USER)
-    @Sql(statements = "DELETE FROM image_type")
-    @Sql("classpath:db/db-data-test.sql")
-    public void getImageTypeByIdTest() throws Exception {
-
-	mvc.perform(get(REST_URL + "/{id}", 1) //
-			.accept(APPLICATION_JSON)) //
-			.andDo(print()) //
-			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$").exists()) //
-			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*]").value(arrayContainingInAnyOrder(toArray("", ""))));
     }
 
     // https://www.google.com/search?q=pattern+rest+api+get+element+by&oq=pattern+rest+api+get+element+by&aqs=chrome..69i57j33i22i29i30.14776j1j9&sourceid=chrome&ie=UTF-8
@@ -157,19 +140,22 @@ public class ImageTypeRestControllerTest {
     //
     @Test
     @Order(4)
-    @DisplayName("get a image type by extension")
+    @DisplayName("get a image type by search")
     @WithMockUser(username = USER)
     @Sql(statements = "DELETE FROM image_type")
     @Sql("classpath:db/db-data-test.sql")
     public void getImageTypeByExtensionTest() throws Exception {
 
-	mvc.perform(get(REST_URL + "?criteria=", 1) //
-			.accept(APPLICATION_JSON)) //
+	final var extension = "png";
+
+	mvc.perform(get(REST_URL + "/search?filter=extension:'" + extension + "'") //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*]").value(arrayContainingInAnyOrder(toArray("", ""))));
+			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder(extension)));
     }
 
     public String asJsonString(final Object object) {

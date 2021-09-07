@@ -8,17 +8,23 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
+import org.imageconverter.domain.ImageType;
 import org.imageconverter.util.controllers.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.ImageTypeResponse;
 import org.imageconverter.util.controllers.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
-import org.imageconverter.util.openapi.ApiResponseError500;
-import org.imageconverter.util.openapi.imageconverter.ApiResponse201;
+import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
+import org.imageconverter.util.openapi.imagetype.UpdateImageTypeRequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,10 +34,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -57,37 +63,10 @@ public class ImageTypeRestController {
 	this.imageTypeService = imageTypeService;
     }
 
-    @Operation(summary = "Create a new image type")
-    // When an identical resource already exists, a 409 (Conflict) 
-    
-    @ResponseStatus(CREATED)
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
-    public String create(//
-
-		    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "A new image type", content = @Content(schema = @Schema(implementation = CreateImageTypeRequest.class))) //
-		    @Valid //
-		    @RequestBody //
-		    final CreateImageTypeRequest request) {
-
-	final var result = imageTypeService.createImageType(request);
-
-	return format("Image Type ''{0,number,#}'' created", result.id());
-    }
-
-    @ResponseStatus(NO_CONTENT)
-    @PutMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
-    public String update( //
-		    @Parameter(description = "The image type id's") //
-		    final Long id, //
-
-		    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "A existed image type", content = @Content(schema = @Schema(implementation = UpdateImageTypeRequest.class))) //
-		    @Valid //
-		    @RequestBody //
-		    final UpdateImageTypeRequest request) {
-
-	final var result = imageTypeService.updateImageType(id, request);
-
-	return format("Image Type ''{0,number,#}'' updated", result.id());
+    @GetMapping("/ping")
+    @ResponseStatus(OK)
+    public String ping() {
+	return "ping!";
     }
 
     @ResponseStatus(OK)
@@ -100,9 +79,60 @@ public class ImageTypeRestController {
 	return imageTypeService.findById(id);
     }
 
-    @GetMapping("/ping")
     @ResponseStatus(OK)
-    public String ping() {
-	return "ping!";
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    public List<ImageTypeResponse> showAll() {
+
+	return imageTypeService.findAll();
+    }
+    
+    @ResponseStatus(OK)
+    @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
+    public List<ImageTypeResponse> get( //
+		    @Filter		    
+		    final Specification<ImageType> spec, final Pageable page) {
+
+	return imageTypeService.findBySpecification(spec);
+
+    }
+
+    @Operation(summary = "Create a new image type")
+    // When an identical resource already exists, a 409 (Conflict)
+    @ResponseStatus(CREATED)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
+    public String create(//
+		    @CreateImageTypeRequestBody //
+		    @Valid //
+		    @RequestBody //
+		    final CreateImageTypeRequest request) {
+
+	final var result = imageTypeService.createImageType(request);
+
+	return format("Image Type ''{0,number,#}'' created", result.id());
+    }
+
+    @ResponseStatus(NO_CONTENT)
+    @PutMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
+    public void update( //
+		    @Parameter(description = "The image type id's") //
+		    @PathVariable //
+		    final Long id, //
+
+		    @UpdateImageTypeRequestBody //
+		    @Valid //
+		    @RequestBody //
+		    final UpdateImageTypeRequest request) {
+
+	imageTypeService.updateImageType(id, request);
+    }
+
+    @ResponseStatus(NO_CONTENT)
+    @DeleteMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
+    public void delete( //
+		    @Parameter(description = "The image type id's") //
+		    @PathVariable //
+		    final Long id) {
+
+	imageTypeService.deleteImageType(id);
     }
 }

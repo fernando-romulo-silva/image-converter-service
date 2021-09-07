@@ -1,14 +1,14 @@
 package org.imageconverter.infra.exceptions;
 
-public class NotFoundException extends RuntimeException {
+public class ElementNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public <T> NotFoundException(final Class<T> cls, final Long id) {
+    public <T> ElementNotFoundException(final Class<T> cls, final Long id) {
 	super(cls.getSimpleName() + " with id '" + id + "' not found");
     }
 
-    public <T> NotFoundException(final Class<T> cls, final String msg) {
+    public <T> ElementNotFoundException(final Class<T> cls, final String msg) {
 	super(cls.getSimpleName() + " with " + msg + " not found");
     }
 
