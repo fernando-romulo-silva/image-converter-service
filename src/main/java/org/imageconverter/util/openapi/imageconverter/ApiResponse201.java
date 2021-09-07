@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @SecurityRequirement(name = "BASIC")
 @ApiResponse( //
 		responseCode = "201", //
-		description = "successful operation", //
+		description = "successful converte image", //
 		content = { //
 			@Content(mediaType = "application/json", schema = @Schema(implementation = ImageConverterResponse.class)) //
 		} //

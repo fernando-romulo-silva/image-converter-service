@@ -1,20 +1,23 @@
 package org.imageconverter.controller;
 
 import static org.apache.commons.lang3.ArrayUtils.toArray;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.commons.lang3.StringUtils;
+import org.imageconverter.util.controllers.CreateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -27,23 +30,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.Resource;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-//@SpringBootTest(webEnvironment = RANDOM_PORT)
-
+//
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-
 //
 @Tag("integration")
 @DisplayName("Test the image type controller")
@@ -52,28 +54,16 @@ import org.springframework.web.context.WebApplicationContext;
 public class ImageTypeRestControllerTest {
 
     private static final String USER = "user"; // application-test.yml-application.user_login: user
-    
-    // JSqlParser
-    
-    @LocalServerPort
-    private int port;
 
     @Autowired
-    private WebApplicationContext context;
+    private ObjectMapper mapper;
 
+    // JSqlParser
     @Value("classpath:db/db-data-test.sql")
     private Resource dbDataTest;
 
     @Autowired
     private MockMvc mvc;
-
-//    @BeforeAll
-//    public void beforeAll() {
-//	mvc = MockMvcBuilders //
-//			.webAppContextSetup(context) //
-//			.apply(springSecurity()) //
-//			.build();
-//    }
 
     @Test
     @Order(1)
@@ -83,19 +73,26 @@ public class ImageTypeRestControllerTest {
     @Sql("classpath:db/db-data-test.sql")
     public void createImageTypeTest() throws Exception {
 
-	mvc.perform(post(REST_URL) //
-			.content("") //
+	final var type = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+
+	final var result = mvc.perform(post(REST_URL) //
+			.content(asJsonString(type)) //
 			.contentType(APPLICATION_JSON) //
-			.accept(TEXT_PLAIN, APPLICATION_JSON)) //
+			.accept(TEXT_PLAIN, APPLICATION_JSON) //
+			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-	;
+			.andExpect(content().string(containsString("created"))) //
+			.andReturn();
 
-	mvc.perform(get(REST_URL + "/{id}", 1) //
-			.accept(APPLICATION_JSON)) //
+	final var idString = substringBetween(result.getResponse().getContentAsString(), "'", "'");
+
+	mvc.perform(get(REST_URL + "/{id}", idString) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$.id").value(1)) //
+			.andExpect(jsonPath("$.id").value(idString)) //
 	;
 
     }
@@ -108,16 +105,30 @@ public class ImageTypeRestControllerTest {
     @Sql("classpath:db/db-data-test.sql")
     public void getAllImageTypeTest() throws Exception {
 
-	mvc.perform(get(REST_URL + "/{id}", 1) //
+	final var type = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+
+	mvc.perform(post(REST_URL) //
+			.content(asJsonString(type)) //
+			.contentType(APPLICATION_JSON) //
+			.accept(TEXT_PLAIN, APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isCreated()) //
+			.andExpect(content().string(containsString("created"))) //
+	;
+
+	mvc.perform(get(REST_URL) //
 			.accept(APPLICATION_JSON)) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$").exists()).andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*]").value(arrayContainingInAnyOrder(toArray("", ""))));
+			.andExpect(jsonPath("$").exists()) //
+			.andExpect(jsonPath("$").isArray()) //
+			.andExpect(jsonPath("$[*].extension").value(arrayContainingInAnyOrder(toArray("png", type.extension())))) //
+	;
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     @DisplayName("get a image type by id")
     @WithMockUser(username = USER)
     @Sql(statements = "DELETE FROM image_type")
@@ -145,7 +156,7 @@ public class ImageTypeRestControllerTest {
     // https://www.baeldung.com/rest-api-search-language-rsql-fiql
     //
     @Test
-    @Order(3)
+    @Order(4)
     @DisplayName("get a image type by extension")
     @WithMockUser(username = USER)
     @Sql(statements = "DELETE FROM image_type")
@@ -161,4 +172,12 @@ public class ImageTypeRestControllerTest {
 			.andExpect(jsonPath("$[*]").value(arrayContainingInAnyOrder(toArray("", ""))));
     }
 
+    public String asJsonString(final Object object) {
+
+	try {
+	    return mapper.writeValueAsString(object);
+	} catch (final JsonProcessingException e) {
+	    throw new IllegalStateException(e);
+	}
+    }
 }

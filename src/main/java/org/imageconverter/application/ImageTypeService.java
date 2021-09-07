@@ -1,6 +1,5 @@
 package org.imageconverter.application;
 
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,7 +14,6 @@ import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 @Loggable
@@ -49,9 +47,18 @@ public class ImageTypeService {
 
 	imageType.update(request.extension(), request.name(), request.description());
 
-	final var imageConvertion = repository.save(imageType);
+	final var imageTypeNew = repository.save(imageType);
 
-	return new ImageTypeResponse(imageType.getId(), imageConvertion.getExtension(), imageType.getName());
+	return new ImageTypeResponse(imageType.getId(), imageTypeNew.getExtension(), imageType.getName());
+    }
+
+    @Transactional(readOnly = true)
+    public ImageTypeResponse findById(@NotNull final Long id) {
+
+	final var imageType = repository.findById(id) //
+			.orElseThrow(() -> new ImageTypeNotFoundException(id));
+
+	return new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName());
     }
 
     @Transactional(readOnly = true)

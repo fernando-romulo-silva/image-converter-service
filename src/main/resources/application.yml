@@ -38,7 +38,7 @@ server:
         enabled: true
     port: 5000
     servlet:
-        context-path: /image-converter
+#        context-path: /image-converter
         encoding:
             charset: UTF-8
             enabled: true

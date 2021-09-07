@@ -15,8 +15,8 @@ public record CreateImageTypeRequest( //
 		@Schema(name = "name", required = true) //
 		String name, //
 
-		@JsonProperty(value = "name", required = false) //
-		@Schema(name = "name", required = false) //
+		@JsonProperty(value = "description", required = false) //
+		@Schema(name = "description", required = false) //
 		String description
 ) //
 {

@@ -12,8 +12,11 @@ import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
 import org.imageconverter.util.controllers.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.ImageTypeResponse;
 import org.imageconverter.util.controllers.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
+import org.imageconverter.util.openapi.ApiResponseError500;
+import org.imageconverter.util.openapi.imageconverter.ApiResponse201;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -53,6 +57,9 @@ public class ImageTypeRestController {
 	this.imageTypeService = imageTypeService;
     }
 
+    @Operation(summary = "Create a new image type")
+    // When an identical resource already exists, a 409 (Conflict) 
+    
     @ResponseStatus(CREATED)
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
     public String create(//
@@ -64,7 +71,7 @@ public class ImageTypeRestController {
 
 	final var result = imageTypeService.createImageType(request);
 
-	return format("Image Type ''{0}'' created", result.id());
+	return format("Image Type ''{0,number,#}'' created", result.id());
     }
 
     @ResponseStatus(NO_CONTENT)
@@ -80,13 +87,17 @@ public class ImageTypeRestController {
 
 	final var result = imageTypeService.updateImageType(id, request);
 
-	return format("Image Type ''{0}'' updated", result.id());
+	return format("Image Type ''{0,number,#}'' updated", result.id());
     }
 
     @ResponseStatus(OK)
-    @GetMapping(value = "/{id:[\\d]*}")
-    public void show(@PathVariable final Long id) {
+    @GetMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ImageTypeResponse show( //
+		    @Parameter(description = "The image type id's") //
+		    @PathVariable //
+		    final Long id) {
 
+	return imageTypeService.findById(id);
     }
 
     @GetMapping("/ping")

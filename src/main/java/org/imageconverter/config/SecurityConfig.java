@@ -55,8 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 			//
 			.and().logout() //
 			/*------*/.logoutSuccessUrl("/") //
-			/*------*/.invalidateHttpSession(true)
-			/*------*/.clearAuthentication(true)
+			/*------*/.invalidateHttpSession(true)//
+			/*------*/.clearAuthentication(true)//
 			//
 			.and().headers() //
 			.and().csrf() //
@@ -75,12 +75,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 			/*------*/.permitAll() //
 			//
 			.and().authorizeRequests() //
-			/*--*/.antMatchers(GET, "/images*") //
+			/*--*/.antMatchers(GET, "/rest/*") //
 			/*------*/.hasAnyRole("USER", "GUEST") //
 			//
-			/*--*/.antMatchers(POST, "/images*").hasRole("USER") //
+			/*--*/.antMatchers(POST, "/rest/*") //
+			/*------*/.hasRole("USER") //
 			//
-			/*--*/.antMatchers(DELETE, "/images*") //
+			/*--*/.antMatchers(DELETE, "/rest/*") //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
 			/*--*/.mvcMatchers( //

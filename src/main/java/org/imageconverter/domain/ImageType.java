@@ -25,7 +25,7 @@ public class ImageType {
 
     // PNG, BMP, JPEG, JPG ...
     @NotBlank
-    @Column(name = "IMT_EXTENSION", nullable = false)
+    @Column(name = "IMT_EXTENSION", nullable = false, unique = true)
     private String extension;
 
     @NotBlank
