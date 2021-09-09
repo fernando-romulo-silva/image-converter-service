@@ -1,9 +1,7 @@
 package org.imageconverter.controller;
 
-import static org.apache.commons.lang3.ArrayUtils.toArray;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -146,7 +144,7 @@ public class ImageTypeRestControllerTest {
     @Sql("classpath:db/db-data-test.sql")
     public void getImageTypeByExtensionTest() throws Exception {
 
-	final var extension = "png";
+	final var extension = "png"; // already on db
 
 	mvc.perform(get(REST_URL + "/search?filter=extension:'" + extension + "'") //
 			.accept(APPLICATION_JSON) //

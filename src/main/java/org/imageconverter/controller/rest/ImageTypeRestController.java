@@ -70,10 +70,10 @@ public class ImageTypeRestController {
     }
 
     @ResponseStatus(OK)
-    @GetMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
     public ImageTypeResponse show( //
 		    @Parameter(description = "The image type id's") //
-		    @PathVariable //
+		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
 
 	return imageTypeService.findById(id);
@@ -85,12 +85,11 @@ public class ImageTypeRestController {
 
 	return imageTypeService.findAll();
     }
-    
+
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
     public List<ImageTypeResponse> get( //
-		    @Filter		    
-		    final Specification<ImageType> spec, final Pageable page) {
+		    @Filter final Specification<ImageType> spec, final Pageable page) {
 
 	return imageTypeService.findBySpecification(spec);
 
@@ -115,7 +114,7 @@ public class ImageTypeRestController {
     @PutMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
     public void update( //
 		    @Parameter(description = "The image type id's") //
-		    @PathVariable //
+		    @PathVariable(name = "id", required = true) //
 		    final Long id, //
 
 		    @UpdateImageTypeRequestBody //
@@ -127,10 +126,10 @@ public class ImageTypeRestController {
     }
 
     @ResponseStatus(NO_CONTENT)
-    @DeleteMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id:[\\d]*}")
     public void delete( //
 		    @Parameter(description = "The image type id's") //
-		    @PathVariable //
+		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
 
 	imageTypeService.deleteImageType(id);
