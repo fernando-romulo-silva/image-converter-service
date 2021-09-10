@@ -36,6 +36,8 @@ management:
 server:
     http2:
         enabled: true
+    compression:
+        enabled: true        
     port: 5000
     servlet:
 #        context-path: /image-converter
@@ -48,8 +50,9 @@ server:
         enabled: true
         unique-names: true
 #    ssl:
-#        key-store: classpath:sb2-recipes.pfx
-#        key-store-type: pkcs12
+#        enabled: true
+#        key-store: classpath:keystore.jks
+#        key-store-type: PKCS12
 #        key-store-password: password
 #        key-password: password
 #        key-alias: sb2-recipes
