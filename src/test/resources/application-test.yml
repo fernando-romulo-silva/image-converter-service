@@ -14,9 +14,10 @@ tesseract:
 
 #============== Data Source ===========================================================================
 spring:
+    sql.init:
+        schema-locations: classpath:db/db-schema-test.sql
+        data-locations: classpath:db/db-data-test.sql
     datasource:
-        schema: classpath:db/db-schema-test.sql
-        data: classpath:db/db-data-test.sql
         driver-class-name: org.h2.Driver
         url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
         username: sa
@@ -25,7 +26,7 @@ spring:
         console:
             enabled: true   
     jpa:
-        database-plataform: org.hibernate.dialect.H2Dialect
+        database-platform: org.hibernate.dialect.H2Dialect
         hibernate:
             ddl-auto: update
         properties:

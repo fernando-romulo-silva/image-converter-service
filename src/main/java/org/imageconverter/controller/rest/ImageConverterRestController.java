@@ -3,6 +3,8 @@ package org.imageconverter.controller.rest;
 import static org.imageconverter.domain.imageConvertion.ExecutionType.WS;
 import static org.imageconverter.util.controllers.ImageConverterConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.util.controllers.ImageConverterRequest;
@@ -11,6 +13,8 @@ import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.ApiResponseError500;
 import org.imageconverter.util.openapi.imageconverter.ApiResponse201;
 import org.springframework.context.annotation.Description;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,6 +50,17 @@ public class ImageConverterRestController {
 	super();
 	this.imageConversionService = imageConversionService;
     }
+    
+    @ResponseStatus(OK)
+    @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
+    public ImageConverterResponse show( //
+		    @Parameter(description = "The image conversion id's") //
+		    @PathVariable(name = "id", required = true) //
+		    final Long id) {
+
+	return imageConversionService.findById(id);
+    }
+    
 
     @Operation(summary = "Convert all image into the text")
     @ApiResponse201

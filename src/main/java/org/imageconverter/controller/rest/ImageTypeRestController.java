@@ -43,6 +43,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Description("Controller for image type API")
 @RequestMapping(value = REST_URL)
+//
 @Tag( //
 		name = "Image Type", //
 		description = """
@@ -89,7 +90,7 @@ public class ImageTypeRestController {
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
     public List<ImageTypeResponse> get( //
-		    @Filter // 
+		    @Filter //
 		    final Specification<ImageType> spec, final Pageable page) {
 
 	return imageTypeService.findBySpecification(spec);

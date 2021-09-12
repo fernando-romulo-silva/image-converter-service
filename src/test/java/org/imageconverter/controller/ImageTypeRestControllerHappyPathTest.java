@@ -1,8 +1,6 @@
 package org.imageconverter.controller;
 
 import static org.apache.commons.lang3.StringUtils.substringBetween;
-import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
@@ -13,7 +11,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -22,7 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.imageconverter.util.controllers.CreateImageTypeRequest;
-import org.imageconverter.util.controllers.ImageConverterResponse;
 import org.imageconverter.util.controllers.UpdateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -37,8 +33,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -74,28 +68,6 @@ public class ImageTypeRestControllerHappyPathTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @Test
-    @Order(0)
-    @DisplayName("convert the image test mvc version")
-    @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
-    public void convertTestMVC() throws Exception {
-
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
-
-	// create one
-	final var result = mvc.perform(multipart("/rest/images/convertion") //
-			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
-			.with(csrf())) //
-			.andDo(print()) //
-			.andExpect(status().isCreated()) //
-			.andReturn();
-
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterResponse.class);
-
-	assertThat(response.id()).isGreaterThan(LONG_ZERO);
-    }
 
     @Test
     @Order(1)

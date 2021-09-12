@@ -12,6 +12,7 @@ import org.imageconverter.domain.imageConvertion.ImageConvertion;
 import org.imageconverter.domain.imageConvertion.ImageConvertionRepository;
 import org.imageconverter.domain.imageConvertion.TesseractService;
 import org.imageconverter.infra.exceptions.ConvertionException;
+import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.ImageConverterRequest;
 import org.imageconverter.util.controllers.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;
@@ -74,5 +75,14 @@ public class ImageConversionService {
 			.collect(toList()); //
 
 	return result;
+    }
+
+    @Transactional(readOnly = true)
+    public ImageConverterResponse findById(Long id) {
+	
+	final var imageConvertion = repository.findById(id) //
+			.orElseThrow(() -> new ElementNotFoundException(ImageConvertion.class, id));
+
+	return new ImageConverterResponse(imageConvertion.getId(), imageConvertion.getName(), imageConvertion.getText());
     }
 }

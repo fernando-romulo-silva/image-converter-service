@@ -8,8 +8,10 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.imageconverter.util.controllers.ImageConverterResponse;
@@ -62,6 +64,25 @@ public class ImageConvertRestControllerHappyPathTest {
 
     @Autowired
     private MockMvc mvc;
+    
+    @Test
+    @Order(1)
+    @DisplayName("get a image type by id")
+    @Sql(statements = "DELETE FROM image_type")
+    @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
+    public void getImageTypeByIdTest() throws Exception {
+
+	// already on db, due to the db-data-test.sql
+	final var id = "1000";
+
+	mvc.perform(get(REST_URL + "/{id}", id) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isOk()) //
+			.andExpect(jsonPath("$.id").value(id)) //
+	;
+    }    
 
     @Test
     @Order(2)
@@ -86,7 +107,7 @@ public class ImageConvertRestControllerHappyPathTest {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     @DisplayName("convert the image with area")
     @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void convertAreaTest() throws Exception {

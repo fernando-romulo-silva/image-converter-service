@@ -1,19 +1,6 @@
 package org.imageconverter.config;
 
-import static org.springframework.util.unit.DataSize.ofMegabytes;
-
-import javax.servlet.MultipartConfigElement;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Description;
-import org.springframework.core.annotation.Order;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.multipart.support.MultipartFilter;
 
 @Configuration
 //@EnableConfigurationProperties(MultipartProperties.class)
