@@ -4,7 +4,7 @@ import static java.text.MessageFormat.format;
 
 import javax.validation.constraints.NotNull;
 
-import org.imageconverter.domain.ExecutionType;
+import org.imageconverter.domain.imageConvertion.ExecutionType;
 import org.springframework.web.multipart.MultipartFile;
 
 public final record ImageConverterRequest(MultipartFile data, ExecutionType executionType, int x, int y, int width, int height) {

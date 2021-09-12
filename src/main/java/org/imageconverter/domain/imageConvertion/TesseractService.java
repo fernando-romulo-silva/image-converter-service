@@ -1,4 +1,4 @@
-package org.imageconverter.domain;
+package org.imageconverter.domain.imageConvertion;
 
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;

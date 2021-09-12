@@ -1,4 +1,4 @@
-package org.imageconverter.config;
+package org.imageconverter.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,10 +30,10 @@ public class SecurityConfig {
 	return repo;
     }
     
-    @Bean
-    public PasswordEncoder encoder(){
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder encoder(){
+//        return new BCryptPasswordEncoder();
+//    }
     
     @Controller
     static class FaviconController {

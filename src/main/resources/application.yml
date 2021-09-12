@@ -19,7 +19,7 @@ management:
             show-details: always
     endpoints:
         web:
-            base-path:
+            base-path: /actuator
             path-mapping:
                 health: '/health'
             exposure:
@@ -36,8 +36,8 @@ management:
 server:
     http2:
         enabled: true
-    compression:
-        enabled: true        
+#    compression:
+#        enabled: true        
     port: 5000
     servlet:
 #        context-path: /image-converter
@@ -73,6 +73,7 @@ spring:
     sleuth:
         enabled: true
         web.client.enabled: true
+    security.filter.order: 5 # due to multipart resolver      
 
 #============== Data Source ===========================================================================
     datasource:

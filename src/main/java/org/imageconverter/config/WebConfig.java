@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,6 +22,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 @Configuration
+@EnableWebSecurity
 @EnableWebMvc
 @EnableAspectJAutoProxy
 @EnableTransactionManagement
@@ -48,4 +51,28 @@ public class WebConfig implements WebMvcConfigurer {
 
 	return mapper;
     }
+
+    @Bean
+    public CommonsMultipartResolver multipartResolver() {
+	final var resolver = new CommonsMultipartResolver();
+	resolver.setDefaultEncoding("utf-8");
+//        resolver.setMaxInMemorySize();
+//        resolver.setMaxUploadSize(ofMegabytes(20));
+	return resolver;
+    }
+
+//    @Bean
+//    public InternalResourceViewResolver viewResolver() {
+//	InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+//	viewResolver.setViewClass(JstlView.class);
+//	viewResolver.setPrefix("/WEB-INF/views/");
+//	viewResolver.setSuffix(".jsp");
+//	return viewResolver;
+//    }
+//
+//
+//    @Override
+//    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+//	registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+//    }
 }

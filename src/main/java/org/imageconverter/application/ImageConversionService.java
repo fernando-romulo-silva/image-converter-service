@@ -8,9 +8,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.imageconverter.domain.ImageConvertion;
-import org.imageconverter.domain.ImageConvertionRepository;
-import org.imageconverter.domain.TesseractService;
+import org.imageconverter.domain.imageConvertion.ImageConvertion;
+import org.imageconverter.domain.imageConvertion.ImageConvertionRepository;
+import org.imageconverter.domain.imageConvertion.TesseractService;
 import org.imageconverter.infra.exceptions.ConvertionException;
 import org.imageconverter.util.controllers.ImageConverterRequest;
 import org.imageconverter.util.controllers.ImageConverterResponse;

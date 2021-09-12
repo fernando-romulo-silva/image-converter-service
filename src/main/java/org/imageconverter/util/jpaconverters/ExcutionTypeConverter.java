@@ -5,7 +5,7 @@ import static org.apache.commons.lang3.StringUtils.upperCase;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import org.imageconverter.domain.ExecutionType;
+import org.imageconverter.domain.imageConvertion.ExecutionType;
 
 @Converter(autoApply = true)
 public class ExcutionTypeConverter implements AttributeConverter<ExecutionType, String> {

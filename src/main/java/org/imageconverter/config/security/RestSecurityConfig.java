@@ -1,4 +1,4 @@
-package org.imageconverter.config;
+package org.imageconverter.config.security;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -14,16 +14,15 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// https://www.yawintutor.com/multiple-login-pages-using-spring-boot-security/
+// https://freecontent.manning.com/five-awkward-things-about-spring-security-that-actually-make-sense/
 
-@Order(2)
+@Order(1)
 @Configuration
-public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
+public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${application.user_login}")
     private String applicationUser;
@@ -31,24 +30,22 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Value("${application.user_password}")
     private String applicationPassword;
 
-    private final HttpFirewall allowUrlEncodedSlashHttpFirewall;
+    private final RestAuthenticationSuccessHandler authenticationSuccessHandler;
 
     private final CsrfTokenRepository csrfTokenRepository;
 
+    private final HttpFirewall allowUrlEncodedSlashHttpFirewall;
+
     @Autowired
-    public MvcSecurityConfig(final HttpFirewall allowUrlEncodedSlashHttpFirewall, final CsrfTokenRepository csrfTokenRepository) {
+    public RestSecurityConfig(final RestAuthenticationSuccessHandler authenticationSuccessHandler, final HttpFirewall allowUrlEncodedSlashHttpFirewall, final CsrfTokenRepository csrfTokenRepository) {
 	super(true); // disable default configuration
-	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;
+	this.authenticationSuccessHandler = authenticationSuccessHandler;
 	this.csrfTokenRepository = csrfTokenRepository;
+	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;
     }
 
     @Override
-    public void addViewControllers(final ViewControllerRegistry registry) {
-	registry.addViewController("/login.html").setViewName("login");
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
 
 	http.securityContext() //
 			.and().exceptionHandling() //
@@ -60,26 +57,24 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
 			/*------*/.invalidateHttpSession(true)//
 			/*------*/.clearAuthentication(true)//
 			//
+// https://docs.spring.io/spring-security/site/docs/5.0.x/reference/html/csrf.html			
+// https://docs.spring.io/spring-security/site/docs/current/reference/html5/#jc-httpsecurity
+// https://stackoverflow.com/questions/49486675/how-to-make-multipartfilter-to-work-with-spring-boot
+			//
 			.and().csrf() //
-			/*------*/.csrfTokenRepository(csrfTokenRepository)//
-			//
-			.and().anonymous() //
-			/*-*/.principal("guest") //
-			/*-*/.authorities("ROLE_GUEST") //
-			//
-			.and().rememberMe() //
+			/*------*/.csrfTokenRepository(csrfTokenRepository)
 			//
 			.and().authorizeRequests() //
-			/*--*/.mvcMatchers(GET, "/mvc/**") // /rest/images/type
+			/*--*/.antMatchers(GET, "/rest/**") // /rest/images/type
 			/*------*/.hasAnyRole("USER") // , "GUEST"
 			//
-			/*--*/.mvcMatchers(POST, "/mvc/**") //
+			/*--*/.antMatchers(POST, "/rest/**") //
 			/*------*/.hasRole("USER") //
 			//
-			/*--*/.mvcMatchers(DELETE, "/mvc/**") //
+			/*--*/.antMatchers(DELETE, "/rest/*") //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
-			/*--*/.mvcMatchers( //
+			/*--*/.antMatchers( //
 					"/health/**", //
 					"/v3/api-docs/**", //
 					"/configuration/**", //
@@ -88,12 +83,10 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
 					"/swagger-ui/**", //
 					"/webjars/**") //
 			/*------*/.permitAll() //
-			//
-			.and().formLogin() //
-			/*------*/.loginPage("/login.html") //
-			/*------*/.defaultSuccessUrl("/") //
-			/*------*/.failureUrl("/login.html?error=true") //
-			/*------*/.permitAll() //
+//			//
+			.and().formLogin() // disable redirect
+			/*------*/.successHandler(authenticationSuccessHandler) //
+			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
 
 	;
     }

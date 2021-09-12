@@ -1,4 +1,4 @@
-package org.imageconverter.domain;
+package org.imageconverter.domain.imageType;
 
 import java.util.Optional;
 

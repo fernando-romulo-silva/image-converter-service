@@ -14,7 +14,7 @@
 		<maven.compiler.source>16</maven.compiler.source>
 		<maven.compiler.target>16</maven.compiler.target>
 
-		<spring-boot.version>2.5.3</spring-boot.version>
+		<spring-boot.version>2.5.4</spring-boot.version>
 		<spring-boot-cloud.version>2020.0.3</spring-boot-cloud.version>
 
 		<junit-platform.version>5.3.1</junit-platform.version>
@@ -113,6 +113,14 @@
 			<artifactId>spring-filter</artifactId>
 			<version>1.0.5</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.h2database</groupId>

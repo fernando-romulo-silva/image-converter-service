@@ -1,4 +1,4 @@
-package org.imageconverter.domain;
+package org.imageconverter.domain.imageConvertion;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.imageconverter.domain.imageType.ImageType;
 
 @Entity
 @Table(name = "IMAGE_CONVERTION")

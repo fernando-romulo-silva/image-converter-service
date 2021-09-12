@@ -1,4 +1,4 @@
-package org.imageconverter.domain;
+package org.imageconverter.domain.imageType;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;

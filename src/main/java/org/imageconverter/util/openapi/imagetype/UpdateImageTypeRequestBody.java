@@ -18,7 +18,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 //
 @RequestBody( //
 		description = "A existed image type", //
-		content = @Content(schema = @Schema(implementation = UpdateImageTypeRequest.class)) //
+		content = @Content( //
+				schema = @Schema(implementation = UpdateImageTypeRequest.class) //
+		) //
 ) //
 public @interface UpdateImageTypeRequestBody {
 

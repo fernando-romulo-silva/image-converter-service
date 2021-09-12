@@ -13,7 +13,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
-import org.imageconverter.domain.ImageType;
+import org.imageconverter.domain.imageType.ImageType;
 import org.imageconverter.util.controllers.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.ImageTypeResponse;
 import org.imageconverter.util.controllers.UpdateImageTypeRequest;
@@ -46,9 +46,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag( //
 		name = "Image Type", //
 		description = """
-				Image Type API - If something went wrong, please put 'trace' (for all Http methods)
-				at the end of the call to receive the stackStrace.
-				Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
+				Image Type API - Rest CRUD for image type :) .
+				If something went wrong, please put 'trace=true' (for all Http methods) at the end of the request to receive the stackStrace.
+				Ex: http://127.0.0.1:8080/rest/images/type?trace=true
 				     """ //
 )
 //
@@ -89,17 +89,18 @@ public class ImageTypeRestController {
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
     public List<ImageTypeResponse> get( //
-		    @Filter final Specification<ImageType> spec, final Pageable page) {
+		    @Filter // 
+		    final Specification<ImageType> spec, final Pageable page) {
 
 	return imageTypeService.findBySpecification(spec);
 
     }
 
     @Operation(summary = "Create a new image type")
-    // When an identical resource already exists, a 409 (Conflict)
     @ResponseStatus(CREATED)
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
     public String create(//
+		    //
 		    @CreateImageTypeRequestBody //
 		    @Valid //
 		    @RequestBody //
@@ -113,6 +114,7 @@ public class ImageTypeRestController {
     @ResponseStatus(NO_CONTENT)
     @PutMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
     public void update( //
+		    //
 		    @Parameter(description = "The image type id's") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id, //
@@ -128,6 +130,7 @@ public class ImageTypeRestController {
     @ResponseStatus(NO_CONTENT)
     @DeleteMapping(value = "/{id:[\\d]*}")
     public void delete( //
+		    //
 		    @Parameter(description = "The image type id's") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id) {

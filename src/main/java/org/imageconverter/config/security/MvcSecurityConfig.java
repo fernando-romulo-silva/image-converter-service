@@ -1,4 +1,4 @@
-package org.imageconverter.config;
+package org.imageconverter.config.security;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -11,20 +11,17 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// https://freecontent.manning.com/five-awkward-things-about-spring-security-that-actually-make-sense/
-
-@Order(1)
+@Order(2)
 @Configuration
-@EnableWebSecurity
-public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
+public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     @Value("${application.user_login}")
     private String applicationUser;
@@ -32,22 +29,24 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${application.user_password}")
     private String applicationPassword;
 
-    private final RestAuthenticationSuccessHandler authenticationSuccessHandler;
+    private final HttpFirewall allowUrlEncodedSlashHttpFirewall;
 
     private final CsrfTokenRepository csrfTokenRepository;
 
-    private final HttpFirewall allowUrlEncodedSlashHttpFirewall;
-
     @Autowired
-    public RestSecurityConfig(final RestAuthenticationSuccessHandler authenticationSuccessHandler, final HttpFirewall allowUrlEncodedSlashHttpFirewall, final CsrfTokenRepository csrfTokenRepository) {
+    public MvcSecurityConfig(final HttpFirewall allowUrlEncodedSlashHttpFirewall, final CsrfTokenRepository csrfTokenRepository) {
 	super(true); // disable default configuration
-	this.authenticationSuccessHandler = authenticationSuccessHandler;
-	this.csrfTokenRepository = csrfTokenRepository;
 	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;
+	this.csrfTokenRepository = csrfTokenRepository;
     }
 
     @Override
-    protected void configure(final HttpSecurity http) throws Exception {
+    public void addViewControllers(final ViewControllerRegistry registry) {
+	registry.addViewController("/login.html").setViewName("login");
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
 
 	http.securityContext() //
 			.and().exceptionHandling() //
@@ -60,19 +59,25 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*------*/.clearAuthentication(true)//
 			//
 			.and().csrf() //
-			/*------*/.csrfTokenRepository(csrfTokenRepository)
+			/*------*/.csrfTokenRepository(csrfTokenRepository)//
+			//
+			.and().anonymous() //
+			/*-*/.principal("guest") //
+			/*-*/.authorities("ROLE_GUEST") //
+			//
+			.and().rememberMe() //
 			//
 			.and().authorizeRequests() //
-			/*--*/.antMatchers(GET, "/rest/**") // /rest/images/type
+			/*--*/.mvcMatchers(GET, "/mvc/**") // /rest/images/type
 			/*------*/.hasAnyRole("USER") // , "GUEST"
 			//
-			/*--*/.antMatchers(POST, "/rest/**") //
+			/*--*/.mvcMatchers(POST, "/mvc/**") //
 			/*------*/.hasRole("USER") //
 			//
-			/*--*/.antMatchers(DELETE, "/rest/*") //
+			/*--*/.mvcMatchers(DELETE, "/mvc/**") //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
-			/*--*/.antMatchers( //
+			/*--*/.mvcMatchers( //
 					"/health/**", //
 					"/v3/api-docs/**", //
 					"/configuration/**", //
@@ -81,10 +86,12 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/swagger-ui/**", //
 					"/webjars/**") //
 			/*------*/.permitAll() //
-//			//
-			.and().formLogin() // disable redirect
-			/*------*/.successHandler(authenticationSuccessHandler) //
-			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
+			//
+			.and().formLogin() //
+			/*------*/.loginPage("/login.html") //
+			/*------*/.defaultSuccessUrl("/") //
+			/*------*/.failureUrl("/login.html?error=true") //
+			/*------*/.permitAll() //
 
 	;
     }

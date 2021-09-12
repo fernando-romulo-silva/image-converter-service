@@ -15,8 +15,13 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-
-@RequestBody(description = "A new image type", content = @Content(schema = @Schema(implementation = CreateImageTypeRequest.class))) //
+//
+@RequestBody( //
+		description = "A new image type", //
+		content = @Content( //
+				schema = @Schema(implementation = CreateImageTypeRequest.class) //
+		) //
+) //
 public @interface CreateImageTypeRequestBody {
 
 }
