@@ -72,7 +72,7 @@ public class ImageTypeRestControllerHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("get a image type by id")
-    @Sql(statements = "DELETE FROM image_type")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void getImageTypeByIdTest() throws Exception {
 
@@ -85,13 +85,14 @@ public class ImageTypeRestControllerHappyPathTest {
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(id)) //
+			.andExpect(null)
 	;
     }
 
     @Test
     @Order(2)
     @DisplayName("get all image types")
-    @Sql(statements = "DELETE FROM image_type")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void getAllImageTypeTest() throws Exception {
 
@@ -123,7 +124,7 @@ public class ImageTypeRestControllerHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("get a image type by search")
-    @Sql(statements = "DELETE FROM image_type")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void getImageTypeByExtensionTest() throws Exception {
 
@@ -143,7 +144,7 @@ public class ImageTypeRestControllerHappyPathTest {
     @Test
     @Order(4)
     @DisplayName("Create a new image type")
-    @Sql(statements = "DELETE FROM image_type")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     @Sql(scripts = "classpath:db/db-data-test.sql")
     public void createImageTypeTest() throws Exception {
 
@@ -177,7 +178,7 @@ public class ImageTypeRestControllerHappyPathTest {
     @Test
     @Order(5)
     @DisplayName("Update a image type")
-    @Sql(statements = "DELETE FROM image_type")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     @Sql(scripts = "classpath:db/db-data-test.sql")
     public void updateImageTypeTest() throws Exception {
 
@@ -208,7 +209,7 @@ public class ImageTypeRestControllerHappyPathTest {
 	;
 
 	// create a new values
-	final var newTypeRequest = new UpdateImageTypeRequest(null, "Bitmap", null);
+	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
 
 	// update the image type
 	mvc.perform(put(REST_URL + "/{id}", id) //
@@ -234,7 +235,7 @@ public class ImageTypeRestControllerHappyPathTest {
     @Test
     @Order(6)
     @DisplayName("Delete a new image type")
-    @Sql(statements = "DELETE FROM image_type")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     @Sql(scripts = "classpath:db/db-data-test.sql")
     public void deleteImageTypeTest() throws Exception {
 	// already on db, due to the db-data-test.sql

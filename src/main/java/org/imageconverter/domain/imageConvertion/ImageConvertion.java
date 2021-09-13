@@ -2,7 +2,7 @@ package org.imageconverter.domain.imageConvertion;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -38,7 +38,7 @@ public class ImageConvertion {
     private Long size;
 
     @Column(name = "IMGC_DATE")
-    private LocalDate executionDate;
+    private LocalDateTime executionDate;
 
     @NotNull
     @Column(name = "IMGC_TYPE")
@@ -58,7 +58,7 @@ public class ImageConvertion {
 	this.size = builder.size;
 	this.executionType = builder.executionType;
 	this.text = builder.text;
-	this.executionDate = LocalDate.now();
+	this.executionDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -77,7 +77,7 @@ public class ImageConvertion {
 	return size;
     }
 
-    public LocalDate getExecutionDate() {
+    public LocalDateTime getExecutionDate() {
 	return executionDate;
     }
 

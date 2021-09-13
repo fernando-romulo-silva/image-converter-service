@@ -50,6 +50,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Test the image convertion, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 public class ImageConvertRestControllerHappyPathTest {
 
     @Autowired
@@ -64,11 +65,10 @@ public class ImageConvertRestControllerHappyPathTest {
 
     @Autowired
     private MockMvc mvc;
-    
+
     @Test
     @Order(1)
     @DisplayName("get a image type by id")
-    @Sql(statements = "DELETE FROM image_type")
     @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void getImageTypeByIdTest() throws Exception {
 
@@ -81,8 +81,8 @@ public class ImageConvertRestControllerHappyPathTest {
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(id)) //
-	;
-    }    
+			.andExpect(jsonPath("$.text").value("02325678908110000003556752101015176230000023560"));
+    }
 
     @Test
     @Order(2)
