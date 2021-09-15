@@ -77,6 +77,7 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
 			/*--*/.mvcMatchers(DELETE, "/mvc/**") //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
+			//
 			/*--*/.mvcMatchers( //
 					"/health/**", //
 					"/v3/api-docs/**", //

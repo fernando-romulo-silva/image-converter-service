@@ -18,6 +18,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+
 // https://freecontent.manning.com/five-awkward-things-about-spring-security-that-actually-make-sense/
 
 @Order(1)
@@ -57,10 +59,6 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*------*/.invalidateHttpSession(true)//
 			/*------*/.clearAuthentication(true)//
 			//
-// https://docs.spring.io/spring-security/site/docs/5.0.x/reference/html/csrf.html			
-// https://docs.spring.io/spring-security/site/docs/current/reference/html5/#jc-httpsecurity
-// https://stackoverflow.com/questions/49486675/how-to-make-multipartfilter-to-work-with-spring-boot
-			//
 			.and().csrf() //
 			/*------*/.csrfTokenRepository(csrfTokenRepository)
 			//
@@ -74,6 +72,9 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*--*/.antMatchers(DELETE, "/rest/*") //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
+			/*--*/.antMatchers("/**") //
+			/*------*/.hasAnyRole("ADMIN", "USER")
+			//
 			/*--*/.antMatchers( //
 					"/health/**", //
 					"/v3/api-docs/**", //
@@ -83,10 +84,14 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/swagger-ui/**", //
 					"/webjars/**") //
 			/*------*/.permitAll() //
-//			//
+			//
 			.and().formLogin() // disable redirect
 			/*------*/.successHandler(authenticationSuccessHandler) //
 			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
+			//
+			.and().requestMatcher(EndpointRequest.toAnyEndpoint()) //
+			/*------*/.authorizeRequests() //
+			/*------*//*--*/.anyRequest().hasRole("ADMIN")
 
 	;
     }

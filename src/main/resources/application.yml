@@ -2,6 +2,13 @@
 #
 #               IMAGE-CONVERTER-SERVICE
 #
+#=====================================================================================================
+info:
+    app:
+      name: Spring Actuator Application
+      description: This is a very simple Spring Boot Application
+      version: 1.0.0 # from pom?
+
 #============== Applicaton ===========================================================================
 application:
     user_login: ${APPLICATION_USER_LOGIN}
@@ -23,10 +30,12 @@ management:
             path-mapping:
                 health: '/health'
             exposure:
-                include: '*'                   
+                include: '*'
+                # exclude: env,beans,mapping,configprops        
     server:
        add-application-context-header: true
        port: 5090
+       # address: 127.0.0.1 access to the endpoints is restricted only to 127.0.0.1      
 #    metrics:
 #       export:
 #             graphite:
