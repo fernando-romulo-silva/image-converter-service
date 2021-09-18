@@ -11,6 +11,7 @@ application:
 tesseract:
     language: ${TESSERACT_LANG:eng}
     folder: ${TESSERACT_FOLDER:/home/fernando/Development/tools/tesseract/tessdata/}
+    dpi : ${TESSERACT_DPI:90}
 
 #============== Server ===============================================================================
 server:

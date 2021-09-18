@@ -13,9 +13,8 @@ import org.imageconverter.infra.exceptions.ConvertionException;
 import org.imageconverter.infra.exceptions.ImageConvertServiceException;
 import org.imageconverter.infra.exceptions.TesseractConvertionException;
 import org.imageconverter.util.controllers.ImageConverterRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.imageconverter.util.logging.Loggable;
+import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -23,38 +22,23 @@ import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 @Service
-public final class TesseractService {
+@Loggable
+public class TesseractService {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Tesseract tesseract;
 
-    private final String tesseractFolder;
-
-    private final String tesseractLanguage;
-
-    TesseractService( //
-		    @Value("${tesseract.folder}") //
-		    final String tesseractFolder, //
-		    //
-		    @Value("${tesseract.language}") //
-		    final String tesseractLanguage) {
+    @Autowired
+    TesseractService(final Tesseract tesseract) {
 	super();
-	this.tesseractFolder = tesseractFolder;
-	this.tesseractLanguage = tesseractLanguage;
+	this.tesseract = tesseract;
     }
 
     // @PreAuthorize("hasAuthority('ADMIN') or @accessChecker.hasLocalAccess(authentication)")
     public String convert(final ImageConverterRequest image) {
 
-	log.info("Starts file {} conversion.", image);
-
 	try {
 
 	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(image.data().getBytes()));
-
-	    final var tesseract = new Tesseract();
-
-	    tesseract.setDatapath(tesseractFolder);
-	    tesseract.setLanguage(tesseractLanguage);
 
 	    final String result;
 
@@ -64,25 +48,20 @@ public final class TesseractService {
 		result = tesseract.doOCR(bufferedImage);
 	    }
 
-	    log.info("Ends file {} conversion with result {}.", image, result);
-
 	    return result;
 	} catch (final IOException ex) {
 
 	    final var msg = format("Image {0} has IO error {1}.", image, getRootCauseMessage(ex));
-	    log.info("Ends with error: {}", msg);
 	    throw new ConvertionException(msg, ex);
 
 	} catch (final TesseractException | Error ex) {
 
 	    final var msg = format("Image {0} has Tessarct error {1}.", getRootCauseMessage(ex));
-	    log.info("Ends with error: {}", msg);
 	    throw new TesseractConvertionException(msg, ex);
 
 	} catch (final Throwable ex) {
-	    
+
 	    final var msg = format("Unexpected error {0}.", getRootCauseMessage(ex));
-	    log.info("Ends with error: {}", msg);
 	    throw new ImageConvertServiceException(msg, ex);
 	}
     }

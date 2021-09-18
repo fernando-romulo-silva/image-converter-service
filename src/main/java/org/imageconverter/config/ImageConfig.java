@@ -1,10 +1,50 @@
 package org.imageconverter.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import net.sourceforge.tess4j.Tesseract;
 
 @Configuration
 //@EnableConfigurationProperties(MultipartProperties.class)
 public class ImageConfig {
+
+    private final String tesseractFolder;
+
+    private final String tesseractLanguage;
+
+    private final String tesseractDpi;
+
+    ImageConfig( //
+		    @Value("${tesseract.folder}") //
+		    final String tesseractFolder, //
+		    //
+		    @Value("${tesseract.language}") //
+		    final String tesseractLanguage,
+
+		    @Value("${tesseract.dpi}") //
+		    final String tesseractDpi
+
+    ) {
+	super();
+	this.tesseractFolder = tesseractFolder;
+	this.tesseractLanguage = tesseractLanguage;
+	this.tesseractDpi = tesseractDpi;
+    }
+
+    @Bean
+    @RefreshScope
+    public Tesseract tesseract() {
+	final var tesseract = new Tesseract();
+
+	tesseract.setDatapath(tesseractFolder);
+	tesseract.setLanguage(tesseractLanguage);
+	tesseract.setTessVariable("user_defined_dpi", tesseractDpi);
+
+	return tesseract;
+    }
 
 //    @Autowired
 //    private MultipartProperties multipartProperties;
@@ -28,7 +68,7 @@ public class ImageConfig {
 //        multipartFilter.setMultipartResolverBeanName("file");
 //        return multipartFilter;
 //    }
-    
+
 //    @Bean
 //    public CommonsMultipartResolver multipartResolver(){
 //        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();

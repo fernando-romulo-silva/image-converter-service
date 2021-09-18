@@ -6,6 +6,7 @@ import static org.springframework.http.HttpMethod.POST;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,8 +18,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
-
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 
 // https://freecontent.manning.com/five-awkward-things-about-spring-security-that-actually-make-sense/
 
@@ -60,7 +59,8 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*------*/.clearAuthentication(true)//
 			//
 			.and().csrf() //
-			/*------*/.csrfTokenRepository(csrfTokenRepository)
+			/*------*/.csrfTokenRepository(csrfTokenRepository) //
+			/*------*/.ignoringAntMatchers("/actuator/**")
 			//
 			.and().authorizeRequests() //
 			/*--*/.antMatchers(GET, "/rest/**") // /rest/images/type
@@ -69,14 +69,15 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*--*/.antMatchers(POST, "/rest/**") //
 			/*------*/.hasRole("USER") //
 			//
-			/*--*/.antMatchers(DELETE, "/rest/*") //
+			/*--*/.antMatchers(DELETE, "/rest/**") //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
-			/*--*/.antMatchers("/**") //
+			/*--*/.antMatchers("/rest/**") //
 			/*------*/.hasAnyRole("ADMIN", "USER")
 			//
 			/*--*/.antMatchers( //
-					"/health/**", //
+//					"/health/**", //
+//					"/actuator/**", //
 					"/v3/api-docs/**", //
 					"/configuration/**", //
 					"/swagger-resources/**", //
@@ -91,7 +92,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			//
 			.and().requestMatcher(EndpointRequest.toAnyEndpoint()) //
 			/*------*/.authorizeRequests() //
-			/*------*//*--*/.anyRequest().hasRole("ADMIN")
+			/*----------*/.anyRequest().hasRole("ADMIN")
 
 	;
     }

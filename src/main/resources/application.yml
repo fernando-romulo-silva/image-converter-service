@@ -18,20 +18,24 @@ application:
 tesseract:
     language: ${TESSERACT_LANG}
     folder : ${TESSERACT_FOLDER}
+    dpi : ${TESSERACT_DPI:100}
 
 #============== Actuator ==============================================================================
 management:
     endpoint:
         health:
             show-details: always
+        metrics.enabled: true
     endpoints:
         web:
+            discovery:
+              enabled: true
             base-path: /actuator
             path-mapping:
-                health: '/health'
+                health: /health
             exposure:
                 include: '*'
-                # exclude: env,beans,mapping,configprops        
+                # exclude: env,beans,mapping,configprops
     server:
        add-application-context-header: true
        port: 5090

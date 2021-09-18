@@ -79,7 +79,8 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
 			//
 			//
 			/*--*/.mvcMatchers( //
-					"/health/**", //
+//					"/health/**", //
+//					"/actuator/**", //					
 					"/v3/api-docs/**", //
 					"/configuration/**", //
 					"/swagger-resources/**", //
