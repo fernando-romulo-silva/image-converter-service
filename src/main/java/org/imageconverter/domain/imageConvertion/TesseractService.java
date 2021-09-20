@@ -25,12 +25,12 @@ import net.sourceforge.tess4j.TesseractException;
 @Loggable
 public class TesseractService {
 
-    private final Tesseract tesseract;
+    private final Tesseract tesseractTess4j;
 
     @Autowired
-    TesseractService(final Tesseract tesseract) {
+    TesseractService(final Tesseract tesseractTess4j) {
 	super();
-	this.tesseract = tesseract;
+	this.tesseractTess4j = tesseractTess4j;
     }
 
     // @PreAuthorize("hasAuthority('ADMIN') or @accessChecker.hasLocalAccess(authentication)")
@@ -43,9 +43,9 @@ public class TesseractService {
 	    final String result;
 
 	    if (image.x() > 0 && image.y() > 0 && image.width() > 0 && image.height() > 0) {
-		result = tesseract.doOCR(bufferedImage, new Rectangle(image.x(), image.y(), image.width(), image.height()));
+		result = tesseractTess4j.doOCR(bufferedImage, new Rectangle(image.x(), image.y(), image.width(), image.height()));
 	    } else {
-		result = tesseract.doOCR(bufferedImage);
+		result = tesseractTess4j.doOCR(bufferedImage);
 	    }
 
 	    return result;

@@ -11,8 +11,8 @@
 	</parent>
 
 	<properties>
-		<maven.compiler.source>16</maven.compiler.source>
-		<maven.compiler.target>16</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 
 		<spring-boot.version>2.5.4</spring-boot.version>
 		<spring-boot-cloud.version>2020.0.3</spring-boot-cloud.version>

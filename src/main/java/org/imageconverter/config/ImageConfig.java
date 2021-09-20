@@ -36,7 +36,7 @@ public class ImageConfig {
 
     @Bean
     @RefreshScope
-    public Tesseract tesseract() {
+    public Tesseract tesseractTess4j() {
 	final var tesseract = new Tesseract();
 
 	tesseract.setDatapath(tesseractFolder);
