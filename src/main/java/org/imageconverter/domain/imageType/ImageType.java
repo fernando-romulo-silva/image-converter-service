@@ -39,7 +39,10 @@ public class ImageType {
 	super();
     }
 
-    public ImageType(final String extension, final String name, final String description) {
+    public ImageType( //
+		    final String extension, // 
+		    final String name, // 
+		    final String description) {
 	super();
 	this.extension = extension;
 	this.name = name;

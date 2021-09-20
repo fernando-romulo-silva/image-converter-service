@@ -37,7 +37,7 @@ public class ImageTypeService {
 	final var ImageTypeOptional = repository.findByExtension(request.extension());
 
 	if (ImageTypeOptional.isPresent()) {
-	    throw new ElementAlreadyExistsException(ImageType.class, "extension");
+	    throw new ElementAlreadyExistsException(ImageType.class, "extension '" + request.extension() + "'");
 	}
 
 	final var imageType = new ImageType(request.extension(), request.name(), request.description());
@@ -88,7 +88,7 @@ public class ImageTypeService {
 			.map(imageType -> new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName())) //
 			.toList();
     }
-    
+
     @Transactional(readOnly = true)
     public List<ImageTypeResponse> findBySpecification(@NotNull final Specification<ImageType> spec) {
 	return repository.findAll(spec) //
@@ -107,6 +107,5 @@ public class ImageTypeService {
 
 	return new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName());
     }
-
 
 }

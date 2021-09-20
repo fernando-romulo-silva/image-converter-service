@@ -45,12 +45,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
 @DisplayName("Test the image convertion, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 public class ImageConvertRestControllerHappyPathTest {
 
     @Autowired
@@ -69,7 +69,6 @@ public class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("get a image type by id")
-    @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void getImageTypeByIdTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
@@ -87,7 +86,6 @@ public class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(2)
     @DisplayName("convert the image")
-    @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void convertTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
@@ -109,7 +107,6 @@ public class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("convert the image with area")
-    @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void convertAreaTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());

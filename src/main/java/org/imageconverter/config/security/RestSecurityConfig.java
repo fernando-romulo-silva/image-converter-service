@@ -92,7 +92,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			//
 			.and().requestMatcher(EndpointRequest.toAnyEndpoint()) //
 			/*------*/.authorizeRequests() //
-			/*----------*/.anyRequest().hasRole("ADMIN")
+			/*------------*/.anyRequest().hasRole("ADMIN")
 
 	;
     }

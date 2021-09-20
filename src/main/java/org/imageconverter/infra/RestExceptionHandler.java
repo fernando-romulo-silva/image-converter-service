@@ -37,13 +37,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ElementNotFoundException.class)
-    public ResponseEntity<Object> handleElementTypeNotFoundException(final ElementNotFoundException ex, final WebRequest request) {
+    public ResponseEntity<Object> handleElementNotFoundException(final ElementNotFoundException ex, final WebRequest request) {
 
 	return handleObjectException(ex, request, NOT_FOUND);
     }
 
     @ExceptionHandler(ElementAlreadyExistsException.class)
-    public ResponseEntity<Object> handleIElementAlreadyExistsException(final ElementAlreadyExistsException ex, final WebRequest request) {
+    public ResponseEntity<Object> handleElementAlreadyExistsException(final ElementAlreadyExistsException ex, final WebRequest request) {
 
 	return handleObjectException(ex, request, CONFLICT);
     }
@@ -79,7 +79,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	    errors.put(fieldName, errorMessage);
 	});
 
-	final var msg = errors.values().stream().collect(joining(","));
+	final var msg = errors.values().stream().collect(joining(", "));
 
 	return handleObjectException(msg, ex, request, BAD_REQUEST);
     }

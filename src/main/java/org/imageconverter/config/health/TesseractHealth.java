@@ -33,7 +33,7 @@ public class TesseractHealth implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
-    @Value("classpath:number_one.png")
+    @Value("classpath:check-image.png")
     private Resource imageFile;
 
     @Override

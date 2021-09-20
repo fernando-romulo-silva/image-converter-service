@@ -23,7 +23,6 @@ import org.imageconverter.util.controllers.UpdateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -50,6 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
 @DisplayName("Test the image type controller, happy path :D ")
@@ -70,11 +70,12 @@ public class ImageTypeRestControllerHappyPathTest {
     @Autowired
     private MockMvc mvc;
 
+    private CreateImageTypeRequest createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+
     @Test
     @Order(1)
     @DisplayName("get a image type by id")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void getImageTypeByIdTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
@@ -86,7 +87,6 @@ public class ImageTypeRestControllerHappyPathTest {
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(id)) //
-			.andExpect(null)
 	;
     }
 
@@ -94,14 +94,11 @@ public class ImageTypeRestControllerHappyPathTest {
     @Order(2)
     @DisplayName("get all image types")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void getAllImageTypeTest() throws Exception {
-
-	final var type = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
 
 	// create one
 	mvc.perform(post(REST_URL) //
-			.content(asJsonString(type)) //
+			.content(asJsonString(createImageTypeRequest)) //
 			.contentType(APPLICATION_JSON) //
 			.accept(TEXT_PLAIN, APPLICATION_JSON) //
 			.with(csrf())) //
@@ -118,7 +115,7 @@ public class ImageTypeRestControllerHappyPathTest {
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder("png", "jpg", type.extension()))) //
+			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder("png", "jpg", createImageTypeRequest.extension()))) //
 	;
     }
 
@@ -126,7 +123,6 @@ public class ImageTypeRestControllerHappyPathTest {
     @Order(3)
     @DisplayName("get a image type by search")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
     public void getImageTypeByExtensionTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
@@ -146,14 +142,11 @@ public class ImageTypeRestControllerHappyPathTest {
     @Order(4)
     @DisplayName("Create a new image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    @Sql(scripts = "classpath:db/db-data-test.sql")
     public void createImageTypeTest() throws Exception {
-
-	final var type = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
 
 	// create a new image type
 	final var result = mvc.perform(post(REST_URL) //
-			.content(asJsonString(type)) //
+			.content(asJsonString(createImageTypeRequest)) //
 			.contentType(APPLICATION_JSON) //
 			.accept(TEXT_PLAIN, APPLICATION_JSON) //
 			.with(csrf())) //
@@ -180,14 +173,11 @@ public class ImageTypeRestControllerHappyPathTest {
     @Order(5)
     @DisplayName("Update a image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    @Sql(scripts = "classpath:db/db-data-test.sql")
     public void updateImageTypeTest() throws Exception {
-
-	final var typeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
 
 	// create a new image type
 	final var result = mvc.perform(post(REST_URL) //
-			.content(asJsonString(typeRequest)) //
+			.content(asJsonString(createImageTypeRequest)) //
 			.contentType(APPLICATION_JSON) //
 			.accept(TEXT_PLAIN, APPLICATION_JSON) //
 			.with(csrf())) //
@@ -206,7 +196,7 @@ public class ImageTypeRestControllerHappyPathTest {
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(id)) //
-			.andExpect(jsonPath("$.name").value(typeRequest.name())) //
+			.andExpect(jsonPath("$.name").value(createImageTypeRequest.name())) //
 	;
 
 	// create a new values
@@ -237,7 +227,6 @@ public class ImageTypeRestControllerHappyPathTest {
     @Order(6)
     @DisplayName("Delete a new image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    @Sql(scripts = "classpath:db/db-data-test.sql")
     public void deleteImageTypeTest() throws Exception {
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
