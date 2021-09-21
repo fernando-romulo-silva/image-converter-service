@@ -33,15 +33,15 @@ spec:
       - containerPort: 8080
       readinessProbe:
         httpGet:
-          path: image-convert-service/health # ${PROJECT_NAME}/actuator
-          port: 8090
+          path: /actuator/health/liveness # ${PROJECT_NAME}/actuator
+          port: 5090
         initialDelaySeconts: 30
         periodSeconds: 30
         timeoutSeconds: 10
       livenessProbe:
         httpGet:
-          path: image-convert-service/health # ${PROJECT_NAME}/actuator
-          port: 8090
+          path: /actuator/health/readiness # ${PROJECT_NAME}/actuator
+          port: 5090
         initialDelaySeconts: 30
         periodSeconds: 30
         timeoutSeconds: 10
