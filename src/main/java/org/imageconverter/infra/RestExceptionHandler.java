@@ -92,7 +92,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	return handleObjectException(msg, ex, request, status);
     }
 
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler(Throwable.class) // HttpMessageNotReadableException
     public ResponseEntity<Object> handleUnknownException(final Throwable ex, final WebRequest request) {
 
 	final var msg = "Unexpected error. Please, check the log with traceId and spanId for more detail";
