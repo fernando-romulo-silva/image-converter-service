@@ -8,10 +8,12 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
+import org.springframework.cloud.endpoint.RefreshEndpoint;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -36,6 +38,9 @@ public class TesseractInfo implements ApplicationContextAware {
     @Value("classpath:check-image.png")
     private Resource imageFile;
 
+    @Autowired
+    private RefreshEndpoint refreshEndpoint;
+
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
 	this.applicationContext = applicationContext;
@@ -47,7 +52,7 @@ public class TesseractInfo implements ApplicationContextAware {
 	final var details = new LinkedHashMap<String, Object>();
 
 	final var tesseract = applicationContext.getBean(Tesseract.class);
-	
+
 	if (check(tesseract)) {
 	    details.put("tesseractInit", "SUCCESSFUL");
 	} else {
@@ -89,6 +94,11 @@ public class TesseractInfo implements ApplicationContextAware {
 	}
 
 	propertySources.addFirst(new MapPropertySource("newmap", map));
+
+	if (!map.isEmpty()) {
+	    refreshEndpoint.refresh();
+	}
+
     }
 
 //    @DeleteOperation
