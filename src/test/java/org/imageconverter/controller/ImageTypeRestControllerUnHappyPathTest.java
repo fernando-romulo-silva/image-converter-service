@@ -1,14 +1,15 @@
 package org.imageconverter.controller;
 
-import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.springframework.http.MediaType.ALL;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -60,7 +61,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
 
     @Test
     @Order(1)
-    @DisplayName("get a image type by id that not exists")
+    @DisplayName("Search a image type that doesn't exist by id")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void getImageTypeByIdTest() throws Exception {
 
@@ -78,7 +79,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
 
     @Test
     @Order(2)
-    @DisplayName("get a image type by search that not exists")
+    @DisplayName("Search a image type that not exists by search")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void getImageTypeBySearchTest() throws Exception {
 
@@ -95,7 +96,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
 
     @Test
     @Order(3)
-    @DisplayName("create same image type")
+    @DisplayName("Create twice the same image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void createSameImageTypeTest() throws Exception {
 
@@ -121,45 +122,47 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.andExpect(jsonPath("$.message").value(containsString("ImageType with extension '" + createImageTypeRequest.extension() + "' already exists"))) //
 	;
     }
-    
+
     @Test
-    @Order(3)
-    @DisplayName("create same image type")
+    @Order(4)
+    @DisplayName("Try to create image type with invalid json")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void createInvalidImageTypeTest() throws Exception {
 
+	// invalid json
 	final var json = """
-				{
-					"text": "some text",
-					"id" : 10
-				}	
-					""";
-	
-	// create another
+			{
+			    "blabla": "BMP",
+			    "name": "BitMap",
+			    "description": "Device independent bitmap"
+			}
+								""";
+
+	// try to create
 	mvc.perform(post(REST_URL) //
 			.content(json) //
 			.contentType(APPLICATION_JSON) //
 			.accept(TEXT_PLAIN, APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
-			.andExpect(status().isBadRequest()) // ImageType with extension 'BMP' already exists
-			.andExpect(jsonPath("$.message").value(containsString("ImageType with extension '" + createImageTypeRequest.extension() + "' already exists"))) //
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath("$.message").value(containsString("Missing required creator property 'extension'"))) //
 	;
-    }    
+    }
 
     @Test
     @Order(5)
-    @DisplayName("Update a image type doesn't exists")
+    @DisplayName("Try to update a image type that doesn't exist")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void updateImageTypeDoesNotExistTest() throws Exception {
 
 	// what's id?
 	final var id = "12345";
 
-	// create a new values
+	// update values
 	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
 
-	// update the image type
+	// update the image type that doesn't exist
 	mvc.perform(put(REST_URL + "/{id}", id) //
 			.content(asJsonString(newTypeRequest)) //
 			.contentType(APPLICATION_JSON) //
@@ -168,6 +171,57 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
 			.andExpect(jsonPath("$.message").value(containsString("ImageType with id '" + id + "' not found"))) //
+	;
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Try to delete a image type that doesn't exist")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void deleteImageTypeTest() throws Exception {
+
+	final var id = "12356";
+
+	// delete the image type
+	mvc.perform(delete(REST_URL + "/{id}", id) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isNotFound()) //
+			.andExpect(jsonPath("$.message").value(containsString("ImageType with id '" + id + "' not found"))) //
+	;
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Try to delete a image type that has a relation with other record")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void deleteImageTypeRestrictionTest() throws Exception {
+
+	final var id = "1001";
+
+	// delete the image type
+	mvc.perform(delete(REST_URL + "/{id}", id) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isConflict()) //
+			.andExpect(jsonPath("$.message").value(containsString("You cannot delete the image type 1001 because it is already used"))) //
+	;
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("Try to access a invalid url")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void invalidUrlTest() throws Exception {
+
+	mvc.perform(get(REST_URL + "/blablabla") //
+			.accept(ALL, TEXT_HTML, APPLICATION_JSON, TEXT_PLAIN) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isNotFound()) //
+			.andExpect(jsonPath("$.message").value(containsString("Resource not found. Please check the /swagger-ui/ for more information"))) //
 	;
 
     }

@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exceptions;
 
-public class TesseractConvertionException extends ImageConvertServiceException {
+public class TesseractConvertionException extends ServiceUnavailableException {
 
     private static final long serialVersionUID = 1L;
 

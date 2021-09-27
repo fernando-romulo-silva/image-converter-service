@@ -17,15 +17,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.imageconverter.infra.exceptions.ConvertionException;
-import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
+import org.imageconverter.infra.exceptions.ElementConflictException;
+import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.infra.exceptions.ImageConvertServiceException;
-import org.imageconverter.infra.exceptions.TesseractConvertionException;
+import org.imageconverter.infra.exceptions.ServiceUnavailableException;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,30 +43,44 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	return handleObjectException(ex, request, NOT_FOUND);
     }
 
-    @ExceptionHandler(ElementAlreadyExistsException.class)
-    public ResponseEntity<Object> handleElementAlreadyExistsException(final ElementAlreadyExistsException ex, final WebRequest request) {
+    @ExceptionHandler(ElementConflictException.class)
+    public ResponseEntity<Object> handleElementElementConflictException(final ElementConflictException ex, final WebRequest request) {
 
 	return handleObjectException(ex, request, CONFLICT);
     }
 
-    @ExceptionHandler(ConvertionException.class)
-    public ResponseEntity<Object> handleConvertionImageException(final ConvertionException ex, final WebRequest request) {
+    @ExceptionHandler(ElementInvalidException.class)
+    public ResponseEntity<Object> handleElementInvalidException(final ElementInvalidException ex, final WebRequest request) {
 
 	return handleObjectException(ex, request, BAD_REQUEST);
     }
 
-    @ExceptionHandler(TesseractConvertionException.class)
-    public ResponseEntity<Object> handleTesseractException(final TesseractConvertionException ex, final WebRequest request) {
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<Object> handleServiceUnavailableException(final ServiceUnavailableException ex, final WebRequest request) {
 
-	final var msg = "Error when execute tesseract";
-
-	return handleObjectException(msg, ex, request, SERVICE_UNAVAILABLE);
+	return handleObjectException(ex, request, SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(ImageConvertServiceException.class)
     public ResponseEntity<Object> handleImageConvertException(final ImageConvertServiceException ex, final WebRequest request) {
 
 	return handleObjectException(ex, request, INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(Throwable.class) // HttpMessageNotReadableException
+    public ResponseEntity<Object> handleUnknownException(final Throwable ex, final WebRequest request) {
+
+	final var msg = "Unexpected error. Please, check the log with traceId and spanId for more detail";
+
+	return handleObjectException(msg, ex, request, INTERNAL_SERVER_ERROR);
+    }
+
+    // -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+	return handleObjectException(ex, request, BAD_REQUEST);
     }
 
     @Override
@@ -90,14 +105,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	final var msg = "Resource not found. Please check the /swagger-ui/ for more information";
 
 	return handleObjectException(msg, ex, request, status);
-    }
-
-    @ExceptionHandler(Throwable.class) // HttpMessageNotReadableException
-    public ResponseEntity<Object> handleUnknownException(final Throwable ex, final WebRequest request) {
-
-	final var msg = "Unexpected error. Please, check the log with traceId and spanId for more detail";
-
-	return handleObjectException(msg, ex, request, INTERNAL_SERVER_ERROR);
     }
 
     // ==========================================================================================================================================

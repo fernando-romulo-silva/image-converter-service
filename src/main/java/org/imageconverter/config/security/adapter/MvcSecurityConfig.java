@@ -1,43 +1,29 @@
-package org.imageconverter.config.security;
+package org.imageconverter.config.security.adapter;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Order(2)
 @Configuration
+@Order(2) // have to the last
 public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
-
-    @Value("${application.user_login}")
-    private String applicationUser;
-
-    @Value("${application.user_password}")
-    private String applicationPassword;
-
-    private final HttpFirewall allowUrlEncodedSlashHttpFirewall;
 
     private final CsrfTokenRepository csrfTokenRepository;
 
     @Autowired
-    public MvcSecurityConfig(final HttpFirewall allowUrlEncodedSlashHttpFirewall, final CsrfTokenRepository csrfTokenRepository) {
+    public MvcSecurityConfig(final CsrfTokenRepository cookieCsrfTokenRepository) {
 	super(true); // disable default configuration
-	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;
-	this.csrfTokenRepository = csrfTokenRepository;
+	this.csrfTokenRepository = cookieCsrfTokenRepository;
     }
 
     @Override
@@ -46,20 +32,12 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
 
 	http.securityContext() //
 			.and().exceptionHandling() //
 			.and().servletApi() //
 			.and().httpBasic() //
-			//
-			.and().logout() //
-			/*------*/.logoutSuccessUrl("/") //
-			/*------*/.invalidateHttpSession(true)//
-			/*------*/.clearAuthentication(true)//
-			//
-			.and().csrf() //
-			/*------*/.csrfTokenRepository(csrfTokenRepository)//
 			//
 			.and().anonymous() //
 			/*-*/.principal("guest") //
@@ -77,7 +55,6 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
 			/*--*/.mvcMatchers(DELETE, "/mvc/**") //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
-			//
 			/*--*/.mvcMatchers( //
 //					"/health/**", //
 //					"/actuator/**", //					
@@ -94,30 +71,21 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
 			/*------*/.defaultSuccessUrl("/") //
 			/*------*/.failureUrl("/login.html?error=true") //
 			/*------*/.permitAll() //
+			//
+			.and().logout() //
+			/*------*/.logoutSuccessUrl("/") //
+			/*------*/.invalidateHttpSession(true)//
+			/*------*/.clearAuthentication(true) //
+			//
+			.and().csrf() //
+			/*------*/.csrfTokenRepository(csrfTokenRepository)//
+//			/*------*/.ignoringAntMatchers("/actuator/**")	
+			//
+			.and().requestMatcher(EndpointRequest.toAnyEndpoint()) //
+			/*------*/.authorizeRequests() //
+			/*------------*/.anyRequest().hasRole("ADMIN")
 
 	;
     }
 
-    @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-
-	final var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
-	final var adminUser = User//
-			.withUsername(applicationUser) //
-			.password(encoder.encode(applicationPassword)) //
-			.roles("USER", "ADMIN") //
-			.build();
-
-	auth.inMemoryAuthentication() //
-			// .withUser(normalUser) //
-			// .withUser(disabledUser) //
-			.withUser(adminUser);
-    }
-
-    @Override
-    public void configure(final WebSecurity web) throws Exception {
-	super.configure(web);
-	web.httpFirewall(allowUrlEncodedSlashHttpFirewall);
-    }
 }

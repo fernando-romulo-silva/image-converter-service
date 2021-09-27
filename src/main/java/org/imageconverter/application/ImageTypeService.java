@@ -1,5 +1,7 @@
 package org.imageconverter.application;
 
+import static java.text.MessageFormat.format;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -9,12 +11,14 @@ import javax.validation.constraints.NotNull;
 import org.imageconverter.domain.imageType.ImageType;
 import org.imageconverter.domain.imageType.ImageTypeRespository;
 import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
+import org.imageconverter.infra.exceptions.ElementConflictException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.ImageTypeResponse;
 import org.imageconverter.util.controllers.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,14 +102,21 @@ public class ImageTypeService {
     }
 
     @Transactional
-    public ImageTypeResponse deleteImageType(@NotNull final Long id) {
+    public void deleteImageType(@NotNull final Long id) {
 
 	final var imageType = repository.findById(id) //
 			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, id));
 
-	repository.delete(imageType);
+	try {
 
-	return new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName());
+	    repository.delete(imageType);
+
+	    repository.flush();
+
+	} catch (final DataIntegrityViolationException ex) {
+
+	    throw new ElementConflictException(format("You cannot delete the image type {0} because it is already used", id.toString()));
+	}
     }
 
 }

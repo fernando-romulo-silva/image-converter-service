@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exceptions;
 
-public class ElementAlreadyExistsException extends RuntimeException {
+public class ElementAlreadyExistsException extends ElementConflictException {
 
     private static final long serialVersionUID = 1L;
 

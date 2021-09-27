@@ -240,7 +240,7 @@ public class ImageTypeRestControllerHappyPathTest {
 			.andExpect(jsonPath("$.id").value(id)) //
 	;
 
-	// delte the image type
+	// delete the image type
 	mvc.perform(delete(REST_URL + "/{id}", id) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //

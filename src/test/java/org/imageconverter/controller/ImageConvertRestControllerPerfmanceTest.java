@@ -2,7 +2,6 @@ package org.imageconverter.controller;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
@@ -47,10 +45,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
 @Tag("performance")
-@DisplayName("Test the image type controller, happy path :D ")
-//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@TestInstance(PER_CLASS)
-//@Execution(ExecutionMode.CONCURRENT)
+@DisplayName("Test the performance's image type controller :0")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ImageConvertRestControllerPerfmanceTest {
 
     @Autowired
@@ -68,7 +64,6 @@ public class ImageConvertRestControllerPerfmanceTest {
 
     @Order(1)
     @DisplayName("get a image type by id")
-    
     @Execution(ExecutionMode.CONCURRENT)
     @RepeatedTest(value = 10, name = "{displayName} {currentRepetition}/{totalRepetitions}") // Jconsole or visualVMS    
     public void metho() throws Exception {

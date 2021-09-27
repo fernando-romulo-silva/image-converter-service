@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exceptions;
 
-public class ConvertionException extends ImageConvertServiceException {
+public class ConvertionException extends ElementInvalidException {
 
     private static final long serialVersionUID = 1L;
 
