@@ -1,9 +1,6 @@
 package org.imageconverter.controller;
 
-import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
-import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.imageconverter.util.controllers.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -12,10 +9,10 @@ import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.imageconverter.util.controllers.ImageConverterResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -49,10 +46,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
-@DisplayName("Test the image convertion, happy path :D ")
+@DisplayName("Test the image convertion, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-public class ImageConvertRestControllerHappyPathTest {
+public class ImageConvertRestControllerUnHappyPathTest {
 
     @Autowired
     private ObjectMapper mapper;
@@ -61,7 +58,7 @@ public class ImageConvertRestControllerHappyPathTest {
     @Value("classpath:db/db-data-test.sql")
     private Resource dbDataTest;
 
-    @Value("classpath:image.png")
+    @Value("classpath:beach.jpeg")
     private Resource imageFile;
 
     @Autowired
@@ -69,104 +66,95 @@ public class ImageConvertRestControllerHappyPathTest {
 
     @Test
     @Order(1)
-    @DisplayName("get a image convertion by id")
-    public void getImageConvertionByIdTest() throws Exception {
+    @DisplayName("Try to get a image convertion that not exists")
+    public void tryToGetImageConvertionByIdTest() throws Exception {
 
-	// already on db, due to the db-data-test.sql
-	final var id = "1000";
+	final var id = "1234";
 
 	mvc.perform(get(REST_URL + "/{id}", id) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
-			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$.id").value(id)) //
-			.andExpect(jsonPath("$.text").value("02325678908110000003556752101015176230000023560")) //
+			.andExpect(status().isNotFound()) //
+			.andExpect(jsonPath("$.message").value(containsString("ImageConvertion with id '" + id + "' not found"))) //
 	;
     }
 
     @Test
     @Order(2)
-    @DisplayName("get all image convertions")
-    public void getAllImageConvertionTest() throws Exception {
+    @DisplayName("Search a image convertion that not exists by search")
+    public void getImageConvertionBySearchTest() throws Exception {
 
-	// get all, the db-data-test.sql
-	mvc.perform(get(REST_URL) //
-			.accept(APPLICATION_JSON) //
-			.with(csrf())) //
-			.andDo(print()) //
-			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$").exists()) //
-			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].text").value(containsInAnyOrder("02325678908110000003556752101015176230000023560"))) //
-	;
-
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("get a image convertion by search")
-    public void getImageTypeByExtensionTest() throws Exception {
-
-	// already on db, due to the db-data-test.sql
-	final var name = "image_test.jpg";
+	final var name = "some_file.png";
 
 	mvc.perform(get(REST_URL + "/search?filter=name:'" + name + "'") //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$").exists()) //
-			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].file_name").value(containsInAnyOrder(name)));
+			.andExpect(content().string("[]")) //
+	;
     }
 
     @Test
-    @Order(4)
-    @DisplayName("convert the image")
+    @Order(3)
+    @DisplayName("convert the image with unknow extension")
     public void convertTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
-	// create one
-	final var result = mvc.perform(multipart(REST_URL) //
+	mvc.perform(multipart(REST_URL) //
 			.file(multipartFile) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
-			.andExpect(status().isCreated()) //
+			.andExpect(status().isNotFound()) //
+			.andExpect(jsonPath("$.message").value(containsString("ImageType with extension jpeg not found"))) //
 			.andReturn();
-
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterResponse.class);
-
-	assertThat(response.id()).isGreaterThan(LONG_ZERO);
     }
 
     @Test
     @Order(5)
-    @DisplayName("convert the image with area")
-    public void convertAreaTest() throws Exception {
+    @DisplayName("convert the image with area with parameter null")
+    public void convertAreaParameterNullTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
 	// create one
-	final var result = mvc.perform(multipart(REST_URL + "/area") //
+	mvc.perform(multipart(REST_URL + "/area") //
 			.file(multipartFile) //
 			.accept(APPLICATION_JSON) //
 			.param("x", "885") //
 			.param("y", "1417") //
 			.param("width", "1426") //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath("$.message").value(containsString("MissingServletRequestParameterException: The parameter 'height' is missing"))) //
+			.andReturn();
+
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("convert the image with area with parameter Y invalid")
+    public void convertAreaParameterInvalidYTest() throws Exception {
+
+	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+
+	// create one
+	mvc.perform(multipart(REST_URL + "/area") //
+			.file(multipartFile) //
+			.accept(APPLICATION_JSON) //
+			.param("x", "885") //
+			.param("y", "-1") //
+			.param("width", "1426") //
 			.param("height", "57") //
 			.with(csrf())) //
 			.andDo(print()) //
-			.andExpect(status().isCreated()) //
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath("$.message").value(containsString("The y point must be greater than zero"))) //
 			.andReturn();
 
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterResponse.class);
-
-	assertThat(response.id()).isGreaterThan(LONG_ZERO);
-
-	assertThat("03399905748110000007433957701015176230000017040") //
-			.isEqualTo(deleteWhitespace(response.text()).replaceAll("[^x0-9]", ""));
     }
 }

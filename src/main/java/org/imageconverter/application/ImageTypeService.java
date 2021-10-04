@@ -94,7 +94,7 @@ public class ImageTypeService {
     }
 
     @Transactional(readOnly = true)
-    public List<ImageTypeResponse> findBySpecification(@NotNull final Specification<ImageType> spec) {
+    public List<ImageTypeResponse> findBySpecification(final Specification<ImageType> spec) {
 	return repository.findAll(spec) //
 			.stream() //
 			.map(imageType -> new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName())) //

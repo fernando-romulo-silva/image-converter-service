@@ -37,7 +37,7 @@ import io.swagger.v3.oas.annotations.info.License;
 @SpringBootApplication
 public class ImageServiceApplication {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 	run(ImageServiceApplication.class, args);
     }
 }

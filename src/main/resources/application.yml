@@ -47,6 +47,7 @@ management:
 # 
 #============== Server ==============================================================================
 server:
+    error.include-message: always 
     http2:
         enabled: true
 #    compression:

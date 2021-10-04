@@ -17,6 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
 import org.imageconverter.infra.exceptions.ElementConflictException;
 import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
@@ -28,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -67,6 +71,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	return handleObjectException(ex, request, INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException ex, final WebRequest request) {
+
+	final var msg = ex.getConstraintViolations() //
+			.stream() //
+			.map(ConstraintViolation::getMessage) //
+			.collect(joining(", "));
+
+	return handleObjectException(msg, ex, request, BAD_REQUEST);
+    }
+
     @ExceptionHandler(Throwable.class) // HttpMessageNotReadableException
     public ResponseEntity<Object> handleUnknownException(final Throwable ex, final WebRequest request) {
 
@@ -78,7 +93,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     // -------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(final MissingServletRequestParameterException ex, final HttpHeaders headers, final HttpStatus status,
+		    final WebRequest request) {
+
+	final var msg = "MissingServletRequestParameterException: The parameter '" + ex.getParameterName() + "' is missing";
+
+	return handleObjectException(msg, ex, request, BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
 
 	return handleObjectException(ex, request, BAD_REQUEST);
     }
@@ -102,7 +126,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(final NoHandlerFoundException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
 
-	final var msg = "Resource not found. Please check the /swagger-ui/ for more information";
+	final var msg = "Resource not found. Please check the /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config for more information";
 
 	return handleObjectException(msg, ex, request, status);
     }

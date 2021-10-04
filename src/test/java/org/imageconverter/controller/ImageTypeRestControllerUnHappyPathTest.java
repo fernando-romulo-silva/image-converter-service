@@ -8,8 +8,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,6 +34,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -44,6 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
 @DisplayName("Test the image type controller, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
@@ -65,7 +69,6 @@ public class ImageTypeRestControllerUnHappyPathTest {
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void getImageTypeByIdTest() throws Exception {
 
-	// already on db, due to the db-data-test.sql
 	final var id = "1234";
 
 	mvc.perform(get(REST_URL + "/{id}", id) //
@@ -149,9 +152,35 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.andExpect(jsonPath("$.message").value(containsString("Missing required creator property 'extension'"))) //
 	;
     }
-
+    
     @Test
     @Order(5)
+    @DisplayName("Try to create image type with invalid value")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void createInvalidImageTypeTest2() throws Exception {
+
+	// invalid json
+	final var json = """
+                            {
+                                "extension": "BMP",
+                                "name": "",
+                                "description": "Device independent bitmap"
+                            } """;
+
+	// try to create
+	mvc.perform(post(REST_URL) //
+			.content(json) //
+			.contentType(APPLICATION_JSON) //
+			.accept(TEXT_PLAIN, APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath("$.message").value(containsString("Name cannot be empty"))) //
+	;
+    }    
+
+    @Test
+    @Order(6)
     @DisplayName("Try to update a image type that doesn't exist")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void updateImageTypeDoesNotExistTest() throws Exception {
@@ -175,7 +204,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     @DisplayName("Try to delete a image type that doesn't exist")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void deleteImageTypeTest() throws Exception {
@@ -193,7 +222,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     @DisplayName("Try to delete a image type that has a relation with other record")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void deleteImageTypeRestrictionTest() throws Exception {
@@ -209,9 +238,9 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.andExpect(jsonPath("$.message").value(containsString("You cannot delete the image type 1001 because it is already used"))) //
 	;
     }
-
+    
     @Test
-    @Order(10)
+    @Order(9)
     @DisplayName("Try to access a invalid url")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void invalidUrlTest() throws Exception {
@@ -221,7 +250,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
-			.andExpect(jsonPath("$.message").value(containsString("Resource not found. Please check the /swagger-ui/ for more information"))) //
+			.andExpect(jsonPath("$.message").value(containsString("Resource not found. Please check the /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config for more information"))) //
 	;
 
     }

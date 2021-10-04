@@ -1,5 +1,8 @@
 package org.imageconverter.config;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +47,12 @@ public class ImageConfig {
 	tesseract.setTessVariable("user_defined_dpi", tesseractDpi);
 
 	return tesseract;
+    }
+    
+    @Bean
+    public Validator validator() {
+	final var factory = Validation.buildDefaultValidatorFactory();
+	return factory.getValidator();
     }
 
 //    @Autowired

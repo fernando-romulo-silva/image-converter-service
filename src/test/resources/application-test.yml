@@ -24,7 +24,7 @@ spring:
         password: password
     h2:
         console:
-            enabled: true   
+            enabled: false   
     jpa:
         database-platform: org.hibernate.dialect.H2Dialect
         hibernate:
@@ -32,6 +32,6 @@ spring:
         properties:
             hibernate:
                 generated_statistics: false
-                show_sql: true
+                show_sql: false
                 jdbc:
                     time_zone: GMT-3               

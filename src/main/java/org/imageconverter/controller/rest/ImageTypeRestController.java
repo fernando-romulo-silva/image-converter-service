@@ -94,7 +94,6 @@ public class ImageTypeRestController {
 		    final Specification<ImageType> spec, final Pageable page) {
 
 	return imageTypeService.findBySpecification(spec);
-
     }
 
     @Operation(summary = "Create a new image type")

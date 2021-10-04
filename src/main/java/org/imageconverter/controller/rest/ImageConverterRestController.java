@@ -6,13 +6,21 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import java.util.List;
+
+import javax.validation.constraints.Min;
+
 import org.imageconverter.application.ImageConversionService;
+import org.imageconverter.domain.imageConvertion.ImageConvertion;
 import org.imageconverter.util.controllers.ImageConverterRequest;
+import org.imageconverter.util.controllers.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.ApiResponseError500;
 import org.imageconverter.util.openapi.imageconverter.ApiResponse201;
 import org.springframework.context.annotation.Description;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.turkraft.springfilter.boot.Filter;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,7 +60,7 @@ public class ImageConverterRestController {
 	super();
 	this.imageConversionService = imageConversionService;
     }
-    
+
     @ResponseStatus(OK)
     @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
     public ImageConverterResponse show( //
@@ -60,7 +70,22 @@ public class ImageConverterRestController {
 
 	return imageConversionService.findById(id);
     }
-    
+
+    @ResponseStatus(OK)
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    public List<ImageConverterResponse> showAll() {
+
+	return imageConversionService.findAll();
+    }
+
+    @ResponseStatus(OK)
+    @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
+    public List<ImageConverterResponse> show( //
+		    @Filter //
+		    final Specification<ImageConvertion> spec, final Pageable page) {
+
+	return imageConversionService.findBySpecification(spec);
+    }
 
     @Operation(summary = "Convert all image into the text")
     @ApiResponse201
@@ -90,21 +115,23 @@ public class ImageConverterRestController {
 		    final MultipartFile file, //
 		    //
 		    @Parameter(description = "The vertical position", content = @Content(mediaType = "multipart/form-data"), required = true) //
-		    @RequestParam(required = false) //
-		    final int x, //
+		    @RequestParam(required = true) //
+		    final Integer x, //
 		    //
+
+		    @Min(value = 0, message = "The y point must be greater than zero") //
 		    @Parameter(description = "The horizontal position", content = @Content(mediaType = "multipart/form-data"), required = true) //
-		    @RequestParam(required = false) //
-		    final int y, //
+		    @RequestParam(required = true) //
+		    final Integer y, //
 		    //
 		    @Parameter(description = "The width size", content = @Content(mediaType = "multipart/form-data"), required = true) //
-		    @RequestParam(required = false) //
-		    final int width, //
+		    @RequestParam(required = true) //
+		    final Integer width, //
 		    //
 		    @Parameter(description = "The height size", content = @Content(mediaType = "multipart/form-data"), required = true) //
-		    @RequestParam(required = false, defaultValue = "0") //
-		    final int height) {
+		    @RequestParam(required = true) //
+		    final Integer height) {
 
-	return imageConversionService.convert(new ImageConverterRequest(file, WS, x, y, width, height));
+	return imageConversionService.convert(new ImageConverterRequestArea(file, WS, x, y, width, height));
     }
 }

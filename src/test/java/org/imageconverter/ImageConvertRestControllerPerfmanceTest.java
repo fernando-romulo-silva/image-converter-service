@@ -1,4 +1,4 @@
-package org.imageconverter.controller;
+package org.imageconverter;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
