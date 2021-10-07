@@ -20,6 +20,9 @@
 		<junit-platform.version>5.3.1</junit-platform.version>
 
 		<project.argLine> --enable-preview </project.argLine>
+
+
+		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
 	</properties>
 
 	<dependencyManagement>
@@ -202,6 +205,16 @@
 	</dependencies>
 
 	<build>
+
+		<extensions>
+			<!-- Plugin configs -->
+			<extension>
+				<groupId>org.default.extensions</groupId>
+				<artifactId>default-extensions</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</extension>
+		</extensions>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
