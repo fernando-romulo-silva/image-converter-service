@@ -1,4 +1,4 @@
-package org.imageconverter.util.controllers;
+package org.imageconverter.util.controllers.imagetype;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -11,19 +11,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "ImageTypeRequest", description = "Resquest structure to create Image Type")
 public record CreateImageTypeRequest( //
 
-		@JsonProperty(value = "extension", required = true) //
 		@Schema(name = "extension", required = true) //
-		@NotEmpty(message = "Extension cannot be empty") //
+		@JsonProperty(value = "extension", required = true) //
+		@NotEmpty(message = "The 'extension' cannot be empty") //
 		String extension,
 
-		@JsonProperty(value = "name", required = true) //
 		@Schema(name = "name", required = true) //
-		@NotEmpty(message = "Name cannot be empty") // 
+		@JsonProperty(value = "name", required = true) //
+		@NotEmpty(message = "The 'name' cannot be empty") //
 		String name, //
 
-		@JsonProperty(value = "description", required = false) //
 		@Schema(name = "description", required = false) //
-		String description) //
-{
-
+		@JsonProperty(value = "description", required = false) //
+		String description) {
 }

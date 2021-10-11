@@ -1,4 +1,4 @@
-package org.imageconverter.util.controllers;
+package org.imageconverter.util.controllers.imageconverter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

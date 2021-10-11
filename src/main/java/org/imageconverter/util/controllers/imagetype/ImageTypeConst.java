@@ -1,4 +1,4 @@
-package org.imageconverter.util.controllers;
+package org.imageconverter.util.controllers.imagetype;
 
 public interface ImageTypeConst {
 

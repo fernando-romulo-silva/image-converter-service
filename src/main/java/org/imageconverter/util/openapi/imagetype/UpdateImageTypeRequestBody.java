@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.imageconverter.util.controllers.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

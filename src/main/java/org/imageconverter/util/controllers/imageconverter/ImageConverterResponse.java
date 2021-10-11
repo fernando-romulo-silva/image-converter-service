@@ -1,4 +1,4 @@
-package org.imageconverter.util.controllers;
+package org.imageconverter.util.controllers.imageconverter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

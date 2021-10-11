@@ -1,7 +1,7 @@
 package org.imageconverter;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
+import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.concurrent.TimeUnit;
 
-import org.imageconverter.util.controllers.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

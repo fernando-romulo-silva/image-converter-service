@@ -1,7 +1,7 @@
 package org.imageconverter.controller.rest;
 
 import static java.text.MessageFormat.format;
-import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
+import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -14,9 +14,9 @@ import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
 import org.imageconverter.domain.imageType.ImageType;
-import org.imageconverter.util.controllers.CreateImageTypeRequest;
-import org.imageconverter.util.controllers.ImageTypeResponse;
-import org.imageconverter.util.controllers.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
+import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
 import org.imageconverter.util.openapi.imagetype.UpdateImageTypeRequestBody;

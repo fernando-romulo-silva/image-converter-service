@@ -3,6 +3,7 @@ package org.imageconverter.domain.imageType;
 import static javax.persistence.GenerationType.IDENTITY;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,6 +35,12 @@ public class ImageType {
 
     @Column(name = "IMT_DESC", nullable = true)
     private String description;
+    
+    @Column(name = "IMT_CREATED", nullable = true)
+    private LocalDateTime created;
+    
+    @Column(name = "IMT_UPDATED", nullable = true)
+    private LocalDateTime updated;
 
     ImageType() {
 	super();
@@ -47,6 +54,7 @@ public class ImageType {
 	this.extension = extension;
 	this.name = name;
 	this.description = description;
+	this.created = LocalDateTime.now(); 
     }
 
     public void update(final String extension, final String name, final String description) {
@@ -62,6 +70,8 @@ public class ImageType {
 	if (isNoneBlank(description)) {
 	    this.description = description;
 	}
+	
+	this.updated = LocalDateTime.now();
     }
 
     public Long getId() {

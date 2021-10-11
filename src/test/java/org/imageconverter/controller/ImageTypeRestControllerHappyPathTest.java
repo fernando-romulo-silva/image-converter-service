@@ -3,7 +3,7 @@ package org.imageconverter.controller;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.imageconverter.util.controllers.ImageTypeConst.REST_URL;
+import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
@@ -18,8 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.imageconverter.util.controllers.CreateImageTypeRequest;
-import org.imageconverter.util.controllers.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

@@ -19,11 +19,11 @@ public enum ExecutionType {
 	final var stringTypeNew = upperCase(string);
 	
 	return switch (stringTypeNew) { //
-	        case "BATCH" -> BATCH;
-	        case "WS" -> WS;
-	        case "MS" -> MS;
-	        case "WEB" -> WEB;
-	        case "DESKTOP" -> DESKTOP;	        
+	        case "BATCH" -> BATCH; 
+	        case "WS" -> WS; // Web Service
+	        case "MS" -> MS; // Messaging Service
+	        case "WEB" -> WEB; // Spring MVC
+	        case "DESKTOP" -> DESKTOP; // 
 	        default -> throw new IllegalArgumentException("Unknown execution type '%s'".formatted(string));
 	};
     }

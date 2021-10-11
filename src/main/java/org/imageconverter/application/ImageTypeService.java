@@ -13,9 +13,9 @@ import org.imageconverter.domain.imageType.ImageTypeRespository;
 import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
 import org.imageconverter.infra.exceptions.ElementConflictException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
-import org.imageconverter.util.controllers.CreateImageTypeRequest;
-import org.imageconverter.util.controllers.ImageTypeResponse;
-import org.imageconverter.util.controllers.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
+import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -73,15 +73,6 @@ public class ImageTypeService {
 			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, id));
 
 	return new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName());
-    }
-
-    @Transactional(readOnly = true)
-    public ImageType findImageType(@NotBlank final String extension) {
-
-	final var result = repository.findByExtension(extension) //
-			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, "extension " + extension));
-
-	return result;
     }
 
     @Transactional(readOnly = true)

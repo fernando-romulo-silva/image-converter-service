@@ -4,7 +4,7 @@ import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.imageconverter.util.controllers.ImageConverterConst.REST_URL;
+import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.imageconverter.util.controllers.ImageConverterResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -109,16 +109,16 @@ public class ImageConvertRestControllerHappyPathTest {
     public void getImageTypeByExtensionTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
-	final var name = "image_test.jpg";
+	final var fileName = "image_test.jpg";
 
-	mvc.perform(get(REST_URL + "/search?filter=name:'" + name + "'") //
+	mvc.perform(get(REST_URL + "/search?filter=fileName:'" + fileName + "'") //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].file_name").value(containsInAnyOrder(name)));
+			.andExpect(jsonPath("$[*].file_name").value(containsInAnyOrder(fileName)));
     }
 
     @Test

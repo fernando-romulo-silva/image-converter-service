@@ -1,7 +1,7 @@
 package org.imageconverter.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.imageconverter.util.controllers.ImageConverterConst.REST_URL;
+import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -85,9 +85,9 @@ public class ImageConvertRestControllerUnHappyPathTest {
     @DisplayName("Search a image convertion that not exists by search")
     public void getImageConvertionBySearchTest() throws Exception {
 
-	final var name = "some_file.png";
+	final var fileName = "some_file.png";
 
-	mvc.perform(get(REST_URL + "/search?filter=name:'" + name + "'") //
+	mvc.perform(get(REST_URL + "/search?filter=fileName:'" + fileName + "'") //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //

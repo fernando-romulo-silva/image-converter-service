@@ -1,7 +1,7 @@
 package org.imageconverter.controller.rest;
 
 import static org.imageconverter.domain.imageConvertion.ExecutionType.WS;
-import static org.imageconverter.util.controllers.ImageConverterConst.REST_URL;
+import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -12,9 +12,9 @@ import javax.validation.constraints.Min;
 
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.domain.imageConvertion.ImageConvertion;
-import org.imageconverter.util.controllers.ImageConverterRequest;
-import org.imageconverter.util.controllers.ImageConverterRequestArea;
-import org.imageconverter.util.controllers.ImageConverterResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.ApiResponseError500;
 import org.imageconverter.util.openapi.imageconverter.ApiResponse201;
