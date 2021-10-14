@@ -9,8 +9,8 @@ import javax.validation.Valid;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 
-import org.imageconverter.domain.imageConvertion.ImageConvertion;
-import org.imageconverter.domain.imageConvertion.ImageConvertionRepository;
+import org.imageconverter.domain.convertion.ImageConvertion;
+import org.imageconverter.domain.convertion.ImageConvertionRepository;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;

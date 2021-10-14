@@ -1,4 +1,4 @@
-package org.imageconverter.domain.imageConvertion;
+package org.imageconverter.domain.convertion;
 
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
@@ -18,17 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 @Service
 @Loggable
 public class TesseractService {
 
-    private final Tesseract tesseractTess4j;
+    private final ITesseract tesseractTess4j;
 
     @Autowired
-    TesseractService(final Tesseract tesseractTess4j) {
+    TesseractService(final ITesseract tesseractTess4j) {
 	super();
 	this.tesseractTess4j = tesseractTess4j;
     }

@@ -1,4 +1,4 @@
-package org.imageconverter.domain.imageConvertion;
+package org.imageconverter.domain.convertion;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

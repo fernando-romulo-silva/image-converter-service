@@ -3,7 +3,7 @@ package org.imageconverter.util.controllers.imageconverter;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.imageconverter.domain.imageConvertion.ExecutionType;
+import org.imageconverter.domain.convertion.ExecutionType;
 import org.springframework.web.multipart.MultipartFile;
 
 public record ImageConverterRequestArea( //
