@@ -4,6 +4,8 @@ import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.DB_CONVERTION_NUMBER;
+import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.IMAGE_PNG_CONVERTION_NUMBER;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -81,7 +83,7 @@ public class ImageConvertRestControllerHappyPathTest {
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(id)) //
-			.andExpect(jsonPath("$.text").value("02325678908110000003556752101015176230000023560")) //
+			.andExpect(jsonPath("$.text").value(DB_CONVERTION_NUMBER)) //
 	;
     }
 
@@ -98,7 +100,7 @@ public class ImageConvertRestControllerHappyPathTest {
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].text").value(containsInAnyOrder("02325678908110000003556752101015176230000023560"))) //
+			.andExpect(jsonPath("$[*].text").value(containsInAnyOrder(DB_CONVERTION_NUMBER))) //
 	;
 
     }
@@ -140,6 +142,9 @@ public class ImageConvertRestControllerHappyPathTest {
 	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterResponse.class);
 
 	assertThat(response.id()).isGreaterThan(LONG_ZERO);
+
+	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
+			.containsIgnoringCase(IMAGE_PNG_CONVERTION_NUMBER);
     }
 
     @Test
@@ -166,7 +171,7 @@ public class ImageConvertRestControllerHappyPathTest {
 
 	assertThat(response.id()).isGreaterThan(LONG_ZERO);
 
-	assertThat("03399905748110000007433957701015176230000017040") //
-			.isEqualTo(deleteWhitespace(response.text()).replaceAll("[^x0-9]", ""));
+	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
+			.isEqualTo(IMAGE_PNG_CONVERTION_NUMBER);
     }
 }

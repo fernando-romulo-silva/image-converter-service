@@ -1,16 +1,21 @@
 package org.imageconverter.domain.convertion;
 
+import static com.jparams.verifier.tostring.NameStyle.SIMPLE_NAME;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static nl.jqno.equalsverifier.Warning.NONFINAL_FIELDS;
 import static nl.jqno.equalsverifier.Warning.REFERENCE_EQUALITY;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
+import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -25,7 +30,6 @@ import javax.persistence.Table;
 import javax.validation.Validator;
 import javax.validation.executable.ExecutableValidator;
 
-import org.apache.commons.io.FileUtils;
 import org.imageconverter.domain.imageType.ImageType;
 import org.imageconverter.domain.imageType.ImageTypeRespository;
 import org.imageconverter.util.BeanUtil;
@@ -35,32 +39,37 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.jparams.verifier.tostring.NameStyle;
 import com.jparams.verifier.tostring.ToStringVerifier;
 
 import net.sourceforge.tess4j.ITesseract;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 @Tag("unit")
-@DisplayName("Test the image type entity")
+@DisplayName("Test the image type entity, happy Path :) ")
 @TestInstance(PER_CLASS)
-@ExtendWith(MockitoExtension.class)
-public class ImageConvertionTest {
+public class ImageConvertionHappyPathTest {
+
+    public static final String IMAGE_PNG_CONVERTION_NUMBER = "03399905748110000007433957701015176230000017040";
+
+    public static final String DB_CONVERTION_NUMBER = "02325678908110000003556752101015176230000023560";
+
+    public static final String FILE_NAME_IMAGE_PNG = "image.png";
 
     private Validator validator;
 
     private ExecutableValidator executableValidator;
+
+    private MockMultipartFile mockMultipartFile;
 
     @Mock
     private ApplicationContext applicationContext;
@@ -72,17 +81,34 @@ public class ImageConvertionTest {
     private ITesseract tesseractTess4j;
 
     @BeforeAll
-    public void setUp() {
+    public void setUp() throws Exception {
+
+	// ------------------------------------
 	validator = buildDefaultValidatorFactory().getValidator();
 
 	executableValidator = buildDefaultValidatorFactory() //
 			.getValidator() //
 			.forExecutables();
 
+	// ------------------------------------
+	final var file = new File("src/test/resources/" + FILE_NAME_IMAGE_PNG);
+
+	final var image = ImageIO.read(file);
+	final var baos = new ByteArrayOutputStream();
+
+	ImageIO.write(image, "png", baos);
+	final var bytes = baos.toByteArray();
+
+	mockMultipartFile = new MockMultipartFile("file", FILE_NAME_IMAGE_PNG, MULTIPART_FORM_DATA_VALUE, bytes);
+
+	// ------------------------------------
 	MockitoAnnotations.openMocks(this);
 
 	when(applicationContext.getBean(ImageTypeRespository.class)) //
 			.thenReturn(imageTypeRespository);
+
+	when(applicationContext.getBean(Validator.class)) //
+			.thenReturn(validator);
 
 	when(imageTypeRespository.findByExtension("png")) //
 			.thenReturn(Optional.of(new ImageType("png", "PNG", "Portable Network Graphics")));
@@ -90,8 +116,13 @@ public class ImageConvertionTest {
 	when(applicationContext.getBean(TesseractService.class)) //
 			.thenReturn(new TesseractService(tesseractTess4j));
 
-	BeanUtil.definedContext(applicationContext);
+	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any())) //
+			.thenReturn(IMAGE_PNG_CONVERTION_NUMBER);
 
+	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any())) //
+			.thenReturn(IMAGE_PNG_CONVERTION_NUMBER);
+
+	BeanUtil.definedContext(applicationContext);
     }
 
     @Test
@@ -102,7 +133,7 @@ public class ImageConvertionTest {
 	EqualsVerifier.forClass(ImageConvertion.class) //
 			.suppress(NONFINAL_FIELDS, STRICT_INHERITANCE, REFERENCE_EQUALITY) //
 			.withIgnoredAnnotations(Entity.class, Id.class, Column.class, Table.class, GeneratedValue.class, ManyToOne.class, JoinColumn.class) //
-			.withOnlyTheseFields("fileName", "type") //
+			.withOnlyTheseFields("id") //
 			.verify();
 
     }
@@ -113,39 +144,46 @@ public class ImageConvertionTest {
     public void toStringTest() {
 	ToStringVerifier.forClass(ImageConvertion.class) //
 			.withIgnoredFields("text", "created", "area") //
-			.withClassName(NameStyle.SIMPLE_NAME) //
-//			.withOnlyTheseFields("")
+			.withClassName(SIMPLE_NAME) //
 			.withFailOnExcludedFields(false) //
 			.verify();
     }
 
     public Stream<Arguments> createValidImageConvertionData() throws IOException {
 
-	final var url = Thread.currentThread().getContextClassLoader().getResourceAsStream("test/resources/image.png");
-	
-	Path resourceDirectory = Paths.get("src","test","resources", "image.png");
-	
-	final var image = ImageIO.read(url);
-	final var baos = new ByteArrayOutputStream();
-	ImageIO.write(image, "jpg", baos);
-	final var bytes = baos.toByteArray();
-
-	final var mockMultipartFile = new MockMultipartFile("fileData", "filname", "text/plain", bytes);
-
 	return Stream.of( //
-			Arguments.of(mockMultipartFile, ExecutionType.WEB) //
+			Arguments.of(mockMultipartFile, ExecutionType.WEB, false, null, null, null, null), //
+			Arguments.of(mockMultipartFile, ExecutionType.WS, true, 885, 1417, 1426, 57) //
 	);
     }
 
-    @ParameterizedTest(name = "Pos ''{index}'':  ")
+    @ParameterizedTest(name = "Pos {index} : executionType ''{1}'', area ''{2}'' ")
     @MethodSource("createValidImageConvertionData")
     @Order(3)
     @DisplayName("Test the imageConvertion's creation")
-    public void createValidImageConvertionTest(final MultipartFile data, final ExecutionType executionType) {
+    public void createValidImageConvertionTest( //
+		    final MultipartFile data, final ExecutionType executionType, //
+		    final boolean area, final Integer x, final Integer y, final Integer width, final Integer height) {
 
-	final var ic = new ImageConvertion.Builder().with($ -> {
+	final var imageConvertionBuilder = new ImageConvertion.Builder().with($ -> {
 	    $.data = data;
 	    $.executionType = executionType;
-	}).build();
+	    $.x = x;
+	    $.y = y;
+	    $.width = width;
+	    $.height = height;
+	});
+
+	final var imageConvertion = imageConvertionBuilder.build();
+
+	assertThat(imageConvertion.getFileName()).isEqualToIgnoringCase(data.getOriginalFilename());
+
+	assertThat(imageConvertion.getFileType().getExtension()).isEqualToIgnoringCase(getExtension(data.getOriginalFilename()));
+
+	assertThat(imageConvertion.getFileSize()).isEqualTo(1878L);
+
+	assertThat(imageConvertion.getType()).isEqualTo(executionType);
+
+	assertThat(imageConvertion.getArea()).isEqualTo(area);
     }
 }

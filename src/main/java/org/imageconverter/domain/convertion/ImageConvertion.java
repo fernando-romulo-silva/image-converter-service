@@ -17,7 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -107,9 +109,13 @@ public class ImageConvertion {
 	return text;
     }
 
+    public Boolean getArea() {
+	return area;
+    }
+
     @Override
     public int hashCode() {
-	return Objects.hash(fileName, fileType);
+	return Objects.hash(id);
     }
 
     @Override
@@ -123,7 +129,7 @@ public class ImageConvertion {
 	    return false;
 	}
 
-	return Objects.equals(fileName, other.fileName) && fileType == other.fileType;
+	return Objects.equals(id, other.id);
     }
 
     @Override
@@ -161,6 +167,7 @@ public class ImageConvertion {
 	public Integer height;
 
 	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 	@NotNull(message = "The 'fileType' cannot be null")
 	private ImageType fileType;
 
@@ -171,7 +178,7 @@ public class ImageConvertion {
 	@NotNull(message = "The 'fileSize' can't be null")
 	private Long fileSize;
 
-	@NotEmpty(message = "The 'fileName' cannot be empty")
+	@NotEmpty(message = "The 'text' cannot be empty")
 	private String text;
 
 	private Boolean area;
@@ -206,6 +213,8 @@ public class ImageConvertion {
 
 	    final var imageTypeRepository = BeanUtil.getBean(ImageTypeRespository.class);
 
+	    final var validator = BeanUtil.getBean(Validator.class);
+
 	    if (isNull(data) || data.isEmpty()) {
 		throw new ConvertionException("Empty file to convert!");
 	    }
@@ -215,7 +224,7 @@ public class ImageConvertion {
 	    this.fileType = imageTypeRepository.findByExtension(extensionTxt) //
 			    .orElseThrow(() -> new ElementNotFoundException(ImageType.class, "extension " + extensionTxt));
 
-	    this.fileName = data.getName() + "." + extensionTxt;
+	    this.fileName = data.getOriginalFilename();
 	    this.fileSize = data.getSize() / 1024;
 
 	    if (nonNull(x) && nonNull(y) && nonNull(width) && nonNull(height)) {
@@ -224,6 +233,11 @@ public class ImageConvertion {
 	    } else {
 		this.text = tesseractService.convert(data);
 		this.area = false;
+	    }
+
+	    final var violations = validator.validate(this);
+	    if (!violations.isEmpty()) {
+		throw new ConstraintViolationException(violations);
 	    }
 
 	    return new ImageConvertion(this);

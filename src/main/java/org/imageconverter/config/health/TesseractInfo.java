@@ -135,6 +135,5 @@ public class TesseractInfo implements ApplicationContextAware {
 	public void setTesseractDetails(Map<String, Object> tesseractDetails) {
 	    this.tesseractDetails = tesseractDetails;
 	}
-
     }
 }

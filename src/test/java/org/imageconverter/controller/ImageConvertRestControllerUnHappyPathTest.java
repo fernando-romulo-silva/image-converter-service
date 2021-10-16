@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,7 +27,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -34,8 +34,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -50,9 +48,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
 public class ImageConvertRestControllerUnHappyPathTest {
-
-    @Autowired
-    private ObjectMapper mapper;
 
     // JSqlParser
     @Value("classpath:db/db-data-test.sql")
@@ -101,7 +96,7 @@ public class ImageConvertRestControllerUnHappyPathTest {
     @DisplayName("convert the image with unknow extension")
     public void convertTest() throws Exception {
 
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
 	mvc.perform(multipart(REST_URL) //
 			.file(multipartFile) //
@@ -118,7 +113,7 @@ public class ImageConvertRestControllerUnHappyPathTest {
     @DisplayName("convert the image with area with parameter null")
     public void convertAreaParameterNullTest() throws Exception {
 
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
 	// create one
 	mvc.perform(multipart(REST_URL + "/area") //
@@ -140,7 +135,7 @@ public class ImageConvertRestControllerUnHappyPathTest {
     @DisplayName("convert the image with area with parameter Y invalid")
     public void convertAreaParameterInvalidYTest() throws Exception {
 
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
 	// create one
 	mvc.perform(multipart(REST_URL + "/area") //
