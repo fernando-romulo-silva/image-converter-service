@@ -2,6 +2,7 @@ package org.imageconverter.domain.convertion;
 
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.FILE_NAME_IMAGE_PNG;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
@@ -112,8 +113,8 @@ public class ImageConvertionUnHappyPathTest {
 			Arguments.of(mockMultipartFile, ExecutionType.WS, -1, 1417, 1426, 57), //
 			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, -1, 1426, 57), //
 			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, 1417, -1, 57), //
-			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, 1417, 1426, -1),
-			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, 1417, 1426, 57)
+			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, 1417, 1426, -1), //
+			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, 1417, 1426, 57) //
 	);
     }
 
@@ -125,13 +126,18 @@ public class ImageConvertionUnHappyPathTest {
 		    final MultipartFile data, final ExecutionType executionType, //
 		    final Integer x, final Integer y, final Integer width, final Integer height) {
 
-	final var imageConvertionBuilder = new ImageConvertion.Builder().with($ -> {
-	    $.data = data;
-	    $.executionType = executionType;
-	    $.x = x;
-	    $.y = y;
-	    $.width = width;
-	    $.height = height;
-	}).build();
+	assertThatThrownBy(() -> {
+
+	    new ImageConvertion.Builder().with($ -> {
+		$.data = data;
+		$.executionType = executionType;
+		$.x = x;
+		$.y = y;
+		$.width = width;
+		$.height = height;
+	    }).build();
+
+	}).isInstanceOf(RuntimeException.class);
+
     }
 }
