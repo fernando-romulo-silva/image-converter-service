@@ -1,1 +1,1 @@
-insert into  image_type (imt_extension, imt_name) values ('png', 'Portable Network Graphics');
+insert into  IMAGE_TYPE (IMT_EXTENSION, IMT_NAME, IMT_DESC, IMT_CREATED) values ('png', 'PNG', 'Portable Network Graphics', CURRENT_TIMESTAMP);

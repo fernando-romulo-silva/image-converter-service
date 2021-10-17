@@ -1,7 +1,8 @@
-package org.imageconverter.domain.imageType;
+package org.imageconverter.domain.imagetype;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+import static org.imageconverter.util.BeanUtil.getBeanFrom;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -13,7 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotBlank;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "IMAGE_TYPE", uniqueConstraints = @UniqueConstraint(columnNames = "IMT_EXTENSION", name = "UK_IMT_EXTENSION"))
@@ -25,20 +28,20 @@ public class ImageType {
     private Long id;
 
     // PNG, BMP, JPEG, JPG ...
-    @NotBlank
+    @NotEmpty(message = "The 'extension' cannot be empty")
     @Column(name = "IMT_EXTENSION", nullable = false, unique = true)
     private String extension;
 
-    @NotBlank
+    @NotEmpty(message = "The 'name' cannot be empty")
     @Column(name = "IMT_NAME", nullable = false)
     private String name;
 
     @Column(name = "IMT_DESC", nullable = true)
     private String description;
-    
-    @Column(name = "IMT_CREATED", nullable = true)
+
+    @Column(name = "IMT_CREATED", nullable = false)
     private LocalDateTime created;
-    
+
     @Column(name = "IMT_UPDATED", nullable = true)
     private LocalDateTime updated;
 
@@ -47,14 +50,21 @@ public class ImageType {
     }
 
     public ImageType( //
-		    final String extension, // 
-		    final String name, // 
+		    final String extension, //
+		    final String name, //
 		    final String description) {
 	super();
 	this.extension = extension;
 	this.name = name;
 	this.description = description;
-	this.created = LocalDateTime.now(); 
+	this.created = LocalDateTime.now();
+
+	final var validator = getBeanFrom(Validator.class);
+
+	final var violations = validator.validate(this);
+	if (!violations.isEmpty()) {
+	    throw new ConstraintViolationException(violations);
+	}
     }
 
     public void update(final String extension, final String name, final String description) {
@@ -70,7 +80,7 @@ public class ImageType {
 	if (isNoneBlank(description)) {
 	    this.description = description;
 	}
-	
+
 	this.updated = LocalDateTime.now();
     }
 

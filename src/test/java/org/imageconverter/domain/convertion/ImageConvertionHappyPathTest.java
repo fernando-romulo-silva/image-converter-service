@@ -7,6 +7,8 @@ import static nl.jqno.equalsverifier.Warning.REFERENCE_EQUALITY;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.imageconverter.domain.convertion.ExecutionType.WEB;
+import static org.imageconverter.domain.convertion.ExecutionType.WS;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -28,10 +30,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.Validator;
-import javax.validation.executable.ExecutableValidator;
 
-import org.imageconverter.domain.imageType.ImageType;
-import org.imageconverter.domain.imageType.ImageTypeRespository;
+import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.util.BeanUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -67,8 +68,6 @@ public class ImageConvertionHappyPathTest {
 
     private Validator validator;
 
-    private ExecutableValidator executableValidator;
-
     private MockMultipartFile mockMultipartFile;
 
     @Mock
@@ -86,7 +85,7 @@ public class ImageConvertionHappyPathTest {
 	// ------------------------------------
 	validator = buildDefaultValidatorFactory().getValidator();
 
-	executableValidator = buildDefaultValidatorFactory() //
+	final var executableValidator = buildDefaultValidatorFactory() //
 			.getValidator() //
 			.forExecutables();
 
@@ -103,15 +102,14 @@ public class ImageConvertionHappyPathTest {
 
 	// ------------------------------------
 	MockitoAnnotations.openMocks(this);
+	
+	BeanUtil.defineContext(applicationContext);
 
 	when(applicationContext.getBean(ImageTypeRespository.class)) //
 			.thenReturn(imageTypeRespository);
 
 	when(applicationContext.getBean(Validator.class)) //
 			.thenReturn(validator);
-
-	when(imageTypeRespository.findByExtension("png")) //
-			.thenReturn(Optional.of(new ImageType("png", "PNG", "Portable Network Graphics")));
 
 	when(applicationContext.getBean(TesseractService.class)) //
 			.thenReturn(new TesseractService(tesseractTess4j));
@@ -121,8 +119,11 @@ public class ImageConvertionHappyPathTest {
 
 	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any())) //
 			.thenReturn(IMAGE_PNG_CONVERTION_NUMBER);
-
-	BeanUtil.definedContext(applicationContext);
+	
+	final var imageType = Optional.of(new ImageType("png", "PNG", "Portable Network Graphics"));
+	
+	when(imageTypeRespository.findByExtension("png")) //
+			.thenReturn(imageType);	
     }
 
     @Test
@@ -152,8 +153,8 @@ public class ImageConvertionHappyPathTest {
     public Stream<Arguments> createValidImageConvertionData() throws IOException {
 
 	return Stream.of( //
-			Arguments.of(mockMultipartFile, ExecutionType.WEB, false, null, null, null, null), //
-			Arguments.of(mockMultipartFile, ExecutionType.WS, true, 885, 1417, 1426, 57) //
+			Arguments.of(mockMultipartFile, WEB, false, null, null, null, null), //
+			Arguments.of(mockMultipartFile, WS, true, 885, 1417, 1426, 57) //
 	);
     }
 

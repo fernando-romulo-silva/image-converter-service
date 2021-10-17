@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static javax.persistence.GenerationType.IDENTITY;
 import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.imageconverter.util.BeanUtil.getBeanFrom;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -24,11 +25,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.imageconverter.domain.imageType.ImageType;
-import org.imageconverter.domain.imageType.ImageTypeRespository;
+import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.infra.exceptions.ConvertionException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
-import org.imageconverter.util.BeanUtil;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.springframework.web.multipart.MultipartFile;
@@ -209,11 +209,11 @@ public class ImageConvertion {
 
 	public ImageConvertion build() {
 
-	    final var tesseractService = BeanUtil.getBean(TesseractService.class);
+	    final var tesseractService = getBeanFrom(TesseractService.class);
 
-	    final var imageTypeRepository = BeanUtil.getBean(ImageTypeRespository.class);
+	    final var imageTypeRepository = getBeanFrom(ImageTypeRespository.class);
 
-	    final var validator = BeanUtil.getBean(Validator.class);
+	    final var validator = getBeanFrom(Validator.class);
 
 	    if (isNull(data) || data.isEmpty()) {
 		throw new ConvertionException("Empty file to convert!");

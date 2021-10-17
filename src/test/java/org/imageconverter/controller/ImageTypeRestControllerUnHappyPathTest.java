@@ -175,7 +175,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isBadRequest()) //
-			.andExpect(jsonPath("$.message").value(containsString("Name cannot be empty"))) //
+			.andExpect(jsonPath("$.message").value(containsString("The 'name' cannot be empty"))) //
 	;
     }    
 

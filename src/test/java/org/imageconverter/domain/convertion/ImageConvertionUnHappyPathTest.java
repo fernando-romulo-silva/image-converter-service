@@ -3,6 +3,8 @@ package org.imageconverter.domain.convertion;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.imageconverter.domain.convertion.ExecutionType.WEB;
+import static org.imageconverter.domain.convertion.ExecutionType.WS;
 import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.FILE_NAME_IMAGE_PNG;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
@@ -18,10 +20,9 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 import javax.validation.Validator;
-import javax.validation.executable.ExecutableValidator;
 
-import org.imageconverter.domain.imageType.ImageType;
-import org.imageconverter.domain.imageType.ImageTypeRespository;
+import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.util.BeanUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -47,8 +48,6 @@ public class ImageConvertionUnHappyPathTest {
 
     private Validator validator;
 
-    private ExecutableValidator executableValidator;
-
     private MockMultipartFile mockMultipartFile;
 
     @Mock
@@ -66,10 +65,6 @@ public class ImageConvertionUnHappyPathTest {
 	// ------------------------------------
 	validator = buildDefaultValidatorFactory().getValidator();
 
-	executableValidator = buildDefaultValidatorFactory() //
-			.getValidator() //
-			.forExecutables();
-
 	// ------------------------------------
 	final var file = new File("src/test/resources/" + FILE_NAME_IMAGE_PNG);
 
@@ -84,14 +79,21 @@ public class ImageConvertionUnHappyPathTest {
 	// ------------------------------------
 	MockitoAnnotations.openMocks(this);
 
+	BeanUtil.defineContext(applicationContext);
+
 	when(applicationContext.getBean(ImageTypeRespository.class)) //
 			.thenReturn(imageTypeRespository);
 
 	when(applicationContext.getBean(Validator.class)) //
 			.thenReturn(validator);
 
+	when(applicationContext.getBean(Validator.class)) //
+			.thenReturn(validator);
+
+	final var imageType = Optional.of(new ImageType("png", "PNG", "Portable Network Graphics"));
+
 	when(imageTypeRespository.findByExtension("png")) //
-			.thenReturn(Optional.of(new ImageType("png", "PNG", "Portable Network Graphics")));
+			.thenReturn(imageType);
 
 	when(applicationContext.getBean(TesseractService.class)) //
 			.thenReturn(new TesseractService(tesseractTess4j));
@@ -101,27 +103,25 @@ public class ImageConvertionUnHappyPathTest {
 
 	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any())) //
 			.thenReturn(EMPTY);
-
-	BeanUtil.definedContext(applicationContext);
     }
 
     public Stream<Arguments> createInvalidImageConvertionData() throws IOException {
 
 	return Stream.of( //
-			Arguments.of(null, ExecutionType.WEB, null, null, null, null), //
+			Arguments.of(null, WEB, null, null, null, null), //
 			Arguments.of(mockMultipartFile, null, null, null, null, null), //
-			Arguments.of(mockMultipartFile, ExecutionType.WS, -1, 1417, 1426, 57), //
-			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, -1, 1426, 57), //
-			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, 1417, -1, 57), //
-			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, 1417, 1426, -1), //
-			Arguments.of(mockMultipartFile, ExecutionType.WS, 885, 1417, 1426, 57) //
+			Arguments.of(mockMultipartFile, WS, -1, 1417, 1426, 57), //
+			Arguments.of(mockMultipartFile, WS, 885, -1, 1426, 57), //
+			Arguments.of(mockMultipartFile, WS, 885, 1417, -1, 57), //
+			Arguments.of(mockMultipartFile, WS, 885, 1417, 1426, -1), //
+			Arguments.of(mockMultipartFile, WS, 885, 1417, 1426, 57) //
 	);
     }
 
-    @ParameterizedTest(name = "Pos {index} : executionType ''{1}'', area ''{2}'' ")
+    @ParameterizedTest(name = "Pos {index} : executionType ''{1}'' ")
     @MethodSource("createInvalidImageConvertionData")
-    @Order(3)
-    @DisplayName("Test the imageConvertion's creation for invalid values")
+    @Order(1)
+    @DisplayName("Test the imageConvertion's creation with invalid values")
     public void createInvalidImageConvertionTest( //
 		    final MultipartFile data, final ExecutionType executionType, //
 		    final Integer x, final Integer y, final Integer width, final Integer height) {

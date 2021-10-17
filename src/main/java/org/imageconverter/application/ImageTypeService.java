@@ -8,8 +8,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.imageconverter.domain.imageType.ImageType;
-import org.imageconverter.domain.imageType.ImageTypeRespository;
+import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
 import org.imageconverter.infra.exceptions.ElementConflictException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;

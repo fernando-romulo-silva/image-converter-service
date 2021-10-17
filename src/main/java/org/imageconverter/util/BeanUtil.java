@@ -10,16 +10,16 @@ public class BeanUtil implements ApplicationContextAware {
 
     private static ApplicationContext CONTEXT;
 
-    public static synchronized void definedContext(final ApplicationContext newContext) {
+    public static synchronized void defineContext(final ApplicationContext newContext) {
 	CONTEXT = newContext;
     }
 
-    public static <T> T getBean(final Class<T> beanClass) {
+    public static <T> T getBeanFrom(final Class<T> beanClass) {
 	return CONTEXT.getBean(beanClass);
     }
 
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-	definedContext(applicationContext);
+	defineContext(applicationContext);
     }
 }
