@@ -38,7 +38,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 public class ImageConversionServiceHappyPathTest {
 
     @Autowired
-    private ImageConversionService helloService;
+    private ImageConversionService imageConversionService;
 
     @Value("classpath:image.png")
     private Resource imageFile;
@@ -51,7 +51,7 @@ public class ImageConversionServiceHappyPathTest {
 	// already on db, due to the db-data-test.sql
 	final var id = 1000L;
 
-	final var response = helloService.findById(id);
+	final var response = imageConversionService.findById(id);
 
 	assertThat(response.id()).isEqualTo(id);
 
@@ -67,7 +67,7 @@ public class ImageConversionServiceHappyPathTest {
 	// already on db, due to the db-data-test.sql
 	final var id = 1000L;
 
-	final var responses = helloService.findAll();
+	final var responses = imageConversionService.findAll();
 
 	assertThat(responses).map(f -> f.id()).contains(id);
 
@@ -88,11 +88,11 @@ public class ImageConversionServiceHappyPathTest {
 
 	// Specification<ImageConvertion> spec = (book, cq, cb) -> cb.equal(book.get("fileName"), fileName);
 
-	final var responses1 = helloService.findBySpecification(equalsFileName(fileName));
+	final var responses1 = imageConversionService.findBySpecification(equalsFileName(fileName));
 
 	assertThat(responses1).map(f -> f.fileName()).containsAnyOf(fileName);
 	
-	final var responses2 = helloService.findBySpecification(null);
+	final var responses2 = imageConversionService.findBySpecification(null);
 	
 	assertThat(responses2).hasSize(1);
 
@@ -107,7 +107,7 @@ public class ImageConversionServiceHappyPathTest {
 
 	final var request = new ImageConverterRequest(multipartFile, WS);
 
-	final var response = helloService.convert(request);
+	final var response = imageConversionService.convert(request);
 
 	assertThat(response.id()).isGreaterThan(LONG_ZERO);
 
@@ -124,7 +124,7 @@ public class ImageConversionServiceHappyPathTest {
 
 	final var request = new ImageConverterRequestArea(multipartFile, BATCH, 885, 1417, 1426, 57);
 
-	final var response = helloService.convert(request);
+	final var response = imageConversionService.convert(request);
 
 	assertThat(response.id()).isGreaterThan(LONG_ZERO);
 
