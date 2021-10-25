@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:  
+  name: general-gateway #{PROJECT_NAMESPACE-gateway}  
+  namespace: general
+spec:  
+  selector:
+    istion: ilb-gateway
+  servers:
+    - ports:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+      - "*.company.com.br"
+      tls:
+        mode: SIMPLE
+        credentialName: tls-company  
+  

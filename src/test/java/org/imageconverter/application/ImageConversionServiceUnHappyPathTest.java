@@ -3,22 +3,29 @@ package org.imageconverter.application;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.imageconverter.domain.convertion.ExecutionType.BATCH;
 import static org.imageconverter.domain.convertion.ExecutionType.WS;
-import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.DB_CONVERTION_NUMBER;
 import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.IMAGE_PNG_CONVERTION_NUMBER;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 
 import java.io.IOException;
 
+import javax.validation.ConstraintViolationException;
+
 import org.imageconverter.domain.convertion.ImageConvertion;
+import org.imageconverter.infra.exceptions.ElementInvalidException;
+import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +38,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 
 @ActiveProfiles("test")
 @Tag("integration")
-@DisplayName("Integration Test for ImageConversionService, happy path :D ")
+@DisplayName("Integration Test for ImageConversionService, unhappy path :( ")
 //
 
 //@DataJpaTest
@@ -39,7 +46,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 
 @SpringBootTest
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
-public class ImageConversionServiceHappyPathTest {
+public class ImageConversionServiceUnHappyPathTest {
 
     @Autowired
     private ImageConversionService imageConversionService;
@@ -47,58 +54,43 @@ public class ImageConversionServiceHappyPathTest {
     @Value("classpath:image.png")
     private Resource imageFile;
 
-    @Test
     @Order(1)
-    @DisplayName("get a image convertion by id")
-    public void getImageConvertionByIdTest() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = 1L) // don't exist
+    @DisplayName("try to get a image convertion by id doens't ")
+    public void getImageConvertionByInvalidIdTest(final Long id) throws Exception {
 
-	// already on db, due to the db-data-test.sql
-	final var id = 1000L;
+	assertThatThrownBy(() -> imageConversionService.findById(id)) //
+			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
 
-	final var response = imageConversionService.findById(id);
-
-	assertThat(response.id()).isEqualTo(id);
-
-	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
-			.containsIgnoringCase(DB_CONVERTION_NUMBER);
     }
 
-    @Test
-    @Order(2)
-    @DisplayName("get all image convertions")
-    public void getAllImageConvertionTest() throws Exception {
-
-	// already on db, due to the db-data-test.sql
-	final var id = 1000L;
-
-	final var responses = imageConversionService.findAll();
-
-	assertThat(responses).map(f -> f.id()).contains(id);
-
-	assertThat(responses).map(f -> f.text()).containsAnyOf(DB_CONVERTION_NUMBER);
-    }
-
-    static Specification<ImageConvertion> equalsFileName(final String fileName) {
-	return (book, cq, cb) -> cb.equal(book.get("fileName"), fileName);
-    }
+//    @Test
+//    @Order(2)
+//    @DisplayName("get all image convertions")
+//    public void getAllImageConvertionTest() throws Exception {
+//
+//	// already on db, due to the db-data-test.sql
+//	final var id = 1000L;
+//
+//	final var responses = imageConversionService.findAll();
+//
+//	assertThat(responses).map(f -> f.id()).contains(id);
+//
+//	assertThat(responses).map(f -> f.text()).containsAnyOf(DB_CONVERTION_NUMBER);
+//    }
 
     @Test
     @Order(3)
-    @DisplayName("get a image convertion by search")
-    public void getImageTypeByExtensionTest() throws Exception {
+    @DisplayName("get a image invalid convertion by search")
+    public void getImageTypeByInvalidExtensionTest() throws Exception {
 
-	// already on db, due to the db-data-test.sql
-	final var fileName = "image_test.jpg";
+	final var specFieldOneNotExists = (Specification<ImageConvertion>) (book, cq, cb) -> cb.equal(book.get("fieldOneNotExists"), "blabla");
+	final var specFieldTwoNotExists = (Specification<ImageConvertion>) (book, cq, cb) -> cb.equal(book.get("fieldTwoNotExists"), "blabla");
 
-	// Specification<ImageConvertion> spec = (book, cq, cb) -> cb.equal(book.get("fileName"), fileName);
-
-	final var responses1 = imageConversionService.findBySpecification(equalsFileName(fileName));
-
-	assertThat(responses1).map(f -> f.fileName()).containsAnyOf(fileName);
-	
-	final var responses2 = imageConversionService.findBySpecification(null);
-	
-	assertThat(responses2).hasSize(1);
+	assertThatThrownBy(() -> imageConversionService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists))) //
+			.isInstanceOf(ElementInvalidException.class);
     }
 
     @Test

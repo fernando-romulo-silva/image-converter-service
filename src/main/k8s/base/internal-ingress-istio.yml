@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:  
+  name: general-internal-ingress #{PROJECT_NAMESPACE-internal-ingress}
+  namespace: general
+spec: 
+  hosts:
+  - company-dev.com.br
+  gateway:
+  - general-gateway #{PROJECT_NAMESPACE-gateway}
+  http:
+    - name: image-converter-service
+      match: 
+      - uri: 
+          prefix: "/image-converter-service/"
+      rewrite: 
+        uri: "/"
+      route:
+      - destination: 
+          host: image-convert-service-svc.general.svc.cluster.local #${PROJECT_NAME}-svc
+          port:
+            number: 5000

@@ -1,21 +1,23 @@
 package org.imageconverter.application;
 
-import java.util.HashSet;
+import static java.text.MessageFormat.format;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+
 import java.util.List;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 
 import org.imageconverter.domain.convertion.ImageConvertion;
 import org.imageconverter.domain.convertion.ImageConvertionRepository;
+import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,27 +28,14 @@ public class ImageConversionService {
 
     private final ImageConvertionRepository repository;
 
-    private final Validator validator;
-
     @Autowired
-    public ImageConversionService( //
-		    final ImageTypeService imageTypeService, //
-		    final ImageConvertionRepository repository, //
-		    final Validator validator //
-    ) {
+    public ImageConversionService(final ImageConvertionRepository repository) {
 	super();
 	this.repository = repository;
-	this.validator = validator;
     }
 
     @Transactional
     public ImageConverterResponse convert(@Valid final ImageConverterRequestInterface request) {
-
-	final var violations = validator.validate(request);
-
-	if (!violations.isEmpty()) {
-	    throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
-	}
 
 	final var imageConvertionNew = new ImageConvertion.Builder() //
 			.with(request).build();
@@ -66,7 +55,7 @@ public class ImageConversionService {
     }
 
     @Transactional(readOnly = true)
-    public ImageConverterResponse findById(@NotNull final Long id) {
+    public ImageConverterResponse findById(@NotNull(message = "findById: id cannot be null") final Long id) {
 
 	final var imageConvertion = repository.findById(id) //
 			.orElseThrow(() -> new ElementNotFoundException(ImageConvertion.class, id));
@@ -76,9 +65,24 @@ public class ImageConversionService {
 
     @Transactional(readOnly = true)
     public List<ImageConverterResponse> findBySpecification(final Specification<ImageConvertion> spec) {
-	return repository.findAll(spec) //
-			.stream() //
-			.map(ic -> new ImageConverterResponse(ic.getId(), ic.getFileName(), ic.getText())) //
-			.toList();
+
+	try {
+
+	    return repository.findAll(spec) //
+			    .stream() //
+			    .map(ic -> new ImageConverterResponse(ic.getId(), ic.getFileName(), ic.getText())) //
+			    .toList();
+
+	} catch (final InvalidDataAccessApiUsageException ex) {
+
+	    final var msgException = getRootCauseMessage(ex);
+
+	    final var invalidAttribute = substringBetween(msgException, "[", "]");
+
+	    final var msg = format("Unable to locate Attribute with the the given name ''{0}'' on ImageConvertion", invalidAttribute);
+
+	    throw new ElementInvalidException(msg);
+	}
+
     }
 }

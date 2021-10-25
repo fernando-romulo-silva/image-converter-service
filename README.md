@@ -8,6 +8,10 @@
 I use this project to learn new technologies related to microservices. In this case, the image convert. So it'll get new things all time.
 
 
+tesseract --version
+
+
+
 Ribbon and Hystrix
 
 

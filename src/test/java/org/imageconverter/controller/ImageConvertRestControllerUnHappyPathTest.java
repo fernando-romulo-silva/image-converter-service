@@ -93,6 +93,23 @@ public class ImageConvertRestControllerUnHappyPathTest {
 
     @Test
     @Order(3)
+    @DisplayName("Search a image convertion by invalid field search")
+    public void getImageConvertionByInvalidFieldSearchTest() throws Exception {
+
+	final var fileName = "some_file.png";
+
+	mvc.perform(get(REST_URL + "/search?filter=fileName:'" + fileName + "' and filedNotExist:'blablabla'") //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath("$.message").value(containsString("Unable to locate Attribute with the the given name 'filedNotExist' on ImageConvertion"))) //
+			.andReturn();
+	;
+    }
+    
+    @Test
+    @Order(4)
     @DisplayName("convert the image with unknow extension")
     public void convertTest() throws Exception {
 

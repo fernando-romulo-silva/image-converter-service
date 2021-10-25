@@ -133,11 +133,11 @@ public class LoggableAspect {
 
     static void log(final Logger logger, final LogLevel level, final String message) {
 	switch (level) {
-	case DEBUG -> logger.debug(message);
-	case TRACE -> logger.trace(message);
-	case WARN -> logger.warn(message);
-	case ERROR, FATAL -> logger.error(message);
-	default -> logger.info(message);
+        	case DEBUG -> logger.debug(message);
+        	case TRACE -> logger.trace(message);
+        	case WARN -> logger.warn(message);
+        	case ERROR, FATAL -> logger.error(message);
+        	default -> logger.info(message);
 	}
     }
 }
