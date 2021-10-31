@@ -42,14 +42,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-//
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
+@ExtendWith(SpringExtension.class)
 @DisplayName("Test the image type controller, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
@@ -152,7 +151,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.andExpect(jsonPath("$.message").value(containsString("Missing required creator property 'extension'"))) //
 	;
     }
-    
+
     @Test
     @Order(5)
     @DisplayName("Try to create image type with invalid value")
@@ -161,11 +160,11 @@ public class ImageTypeRestControllerUnHappyPathTest {
 
 	// invalid json
 	final var json = """
-                            {
-                                "extension": "BMP",
-                                "name": "",
-                                "description": "Device independent bitmap"
-                            } """;
+			{
+			    "extension": "BMP",
+			    "name": "",
+			    "description": "Device independent bitmap"
+			} """;
 
 	// try to create
 	mvc.perform(post(REST_URL) //
@@ -177,7 +176,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath("$.message").value(containsString("The 'name' cannot be empty"))) //
 	;
-    }    
+    }
 
     @Test
     @Order(6)
@@ -238,7 +237,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.andExpect(jsonPath("$.message").value(containsString("You cannot delete the image type 1001 because it is already used"))) //
 	;
     }
-    
+
     @Test
     @Order(9)
     @DisplayName("Try to access a invalid url")
@@ -250,7 +249,8 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
-			.andExpect(jsonPath("$.message").value(containsString("Resource not found. Please check the /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config for more information"))) //
+			.andExpect(jsonPath("$.message")
+					.value(containsString("Resource not found. Please check the /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config for more information"))) //
 	;
 
     }

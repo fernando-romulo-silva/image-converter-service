@@ -22,7 +22,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.Validator;
-import javax.validation.executable.ExecutableValidator;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -51,16 +50,12 @@ public class ImageTypeHappyPathTest {
 
     private Validator validator;
 
-    private ExecutableValidator executableValidator;
-
     @Mock
     private ApplicationContext applicationContext;
 
     @BeforeAll
     public void setUp() {
 	validator = buildDefaultValidatorFactory().getValidator();
-
-	executableValidator = buildDefaultValidatorFactory().getValidator().forExecutables();
 
 	// ------------------------------------
 	MockitoAnnotations.openMocks(this);

@@ -29,16 +29,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+@SpringBootTest
 @ActiveProfiles("test")
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
+//
 @Tag("integration")
 @DisplayName("Integration Test for ImageConversionService, happy path :D ")
-//
-
-//@DataJpaTest
-//@ExtendWith(SpringExtension.class)
-
-@SpringBootTest
-@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 public class ImageConversionServiceHappyPathTest {
 
     @Autowired
@@ -79,25 +75,25 @@ public class ImageConversionServiceHappyPathTest {
     }
 
     static Specification<ImageConvertion> equalsFileName(final String fileName) {
-	return (book, cq, cb) -> cb.equal(book.get("fileName"), fileName);
+	return (rt, cq, cb) -> cb.equal(rt.get("fileName"), fileName);
     }
 
     @Test
     @Order(3)
-    @DisplayName("get a image convertion by search")
-    public void getImageTypeByExtensionTest() throws Exception {
+    @DisplayName("get a image convertion by specification")
+    public void getImageConvertionBySpecificationTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
 	final var fileName = "image_test.jpg";
 
-	// Specification<ImageConvertion> spec = (book, cq, cb) -> cb.equal(book.get("fileName"), fileName);
+	// Specification<ImageConvertion> spec = (rt, cq, cb) -> cb.equal(rt.get("fileName"), fileName);
 
 	final var responses1 = imageConversionService.findBySpecification(equalsFileName(fileName));
 
 	assertThat(responses1).map(f -> f.fileName()).containsAnyOf(fileName);
-	
+
 	final var responses2 = imageConversionService.findBySpecification(null);
-	
+
 	assertThat(responses2).hasSize(1);
     }
 

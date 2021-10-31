@@ -1,6 +1,8 @@
 package org.imageconverter.application;
 
 import static java.text.MessageFormat.format;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 
 import java.util.List;
 
@@ -11,6 +13,7 @@ import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
 import org.imageconverter.infra.exceptions.ElementConflictException;
+import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
@@ -18,6 +21,7 @@ import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +39,7 @@ public class ImageTypeService {
     }
 
     @Transactional
-    public ImageTypeResponse createImageType(@Valid final CreateImageTypeRequest request) {
+    public ImageTypeResponse createImageType(@NotNull @Valid final CreateImageTypeRequest request) {
 
 	final var ImageTypeOptional = repository.findByExtension(request.extension());
 
@@ -53,7 +57,7 @@ public class ImageTypeService {
     }
 
     @Transactional
-    public ImageTypeResponse updateImageType(@NotNull final Long id, @Valid final UpdateImageTypeRequest request) {
+    public ImageTypeResponse updateImageType(@NotNull final Long id, @NotNull @Valid final UpdateImageTypeRequest request) {
 
 	final var imageType = repository.findById(id) //
 			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, id));
@@ -85,10 +89,24 @@ public class ImageTypeService {
 
     @Transactional(readOnly = true)
     public List<ImageTypeResponse> findBySpecification(final Specification<ImageType> spec) {
-	return repository.findAll(spec) //
-			.stream() //
-			.map(imageType -> new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName())) //
-			.toList();
+
+	try {
+
+	    return repository.findAll(spec) //
+			    .stream() //
+			    .map(imageType -> new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName())) //
+			    .toList();
+
+	} catch (final InvalidDataAccessApiUsageException ex) {
+
+	    final var msgException = getRootCauseMessage(ex);
+
+	    final var invalidAttribute = substringBetween(msgException, "[", "]");
+
+	    final var msg = format("Unable to locate Attribute with the the given name ''{0}'' on ImageType", invalidAttribute);
+
+	    throw new ElementInvalidException(msg);
+	}
     }
 
     @Transactional

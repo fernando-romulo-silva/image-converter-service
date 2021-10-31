@@ -85,9 +85,6 @@ public class ImageConvertionHappyPathTest {
 	// ------------------------------------
 	validator = buildDefaultValidatorFactory().getValidator();
 
-	final var executableValidator = buildDefaultValidatorFactory() //
-			.getValidator() //
-			.forExecutables();
 
 	// ------------------------------------
 	final var file = new File("src/test/resources/" + FILE_NAME_IMAGE_PNG);

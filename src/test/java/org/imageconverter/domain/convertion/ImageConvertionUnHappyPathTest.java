@@ -19,10 +19,12 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 
 import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.domain.imagetype.ImageTypeRespository;
+import org.imageconverter.infra.exceptions.ConvertionException;
 import org.imageconverter.util.BeanUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -137,7 +139,7 @@ public class ImageConvertionUnHappyPathTest {
 		$.height = height;
 	    }).build();
 
-	}).isInstanceOf(RuntimeException.class);
+	}).isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
 
     }
 }

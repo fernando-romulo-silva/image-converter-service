@@ -44,7 +44,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-//
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user

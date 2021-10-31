@@ -35,7 +35,7 @@ public class ImageConversionService {
     }
 
     @Transactional
-    public ImageConverterResponse convert(@Valid final ImageConverterRequestInterface request) {
+    public ImageConverterResponse convert(@NotNull @Valid final ImageConverterRequestInterface request) {
 
 	final var imageConvertionNew = new ImageConvertion.Builder() //
 			.with(request).build();
@@ -55,7 +55,7 @@ public class ImageConversionService {
     }
 
     @Transactional(readOnly = true)
-    public ImageConverterResponse findById(@NotNull(message = "findById: id cannot be null") final Long id) {
+    public ImageConverterResponse findById(@NotNull final Long id) {
 
 	final var imageConvertion = repository.findById(id) //
 			.orElseThrow(() -> new ElementNotFoundException(ImageConvertion.class, id));

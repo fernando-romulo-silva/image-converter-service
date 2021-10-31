@@ -34,16 +34,14 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-@Disabled("It's not working yeat")
-
 @ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-//
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
+@Disabled("It's not working yeat")
+@ExtendWith(SpringExtension.class)
 @Tag("performance")
 @DisplayName("Test the performance's image type controller :0")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -52,20 +50,19 @@ public class ImageConvertRestControllerPerfmanceTest {
     @Autowired
     private MockMvc mvc;
 
-    private CreateImageTypeRequest createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
-    
+    protected CreateImageTypeRequest createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+
     @BeforeAll
-    public static void beforeAll () {
-	 System.setProperty("junit.jupiter.execution.parallel.enabled", "true");
-	 System.setProperty("junit.jupiter.execution.parallel.config.strategy", "fixed");
-	 System.setProperty("junit.jupiter.execution.parallel.config.fixed.parallelism", "4");
+    public static void beforeAll() {
+	System.setProperty("junit.jupiter.execution.parallel.enabled", "true");
+	System.setProperty("junit.jupiter.execution.parallel.config.strategy", "fixed");
+	System.setProperty("junit.jupiter.execution.parallel.config.fixed.parallelism", "4");
     }
-    
 
     @Order(1)
     @DisplayName("get a image type by id")
     @Execution(ExecutionMode.CONCURRENT)
-    @RepeatedTest(value = 10, name = "{displayName} {currentRepetition}/{totalRepetitions}") // Jconsole or visualVMS    
+    @RepeatedTest(value = 10, name = "{displayName} {currentRepetition}/{totalRepetitions}") // Jconsole or visualVMS
     public void metho() throws Exception {
 
 	mvc.perform(get(REST_URL) //
@@ -77,7 +74,7 @@ public class ImageConvertRestControllerPerfmanceTest {
 			.andExpect(jsonPath("$").isArray()) //
 			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder("png", "jpg"))) //
 	;
-	
+
 	TimeUnit.SECONDS.sleep(2);
 
     }
