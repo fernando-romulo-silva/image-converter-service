@@ -22,7 +22,9 @@
 		<project.argLine> --enable-preview </project.argLine>
 
 
+		<!-- 
 		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+		 -->
 	</properties>
 
 	<dependencyManagement>
@@ -248,6 +250,17 @@
 		</extensions>
 
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<rulesets>
+						<ruleset>default-extensions-pmd-rulesets</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>			
+		
+		
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

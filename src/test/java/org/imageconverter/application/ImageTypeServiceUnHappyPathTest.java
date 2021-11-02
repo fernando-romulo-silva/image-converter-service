@@ -12,6 +12,7 @@ import javax.validation.ConstraintViolationException;
 import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.infra.exceptions.ConvertionException;
 import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
+import org.imageconverter.infra.exceptions.ElementConflictException;
 import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
@@ -145,13 +146,27 @@ public class ImageTypeServiceUnHappyPathTest {
     @ValueSource(longs = 1L) // id '1' don't exist
     @Order(7)
     @DisplayName("Try to delete a image type that doesn't exist")
-    public void deleteImageTypeTest(final Long id) throws Exception {
+    public void deleteImageTypeDoesNotExistTest(final Long id) throws Exception {
 
 	assertThatThrownBy(() -> {
 
 	    imageTypeService.deleteImageType(id);
 
 	}).isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("Try to delete a image type that has a relation with other record")
+    public void deleteImageTypeRestrictionTest() throws Exception {
+
+	final var id = 1001L; // already exists and has a convertion image relation
+
+	assertThatThrownBy(() -> {
+	    
+	    imageTypeService.deleteImageType(id);
+	    
+	}).isInstanceOfAny(ElementConflictException.class);
     }
 
 }

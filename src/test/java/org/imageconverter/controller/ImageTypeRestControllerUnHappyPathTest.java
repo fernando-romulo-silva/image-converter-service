@@ -206,7 +206,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     @Order(7)
     @DisplayName("Try to delete a image type that doesn't exist")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void deleteImageTypeTest() throws Exception {
+    public void deleteImageTypeDoesNotExistTest() throws Exception {
 
 	final var id = "12356";
 
