@@ -80,8 +80,6 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-		<!-- <dependency> <groupId>org.springframework.security</groupId> <artifactId>spring-security-config</artifactId> </dependency> -->
-
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
@@ -250,16 +248,16 @@
 		</extensions>
 
 		<plugins>
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
-						<ruleset>default-extensions-pmd-rulesets</ruleset>
+						<ruleset>default-extensions-pmd-rulesets.xml</ruleset>
 					</rulesets>
 				</configuration>
 			</plugin>			
-		
 		
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
