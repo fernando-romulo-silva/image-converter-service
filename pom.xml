@@ -19,12 +19,9 @@
 
 		<junit-platform.version>5.3.1</junit-platform.version>
 
-		<project.argLine> --enable-preview </project.argLine>
+		<!-- <argLine>enable-preview </argLine> -->
 
-
-		<!-- 
-		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
-		 -->
+		<!-- <checkstyle.config.location>checkstyle.xml</checkstyle.config.location> -->
 	</properties>
 
 	<dependencyManagement>
@@ -236,6 +233,23 @@
 
 	</dependencies>
 
+	<reporting>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<rulesets>
+						<ruleset>default-extensions-pmd-rulesets.xml</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</reporting>
+
+
 	<build>
 
 		<extensions>
@@ -248,7 +262,12 @@
 		</extensions>
 
 		<plugins>
-		
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
@@ -257,8 +276,8 @@
 						<ruleset>default-extensions-pmd-rulesets.xml</ruleset>
 					</rulesets>
 				</configuration>
-			</plugin>			
-		
+			</plugin>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
