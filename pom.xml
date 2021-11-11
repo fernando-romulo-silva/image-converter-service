@@ -127,7 +127,6 @@
 			<version>1.4</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -271,11 +270,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
+				<!-- 
 				<configuration>
 					<rulesets>
 						<ruleset>default-extensions-pmd-rulesets.xml</ruleset>
 					</rulesets>
 				</configuration>
+				 -->
 			</plugin>
 
 			<plugin>
@@ -283,7 +284,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring-boot.version}</version>
 				<configuration>
-					<jvmArguments>${project.argLine}</jvmArguments>
 					<mainClass>org.imageconverter.ImageServiceApplication</mainClass>
 					<layers>
 						<enabled>true</enabled>
