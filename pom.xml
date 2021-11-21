@@ -236,13 +236,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.openpojo</groupId>
-			<artifactId>openpojo</artifactId>
-			<version>0.9.1</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -268,7 +261,8 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
-						<ruleset>rulesets/java/quickstart.xml</ruleset>
+						<ruleset>rulesets/java/quickstart.xml</ruleset>  
+						<ruleset>default-extensions/pmd/java/pmd-exclude.xml</ruleset>
 					</rulesets>
 				</configuration>
 			</plugin>
@@ -276,6 +270,9 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
+				<configuration>
+					<excludeBugsFile>default-extensions/spotbugs/spotbugs-excludes.xml</excludeBugsFile>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -342,6 +339,7 @@
 				<configuration>
 					<rulesets>
 						<ruleset>rulesets/java/quickstart.xml</ruleset>
+						<ruleset>default-extensions/pmd/java/pmd-exclude.xml</ruleset>
 					</rulesets>
 				</configuration>
 			</plugin>
@@ -349,6 +347,9 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
+				<configuration>
+					<excludeFilterFile>default-extensions/spotbugs/spotbugs-excludes.xml</excludeFilterFile>
+				</configuration>				
 			</plugin>
 
 			<plugin>

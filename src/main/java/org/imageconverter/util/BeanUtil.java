@@ -9,18 +9,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class BeanUtil implements ApplicationContextAware {
 
-    private static ApplicationContext CONTEXT;
+    private static ApplicationContext context;
 
     public static synchronized void defineContext(final ApplicationContext newContext) {
-	CONTEXT = newContext;
+	context = newContext;
     }
 
     public static <T> T getBeanFrom(final Class<T> beanClass) {
-	return CONTEXT.getBean(beanClass);
+	return context.getBean(beanClass);
     }
     
     public static Environment getEnvironment() {
-	return CONTEXT.getEnvironment();
+	return context.getEnvironment();
     }
 
     @Override
