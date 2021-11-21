@@ -49,8 +49,8 @@ import org.springframework.test.web.servlet.MockMvc;
 public class ImageConvertRestControllerUnHappyPathTest {
 
     // JSqlParser
-    @Value("classpath:db/db-data-test.sql")
-    private Resource dbDataTest;
+    // @Value("classpath:db/db-data-test.sql")
+    // private Resource dbDataTest;
 
     @Value("classpath:beach.jpeg")
     private Resource imageFile;
@@ -70,8 +70,7 @@ public class ImageConvertRestControllerUnHappyPathTest {
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
-			.andExpect(jsonPath("$.message").value(containsString("ImageConvertion with id '" + id + "' not found"))) //
-	;
+			.andExpect(jsonPath("$.message").value(containsString("ImageConvertion with id '" + id + "' not found"))); //
     }
 
     @Test
@@ -86,8 +85,7 @@ public class ImageConvertRestControllerUnHappyPathTest {
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(content().string("[]")) //
-	;
+			.andExpect(content().string("[]")); //
     }
 
     @Test
@@ -104,9 +102,8 @@ public class ImageConvertRestControllerUnHappyPathTest {
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath("$.message").value(containsString("Unable to locate Attribute with the the given name 'filedNotExist' on ImageConvertion"))) //
 			.andReturn();
-	;
     }
-    
+
     @Test
     @Order(4)
     @DisplayName("convert the image with unknow extension")

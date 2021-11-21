@@ -191,6 +191,10 @@ public class ImageConvertion {
 
 	public Builder with(final ImageConverterRequestInterface request) {
 
+	    if (isNull(request)) {
+		throw new ConvertionException("Empty request to convert!");
+	    }
+	    
 	    this.data = request.data();
 	    this.executionType = request.executionType();
 
@@ -209,15 +213,15 @@ public class ImageConvertion {
 
 	public ImageConvertion build() {
 
+	    if (isNull(data) || data.isEmpty()) {
+		throw new ConvertionException("Empty file to convert!");
+	    }
+	    
 	    final var tesseractService = getBeanFrom(TesseractService.class);
 
 	    final var imageTypeRepository = getBeanFrom(ImageTypeRespository.class);
 
 	    final var validator = getBeanFrom(Validator.class);
-
-	    if (isNull(data) || data.isEmpty()) {
-		throw new ConvertionException("Empty file to convert!");
-	    }
 
 	    final var extensionTxt = getExtension(data.getOriginalFilename());
 

@@ -1,9 +1,12 @@
 package org.imageconverter.util.controllers.imagetype;
 
-public interface ImageTypeConst {
+public final class ImageTypeConst {
 
-    static final String REST_URL = "/rest/images/type";
+    public static final String REST_URL = "/rest/images/type";
 
-    static final String ACTION_URL = "/gui/images/type";
+    public static final String ACTION_URL = "/gui/images/type";
 
+    private ImageTypeConst() {
+	throw new IllegalStateException("You can't instanciate this class");
+    }
 }

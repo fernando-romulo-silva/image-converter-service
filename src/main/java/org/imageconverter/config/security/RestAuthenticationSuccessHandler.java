@@ -1,5 +1,9 @@
 package org.imageconverter.config.security;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.springframework.util.StringUtils.hasText;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,7 +12,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Component
 public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -20,23 +23,24 @@ public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 
 	final var savedRequest = requestCache.getRequest(request, response);
 
-	if (savedRequest == null) {
+	if (isNull(savedRequest)) {
 	    clearAuthenticationAttributes(request);
 	    return;
 	}
 
 	final var targetUrlParam = getTargetUrlParameter();
 
-	if (isAlwaysUseDefaultTargetUrl() || (targetUrlParam != null && StringUtils.hasText(request.getParameter(targetUrlParam)))) {
+	if (isAlwaysUseDefaultTargetUrl() || nonNull(targetUrlParam) && hasText(request.getParameter(targetUrlParam))) {
+
 	    requestCache.removeRequest(request, response);
 	    clearAuthenticationAttributes(request);
-	    return;
+
+	} else {
+	    clearAuthenticationAttributes(request);
 	}
-
-	clearAuthenticationAttributes(request);
     }
 
-    public void setRequestCache(final RequestCache requestCache) {
-	this.requestCache = requestCache;
-    }
+//    public void setRequestCache(final RequestCache requestCache) {
+//	this.requestCache = requestCache;
+//    }
 }

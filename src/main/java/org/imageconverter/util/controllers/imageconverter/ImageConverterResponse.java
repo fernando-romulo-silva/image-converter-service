@@ -17,6 +17,5 @@ public final record ImageConverterResponse( //
 		//
 		@JsonProperty(value = "text", required = true) //
 		@Schema(name = "txt", required = true) //
-		String text //
-) {
+		String text) {
 }

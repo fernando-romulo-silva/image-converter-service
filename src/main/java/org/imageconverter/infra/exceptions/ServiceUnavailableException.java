@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exceptions;
 
-public class ServiceUnavailableException extends RuntimeException {
+public class ServiceUnavailableException extends ImageConverterServiceException {
 
     private static final long serialVersionUID = 1L;
 

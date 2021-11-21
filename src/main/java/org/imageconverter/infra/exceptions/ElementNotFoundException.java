@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exceptions;
 
-public class ElementNotFoundException extends RuntimeException {
+public class ElementNotFoundException extends ImageConverterServiceException {
 
     private static final long serialVersionUID = 1L;
 
@@ -11,8 +11,4 @@ public class ElementNotFoundException extends RuntimeException {
     public <T> ElementNotFoundException(final Class<T> cls, final String msg) {
 	super(cls.getSimpleName() + " with " + msg + " not found");
     }
-
-//    public Long getObjIdentifier() {
-//	return objIdentifier;
-//    }
 }

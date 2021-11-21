@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.concurrent.TimeUnit;
 
-import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -50,8 +49,6 @@ public class ImageConvertRestControllerPerfmanceTest {
     @Autowired
     private MockMvc mvc;
 
-    protected CreateImageTypeRequest createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
-
     @BeforeAll
     public static void beforeAll() {
 	System.setProperty("junit.jupiter.execution.parallel.enabled", "true");
@@ -65,6 +62,8 @@ public class ImageConvertRestControllerPerfmanceTest {
     @RepeatedTest(value = 10, name = "{displayName} {currentRepetition}/{totalRepetitions}") // Jconsole or visualVMS
     public void metho() throws Exception {
 
+	// final var createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+	
 	mvc.perform(get(REST_URL) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //

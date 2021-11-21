@@ -10,16 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-public class CsrfLoggerFilter extends OncePerRequestFilter {
+public final class CsrfLoggerFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-	
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
+
 	final var csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
 	response.setHeader("X-CSRF-TOKEN", csrfToken.getToken());
 
 	filterChain.doFilter(request, response);
     }
-
 }

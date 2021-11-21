@@ -80,6 +80,7 @@ public class SecurityConfig {
 	@GetMapping("favicon.ico")
 	@ResponseBody
 	void returnNoFavicon() {
+	    // just to fix favicon.ico problem
 	}
     }
 }

@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exceptions;
 
-public class ElementConflictException extends RuntimeException {
+public class ElementConflictException extends ImageConverterServiceException {
 
     private static final long serialVersionUID = 1L;
 

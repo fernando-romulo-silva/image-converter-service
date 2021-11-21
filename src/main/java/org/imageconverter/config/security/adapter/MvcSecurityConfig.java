@@ -21,7 +21,7 @@ public class MvcSecurityConfig extends WebSecurityConfigurerAdapter implements W
     private final CsrfTokenRepository csrfTokenRepository;
 
     @Autowired
-    public MvcSecurityConfig(final CsrfTokenRepository cookieCsrfTokenRepository) {
+    MvcSecurityConfig(final CsrfTokenRepository cookieCsrfTokenRepository) {
 	super(true); // disable default configuration
 	this.csrfTokenRepository = cookieCsrfTokenRepository;
     }

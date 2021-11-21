@@ -29,10 +29,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -60,11 +58,11 @@ public class ImageTypeRestControllerHappyPathTest {
     private ObjectMapper mapper;
 
     // JSqlParser
-    @Value("classpath:db/db-data-test.sql")
-    private Resource dbDataTest;
+    // @Value("classpath:db/db-data-test.sql")
+    // private Resource dbDataTest;
 
-    @Value("classpath:image.png")
-    private Resource imageFile;
+    // @Value("classpath:image.png")
+    // private Resource imageFile;
 
     @Autowired
     private MockMvc mvc;

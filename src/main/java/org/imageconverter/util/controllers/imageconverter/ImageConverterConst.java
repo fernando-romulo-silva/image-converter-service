@@ -1,11 +1,14 @@
 package org.imageconverter.util.controllers.imageconverter;
 
-public interface ImageConverterConst {
+public final class ImageConverterConst {
 
-    static final String BASE_URL = "/image-converter";
+    public static final String BASE_URL = "/image-converter";
 
-    static final String REST_URL = "/rest/images/convertion";
+    public static final String REST_URL = "/rest/images/convertion";
 
-    static final String ACTION_URL = "/gui/images/convertion";
+    public static final String ACTION_URL = "/gui/images/convertion";
 
+    private ImageConverterConst() {
+	throw new IllegalStateException("You can't instanciate this class");
+    }
 }

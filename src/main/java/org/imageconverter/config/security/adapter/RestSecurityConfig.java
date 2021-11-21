@@ -30,7 +30,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
     private final CsrfTokenRepository csrfTokenRepository;
     
     @Autowired
-    public RestSecurityConfig(final RestAuthenticationSuccessHandler authenticationSuccessHandler, final HttpFirewall allowUrlEncodedSlashHttpFirewall, final CsrfTokenRepository httpSessionCsrfTokenRepository) {
+    RestSecurityConfig(final RestAuthenticationSuccessHandler authenticationSuccessHandler, final HttpFirewall allowUrlEncodedSlashHttpFirewall, final CsrfTokenRepository httpSessionCsrfTokenRepository) {
 	super(true); // disable default configuration
 	this.authenticationSuccessHandler = authenticationSuccessHandler;
 	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;

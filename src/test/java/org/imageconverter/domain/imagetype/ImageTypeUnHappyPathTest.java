@@ -31,14 +31,12 @@ import org.springframework.context.ApplicationContext;
 @TestInstance(PER_CLASS)
 public class ImageTypeUnHappyPathTest {
 
-    private Validator validator;
-
     @Mock
     private ApplicationContext applicationContext;
 
     @BeforeAll
     public void setUp() {
-	validator = buildDefaultValidatorFactory().getValidator();
+	final var validator = buildDefaultValidatorFactory().getValidator();
 
 	MockitoAnnotations.openMocks(this);
 

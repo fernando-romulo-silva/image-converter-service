@@ -35,7 +35,7 @@ import io.swagger.v3.oas.annotations.info.License;
 //		) //
 )
 @SpringBootApplication
-public class ImageServiceApplication {
+public class ImageServiceApplication { // NOPMD - It's not a util class, it's a starter
 
     public static void main(final String[] args) {
 	run(ImageServiceApplication.class, args);

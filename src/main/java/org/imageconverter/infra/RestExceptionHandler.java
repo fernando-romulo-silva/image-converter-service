@@ -2,9 +2,11 @@ package org.imageconverter.infra;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getMessage;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
+import static org.apache.commons.text.StringEscapeUtils.escapeJava;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -24,6 +26,7 @@ import org.imageconverter.infra.exceptions.ElementConflictException;
 import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.infra.exceptions.ImageConvertServiceException;
+import org.imageconverter.infra.exceptions.ImageConverterServiceException;
 import org.imageconverter.infra.exceptions.ServiceUnavailableException;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
@@ -58,7 +61,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	return handleObjectException(ex, request, BAD_REQUEST);
     }
-     
+
     @ExceptionHandler(ServiceUnavailableException.class)
     public ResponseEntity<Object> handleServiceUnavailableException(final ServiceUnavailableException ex, final WebRequest request) {
 
@@ -70,7 +73,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	return handleObjectException(ex, request, INTERNAL_SERVER_ERROR);
     }
-    
+
     @ExceptionHandler(ConstraintViolationException.class)
     ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException ex, final WebRequest request) {
 
@@ -135,9 +138,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleObjectException(final Throwable ex, final WebRequest request, final HttpStatus status) {
 
-	final var body = buildResponseBody(getRootCauseMessage(ex), status, ex, request);
+	final var msg = ex instanceof ImageConverterServiceException ? escapeJava(getMessage(ex)) : escapeJava(getRootCauseMessage(ex));
 
-	logger.error(getRootCauseMessage(ex), getRootCause(ex));
+	final var body = buildResponseBody(msg, status, ex, request);
+
+	if (logger.isErrorEnabled()) {
+	    logger.error(msg, getRootCause(ex));
+	}
 
 	return new ResponseEntity<>(body, status);
     }
@@ -146,7 +153,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	final var body = buildResponseBody(msg, status, ex, request);
 
-	logger.error(getRootCauseMessage(ex), getRootCause(ex));
+	if (logger.isErrorEnabled()) {
+	    logger.error(escapeJava(getRootCauseMessage(ex)), getRootCause(ex));
+	}
 
 	return new ResponseEntity<>(body, status);
     }
@@ -175,6 +184,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	return Objects.nonNull(value) //
 			&& value.length > 0 //
-			&& value[0].contentEquals("true");
+			&& "true".contentEquals(value[0]);
     }
 }

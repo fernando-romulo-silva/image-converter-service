@@ -41,9 +41,9 @@ public class ImageTypeService {
     @Transactional
     public ImageTypeResponse createImageType(@NotNull @Valid final CreateImageTypeRequest request) {
 
-	final var ImageTypeOptional = repository.findByExtension(request.extension());
+	final var imageTypeOptional = repository.findByExtension(request.extension());
 
-	if (ImageTypeOptional.isPresent()) {
+	if (imageTypeOptional.isPresent()) {
 	    throw new ElementAlreadyExistsException(ImageType.class, "extension '" + request.extension() + "'");
 	}
 
@@ -51,9 +51,7 @@ public class ImageTypeService {
 
 	final var imageConvertion = repository.save(imageType);
 
-	final var result = new ImageTypeResponse(imageType.getId(), imageConvertion.getExtension(), imageType.getName());
-
-	return result;
+	return new ImageTypeResponse(imageType.getId(), imageConvertion.getExtension(), imageType.getName());
     }
 
     @Transactional
@@ -105,7 +103,7 @@ public class ImageTypeService {
 
 	    final var msg = format("Unable to locate Attribute with the the given name ''{0}'' on ImageType", invalidAttribute);
 
-	    throw new ElementInvalidException(msg);
+	    throw new ElementInvalidException(msg, ex);
 	}
     }
 
@@ -123,7 +121,7 @@ public class ImageTypeService {
 
 	} catch (final DataIntegrityViolationException ex) {
 
-	    throw new ElementConflictException(format("You cannot delete the image type {0} because it is already used", id.toString()));
+	    throw new ElementConflictException(format("You cannot delete the image type {0} because it is already used", id.toString()), ex);
 	}
     }
 

@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import javax.persistence.Column;
@@ -48,14 +49,12 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 @TestInstance(PER_CLASS)
 public class ImageTypeHappyPathTest {
 
-    private Validator validator;
-
     @Mock
     private ApplicationContext applicationContext;
 
     @BeforeAll
     public void setUp() {
-	validator = buildDefaultValidatorFactory().getValidator();
+	final var validator = buildDefaultValidatorFactory().getValidator();
 
 	// ------------------------------------
 	MockitoAnnotations.openMocks(this);
@@ -111,6 +110,34 @@ public class ImageTypeHappyPathTest {
 	assertThat(imageType.getExtension()).isEqualToIgnoringCase(extension);
 
 	assertThat(imageType.getDescription()).isEqualTo(ofNullable(description));
+	
+	assertThat(imageType.getCreated()).isBeforeOrEqualTo(LocalDateTime.now());
     }
+    
+    
+    @Test
+    @Order(4)
+    @DisplayName("Test the imageTypes update")
+    public void updateValidImageTypeTest() {
 
+	final var imageType = new ImageType("png", "PNG", "Portable Network Graphics");
+
+	final var extension = "png_new"; 
+	
+	final var name = "PNG_NEW";
+	
+	final var description = "new Description";
+	
+	assertThat(imageType.getName()).isNotEqualTo(name);
+	
+	assertThat(imageType.getUpdated()).isEmpty();
+	
+	imageType.update(null, name, null);
+	
+	imageType.update(extension, null, null);
+	
+	imageType.update(null, null, description);
+	
+	assertThat(imageType.getUpdated().get()).isBeforeOrEqualTo(LocalDateTime.now());
+    }
 }

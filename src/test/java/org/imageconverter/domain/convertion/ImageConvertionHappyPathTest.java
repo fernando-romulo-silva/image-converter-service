@@ -66,8 +66,6 @@ public class ImageConvertionHappyPathTest {
 
     public static final String FILE_NAME_IMAGE_PNG = "image.png";
 
-    private Validator validator;
-
     private MockMultipartFile mockMultipartFile;
 
     @Mock
@@ -83,8 +81,7 @@ public class ImageConvertionHappyPathTest {
     public void setUp() throws Exception {
 
 	// ------------------------------------
-	validator = buildDefaultValidatorFactory().getValidator();
-
+	final var validator = buildDefaultValidatorFactory().getValidator();
 
 	// ------------------------------------
 	final var file = new File("src/test/resources/" + FILE_NAME_IMAGE_PNG);
@@ -99,7 +96,7 @@ public class ImageConvertionHappyPathTest {
 
 	// ------------------------------------
 	MockitoAnnotations.openMocks(this);
-	
+
 	BeanUtil.defineContext(applicationContext);
 
 	when(applicationContext.getBean(ImageTypeRespository.class)) //
@@ -116,11 +113,11 @@ public class ImageConvertionHappyPathTest {
 
 	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any())) //
 			.thenReturn(IMAGE_PNG_CONVERTION_NUMBER);
-	
+
 	final var imageType = Optional.of(new ImageType("png", "PNG", "Portable Network Graphics"));
-	
+
 	when(imageTypeRespository.findByExtension("png")) //
-			.thenReturn(imageType);	
+			.thenReturn(imageType);
     }
 
     @Test

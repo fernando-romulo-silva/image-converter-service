@@ -81,7 +81,7 @@ public class ImageConversionService {
 
 	    final var msg = format("Unable to locate Attribute with the the given name ''{0}'' on ImageConvertion", invalidAttribute);
 
-	    throw new ElementInvalidException(msg);
+	    throw new ElementInvalidException(msg, ex);
 	}
 
     }

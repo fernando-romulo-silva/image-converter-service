@@ -40,7 +40,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Description("Controller for image converstion API")
-@RequestMapping(value = REST_URL)
+@RequestMapping(REST_URL)
 //
 @Tag( //
 		name = "Image Convert", //
@@ -56,7 +56,7 @@ public class ImageConverterRestController {
 
     private final ImageConversionService imageConversionService;
 
-    public ImageConverterRestController(final ImageConversionService imageConversionService) {
+    ImageConverterRestController(final ImageConversionService imageConversionService) {
 	super();
 	this.imageConversionService = imageConversionService;
     }

@@ -22,12 +22,5 @@ public record UpdateImageTypeRequest( //
 
 		@JsonProperty(value = "description", required = false) //
 		@Schema(name = "description", required = false) //
-		String description) //
-{
-
-    
-    public UpdateImageTypeRequest {
-//        Objects.requireNonNull(id);
-        // ... 
-    }
+		String description) {
 }

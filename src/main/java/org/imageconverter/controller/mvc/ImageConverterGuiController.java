@@ -1,11 +1,10 @@
 package org.imageconverter.controller.mvc;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "/gui/images")
+@RequestMapping("/gui/images")
 class ImageConverterGuiController {
     
 //    private final BookService bookService;

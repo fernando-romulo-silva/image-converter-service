@@ -17,7 +17,6 @@ public record ImageTypeResponse( //
 
 		@JsonProperty(value = "name", required = true) //
 		@Schema(name = "name", required = true) //
-		String name //
-) {
+		String name) {
 
 }

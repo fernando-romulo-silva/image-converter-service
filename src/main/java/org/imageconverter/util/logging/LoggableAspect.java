@@ -1,6 +1,7 @@
 package org.imageconverter.util.logging;
 
 import static java.lang.String.format;
+import static java.util.Locale.ROOT;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
@@ -10,6 +11,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.StringJoiner;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -59,10 +61,12 @@ public class LoggableAspect {
 	final var methodArgs = point.getArgs();
 	final var methodParams = codeSignature.getParameterNames();
 
-	log(logger, level, entry(methodName, showArgs, methodParams, methodArgs));
+	executeLog(logger, level, entry(methodName, showArgs, methodParams, methodArgs));
 
 	final var start = Instant.now();
 
+	final var lowerCaseUnit = unit.name().toLowerCase(ROOT);
+	
 	try {
 
 	    final var response = ofNullable(point.proceed()) //
@@ -70,9 +74,10 @@ public class LoggableAspect {
 
 	    final var end = Instant.now();
 
-	    final var duration = format("%s %s", unit.between(start, end), unit.name().toLowerCase());
+	    
+	    final var duration = format("%s %s", unit.between(start, end), lowerCaseUnit);
 
-	    log(logger, level, exit(methodName, duration, response, showResult, showExecutionTime));
+	    executeLog(logger, level, exit(methodName, duration, response, showResult, showExecutionTime));
 
 	    return response;
 
@@ -80,9 +85,9 @@ public class LoggableAspect {
 
 	    final var end = Instant.now();
 
-	    final var duration = format("%s %s", unit.between(start, end), unit.name().toLowerCase());
+	    final var duration = format("%s %s", unit.between(start, end), lowerCaseUnit);
 
-	    log(logger, WARN, error(methodName, duration, ex, showExecutionTime));
+	    executeLog(logger, WARN, error(methodName, duration, ex, showExecutionTime));
 
 	    throw ex;
 	}
@@ -131,13 +136,14 @@ public class LoggableAspect {
 	return message.toString();
     }
 
-    static void log(final Logger logger, final LogLevel level, final String message) {
+    static void executeLog(final Logger logger, final LogLevel level, final String message) {
+	final var finalMsg = StringEscapeUtils.escapeJava(message);
 	switch (level) {
-        	case DEBUG -> logger.debug(message);
-        	case TRACE -> logger.trace(message);
-        	case WARN -> logger.warn(message);
-        	case ERROR, FATAL -> logger.error(message);
-        	default -> logger.info(message);
+        	case DEBUG -> logger.debug(finalMsg);
+        	case TRACE -> logger.trace(finalMsg);
+        	case WARN -> logger.warn(finalMsg);
+        	case ERROR, FATAL -> logger.error(finalMsg);
+        	default -> logger.info(finalMsg);
 	}
     }
 }

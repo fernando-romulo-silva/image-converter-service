@@ -42,7 +42,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Description("Controller for image type API")
-@RequestMapping(value = REST_URL)
+@RequestMapping(REST_URL)
 //
 @Tag( //
 		name = "Image Type", //
@@ -59,7 +59,7 @@ public class ImageTypeRestController {
     private final ImageTypeService imageTypeService;
 
     @Autowired
-    public ImageTypeRestController(final ImageTypeService imageTypeService) {
+    ImageTypeRestController(final ImageTypeService imageTypeService) {
 	super();
 	this.imageTypeService = imageTypeService;
     }
@@ -128,7 +128,7 @@ public class ImageTypeRestController {
     }
 
     @ResponseStatus(NO_CONTENT)
-    @DeleteMapping(value = "/{id:[\\d]*}")
+    @DeleteMapping("/{id:[\\d]*}")
     public void delete( //
 		    //
 		    @Parameter(description = "The image type id's") //

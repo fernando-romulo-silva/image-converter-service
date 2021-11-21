@@ -48,8 +48,6 @@ import net.sourceforge.tess4j.ITesseract;
 @TestInstance(PER_CLASS)
 public class ImageConvertionUnHappyPathTest {
 
-    private Validator validator;
-
     private MockMultipartFile mockMultipartFile;
 
     @Mock
@@ -65,7 +63,7 @@ public class ImageConvertionUnHappyPathTest {
     public void setUp() throws Exception {
 
 	// ------------------------------------
-	validator = buildDefaultValidatorFactory().getValidator();
+	final var validator = buildDefaultValidatorFactory().getValidator();
 
 	// ------------------------------------
 	final var file = new File("src/test/resources/" + FILE_NAME_IMAGE_PNG);
@@ -128,18 +126,16 @@ public class ImageConvertionUnHappyPathTest {
 		    final MultipartFile data, final ExecutionType executionType, //
 		    final Integer x, final Integer y, final Integer width, final Integer height) {
 
-	assertThatThrownBy(() -> {
+	assertThatThrownBy(() -> new ImageConvertion.Builder().with($ -> {
+	    $.data = data;
+	    $.executionType = executionType;
+	    $.x = x;
+	    $.y = y;
+	    $.width = width;
+	    $.height = height;
+	}).build()
 
-	    new ImageConvertion.Builder().with($ -> {
-		$.data = data;
-		$.executionType = executionType;
-		$.x = x;
-		$.y = y;
-		$.width = width;
-		$.height = height;
-	    }).build();
-
-	}).isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+	).isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
 
     }
 }

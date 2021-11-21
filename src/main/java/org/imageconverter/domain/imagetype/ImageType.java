@@ -100,21 +100,31 @@ public class ImageType {
 	return Optional.ofNullable(description);
     }
 
-    @Override
-    public int hashCode() {
-	return Objects.hash(id);
+    public LocalDateTime getCreated() {
+	return LocalDateTime.from(created);
+    }
+
+    public Optional<LocalDateTime> getUpdated() {
+	return Optional.ofNullable(updated);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public int hashCode() {
+	return Objects.hash(this.id);
+    }
 
-	if (this == obj)
+    @Override
+    public boolean equals(final Object obj) {
+
+	if (this == obj) {
 	    return true;
+	}
 
-	if (!(obj instanceof ImageType other))
+	if (!(obj instanceof ImageType other)) {
 	    return false;
+	}
 
-	return Objects.equals(id, other.id);
+	return Objects.equals(this.id, other.id);
     }
 
     @Override

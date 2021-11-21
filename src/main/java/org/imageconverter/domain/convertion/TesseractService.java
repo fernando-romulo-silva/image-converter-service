@@ -52,7 +52,7 @@ public class TesseractService {
 	    final var msg = format("Image {0} has Tessarct error {1}.", getRootCauseMessage(ex));
 	    throw new TesseractConvertionException(msg, ex);
 
-	} catch (final Throwable ex) {
+	} catch (final Exception ex) {
 
 	    final var msg = format("Unexpected error {0}.", getRootCauseMessage(ex));
 	    throw new ImageConvertServiceException(msg, ex);
@@ -77,7 +77,7 @@ public class TesseractService {
 	    final var msg = format("Image {0} has Tessarct error {1}.", getRootCauseMessage(ex));
 	    throw new TesseractConvertionException(msg, ex);
 
-	} catch (final Throwable ex) {
+	} catch (final Exception ex) {
 
 	    final var msg = format("Unexpected error {0}.", getRootCauseMessage(ex));
 	    throw new ImageConvertServiceException(msg, ex);

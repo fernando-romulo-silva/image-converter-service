@@ -44,7 +44,7 @@ The idea here is to use spring boot with the smallest docker container using spr
 ### How to Execute
 
 requirements: 
- - Java 16
+ - Java 17
  - Maven 3
  
 $ docker build -f src/docker/Dockerfile -t image-service-converter-image .

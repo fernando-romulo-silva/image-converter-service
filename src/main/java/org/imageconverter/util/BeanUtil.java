@@ -3,6 +3,7 @@ package org.imageconverter.util;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +17,10 @@ public class BeanUtil implements ApplicationContextAware {
 
     public static <T> T getBeanFrom(final Class<T> beanClass) {
 	return CONTEXT.getBean(beanClass);
+    }
+    
+    public static Environment getEnvironment() {
+	return CONTEXT.getEnvironment();
     }
 
     @Override

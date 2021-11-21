@@ -59,8 +59,8 @@ public class ImageConvertRestControllerHappyPathTest {
     private ObjectMapper mapper;
 
     // JSqlParser
-    @Value("classpath:db/db-data-test.sql")
-    private Resource dbDataTest;
+    // @Value("classpath:db/db-data-test.sql")
+    // private Resource dbDataTest;
 
     @Value("classpath:image.png")
     private Resource imageFile;
