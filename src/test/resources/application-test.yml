@@ -12,6 +12,19 @@ tesseract:
     language: eng
     folder : /home/fernando/Development/tools/tesseract/tessdata/
 
+  
+#============== Server ===============================================================================
+server:
+    port: 18080
+
+#============== Actuator ==============================================================================
+management:
+  endpoint.refresh.enabled: true
+  endpoints.web.exposure.include: '*'
+  server:
+    port: 18080
+
+
 #============== Data Source ===========================================================================
 spring:
     sql.init:

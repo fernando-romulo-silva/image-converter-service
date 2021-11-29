@@ -173,7 +173,7 @@ public class ImageTypeRestControllerHappyPathTest {
     public void updateImageTypeTest() throws Exception {
 
 	// create a new image type
-	final var result = mvc.perform(post(REST_URL) //
+	final var createResult = mvc.perform(post(REST_URL) //
 			.content(asJsonString(createImageTypeRequest)) //
 			.contentType(APPLICATION_JSON) //
 			.accept(TEXT_PLAIN, APPLICATION_JSON) //
@@ -184,23 +184,13 @@ public class ImageTypeRestControllerHappyPathTest {
 			.andReturn();
 
 	// what's id?
-	final var id = substringBetween(result.getResponse().getContentAsString(), "'", "'");
-
-	// check if it exists
-	mvc.perform(get(REST_URL + "/{id}", id) //
-			.accept(APPLICATION_JSON) //
-			.with(csrf())) //
-			.andDo(print()) //
-			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$.id").value(id)) //
-			.andExpect(jsonPath("$.name").value(createImageTypeRequest.name())) //
-	;
+	final var createdId = substringBetween(createResult.getResponse().getContentAsString(), "'", "'");
 
 	// create a new values
 	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
 
 	// update the image type
-	mvc.perform(put(REST_URL + "/{id}", id) //
+	mvc.perform(put(REST_URL + "/{id}", createdId) //
 			.content(asJsonString(newTypeRequest)) //
 			.contentType(APPLICATION_JSON) //
 			.accept(TEXT_PLAIN, APPLICATION_JSON) //
@@ -210,12 +200,12 @@ public class ImageTypeRestControllerHappyPathTest {
 	;
 
 	// check if it updtated
-	mvc.perform(get(REST_URL + "/{id}", id) //
+	mvc.perform(get(REST_URL + "/{id}", createdId) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$.id").value(id)) //
+			.andExpect(jsonPath("$.id").value(createdId)) //
 			.andExpect(jsonPath("$.name").value(newTypeRequest.name())) //
 	;
     }

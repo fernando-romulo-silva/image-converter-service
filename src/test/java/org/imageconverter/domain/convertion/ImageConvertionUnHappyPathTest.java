@@ -1,31 +1,22 @@
 package org.imageconverter.domain.convertion;
 
-import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.imageconverter.domain.convertion.ExecutionType.WEB;
 import static org.imageconverter.domain.convertion.ExecutionType.WS;
-import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.FILE_NAME_IMAGE_PNG;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.imageio.ImageIO;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 
 import org.imageconverter.domain.imagetype.ImageType;
-import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.infra.exceptions.ConvertionException;
-import org.imageconverter.util.BeanUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -35,60 +26,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.context.ApplicationContext;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-
-import net.sourceforge.tess4j.ITesseract;
 
 @Tag("unit")
 @DisplayName("Test the image type entity, Unhappy Path :(")
 @TestInstance(PER_CLASS)
-public class ImageConvertionUnHappyPathTest {
-
-    private MockMultipartFile mockMultipartFile;
-
-    @Mock
-    private ApplicationContext applicationContext;
-
-    @Mock
-    private ImageTypeRespository imageTypeRespository;
-
-    @Mock
-    private ITesseract tesseractTess4j;
+public class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 
     @BeforeAll
     public void setUp() throws Exception {
 
-	// ------------------------------------
-	final var validator = buildDefaultValidatorFactory().getValidator();
-
-	// ------------------------------------
-	final var file = new File("src/test/resources/" + FILE_NAME_IMAGE_PNG);
-
-	final var image = ImageIO.read(file);
-	final var baos = new ByteArrayOutputStream();
-
-	ImageIO.write(image, "png", baos);
-	final var bytes = baos.toByteArray();
-
-	mockMultipartFile = new MockMultipartFile("file", FILE_NAME_IMAGE_PNG, MULTIPART_FORM_DATA_VALUE, bytes);
-
-	// ------------------------------------
-	MockitoAnnotations.openMocks(this);
-
-	BeanUtil.defineContext(applicationContext);
-
-	when(applicationContext.getBean(ImageTypeRespository.class)) //
-			.thenReturn(imageTypeRespository);
-
-	when(applicationContext.getBean(Validator.class)) //
-			.thenReturn(validator);
-
-	when(applicationContext.getBean(Validator.class)) //
-			.thenReturn(validator);
+	setUpSuper();
 
 	final var imageType = Optional.of(new ImageType("png", "PNG", "Portable Network Graphics"));
 

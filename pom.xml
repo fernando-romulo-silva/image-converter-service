@@ -51,6 +51,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>		
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -151,7 +156,6 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Tests -->
@@ -235,7 +239,16 @@
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		
+<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.15</version>
+    <scope>test</scope>
+</dependency>
+		
+		
 	</dependencies>
 
 	<build>
@@ -261,8 +274,8 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
-						<ruleset>rulesets/java/quickstart.xml</ruleset>  
-						<ruleset>default-extensions/pmd/java/pmd-exclude.xml</ruleset>
+						<!-- <ruleset>rulesets/java/quickstart.xml</ruleset>  -->
+						<ruleset>default-extensions/pmd/java/pmd-ruleset.xml</ruleset>
 					</rulesets>
 				</configuration>
 			</plugin>
@@ -338,8 +351,8 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
-						<ruleset>rulesets/java/quickstart.xml</ruleset>
-						<ruleset>default-extensions/pmd/java/pmd-exclude.xml</ruleset>
+						<!-- <ruleset>rulesets/java/quickstart.xml</ruleset>  -->
+						<ruleset>default-extensions/pmd/java/pmd-ruleset.xml</ruleset>
 					</rulesets>
 				</configuration>
 			</plugin>

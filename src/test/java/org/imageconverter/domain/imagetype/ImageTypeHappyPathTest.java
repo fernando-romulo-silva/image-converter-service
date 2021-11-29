@@ -56,7 +56,6 @@ public class ImageTypeHappyPathTest {
     public void setUp() {
 	final var validator = buildDefaultValidatorFactory().getValidator();
 
-	// ------------------------------------
 	MockitoAnnotations.openMocks(this);
 
 	defineContext(applicationContext);

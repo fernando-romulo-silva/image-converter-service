@@ -1,7 +1,6 @@
 package org.imageconverter.domain.convertion;
 
 import static com.jparams.verifier.tostring.NameStyle.SIMPLE_NAME;
-import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static nl.jqno.equalsverifier.Warning.NONFINAL_FIELDS;
 import static nl.jqno.equalsverifier.Warning.REFERENCE_EQUALITY;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
@@ -11,17 +10,13 @@ import static org.imageconverter.domain.convertion.ExecutionType.WEB;
 import static org.imageconverter.domain.convertion.ExecutionType.WS;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.imageio.ImageIO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,11 +24,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.Validator;
 
 import org.imageconverter.domain.imagetype.ImageType;
-import org.imageconverter.domain.imagetype.ImageTypeRespository;
-import org.imageconverter.util.BeanUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -44,21 +36,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.context.ApplicationContext;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jparams.verifier.tostring.ToStringVerifier;
 
-import net.sourceforge.tess4j.ITesseract;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 @Tag("unit")
 @DisplayName("Test the image type entity, happy Path :) ")
 @TestInstance(PER_CLASS)
-public class ImageConvertionHappyPathTest {
+public class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
     public static final String IMAGE_PNG_CONVERTION_NUMBER = "03399905748110000007433957701015176230000017040";
 
@@ -66,44 +53,9 @@ public class ImageConvertionHappyPathTest {
 
     public static final String FILE_NAME_IMAGE_PNG = "image.png";
 
-    private MockMultipartFile mockMultipartFile;
-
-    @Mock
-    private ApplicationContext applicationContext;
-
-    @Mock
-    private ImageTypeRespository imageTypeRespository;
-
-    @Mock
-    private ITesseract tesseractTess4j;
-
     @BeforeAll
     public void setUp() throws Exception {
-
-	// ------------------------------------
-	final var validator = buildDefaultValidatorFactory().getValidator();
-
-	// ------------------------------------
-	final var file = new File("src/test/resources/" + FILE_NAME_IMAGE_PNG);
-
-	final var image = ImageIO.read(file);
-	final var baos = new ByteArrayOutputStream();
-
-	ImageIO.write(image, "png", baos);
-	final var bytes = baos.toByteArray();
-
-	mockMultipartFile = new MockMultipartFile("file", FILE_NAME_IMAGE_PNG, MULTIPART_FORM_DATA_VALUE, bytes);
-
-	// ------------------------------------
-	MockitoAnnotations.openMocks(this);
-
-	BeanUtil.defineContext(applicationContext);
-
-	when(applicationContext.getBean(ImageTypeRespository.class)) //
-			.thenReturn(imageTypeRespository);
-
-	when(applicationContext.getBean(Validator.class)) //
-			.thenReturn(validator);
+	setUpSuper();
 
 	when(applicationContext.getBean(TesseractService.class)) //
 			.thenReturn(new TesseractService(tesseractTess4j));
