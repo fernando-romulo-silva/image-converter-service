@@ -34,7 +34,7 @@ management:
             path-mapping:
                 health: /health
             exposure:
-                include: '*'
+                include: "*"
                 # exclude: env,beans,mapping,configprops
     server:
        add-application-context-header: true
@@ -91,6 +91,8 @@ spring:
         default-property-inclusion: NON_NULL     
         
     security.filter.order: 5 # due to multipart resolver
+
+    devtools.add-properties: false
 
 #============== Data Source ===========================================================================
     datasource:

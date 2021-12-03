@@ -1,13 +1,14 @@
 package org.imageconverter.config.health;
 
+import static org.apache.commons.collections.MapUtils.unmodifiableMap;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 @Component
@@ -43,18 +44,18 @@ public class TesseractInfo {
 
 	final var details = new LinkedHashMap<String, Object>();
 
-	final var tesseract = BeanUtil.getBeanFrom(Tesseract.class);
+	final var tesseract = BeanUtil.getBeanFrom(ITesseract.class);
+	
+	details.put("tesseractVersion", "4.11");
+	details.put("tesseractFolder", BeanUtil.getEnvironment().getProperty("tesseract.folder"));
+	details.put("tesseractLanguage", BeanUtil.getEnvironment().getProperty("tesseract.language"));
+	details.put("tesseractDpi", BeanUtil.getEnvironment().getProperty("tesseract.dpi"));
 	
 	if (check(tesseract)) {
 	    details.put("tesseractInit", "SUCCESSFUL");
 	} else {
 	    details.put("tesseractInit", "FAIL");
 	}
-
-	details.put("tesseractVersion", "4.11");
-	details.put("tesseractFolder", BeanUtil.getEnvironment().getProperty("tesseract.folder"));
-	details.put("tesseractLanguage", BeanUtil.getEnvironment().getProperty("tesseract.language"));
-	details.put("tesseractDpi", BeanUtil.getEnvironment().getProperty("tesseract.dpi"));
 
 	return new TesseractDetails(details);
     }
@@ -96,12 +97,12 @@ public class TesseractInfo {
 //	// delete operation
 //    }
 
-    private boolean check(final Tesseract tesseract) {
+    private boolean check(final ITesseract tesseract) {
 
 	try {
 	    final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");
 
-	    if (StringUtils.equalsIgnoreCase(numberOne, "033")) {
+	    if (equalsIgnoreCase(numberOne, "033")) {
 		return true;
 	    }
 
@@ -125,11 +126,7 @@ public class TesseractInfo {
 	@SuppressWarnings("unchecked")
 	@JsonAnyGetter
 	public Map<String, Object> getTesseractDetails() {
-	    return MapUtils.unmodifiableMap(tesseractDetails);
+	    return unmodifiableMap(tesseractDetails);
 	}
-
-//	public void setTesseractDetails(final Map<String, Object> tesseractDetails) {
-//	    this.tesseractDetails = tesseractDetails;
-//	}
     }
 }

@@ -14,18 +14,17 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 
-		<spring-boot.version>2.5.7</spring-boot.version>
+		<spring-boot.version>2.5.6</spring-boot.version>
 		<spring-boot-cloud.version>2020.0.4</spring-boot-cloud.version>
 
 		<junit-platform.version>5.3.1</junit-platform.version>
-
-		<!-- <argLine>enable-preview </argLine> -->
 
 		<!-- <checkstyle.config.location>checkstyle.xml</checkstyle.config.location> -->
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+		
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -74,17 +73,7 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		</dependency>
 
 		<dependency>
@@ -240,14 +229,11 @@
 			<scope>test</scope>
 		</dependency>
 		
-<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-<dependency>
-    <groupId>commons-codec</groupId>
-    <artifactId>commons-codec</artifactId>
-    <version>1.15</version>
-    <scope>test</scope>
-</dependency>
-		
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <scope>test</scope>
+		</dependency>
 		
 	</dependencies>
 
@@ -322,7 +308,7 @@
 					<layers>
 						<enabled>true</enabled>
 						<includeLayerTools>true</includeLayerTools>
-						<configuration>${project.basedir}/src/layers.xml</configuration>
+						<configuration>${project.basedir}/src/resources/layers.xml</configuration>
 					</layers>
 				</configuration>
 				<executions>

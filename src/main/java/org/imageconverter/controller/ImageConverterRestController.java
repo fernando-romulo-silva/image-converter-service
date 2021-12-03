@@ -1,4 +1,4 @@
-package org.imageconverter.controller.rest;
+package org.imageconverter.controller;
 
 import static org.imageconverter.domain.convertion.ExecutionType.WS;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;

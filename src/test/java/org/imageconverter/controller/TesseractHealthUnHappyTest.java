@@ -32,7 +32,7 @@ import org.springframework.web.client.RestTemplate;
 @DisplayName("Test the tesseract Health, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-public class TesseractHealthHappyTest extends TesseractHealthTest {
+public class TesseractHealthUnHappyTest extends TesseractHealthTest {
 
     @Test
     @Order(1)
@@ -40,13 +40,27 @@ public class TesseractHealthHappyTest extends TesseractHealthTest {
     public void getActuatorHealthTest() throws Exception {
 
 	final var restTemplate = new RestTemplate();
+	
+	final var requestEntityUpdateTesseract = new HttpEntity<String>("{ \"tesseractFolder\": \"/blabla\" }", csrfHeaders());
+	final var responseUpdateTesseract = restTemplate.postForEntity("http://127.0.0.1:" + serverPort + "/actuator/refresh", requestEntityUpdateTesseract, String.class);
+
+	assertThat(responseUpdateTesseract.getStatusCode()).isEqualTo(OK);	
+	
+	// 
+	final var requestEntityRefresh = new HttpEntity<>(csrfHeaders());
+	final var responseRefresh = restTemplate.postForEntity("http://127.0.0.1:" + serverPort + "/actuator/refresh", requestEntityRefresh, Void.class);
+	
+	assertThat(responseRefresh.getStatusCode()).isEqualTo(OK);
+	
+	
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
 	final var response = restTemplate.exchange("http://127.0.0.1:" + serverPort + "/actuator/health", GET, requestEntity, String.class);
 
 	final var body = response.getBody();
 
-	assertThat(body).contains("\"status\":\"UP\"");
-	assertThat(body).contains("\"tesseract\":{\"status\":\"UP\"}");
+	assertThat(body).contains("\"status\":\"DOWN\"");
+	assertThat(body).contains("\"tesseract\":{\"status\":\"DOWN\"}");	
+	
     }
 
     @Test
@@ -64,19 +78,22 @@ public class TesseractHealthHappyTest extends TesseractHealthTest {
 	assertThat(body).contains("\"tesseractVersion\":\"4.11\"");
 	assertThat(body).contains("\"tesseractLanguage\":\"eng\"");
 	assertThat(body).contains("\"tesseractDpi\":\"100\"");
+	
+	
+
 
     }
-    
+
     @Test
     @Order(3)
     @DisplayName("post actuator refresh")
     public void postActuatorRefreshTest() throws Exception {
 
 	final var restTemplate = new RestTemplate();
-	final var requestEntity = new HttpEntity<>(csrfHeaders());
-	final var response = restTemplate.postForEntity("http://127.0.0.1:" + serverPort + "/actuator/refresh", requestEntity, Void.class);
-	
-	assertThat(response.getStatusCode()).isEqualTo(OK);
+	final var requestEntityRefresh = new HttpEntity<>(csrfHeaders());
+	final var responseRefresh = restTemplate.postForEntity("http://127.0.0.1:" + serverPort + "/actuator/refresh", requestEntityRefresh, Void.class);
+
+	assertThat(responseRefresh.getStatusCode()).isEqualTo(OK);
     }
-    
+
 }

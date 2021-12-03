@@ -1,4 +1,4 @@
-package org.imageconverter.controller.rest;
+package org.imageconverter.controller;
 
 import static java.text.MessageFormat.format;
 import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;

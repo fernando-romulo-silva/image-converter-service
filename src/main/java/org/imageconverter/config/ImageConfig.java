@@ -1,51 +1,29 @@
 package org.imageconverter.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.imageconverter.util.BeanUtil;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
 @Configuration
 //@EnableConfigurationProperties(MultipartProperties.class)
 public class ImageConfig {
 
-    private final String tesseractFolder;
-
-    private final String tesseractLanguage;
-
-    private final String tesseractDpi;
-
-    ImageConfig( //
-		    @Value("${tesseract.folder}") //
-		    final String tesseractFolder, //
-		    //
-		    @Value("${tesseract.language}") //
-		    final String tesseractLanguage,
-
-		    @Value("${tesseract.dpi}") //
-		    final String tesseractDpi
-
-    ) {
-	super();
-	this.tesseractFolder = tesseractFolder;
-	this.tesseractLanguage = tesseractLanguage;
-	this.tesseractDpi = tesseractDpi;
-    }
-
     @Bean
     @RefreshScope
-    public Tesseract tesseractTess4j() {
+    public ITesseract tesseractTess4j() {
 	final var tesseract = new Tesseract();
 
-	tesseract.setDatapath(tesseractFolder);
-	tesseract.setLanguage(tesseractLanguage);
-	tesseract.setTessVariable("user_defined_dpi", tesseractDpi);
+	tesseract.setDatapath(BeanUtil.getEnvironment().getProperty("tesseract.folder"));
+	tesseract.setLanguage(BeanUtil.getEnvironment().getProperty("tesseract.language"));
+	tesseract.setTessVariable("user_defined_dpi", BeanUtil.getEnvironment().getProperty("tesseract.dpi"));
 
-	return tesseract;
+	return null;
     }
-    
+
 //    @Bean
 //    @Primary
 //    public Validator validator() {

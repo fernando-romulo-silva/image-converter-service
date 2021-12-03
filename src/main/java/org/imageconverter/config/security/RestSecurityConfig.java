@@ -1,11 +1,10 @@
-package org.imageconverter.config.security.adapter;
+package org.imageconverter.config.security;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import org.imageconverter.config.filter.CsrfLoggerFilter;
-import org.imageconverter.config.security.RestAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -75,7 +74,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			//
 			.and().csrf() //
 			/*------*/.csrfTokenRepository(csrfTokenRepository)//
-//			/*------*/.ignoringAntMatchers("/actuator/**")				
+			/*------*/.ignoringAntMatchers("/actuator/**")				
 
 			.and().formLogin() // disable redirect
 			/*------*/.successHandler(authenticationSuccessHandler) //
