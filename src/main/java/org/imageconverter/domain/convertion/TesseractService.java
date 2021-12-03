@@ -6,14 +6,18 @@ import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMess
 import java.awt.Rectangle;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
 import org.imageconverter.infra.exceptions.ConvertionException;
 import org.imageconverter.infra.exceptions.ImageConvertServiceException;
 import org.imageconverter.infra.exceptions.TesseractConvertionException;
+import org.imageconverter.infra.exceptions.TesseractNotSetException;
+import org.imageconverter.util.TesseractSupplier;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,20 +26,25 @@ import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 @Service
+@Lazy
 @Loggable
 public class TesseractService {
 
     private final ITesseract tesseractTess4j;
 
     @Autowired
-    TesseractService(final ITesseract tesseractTess4j) {
+    TesseractService(final TesseractSupplier tesseractTess4jSupplier) {
 	super();
-	this.tesseractTess4j = tesseractTess4j;
+	this.tesseractTess4j = tesseractTess4jSupplier.get();
     }
 
     // @PreAuthorize("hasAuthority('ADMIN') or @accessChecker.hasLocalAccess(authentication)")
     public String convert(final MultipartFile data) {
-
+	
+	if (Objects.isNull(tesseractTess4j)) {
+	    throw new TesseractNotSetException();
+	}
+	
 	try {
 
 	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(data.getBytes()));
@@ -61,6 +70,10 @@ public class TesseractService {
 
     public String convert(final MultipartFile data, final int x, final int y, final int width, final int height) {
 
+	if (Objects.isNull(tesseractTess4j)) {
+	    throw new TesseractNotSetException();
+	}
+	
 	try {
 
 	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(data.getBytes()));

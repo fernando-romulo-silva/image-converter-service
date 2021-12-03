@@ -58,7 +58,7 @@ public class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 	setUpSuper();
 
 	when(applicationContext.getBean(TesseractService.class)) //
-			.thenReturn(new TesseractService(tesseractTess4j));
+			.thenReturn(new TesseractService(() -> tesseractTess4j));
 
 	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any())) //
 			.thenReturn(IMAGE_PNG_CONVERTION_NUMBER);

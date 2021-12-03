@@ -1,17 +1,19 @@
 package org.imageconverter.config.health;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imageconverter.util.BeanUtil;
+import org.imageconverter.util.TesseractSupplier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 @Component("tesseract")
@@ -23,7 +25,7 @@ public class TesseractHealth implements HealthIndicator {
     @Override
     public Health health() {
 
-	final var tesseract = BeanUtil.getBeanFrom(Tesseract.class);
+	final var tesseract = BeanUtil.getBeanFrom(TesseractSupplier.class).get();
 
 	final var error = check(tesseract);
 
@@ -34,7 +36,11 @@ public class TesseractHealth implements HealthIndicator {
 	return Health.up().build();
     }
 
-    private String check(final Tesseract tesseract) {
+    private String check(final ITesseract tesseract) {
+	
+	if (Objects.isNull(tesseract)) {
+	    return "Tesseract isn't work";
+	}
 
 	try {
 	    final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");

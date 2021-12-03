@@ -61,7 +61,7 @@ public abstract class ImageConvertionConfigTest {
 			.thenReturn(validator);
 
 	when(applicationContext.getBean(TesseractService.class)) //
-			.thenReturn(new TesseractService(tesseractTess4j));
+			.thenReturn(new TesseractService(() -> tesseractTess4j));
     }
 
 }

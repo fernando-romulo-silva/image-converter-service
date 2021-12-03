@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.imageconverter.util.BeanUtil;
+import org.imageconverter.util.TesseractSupplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -44,12 +45,12 @@ public class TesseractInfo {
 
 	final var details = new LinkedHashMap<String, Object>();
 
-	final var tesseract = BeanUtil.getBeanFrom(ITesseract.class);
-	
 	details.put("tesseractVersion", "4.11");
 	details.put("tesseractFolder", BeanUtil.getEnvironment().getProperty("tesseract.folder"));
 	details.put("tesseractLanguage", BeanUtil.getEnvironment().getProperty("tesseract.language"));
 	details.put("tesseractDpi", BeanUtil.getEnvironment().getProperty("tesseract.dpi"));
+
+	final var tesseract = BeanUtil.getBeanFrom(TesseractSupplier.class).get();
 	
 	if (check(tesseract)) {
 	    details.put("tesseractInit", "SUCCESSFUL");
@@ -99,6 +100,10 @@ public class TesseractInfo {
 
     private boolean check(final ITesseract tesseract) {
 
+	if (Objects.isNull(tesseract)) {
+	    return false;
+	}
+	
 	try {
 	    final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");
 

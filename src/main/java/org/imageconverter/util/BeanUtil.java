@@ -18,9 +18,13 @@ public class BeanUtil implements ApplicationContextAware {
     public static <T> T getBeanFrom(final Class<T> beanClass) {
 	return context.getBean(beanClass);
     }
-    
+
     public static Environment getEnvironment() {
 	return context.getEnvironment();
+    }
+
+    public static String getPropertyValue(final String key) {
+	return context.getEnvironment().getProperty(key);
     }
 
     @Override

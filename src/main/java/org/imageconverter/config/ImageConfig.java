@@ -1,11 +1,14 @@
 package org.imageconverter.config;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.imageconverter.util.BeanUtil;
+import org.imageconverter.util.TesseractSupplier;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
 @Configuration
@@ -14,14 +17,20 @@ public class ImageConfig {
 
     @Bean
     @RefreshScope
-    public ITesseract tesseractTess4j() {
-	final var tesseract = new Tesseract();
+    public TesseractSupplier tesseractTess4jSupplier() {
 
+	final var path = Paths.get(BeanUtil.getEnvironment().getProperty("tesseract.folder"));
+	
+	if (Files.notExists(path)) {
+	    return () -> null;
+	}
+	
+	final var tesseract = new Tesseract();
 	tesseract.setDatapath(BeanUtil.getEnvironment().getProperty("tesseract.folder"));
 	tesseract.setLanguage(BeanUtil.getEnvironment().getProperty("tesseract.language"));
 	tesseract.setTessVariable("user_defined_dpi", BeanUtil.getEnvironment().getProperty("tesseract.dpi"));
 
-	return null;
+	return () -> tesseract;
     }
 
 //    @Bean
