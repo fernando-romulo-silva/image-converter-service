@@ -6,7 +6,6 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imageconverter.util.BeanUtil;
-import org.imageconverter.util.TesseractSupplier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -25,9 +24,7 @@ public class TesseractHealth implements HealthIndicator {
     @Override
     public Health health() {
 
-	final var tesseract = BeanUtil.getBeanFrom(TesseractSupplier.class).get();
-
-	final var error = check(tesseract);
+	final var error = checkTesseract();
 
 	if (StringUtils.isNotBlank(error)) {
 	    return Health.down().withDetail("Error", error).build();
@@ -36,19 +33,24 @@ public class TesseractHealth implements HealthIndicator {
 	return Health.up().build();
     }
 
-    private String check(final ITesseract tesseract) {
+    private String checkTesseract() {
+	
+	final var tesseract = BeanUtil.getBeanProviderFrom(ITesseract.class).getIfAvailable();
 	
 	if (Objects.isNull(tesseract)) {
 	    return "Tesseract isn't work";
 	}
 
 	try {
+	    
 	    final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");
 
 	    if (StringUtils.equalsIgnoreCase(numberOne, "033")) {
 		return StringUtils.EMPTY;
 	    }
 
+	} catch (final IllegalArgumentException ex) {
+	    return "Tesseract isn't work";
 	} catch (final TesseractException | IOException ex) {
 	    return ExceptionUtils.getRootCauseMessage(ex);
 	}

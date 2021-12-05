@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.imageconverter.util.BeanUtil;
-import org.imageconverter.util.TesseractSupplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -50,9 +49,7 @@ public class TesseractInfo {
 	details.put("tesseractLanguage", BeanUtil.getEnvironment().getProperty("tesseract.language"));
 	details.put("tesseractDpi", BeanUtil.getEnvironment().getProperty("tesseract.dpi"));
 
-	final var tesseract = BeanUtil.getBeanFrom(TesseractSupplier.class).get();
-	
-	if (check(tesseract)) {
+	if (checkTesseract()) {
 	    details.put("tesseractInit", "SUCCESSFUL");
 	} else {
 	    details.put("tesseractInit", "FAIL");
@@ -78,7 +75,7 @@ public class TesseractInfo {
 	}
 
 	if (Objects.nonNull(tesseractLanguage)) {
-	    map.put("ltesseract.anguage", tesseractLanguage);
+	    map.put("tesseract.language", tesseractLanguage);
 	}
 
 	if (Objects.nonNull(tesseractDpi)) {
@@ -98,8 +95,11 @@ public class TesseractInfo {
 //	// delete operation
 //    }
 
-    private boolean check(final ITesseract tesseract) {
+    private boolean checkTesseract() {
 
+	final var tesseractBeanProvider = BeanUtil.getBeanProviderFrom(ITesseract.class);
+	final var tesseract = tesseractBeanProvider.getObject();
+	
 	if (Objects.isNull(tesseract)) {
 	    return false;
 	}
@@ -111,7 +111,7 @@ public class TesseractInfo {
 		return true;
 	    }
 
-	} catch (final TesseractException | IOException e) {
+	} catch (final TesseractException | IOException | IllegalArgumentException ex) {
 	    return false;
 	}
 

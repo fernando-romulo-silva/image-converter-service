@@ -20,7 +20,7 @@ server:
 #============== Actuator ==============================================================================
 management:
   endpoint.refresh.enabled: true
-  endpoints.web.exposure.include: '*'
+  endpoints.web.exposure.include: "*"
   server:
     port: 18080
 

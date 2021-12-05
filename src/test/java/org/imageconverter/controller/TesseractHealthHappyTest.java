@@ -25,7 +25,11 @@ import org.springframework.web.client.RestTemplate;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest( //
+		webEnvironment = WebEnvironment.RANDOM_PORT //
+//		properties = { "management.server.port: " } //
+
+)
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
@@ -41,7 +45,7 @@ public class TesseractHealthHappyTest extends TesseractHealthTest {
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
-	final var response = restTemplate.exchange("http://127.0.0.1:" + serverPort + "/actuator/health", GET, requestEntity, String.class);
+	final var response = restTemplate.exchange("http://127.0.0.1:" + managementPort + "/actuator/health", GET, requestEntity, String.class);
 
 	final var body = response.getBody();
 
@@ -56,7 +60,7 @@ public class TesseractHealthHappyTest extends TesseractHealthTest {
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
-	final var response = restTemplate.exchange("http://127.0.0.1:" + serverPort + "/actuator/tesseract", GET, requestEntity, String.class);
+	final var response = restTemplate.exchange("http://127.0.0.1:" + managementPort + "/actuator/tesseract", GET, requestEntity, String.class);
 
 	final var body = response.getBody();
 
@@ -66,7 +70,7 @@ public class TesseractHealthHappyTest extends TesseractHealthTest {
 	assertThat(body).contains("\"tesseractDpi\":\"100\"");
 
     }
-    
+
     @Test
     @Order(3)
     @DisplayName("post actuator refresh")
@@ -74,9 +78,9 @@ public class TesseractHealthHappyTest extends TesseractHealthTest {
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
-	final var response = restTemplate.postForEntity("http://127.0.0.1:" + serverPort + "/actuator/refresh", requestEntity, Void.class);
-	
+	final var response = restTemplate.postForEntity("http://127.0.0.1:" + managementPort + "/actuator/refresh", requestEntity, Void.class);
+
 	assertThat(response.getStatusCode()).isEqualTo(OK);
     }
-    
+
 }

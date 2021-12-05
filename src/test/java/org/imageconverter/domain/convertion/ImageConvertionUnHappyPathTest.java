@@ -44,7 +44,7 @@ public class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 			.thenReturn(imageType);
 
 	when(applicationContext.getBean(TesseractService.class)) //
-			.thenReturn(new TesseractService(() -> tesseractTess4j));
+			.thenReturn(new TesseractService());
 
 	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any())) //
 			.thenReturn(null);

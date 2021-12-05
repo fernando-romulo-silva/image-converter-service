@@ -72,10 +72,6 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/webjars/**") //
 			/*------*/.permitAll() //
 			//
-			.and().csrf() //
-			/*------*/.csrfTokenRepository(csrfTokenRepository)//
-			/*------*/.ignoringAntMatchers("/actuator/**")				
-
 			.and().formLogin() // disable redirect
 			/*------*/.successHandler(authenticationSuccessHandler) //
 			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
@@ -84,6 +80,11 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*------*/.logoutSuccessUrl("/") //
 			/*------*/.invalidateHttpSession(true)//
 			/*------*/.clearAuthentication(true)//
+			//
+			.and().csrf() //
+//			/*------*/.disable() //
+			/*------*/.csrfTokenRepository(csrfTokenRepository)//
+			/*------*/.ignoringAntMatchers("/actuator/**")				
 	;
     }
 

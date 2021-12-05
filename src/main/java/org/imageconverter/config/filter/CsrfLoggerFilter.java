@@ -1,6 +1,7 @@
 package org.imageconverter.config.filter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,7 +18,9 @@ public final class CsrfLoggerFilter extends OncePerRequestFilter {
 
 	final var csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
-	response.setHeader("X-CSRF-TOKEN", csrfToken.getToken());
+	if (Objects.nonNull(csrfToken)) {
+	    response.setHeader("X-CSRF-TOKEN", csrfToken.getToken());
+	} 
 
 	filterChain.doFilter(request, response);
     }

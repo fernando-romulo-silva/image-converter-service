@@ -1,5 +1,8 @@
 package org.imageconverter.config;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.fasterxml.jackson.databind.MapperFeature.ALLOW_COERCION_OF_SCALARS;
+
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.context.annotation.Bean;
@@ -14,8 +17,6 @@ import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UrlPathHelper;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -47,8 +48,8 @@ public class WebConfig implements WebMvcConfigurer {
 
 	final var objectMapper = new ObjectMapper();
 
-	objectMapper.setSerializationInclusion(Include.NON_NULL) //
-			.configure(MapperFeature.ALLOW_COERCION_OF_SCALARS, false) //
+	objectMapper.setSerializationInclusion(NON_NULL) //
+			.configure(ALLOW_COERCION_OF_SCALARS, false) //
 			.registerModule(module);
 
 //	mapper.registerSubtypes(null);

@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import org.imageconverter.domain.convertion.ImageConvertion;
 import org.imageconverter.domain.convertion.ImageConvertionRepository;
+import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
 import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
@@ -36,9 +37,17 @@ public class ImageConversionService {
 
     @Transactional
     public ImageConverterResponse convert(@NotNull @Valid final ImageConverterRequestInterface request) {
-
+	
 	final var imageConvertionNew = new ImageConvertion.Builder() //
 			.with(request).build();
+	
+	final var fileName = imageConvertionNew.getFileName();
+	
+	final var imageConvertionOptional = repository.findByFileName(fileName);
+	
+	if (imageConvertionOptional.isPresent()) {
+	    throw new ElementAlreadyExistsException(ImageConvertion.class, "fileName '" + fileName + "' and with text '"+ imageConvertionOptional.get().getText() +"'");
+	}
 
 	final var imageConvertion = repository.save(imageConvertionNew);
 
@@ -83,6 +92,5 @@ public class ImageConversionService {
 
 	    throw new ElementInvalidException(msg, ex);
 	}
-
     }
 }

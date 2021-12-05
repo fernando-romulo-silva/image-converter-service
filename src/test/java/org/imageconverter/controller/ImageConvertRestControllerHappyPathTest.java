@@ -62,8 +62,8 @@ public class ImageConvertRestControllerHappyPathTest {
     // @Value("classpath:db/db-data-test.sql")
     // private Resource dbDataTest;
 
-    @Value("classpath:image.png")
-    private Resource imageFile;
+    @Value("classpath:bill.png")
+    private Resource billImageFile;
 
     @Autowired
     private MockMvc mvc;
@@ -125,9 +125,10 @@ public class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(4)
     @DisplayName("convert the image")
+    @Sql(statements = "DELETE FROM image_convertion ")
     public void convertTest() throws Exception {
 
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
 
 	// create one
 	final var result = mvc.perform(multipart(REST_URL) //
@@ -149,9 +150,10 @@ public class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(5)
     @DisplayName("convert the image with area")
+    @Sql(statements = "DELETE FROM image_convertion ")
     public void convertAreaTest() throws Exception {
 
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
 
 	// create one
 	final var result = mvc.perform(multipart(REST_URL + "/area") //

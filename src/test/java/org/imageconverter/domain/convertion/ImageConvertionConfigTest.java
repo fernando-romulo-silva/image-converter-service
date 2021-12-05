@@ -15,6 +15,7 @@ import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.util.BeanUtil;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -32,6 +33,9 @@ public abstract class ImageConvertionConfigTest {
 
     @Mock
     protected ITesseract tesseractTess4j;
+
+    @Mock
+    protected ObjectProvider<ITesseract> objectProvider;
 
     protected void setUpSuper() throws Exception {
 
@@ -60,8 +64,14 @@ public abstract class ImageConvertionConfigTest {
 	when(applicationContext.getBean(Validator.class)) //
 			.thenReturn(validator);
 
+	when(applicationContext.getBeanProvider(ITesseract.class)) //
+			.thenReturn(objectProvider);
+
+	when(objectProvider.getIfAvailable()) //
+			.thenReturn(tesseractTess4j);
+
 	when(applicationContext.getBean(TesseractService.class)) //
-			.thenReturn(new TesseractService(() -> tesseractTess4j));
+			.thenReturn(new TesseractService());
     }
 
 }

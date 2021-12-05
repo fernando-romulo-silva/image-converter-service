@@ -53,7 +53,10 @@ public class ImageConvertRestControllerUnHappyPathTest {
     // private Resource dbDataTest;
 
     @Value("classpath:beach.jpeg")
-    private Resource imageFile;
+    private Resource beachImageFile;
+    
+    @Value("classpath:bill.png")
+    private Resource billImageFile;
 
     @Autowired
     private MockMvc mvc;
@@ -109,7 +112,7 @@ public class ImageConvertRestControllerUnHappyPathTest {
     @DisplayName("convert the image with unknow extension")
     public void convertTest() throws Exception {
 
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 
 	mvc.perform(multipart(REST_URL) //
 			.file(multipartFile) //
@@ -123,10 +126,48 @@ public class ImageConvertRestControllerUnHappyPathTest {
 
     @Test
     @Order(5)
+    @DisplayName("Convert the same image")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void convertSameImageTest() throws Exception {
+
+	// create one
+	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
+
+	// create one
+	mvc.perform(multipart(REST_URL + "/area") //
+			.file(multipartFile) //
+			.accept(APPLICATION_JSON) //
+			.param("x", "885") //
+			.param("y", "1417") //
+			.param("width", "1426") //
+			.param("height", "57") //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isCreated()) //
+			.andReturn();
+	;
+
+	// create another
+	mvc.perform(multipart(REST_URL + "/area") //
+			.file(multipartFile) //
+			.accept(APPLICATION_JSON) //
+			.param("x", "885") //
+			.param("y", "1417") //
+			.param("width", "1426") //
+			.param("height", "57") //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isConflict()) // 
+			.andExpect(jsonPath("$.message").value(containsString("ElementAlreadyExistsException: ImageConvertion with fileName 'bill.png'"))) //
+	;
+    }
+
+    @Test
+    @Order(6)
     @DisplayName("convert the image with area with parameter null")
     public void convertAreaParameterNullTest() throws Exception {
 
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 
 	// create one
 	mvc.perform(multipart(REST_URL + "/area") //
@@ -144,11 +185,11 @@ public class ImageConvertRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     @DisplayName("convert the image with area with parameter Y invalid")
     public void convertAreaParameterInvalidYTest() throws Exception {
 
-	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 
 	// create one
 	mvc.perform(multipart(REST_URL + "/area") //
