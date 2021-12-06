@@ -44,6 +44,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Description("Controller for image type API")
 @RequestMapping(REST_URL)
 //
+//@SecurityRequirement(name = "javainuseapi")
 @Tag( //
 		name = "Image Type", //
 		description = """

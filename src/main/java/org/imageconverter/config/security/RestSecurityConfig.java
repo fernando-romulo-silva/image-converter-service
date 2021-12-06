@@ -7,7 +7,6 @@ import static org.springframework.http.HttpMethod.POST;
 import org.imageconverter.config.filter.CsrfLoggerFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,7 +18,6 @@ import org.springframework.security.web.firewall.HttpFirewall;
 // https://freecontent.manning.com/five-awkward-things-about-spring-security-that-actually-make-sense/
 
 @Configuration
-@Order(1)
 public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final RestAuthenticationSuccessHandler authenticationSuccessHandler;
@@ -52,7 +50,8 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 					    // -- Swagger UI v3 (OpenAPI)
 					"/v3/api-docs/**", //
 					"/swagger-ui/**", //
-					"/swagger-ui.html" //
+					"/swagger-ui.html", //
+					"/webjars/swagger-ui"
 			) //
 			/*------*/.permitAll()
 			//

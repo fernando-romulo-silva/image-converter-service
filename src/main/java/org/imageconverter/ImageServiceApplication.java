@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.info.License;
 		info = @Info( //
 				title = "Image Converter API", //
 				description = "This API allows convert image to text", //
-				version = "1.0", //
+				version = "1.0.0", //
 				contact = @Contact(name = "Fernando Romulo da Silva", url = "https://github.com/fernando-romulo-silva/"), //
 				license = @License( //
 						name = "Apache 2.0", //
@@ -34,6 +34,7 @@ import io.swagger.v3.oas.annotations.info.License;
 //				} //
 //		) //
 )
+//@SecurityScheme(name = "javainuseapi", scheme = "basic", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 @SpringBootApplication
 public class ImageServiceApplication { // NOPMD - It's not a util class, it's a starter
 
