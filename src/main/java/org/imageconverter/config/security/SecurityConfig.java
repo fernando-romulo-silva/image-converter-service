@@ -29,8 +29,9 @@ public class SecurityConfig {
 
     @Bean
     public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
-	StrictHttpFirewall firewall = new StrictHttpFirewall();
+	final var firewall = new StrictHttpFirewall();
 	firewall.setAllowUrlEncodedSlash(true);
+	firewall.setAllowSemicolon(true);
 	return firewall;
     }
 

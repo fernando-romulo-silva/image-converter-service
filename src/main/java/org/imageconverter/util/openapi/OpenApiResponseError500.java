@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @ApiResponse( //
@@ -30,6 +30,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 								   "spanId":"3d4144eeb01e3682"
 								}
 								""")))
-public @interface ApiResponseError500 {
+public @interface OpenApiResponseError500 {
 
 }

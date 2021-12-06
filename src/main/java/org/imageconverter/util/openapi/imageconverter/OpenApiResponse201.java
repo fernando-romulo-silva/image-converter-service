@@ -13,18 +13,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 //
 @SecurityRequirement(name = "BASIC")
 @ApiResponse( //
 		responseCode = "201", //
-		description = "successful converte image", //
+		description = "Successful converte image", //
 		content = { //
 			@Content(mediaType = "application/json", schema = @Schema(implementation = ImageConverterResponse.class)) //
 		} //
 )
-public @interface ApiResponse201 {
+@interface OpenApiResponse201 {
 
 }

@@ -8,16 +8,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 
-import javax.validation.constraints.Min;
-
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.domain.convertion.ImageConvertion;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;
-import org.imageconverter.util.openapi.ApiResponseError500;
-import org.imageconverter.util.openapi.imageconverter.ApiResponse201;
+import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetAllOpenApi;
+import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetByIdOpenApi;
+import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetBySearchOpenApi;
+import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostAreaOpenApi;
+import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostOpenApi;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,26 +33,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.turkraft.springfilter.boot.Filter;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@RestController
-@Description("Controller for image converstion API")
-@RequestMapping(REST_URL)
-//
 @Tag( //
-		name = "Image Convert", //
-		description = """
-				Image Convert API - If something went wrong, please put 'trace' (for all Http methods)
-				at the end of the call to receive the stackStrace.
-				Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
-				     """ //
+	name = "Image Convert", //
+	description = """
+			Image Convert API - If something went wrong, please put 'trace' (for all Http methods)
+			at the end of the call to receive the stackStrace.
+			Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
+			     """ //
 )
 //
 @Loggable
+@RestController
+@Description("Controller for image converstion API")
+@RequestMapping(REST_URL)
 public class ImageConverterRestController {
 
     private final ImageConversionService imageConversionService;
@@ -61,6 +60,8 @@ public class ImageConverterRestController {
 	this.imageConversionService = imageConversionService;
     }
 
+    @ImageConverterRestGetByIdOpenApi
+    //
     @ResponseStatus(OK)
     @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
     public ImageConverterResponse show( //
@@ -71,6 +72,8 @@ public class ImageConverterRestController {
 	return imageConversionService.findById(id);
     }
 
+    @ImageConverterRestGetAllOpenApi
+    //
     @ResponseStatus(OK)
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public List<ImageConverterResponse> showAll() {
@@ -78,18 +81,19 @@ public class ImageConverterRestController {
 	return imageConversionService.findAll();
     }
 
+    @ImageConverterRestGetBySearchOpenApi
+    //
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
     public List<ImageConverterResponse> show( //
+		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=fileName:'image.png'")
 		    @Filter //
-		    final Specification<ImageConvertion> spec, final Pageable page) {
+		    final Specification<ImageConvertion> filter, final Pageable page) {
 
-	return imageConversionService.findBySpecification(spec);
+	return imageConversionService.findBySpecification(filter);
     }
 
-    @Operation(summary = "Convert all image into the text")
-    @ApiResponse201
-    @ApiResponseError500
+    @ImageConverterRestPostOpenApi
     //
     @ResponseStatus(CREATED)
     @PostMapping(consumes = { "multipart/form-data" }, produces = "application/json")
@@ -98,14 +102,10 @@ public class ImageConverterRestController {
 		    @RequestParam(name = "file", required = true) //
 		    final MultipartFile file) {
 
-//	final var kilobytes = (file.getSize() / 1024);
-
 	return imageConversionService.convert(new ImageConverterRequest(file, WS));
     }
 
-    @Operation(summary = "Convert the image with specific area")
-    @ApiResponse201
-    @ApiResponseError500
+    @ImageConverterRestPostAreaOpenApi
     //
     @ResponseStatus(CREATED)
     @PostMapping(value = "/area", consumes = { "multipart/form-data" }, produces = "application/json")
@@ -114,12 +114,10 @@ public class ImageConverterRestController {
 		    @RequestParam(value = "file", required = true) //
 		    final MultipartFile file, //
 		    //
-		    @Parameter(description = "The vertical position", content = @Content(mediaType = "multipart/form-data"), required = true) //
+		    @Parameter(description = "The vertical position", required = true) //
 		    @RequestParam(required = true) //
 		    final Integer x, //
 		    //
-
-		    @Min(value = 0, message = "The y point must be greater than zero") //
 		    @Parameter(description = "The horizontal position", content = @Content(mediaType = "multipart/form-data"), required = true) //
 		    @RequestParam(required = true) //
 		    final Integer y, //

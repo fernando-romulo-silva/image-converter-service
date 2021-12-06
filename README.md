@@ -14,6 +14,8 @@ tesseract --version
 
 Ribbon and Hystrix
 
+http://localhost:8080/swagger-ui.html
+
 
 # About
 

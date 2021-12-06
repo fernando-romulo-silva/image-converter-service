@@ -1,4 +1,4 @@
-package org.imageconverter.util.openapi;
+package org.imageconverter.util.openapi.imageconverter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @ApiResponse(//
@@ -19,17 +19,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 		content = @Content(//
 				mediaType = "application/json", //
 				examples = @ExampleObject(//
-						description = "Without flag trace or with value igual false at end of request", //
+						description = "ImageConvertion not found", //
 						value = """
 								{
-								   "timestamp":"2021-07-19T15:25:32.389836763",
-								   "status":404,
-								   "error":"Not Found",
-								   "message":"'Object' not found",
-								   "traceId":"3d4144eeb01e3682",
-								   "spanId":"3d4144eeb01e3682"
+								    "timestamp": "2021-12-05T20:18:41.80433145",
+								    "status": 404,
+								    "error": "Not Found",
+								    "message": "ElementNotFoundException: ImageConvertion with id '1' not found",
+								    "traceId": "1e3398a945ef0d79",
+								    "spanId": "1e3398a945ef0d79"
 								}
-								""")))
-public @interface ApiResponseError404 {
+																""")))
+@interface OpenApiResponseError404 {
 
 }

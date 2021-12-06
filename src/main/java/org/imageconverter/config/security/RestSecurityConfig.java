@@ -27,9 +27,10 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
     private final HttpFirewall allowUrlEncodedSlashHttpFirewall;
 
     private final CsrfTokenRepository csrfTokenRepository;
-    
+
     @Autowired
-    RestSecurityConfig(final RestAuthenticationSuccessHandler authenticationSuccessHandler, final HttpFirewall allowUrlEncodedSlashHttpFirewall, final CsrfTokenRepository httpSessionCsrfTokenRepository) {
+    RestSecurityConfig(final RestAuthenticationSuccessHandler authenticationSuccessHandler, final HttpFirewall allowUrlEncodedSlashHttpFirewall,
+		    final CsrfTokenRepository httpSessionCsrfTokenRepository) {
 	super(true); // disable default configuration
 	this.authenticationSuccessHandler = authenticationSuccessHandler;
 	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;
@@ -46,6 +47,15 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and().httpBasic() //
 			//
 			.and().authorizeRequests() //
+			//
+			/*--*/.antMatchers( //
+					    // -- Swagger UI v3 (OpenAPI)
+					"/v3/api-docs/**", //
+					"/swagger-ui/**", //
+					"/swagger-ui.html" //
+			) //
+			/*------*/.permitAll()
+			//
 			/*--*/.antMatchers(GET, "/rest/**") // /rest/images/type
 			/*------*/.hasAnyRole("USER") // , "GUEST"
 			//
@@ -61,16 +71,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*--*/.antMatchers("/rest/**") //
 			/*------*/.hasAnyRole("ADMIN", "USER")
 			//
-			/*--*/.antMatchers( //
-//					"/health/**", //
-//					"/actuator/**", //
-					"/v3/api-docs/**", //
-					"/configuration/**", //
-					"/swagger-resources/**", //
-					"/swagger-ui.html", //
-					"/swagger-ui/**", //
-					"/webjars/**") //
-			/*------*/.permitAll() //
+//			/*------*/.anyRequest().authenticated()
 			//
 			.and().formLogin() // disable redirect
 			/*------*/.successHandler(authenticationSuccessHandler) //
@@ -84,8 +85,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and().csrf() //
 //			/*------*/.disable() //
 			/*------*/.csrfTokenRepository(csrfTokenRepository)//
-			/*------*/.ignoringAntMatchers("/actuator/**")				
-	;
+			/*------*/.ignoringAntMatchers("/actuator/**");
     }
 
     @Override
