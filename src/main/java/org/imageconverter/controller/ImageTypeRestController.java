@@ -38,13 +38,14 @@ import com.turkraft.springfilter.boot.Filter;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Description("Controller for image type API")
 @RequestMapping(REST_URL)
 //
-//@SecurityRequirement(name = "javainuseapi")
+@SecurityRequirement(name = "javainuseapi")
 @Tag( //
 		name = "Image Type", //
 		description = """

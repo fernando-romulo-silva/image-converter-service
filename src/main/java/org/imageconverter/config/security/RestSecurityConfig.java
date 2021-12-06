@@ -72,9 +72,9 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			//
 //			/*------*/.anyRequest().authenticated()
 			//
-			.and().formLogin() // disable redirect
-			/*------*/.successHandler(authenticationSuccessHandler) //
-			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
+//			.and().formLogin() // disable redirect
+//			/*------*/.successHandler(authenticationSuccessHandler) //
+//			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
 			//
 			.and().logout() //
 			/*------*/.logoutSuccessUrl("/") //

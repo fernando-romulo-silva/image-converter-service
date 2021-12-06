@@ -36,6 +36,7 @@ import com.turkraft.springfilter.boot.Filter;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag( //
@@ -46,6 +47,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 			Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
 			     """ //
 )
+@SecurityRequirement(name = "javainuseapi")
 //
 @Loggable
 @RestController
