@@ -1,4 +1,4 @@
-package org.imageconverter.util.openapi.imageconverter;
+package org.imageconverter.util.openapi.imagetype;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -13,23 +13,24 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
+//
 @ApiResponse(//
 		responseCode = "404", //
 		description = "Not found", //
 		content = @Content(//
 				mediaType = "application/json", //
 				examples = @ExampleObject(//
-						description = "Image Convertion not found", //
+						description = "Image Type not found", //
 						value = """
 								{
 								    "timestamp": "2021-12-05T20:18:41.80433145",
 								    "status": 404,
 								    "error": "Not Found",
-								    "message": "ElementNotFoundException: ImageConvertion with id '1' not found",
+								    "message": "ElementNotFoundException: ImageType with id '1' not found",
 								    "traceId": "1e3398a945ef0d79",
 								    "spanId": "1e3398a945ef0d79"
 								}
 																""")))
-@interface OpenApiResponseError404 {
+public @interface OpenApiResponseError404 {
 
 }

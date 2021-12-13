@@ -95,9 +95,24 @@ public class ImageTypeRestControllerUnHappyPathTest {
 			.andExpect(content().string("[]")) //
 	;
     }
-
+    
     @Test
     @Order(3)
+    @DisplayName("Search a image type by invalid search")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void getImageTypeBySearchInvalidSearchTest() throws Exception {
+
+	mvc.perform(get(REST_URL + "/search?filter=invalidField:'bmp'") //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath("$.message").value(containsString("Unable to locate Attribute with the the given name 'invalidField' on ImageType"))) //
+	;
+    }
+
+    @Test
+    @Order(4)
     @DisplayName("Create twice the same image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void createSameImageTypeTest() throws Exception {
@@ -126,7 +141,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     @DisplayName("Try to create image type with invalid json")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void createInvalidImageTypeTest() throws Exception {
@@ -153,7 +168,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     @DisplayName("Try to create image type with invalid value")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void createInvalidImageTypeTest2() throws Exception {
@@ -179,7 +194,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     @DisplayName("Try to update a image type that doesn't exist")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void updateImageTypeDoesNotExistTest() throws Exception {
@@ -203,7 +218,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     @DisplayName("Try to delete a image type that doesn't exist")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void deleteImageTypeDoesNotExistTest() throws Exception {
@@ -221,7 +236,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     @DisplayName("Try to delete a image type that has a relation with other record")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void deleteImageTypeRestrictionTest() throws Exception {
@@ -239,7 +254,7 @@ public class ImageTypeRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     @DisplayName("Try to access a invalid url")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
     public void invalidUrlTest() throws Exception {

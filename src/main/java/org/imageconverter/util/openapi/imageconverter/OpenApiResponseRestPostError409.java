@@ -13,23 +13,24 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
+//
 @ApiResponse(//
-		responseCode = "404", //
-		description = "Not found", //
+		responseCode = "409", //
+		description = "Conflict", //
 		content = @Content(//
 				mediaType = "application/json", //
 				examples = @ExampleObject(//
 						description = "Image Convertion not found", //
 						value = """
-								{
-								    "timestamp": "2021-12-05T20:18:41.80433145",
-								    "status": 404,
-								    "error": "Not Found",
-								    "message": "ElementNotFoundException: ImageConvertion with id '1' not found",
-								    "traceId": "1e3398a945ef0d79",
-								    "spanId": "1e3398a945ef0d79"
-								}
-																""")))
-@interface OpenApiResponseError404 {
+									{
+									  "timestamp": "2021-12-12T10:47:36.398207503",
+									  "status": 409,
+									  "error": "Conflict",
+									  "message": "ElementAlreadyExistsException: ImageConvertion with fileName 'bill.png' and with text '0339990574' already exists", 
+									  "traceId": "afab49eeb47d3660",
+									  "spanId": "afab49eeb47d3660"
+									}
+								""")))
+@interface OpenApiResponseRestPostError409 {
 
 }

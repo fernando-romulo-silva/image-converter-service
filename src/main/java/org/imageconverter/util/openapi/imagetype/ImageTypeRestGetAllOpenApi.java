@@ -1,4 +1,4 @@
-package org.imageconverter.util.openapi.imageconverter;
+package org.imageconverter.util.openapi.imagetype;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -6,10 +6,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
+import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.openapi.OpenApiResponseError500;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,15 +19,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 //
-@Operation(summary = "Get a ImageConvertion by id", description = "This method try to find a imageConvertion by id")
+@Operation(summary = "Get all image type", description = "This method return all image types, watch out with it")
 @ApiResponse( //
 		responseCode = "200", //
-		description = "Image convertion found", //
-		content = @Content(mediaType = "application/json", schema = @Schema(implementation = ImageConverterResponse.class)) //
+		description = "Image convertions found or a empty array if didn't find anything", //
+		content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ImageTypeResponse.class))) //
 )
 //
-@OpenApiResponseError404
 @OpenApiResponseError500
-public @interface ImageConverterRestGetByIdOpenApi {
+public @interface ImageTypeRestGetAllOpenApi {
 
 }

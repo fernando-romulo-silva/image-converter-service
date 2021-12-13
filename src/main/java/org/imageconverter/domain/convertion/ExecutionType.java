@@ -2,6 +2,9 @@ package org.imageconverter.domain.convertion;
 
 import static org.apache.commons.lang3.StringUtils.upperCase;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(enumAsRef = true)
 public enum ExecutionType {
 
     BATCH,

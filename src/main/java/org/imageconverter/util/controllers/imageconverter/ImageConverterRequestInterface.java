@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageConverterRequestInterface {
 
-    MultipartFile data();
+    MultipartFile file();
     
     ExecutionType executionType();
 }

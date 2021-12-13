@@ -35,19 +35,18 @@ import com.turkraft.springfilter.boot.Filter;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@SecurityRequirement(name = "BASIC")
 @Tag( //
-	name = "Image Convert", //
-	description = """
-			Image Convert API - If something went wrong, please put 'trace' (for all Http methods)
-			at the end of the call to receive the stackStrace.
-			Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
-			     """ //
+		name = "Image Convert", //
+		description = """
+				Image Convert API - If something went wrong, please put 'trace' (for all Http methods)
+				at the end of the call to receive the stackStrace.
+				Ex: http://127.0.0.1:8080/image-converter/rest/images/convert?trace=true
+				     """ //
 )
-@SecurityRequirement(name = "javainuseapi")
 //
 @Loggable
 @RestController
@@ -61,13 +60,19 @@ public class ImageConverterRestController {
 	super();
 	this.imageConversionService = imageConversionService;
     }
+    
+    @GetMapping("/ping")
+    @ResponseStatus(OK)
+    public String ping() {
+	return "ping!";
+    }    
 
     @ImageConverterRestGetByIdOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
     public ImageConverterResponse show( //
-		    @Parameter(description = "The image conversion id's") //
+		    @Parameter(name = "id", description = "The image conversion id's", required = true, example = "3") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
 
@@ -88,7 +93,7 @@ public class ImageConverterRestController {
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
     public List<ImageConverterResponse> show( //
-		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=fileName:'image.png'")
+		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=fileName:'image.png'") //
 		    @Filter //
 		    final Specification<ImageConvertion> filter, final Pageable page) {
 
@@ -100,7 +105,7 @@ public class ImageConverterRestController {
     @ResponseStatus(CREATED)
     @PostMapping(consumes = { "multipart/form-data" }, produces = "application/json")
     public ImageConverterResponse convert( //
-		    @Parameter(description = "The Images to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true) //
+		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true, example = "image.bmp") //
 		    @RequestParam(name = "file", required = true) //
 		    final MultipartFile file) {
 
@@ -112,23 +117,23 @@ public class ImageConverterRestController {
     @ResponseStatus(CREATED)
     @PostMapping(value = "/area", consumes = { "multipart/form-data" }, produces = "application/json")
     public ImageConverterResponse convertWithArea( //
-		    @Parameter(description = "The Images to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true, schema = @Schema(allowableValues = "> 0")) //
+		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true, example = "image.bmp") //
 		    @RequestParam(value = "file", required = true) //
 		    final MultipartFile file, //
 		    //
-		    @Parameter(description = "The vertical position", required = true) //
+		    @Parameter(description = "The vertical position", required = true, example = "3") //
 		    @RequestParam(required = true) //
 		    final Integer x, //
 		    //
-		    @Parameter(description = "The horizontal position", content = @Content(mediaType = "multipart/form-data"), required = true) //
+		    @Parameter(description = "The horizontal position", required = true, example = "4") //
 		    @RequestParam(required = true) //
 		    final Integer y, //
 		    //
-		    @Parameter(description = "The width size", content = @Content(mediaType = "multipart/form-data"), required = true) //
+		    @Parameter(description = "The width size's area", required = true, example = "56") //
 		    @RequestParam(required = true) //
 		    final Integer width, //
 		    //
-		    @Parameter(description = "The height size", content = @Content(mediaType = "multipart/form-data"), required = true) //
+		    @Parameter(description = "The height's size area ", required = true, example = "345") //
 		    @RequestParam(required = true) //
 		    final Integer height) {
 

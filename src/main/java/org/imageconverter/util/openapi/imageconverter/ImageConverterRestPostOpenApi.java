@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.Operation;
 @Operation(summary = "Convert all image into the text", description = "This method convert a whole file, may it'll take a long time")
 //
 @OpenApiResponse201
+@org.imageconverter.util.openapi.imagetype.OpenApiResponseError404
+@OpenApiResponseRestPostError409
 @OpenApiResponseError500
 public @interface ImageConverterRestPostOpenApi {
 

@@ -19,6 +19,9 @@ import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetAllOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetByIdOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetBySearchOpenApi;
 import org.imageconverter.util.openapi.imagetype.UpdateImageTypeRequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
@@ -36,16 +39,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@RestController
-@Description("Controller for image type API")
-@RequestMapping(REST_URL)
-//
-@SecurityRequirement(name = "javainuseapi")
+@SecurityRequirement(name = "BASIC")
 @Tag( //
 		name = "Image Type", //
 		description = """
@@ -56,6 +54,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 )
 //
 @Loggable
+@RestController
+@Description("Controller for image type API")
+@RequestMapping(REST_URL)
 public class ImageTypeRestController {
 
     private final ImageTypeService imageTypeService;
@@ -72,16 +73,20 @@ public class ImageTypeRestController {
 	return "ping!";
     }
 
+    @ImageTypeRestGetByIdOpenApi
+    //
     @ResponseStatus(OK)
     @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
     public ImageTypeResponse show( //
-		    @Parameter(description = "The image type id's") //
+		    @Parameter(description = "The image type id's", example = "1000") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
 
 	return imageTypeService.findById(id);
     }
 
+    @ImageTypeRestGetAllOpenApi
+    //
     @ResponseStatus(OK)
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public List<ImageTypeResponse> showAll() {
@@ -89,16 +94,18 @@ public class ImageTypeRestController {
 	return imageTypeService.findAll();
     }
 
+    @ImageTypeRestGetBySearchOpenApi
+    //
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
     public List<ImageTypeResponse> get( //
+		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=extension:'png'") //
 		    @Filter //
-		    final Specification<ImageType> spec, final Pageable page) {
+		    final Specification<ImageType> filter, final Pageable page) {
 
-	return imageTypeService.findBySpecification(spec);
+	return imageTypeService.findBySpecification(filter);
     }
 
-    @Operation(summary = "Create a new image type")
     @ResponseStatus(CREATED)
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
     public String create(//
@@ -117,7 +124,7 @@ public class ImageTypeRestController {
     @PutMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
     public void update( //
 		    //
-		    @Parameter(description = "The image type id's") //
+		    @Parameter(description = "The image type id's", example = "1000") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id, //
 
@@ -133,7 +140,7 @@ public class ImageTypeRestController {
     @DeleteMapping("/{id:[\\d]*}")
     public void delete( //
 		    //
-		    @Parameter(description = "The image type id's") //
+		    @Parameter(description = "The image type id's", example = "1000") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
 

@@ -1,4 +1,4 @@
-package org.imageconverter.util.openapi.imageconverter;
+package org.imageconverter.util.openapi.imagetype;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -27,6 +27,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 //
 @OpenApiResponseError404
 @OpenApiResponseError500
-public @interface ImageConverterRestGetByIdOpenApi {
+public @interface ImageTypeRestGetByIdOpenApi {
 
 }

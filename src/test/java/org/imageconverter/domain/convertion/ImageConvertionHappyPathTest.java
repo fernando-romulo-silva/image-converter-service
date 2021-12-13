@@ -109,11 +109,11 @@ public class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     @Order(3)
     @DisplayName("Test the imageConvertion's creation")
     public void createValidImageConvertionTest( //
-		    final MultipartFile data, final ExecutionType executionType, //
+		    final MultipartFile file, final ExecutionType executionType, //
 		    final boolean area, final Integer x, final Integer y, final Integer width, final Integer height) {
 
 	final var imageConvertionBuilder = new ImageConvertion.Builder().with($ -> {
-	    $.data = data;
+	    $.file = file;
 	    $.executionType = executionType;
 	    $.x = x;
 	    $.y = y;
@@ -123,9 +123,9 @@ public class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
 	final var imageConvertion = imageConvertionBuilder.build();
 
-	assertThat(imageConvertion.getFileName()).isEqualToIgnoringCase(data.getOriginalFilename());
+	assertThat(imageConvertion.getFileName()).isEqualToIgnoringCase(file.getOriginalFilename());
 
-	assertThat(imageConvertion.getFileType().getExtension()).isEqualToIgnoringCase(getExtension(data.getOriginalFilename()));
+	assertThat(imageConvertion.getFileType().getExtension()).isEqualToIgnoringCase(getExtension(file.getOriginalFilename()));
 
 	assertThat(imageConvertion.getFileSize()).isEqualTo(1878L);
 

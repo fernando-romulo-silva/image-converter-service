@@ -12,15 +12,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @JsonInclude(Include.NON_NULL)
 public record UpdateImageTypeRequest( //
 
+		@Schema(name = "extension", required = false, example = "bmp") //
 		@JsonProperty(value = "extension", required = false) //
-		@Schema(name = "extension", required = false) //
 		String extension,
 
+		@Schema(name = "name", required = false, example = "BitMap") //
 		@JsonProperty(value = "name", required = false) //
-		@Schema(name = "name", required = false) //
 		String name, //
 
+		@Schema(name = "description", required = false, example = "Device independent bitmap") //
 		@JsonProperty(value = "description", required = false) //
-		@Schema(name = "description", required = false) //
 		String description) {
 }

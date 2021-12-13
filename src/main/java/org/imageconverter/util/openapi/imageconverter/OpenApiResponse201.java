@@ -11,13 +11,11 @@ import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 //
-@SecurityRequirement(name = "BASIC")
 @ApiResponse( //
 		responseCode = "201", //
 		description = "Successful converte image", //

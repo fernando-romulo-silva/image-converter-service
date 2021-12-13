@@ -19,13 +19,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 //
-@Operation(summary = "Get image convertions by criteria search", description = "This method return image convertions that satisfy a certain condition")
+@Operation( //
+		summary = "Get image convertions by criteria search", //
+		description = "This method return image convertions that satisfy a certain condition" //
+)
 @ApiResponse( //
 		responseCode = "200", //
 		description = "Image convertions found or a empty array if didn't find anything", //
 		content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ImageConverterResponse.class))) //
 )
+//
 @OpenApiResponseError500
+@OpenApiResponseGetBySearchError400
 public @interface ImageConverterRestGetBySearchOpenApi {
 
 }

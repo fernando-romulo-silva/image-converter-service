@@ -71,11 +71,11 @@ public class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
     @Order(1)
     @DisplayName("Test the imageConvertion's creation with invalid values")
     public void createInvalidImageConvertionTest( //
-		    final MultipartFile data, final ExecutionType executionType, //
+		    final MultipartFile file, final ExecutionType executionType, //
 		    final Integer x, final Integer y, final Integer width, final Integer height) {
 
 	assertThatThrownBy(() -> new ImageConvertion.Builder().with($ -> {
-	    $.data = data;
+	    $.file = file;
 	    $.executionType = executionType;
 	    $.x = x;
 	    $.y = y;

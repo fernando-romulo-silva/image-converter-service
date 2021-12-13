@@ -46,7 +46,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			//
 			.and().authorizeRequests() //
 			//
-			/*--*/.antMatchers( //
+			/*--*/.mvcMatchers( //
 					    // -- Swagger UI v3 (OpenAPI)
 					"/v3/api-docs/**", //
 					"/swagger-ui/**", //

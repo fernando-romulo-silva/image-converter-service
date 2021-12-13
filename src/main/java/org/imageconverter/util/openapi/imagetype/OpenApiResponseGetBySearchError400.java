@@ -1,4 +1,4 @@
-package org.imageconverter.util.openapi.imageconverter;
+package org.imageconverter.util.openapi.imagetype;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -14,22 +14,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @ApiResponse(//
-		responseCode = "404", //
-		description = "Not found", //
+		responseCode = "400", //
+		description = "Bad Request", //
 		content = @Content(//
 				mediaType = "application/json", //
 				examples = @ExampleObject(//
 						description = "Image Convertion not found", //
 						value = """
 								{
-								    "timestamp": "2021-12-05T20:18:41.80433145",
-								    "status": 404,
-								    "error": "Not Found",
-								    "message": "ElementNotFoundException: ImageConvertion with id '1' not found",
-								    "traceId": "1e3398a945ef0d79",
-								    "spanId": "1e3398a945ef0d79"
+								    "timestamp": "2021-12-12T10:58:54.730595376",
+								    "status": 400,
+								    "error": "Bad Request",
+								    "message": "ElementInvalidException: Unable to locate Attribute with the the given name 'invalidField' on ImageType",
+								    "traceId": "46a77cdd6a4d6267",
+								    "spanId": "46a77cdd6a4d6267"
 								}
-																""")))
-@interface OpenApiResponseError404 {
+																		""")))
+@interface OpenApiResponseGetBySearchError400 {
 
 }

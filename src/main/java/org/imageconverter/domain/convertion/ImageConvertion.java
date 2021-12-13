@@ -151,8 +151,8 @@ public class ImageConvertion {
 	@NotNull(message = "The 'fileType' cannot be null")
 	public ExecutionType executionType;
 
-	@NotNull(message = "The 'data' cannot be null")
-	public MultipartFile data;
+	@NotNull(message = "The 'file' cannot be null")
+	public MultipartFile file;
 
 	@Min(value = 0, message = "The axis 'x' cannot be less than zero")
 	public Integer x;
@@ -195,7 +195,7 @@ public class ImageConvertion {
 		throw new ConvertionException("Empty request to convert!");
 	    }
 	    
-	    this.data = request.data();
+	    this.file = request.file();
 	    this.executionType = request.executionType();
 
 	    if (request instanceof ImageConverterRequestArea image //
@@ -213,7 +213,7 @@ public class ImageConvertion {
 
 	public ImageConvertion build() {
 
-	    if (isNull(data) || data.isEmpty()) {
+	    if (isNull(file) || file.isEmpty()) {
 		throw new ConvertionException("Empty file to convert!");
 	    }
 	    
@@ -223,19 +223,19 @@ public class ImageConvertion {
 
 	    final var validator = getBeanFrom(Validator.class);
 
-	    final var extensionTxt = getExtension(data.getOriginalFilename());
+	    final var extensionTxt = getExtension(file.getOriginalFilename());
 
 	    this.fileType = imageTypeRepository.findByExtension(extensionTxt) //
 			    .orElseThrow(() -> new ElementNotFoundException(ImageType.class, "extension " + extensionTxt));
 
-	    this.fileName = data.getOriginalFilename();
-	    this.fileSize = data.getSize() / 1024;
+	    this.fileName = file.getOriginalFilename();
+	    this.fileSize = file.getSize() / 1024;
 
 	    if (nonNull(x) && nonNull(y) && nonNull(width) && nonNull(height)) {
-		this.text = tesseractService.convert(data, x, y, width, height);
+		this.text = tesseractService.convert(file, x, y, width, height);
 		this.area = true;
 	    } else {
-		this.text = tesseractService.convert(data);
+		this.text = tesseractService.convert(file);
 		this.area = false;
 	    }
 
