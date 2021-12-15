@@ -11,13 +11,11 @@ import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 //
-@SecurityRequirement(name = "BASIC")
 @ApiResponse( //
 		responseCode = "201", //
 		description = "Image type successful created", //
@@ -25,6 +23,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 			@Content(mediaType = "application/json", schema = @Schema(implementation = ImageTypeResponse.class)) //
 		} //
 )
-public @interface ApiResponse201 {
+public @interface OpenApiResponse201 {
 
 }

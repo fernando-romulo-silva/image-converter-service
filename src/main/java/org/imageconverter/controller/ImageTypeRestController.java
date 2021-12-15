@@ -19,6 +19,7 @@ import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestPostOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetAllOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetByIdOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetBySearchOpenApi;
@@ -106,6 +107,8 @@ public class ImageTypeRestController {
 	return imageTypeService.findBySpecification(filter);
     }
 
+    @ImageTypeRestPostOpenApi
+    //
     @ResponseStatus(CREATED)
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
     public String create(//
