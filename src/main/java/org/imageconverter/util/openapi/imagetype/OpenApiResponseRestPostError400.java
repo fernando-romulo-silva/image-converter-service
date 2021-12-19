@@ -21,30 +21,30 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 				mediaType = "application/json", //
 				examples = { //
 					@ExampleObject(//
-							description = "Image Convertion not found", //
+							name = "Example 1", description = "Image Type invalid property", //
 							value = """
 									{
-									    "timestamp": "2021-12-12T10:47:36.398207503",
-									    "status": 400,
-									    "error": "Bad Request",
-									    "message": "ElementInvalidException: Unable to locate Attribute with the the given name 'invalidField' on ImageConvertion",
-									    "traceId": "afab49eeb47d3660",
-									    "spanId": "afab49eeb47d3660"
+									   "timestamp":"2021-12-19T10:27:49.484938769",
+									   "status":400,
+									   "error":"Bad Request",
+									   "message":"MismatchedInputException: Missing required creator property 'extension' ",
+									   "traceId":"b3739a0b6c59eab3",
+									   "spanId":"ecba3385978800d1"
 									}
-											"""), //
+																				"""), //
 
 					@ExampleObject(//
-							description = "Image Convertion not found", //
+							name = "Example 2", description = "Image type with invalid values property", //
 							value = """
 									{
-									    "timestamp": "2021-12-12T10:47:36.398207503",
-									    "status": 400,
-									    "error": "Bad Request",
-									    "message": "ElementInvalidException: Unable to locate Attribute with the the given name 'invalidField' on ImageConvertion",
-									    "traceId": "afab49eeb47d3660",
-									    "spanId": "afab49eeb47d3660"
+									   "timestamp":"2021-12-19T10:31:35.544918342",
+									   "status":400,
+									   "error":"Bad Request",
+									   "message":"The 'name' cannot be empty",
+									   "traceId":"1d50da5635af8f66",
+									   "spanId":"78a329966f192e5a"
 									}
-											""") //
+																				""") //
 
 				}))
 @interface OpenApiResponseRestPostError400 {

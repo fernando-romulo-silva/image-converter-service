@@ -19,8 +19,8 @@ import io.swagger.v3.oas.annotations.Operation;
 		description = "This method create a new image's type" //
 )
 @OpenApiResponse201
-// @OpenApiResponseRestPostAreaError400
-// @OpenApiResponseRestPostError409
+@OpenApiResponseRestPostError400
+@OpenApiResponseRestPostError409
 @OpenApiResponseError500
 public @interface ImageTypeRestPostOpenApi {
 
