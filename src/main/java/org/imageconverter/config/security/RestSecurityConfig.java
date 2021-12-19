@@ -20,6 +20,13 @@ import org.springframework.security.web.firewall.HttpFirewall;
 @Configuration
 public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final String[] swaggerUiURL = new String[] { //
+	    "/v3/api-docs/**", //
+	    "/swagger-ui/**", //
+	    "/swagger-ui.html", //
+	    "/webjars/**" //
+    };
+
     private final RestAuthenticationSuccessHandler authenticationSuccessHandler;
 
     private final HttpFirewall allowUrlEncodedSlashHttpFirewall;
@@ -27,8 +34,11 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
     private final CsrfTokenRepository csrfTokenRepository;
 
     @Autowired
-    RestSecurityConfig(final RestAuthenticationSuccessHandler authenticationSuccessHandler, final HttpFirewall allowUrlEncodedSlashHttpFirewall,
+    RestSecurityConfig( //
+		    final RestAuthenticationSuccessHandler authenticationSuccessHandler, //
+		    final HttpFirewall allowUrlEncodedSlashHttpFirewall, //
 		    final CsrfTokenRepository httpSessionCsrfTokenRepository) {
+	//
 	super(true); // disable default configuration
 	this.authenticationSuccessHandler = authenticationSuccessHandler;
 	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;
@@ -46,13 +56,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			//
 			.and().authorizeRequests() //
 			//
-			/*--*/.mvcMatchers( //
-					    // -- Swagger UI v3 (OpenAPI)
-					"/v3/api-docs/**", //
-					"/swagger-ui/**", //
-					"/swagger-ui.html", //
-					"/webjars/swagger-ui"
-			) //
+			/*--*/.antMatchers(swaggerUiURL) //
 			/*------*/.permitAll()
 			//
 			/*--*/.antMatchers(GET, "/rest/**") // /rest/images/type
@@ -70,11 +74,9 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*--*/.antMatchers("/rest/**") //
 			/*------*/.hasAnyRole("ADMIN", "USER")
 			//
-//			/*------*/.anyRequest().authenticated()
-			//
-//			.and().formLogin() // disable redirect
-//			/*------*/.successHandler(authenticationSuccessHandler) //
-//			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
+			.and().formLogin() // disable redirect
+			/*------*/.successHandler(authenticationSuccessHandler) //
+			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
 			//
 			.and().logout() //
 			/*------*/.logoutSuccessUrl("/") //
@@ -90,6 +92,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final WebSecurity web) throws Exception {
 	super.configure(web);
+	web.ignoring().antMatchers(swaggerUiURL);
 	web.httpFirewall(allowUrlEncodedSlashHttpFirewall);
     }
 }

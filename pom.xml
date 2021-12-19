@@ -14,18 +14,26 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 
+		<spring-boot.version>2.6.1</spring-boot.version>
+		<spring-boot-cloud.version>2021.0.0</spring-boot-cloud.version>
+		 
+		<!--		 
 		<spring-boot.version>2.5.7</spring-boot.version>
 		<spring-boot-cloud.version>2020.0.4</spring-boot-cloud.version>
+		 -->			
+	
+		<!-- <springdoc-openapi.version>1.6.1</springdoc-openapi.version>  bug? -->
+		<springdoc-openapi.version>1.5.13</springdoc-openapi.version>
+
 
 		<junit-platform.version>5.3.1</junit-platform.version>
-		<springdoc-openapi.version>1.5.13</springdoc-openapi.version>
 
 		<!-- <checkstyle.config.location>checkstyle.xml</checkstyle.config.location> -->
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-		
+
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -51,11 +59,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>		
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -91,19 +99,13 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-rsa</artifactId>
 		</dependency>
-		
-		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-text</artifactId>
-		    <version>1.9</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>${springdoc-openapi.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-security</artifactId>
@@ -114,24 +116,6 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-data-rest</artifactId>
 			<version>${springdoc-openapi.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sourceforge.tess4j</groupId>
-			<artifactId>tess4j</artifactId>
-			<version>4.1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.turkraft</groupId>
-			<artifactId>spring-filter</artifactId>
-			<version>1.0.5</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.4</version>
 		</dependency>
 
 		<dependency>
@@ -152,6 +136,30 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.tess4j</groupId>
+			<artifactId>tess4j</artifactId>
+			<version>4.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.turkraft</groupId>
+			<artifactId>spring-filter</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
 		</dependency>
 
 		<!-- Tests -->
@@ -229,13 +237,13 @@
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>commons-codec</groupId>
-		    <artifactId>commons-codec</artifactId>
-		    <scope>test</scope>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
@@ -261,7 +269,7 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
-						<!-- <ruleset>rulesets/java/quickstart.xml</ruleset>  -->
+						<!-- <ruleset>rulesets/java/quickstart.xml</ruleset> -->
 						<ruleset>default-extensions/pmd/java/pmd-ruleset.xml</ruleset>
 					</rulesets>
 				</configuration>
@@ -320,7 +328,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 
@@ -338,7 +346,7 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
-						<!-- <ruleset>rulesets/java/quickstart.xml</ruleset>  -->
+						<!-- <ruleset>rulesets/java/quickstart.xml</ruleset> -->
 						<ruleset>default-extensions/pmd/java/pmd-ruleset.xml</ruleset>
 					</rulesets>
 				</configuration>
@@ -349,7 +357,7 @@
 				<artifactId>spotbugs-maven-plugin</artifactId>
 				<configuration>
 					<excludeFilterFile>default-extensions/spotbugs/spotbugs-excludes.xml</excludeFilterFile>
-				</configuration>				
+				</configuration>
 			</plugin>
 
 			<plugin>

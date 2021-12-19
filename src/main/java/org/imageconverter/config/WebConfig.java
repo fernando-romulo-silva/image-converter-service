@@ -5,6 +5,7 @@ import static com.fasterxml.jackson.databind.MapperFeature.ALLOW_COERCION_OF_SCA
 
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UrlPathHelper;
 
@@ -27,6 +29,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 @EnableWebSecurity
 @EnableWebMvc
 @EnableAspectJAutoProxy
+@EnableConfigurationProperties
 @EnableTransactionManagement
 public class WebConfig implements WebMvcConfigurer {
 
@@ -36,6 +39,12 @@ public class WebConfig implements WebMvcConfigurer {
 	final var urlPathHelper = new UrlPathHelper();
 	urlPathHelper.setRemoveSemicolonContent(false);
 	configurer.setUrlPathHelper(urlPathHelper);
+    }
+
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/4.1.3/");
     }
 
     @Bean
@@ -53,10 +62,10 @@ public class WebConfig implements WebMvcConfigurer {
 			.registerModule(module);
 
 //	mapper.registerSubtypes(null);
-	
+
 	return objectMapper;
     }
-    
+
     @Bean
     public CommonsMultipartResolver multipartResolver() {
 	final var resolver = new CommonsMultipartResolver();

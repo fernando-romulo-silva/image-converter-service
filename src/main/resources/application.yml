@@ -14,6 +14,14 @@ application:
     user_login: ${APPLICATION_USER_LOGIN}
     user_password: ${APPLICATION_USER_PASSWORD}
 
+#============== Open API =============================================================================
+springdoc:
+  api-docs.enabled: true
+  swagger-ui.disable-swagger-default-url: true
+#  swagger-ui.use-root-path: true
+#  swagger-ui.configUrl: "/v3/api-docs/"
+#  swagger-ui.path: "/swagger-ui.html"
+
 #============== Tesseract ============================================================================
 tesseract:
     language: ${TESSERACT_LANG}
@@ -52,9 +60,9 @@ server:
         enabled: true
 #    compression:
 #        enabled: true        
-    port: 5000
+    port: 5090
     servlet:
-#        context-path: /image-converter
+        context-path: /
         encoding:
             charset: UTF-8
             enabled: true
@@ -90,7 +98,8 @@ spring:
     jackson:
         default-property-inclusion: NON_NULL     
         
-    security.filter.order: 5 # due to multipart resolver
+    security: 
+        filter.order: 5 # due to multipart resolver
 
     devtools.add-properties: false
 

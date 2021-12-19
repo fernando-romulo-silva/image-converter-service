@@ -40,7 +40,13 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 //				} //
 //		) //
 )
-@SecurityScheme(name = "BASIC", scheme = "basic", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
+@SecurityScheme( //
+		name = "BASIC", //
+		scheme = "basic", //
+		type = SecuritySchemeType.HTTP, //
+		in = SecuritySchemeIn.HEADER //
+)
+//
 @SpringBootApplication
 public class ImageServiceApplication { // NOPMD - It's not a util class, it's a starter
 
