@@ -61,12 +61,6 @@ public class ImageConverterRestController {
 	this.imageConversionService = imageConversionService;
     }
     
-    @GetMapping("/ping")
-    @ResponseStatus(OK)
-    public String ping() {
-	return "ping!";
-    }    
-
     @ImageConverterRestGetByIdOpenApi
     //
     @ResponseStatus(OK)

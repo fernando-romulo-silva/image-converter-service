@@ -68,12 +68,6 @@ public class ImageTypeRestController {
 	this.imageTypeService = imageTypeService;
     }
 
-    @GetMapping("/ping")
-    @ResponseStatus(OK)
-    public String ping() {
-	return "ping!";
-    }
-
     @ImageTypeRestGetByIdOpenApi
     //
     @ResponseStatus(OK)
