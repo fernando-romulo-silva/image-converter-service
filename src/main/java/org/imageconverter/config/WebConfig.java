@@ -20,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UrlPathHelper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -43,8 +44,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/4.1.3/");
+	registry.addResourceHandler("/swagger-ui/**").addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/4.1.3/");
     }
 
     @Bean
@@ -55,12 +55,15 @@ public class WebConfig implements WebMvcConfigurer {
 	module.addSerializer(new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
 	module.addSerializer(new LocalTimeSerializer(DateTimeFormatter.ISO_TIME));
 
-	final var objectMapper = new ObjectMapper();
-
-	objectMapper.setSerializationInclusion(NON_NULL) //
+	final var objectMapper = JsonMapper.builder() //
 			.configure(ALLOW_COERCION_OF_SCALARS, false) //
-			.registerModule(module);
+			.serializationInclusion(NON_NULL) //
+			.addModule(module) //
+			.build();
 
+//	objectMapper.setSerializationInclusion(NON_NULL) //
+//			.registerModule(module);
+//
 //	mapper.registerSubtypes(null);
 
 	return objectMapper;
