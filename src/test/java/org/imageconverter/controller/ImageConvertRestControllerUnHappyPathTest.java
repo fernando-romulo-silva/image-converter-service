@@ -54,10 +54,16 @@ public class ImageConvertRestControllerUnHappyPathTest {
 
     @Value("classpath:beach.jpeg")
     private Resource beachImageFile;
-    
+
     @Value("classpath:bill.png")
     private Resource billImageFile;
 
+    @Value("classpath:corruptedImage.png")
+    private Resource corruptedImageFile;
+
+    @Value("classpath:emptyImage.png")
+    private Resource emptyImageFile;
+    
     @Autowired
     private MockMvc mvc;
 
@@ -157,13 +163,107 @@ public class ImageConvertRestControllerUnHappyPathTest {
 			.param("height", "57") //
 			.with(csrf())) //
 			.andDo(print()) //
-			.andExpect(status().isConflict()) // 
+			.andExpect(status().isConflict()) //
 			.andExpect(jsonPath("$.message").value(containsString("ElementAlreadyExistsException: ImageConvertion with fileName 'bill.png'"))) //
 	;
     }
-
+    
     @Test
     @Order(6)
+    @DisplayName("Convert a corrupted image")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void convertCorruptedImageTest() throws Exception {
+
+	// create one
+	final var multipartFile = new MockMultipartFile("file", corruptedImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, corruptedImageFile.getInputStream());
+
+	// create one
+	mvc.perform(multipart(REST_URL) //
+			.file(multipartFile) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath("$.message").value(containsString("Image corruptedImage.png has IO error: 'IIOException: Image width <= 0!'"))) //
+	;
+
+    }
+    
+    
+    @Test
+    @Order(7)
+    @DisplayName("Convert a empty image")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void convertEmptyImageTest() throws Exception {
+
+	// create one
+	final var multipartFile = new MockMultipartFile("file", emptyImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, emptyImageFile.getInputStream());
+
+	// create one
+	mvc.perform(multipart(REST_URL) //
+			.file(multipartFile) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isServiceUnavailable()) //
+			.andExpect(jsonPath("$.message").value(containsString("Image emptyImage.png has Tessarct error: 'IllegalArgumentException: image == null!'"))) //
+	;
+
+    } 
+    
+    @Test
+    @Order(8)
+    @DisplayName("Convert a corrupted image with area")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void convertCorruptedImageAreaTest() throws Exception {
+
+	// create one
+	final var multipartFile = new MockMultipartFile("file", corruptedImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, corruptedImageFile.getInputStream());
+
+	// create one
+	mvc.perform(multipart(REST_URL + "/area") //
+			.file(multipartFile) //
+			.accept(APPLICATION_JSON) //
+			.param("x", "885") //
+			.param("y", "1417") //
+			.param("width", "1426") //
+			.param("height", "57") //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath("$.message").value(containsString("Image corruptedImage.png has IO error: 'IIOException: Image width <= 0!'"))) //
+	;
+
+    }
+    
+    
+    @Test
+    @Order(9)
+    @DisplayName("Convert a empty image with area")
+    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
+    public void convertEmptyImageAreaTest() throws Exception {
+
+	// create one
+	final var multipartFile = new MockMultipartFile("file", emptyImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, emptyImageFile.getInputStream());
+
+	// create one
+	mvc.perform(multipart(REST_URL + "/area") //
+			.file(multipartFile) //
+			.accept(APPLICATION_JSON) //
+			.param("x", "885") //
+			.param("y", "1417") //
+			.param("width", "1426") //
+			.param("height", "57") //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isServiceUnavailable()) //
+			.andExpect(jsonPath("$.message").value(containsString("Image emptyImage.png has Tessarct error: 'IllegalArgumentException: image == null!'"))) //
+	;
+
+    }    
+
+    @Test
+    @Order(10)
     @DisplayName("convert the image with area with parameter null")
     public void convertAreaParameterNullTest() throws Exception {
 
@@ -185,7 +285,7 @@ public class ImageConvertRestControllerUnHappyPathTest {
     }
 
     @Test
-    @Order(7)
+    @Order(11)
     @DisplayName("convert the image with area with parameter Y invalid")
     public void convertAreaParameterInvalidYTest() throws Exception {
 

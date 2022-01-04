@@ -40,7 +40,7 @@ public class ImageConversionServiceHappyPathTest {
     @Autowired
     private ImageConversionService imageConversionService;
 
-    @Value("classpath:image.png")
+    @Value("classpath:bill.png")
     private Resource imageFile;
 
     @Test

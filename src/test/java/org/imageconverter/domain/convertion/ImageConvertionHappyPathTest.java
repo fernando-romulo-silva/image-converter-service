@@ -51,7 +51,7 @@ public class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
     public static final String DB_CONVERTION_NUMBER = "02325678908110000003556752101015176230000023560";
 
-    public static final String FILE_NAME_IMAGE_PNG = "image.png";
+    public static final String FILE_NAME_IMAGE_PNG = "bill.png";
 
     @BeforeAll
     public void setUp() throws Exception {

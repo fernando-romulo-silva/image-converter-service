@@ -48,17 +48,17 @@ public class TesseractService {
 
 	} catch (final IOException ex) {
 
-	    final var msg = format("Image {0} has IO error {1}.", data.getOriginalFilename(), getRootCauseMessage(ex));
+	    final var msg = format("Image {0} has IO error: ''{1}''.", data.getOriginalFilename(), getRootCauseMessage(ex));
 	    throw new ConvertionException(msg, ex);
 
 	} catch (final TesseractException | Error ex) {
 
-	    final var msg = format("Image {0} has Tessarct error {1}.", getRootCauseMessage(ex));
+	    final var msg = format("Image {0} has Tessarct error: ''{1}''.", data.getOriginalFilename(), getRootCauseMessage(ex));
 	    throw new TesseractConvertionException(msg, ex);
 
 	} catch (final Exception ex) {
 
-	    final var msg = format("Unexpected error {0}.", getRootCauseMessage(ex));
+	    final var msg = format("Unexpected error: ''{0}''.", getRootCauseMessage(ex));
 	    throw new ImageConvertServiceException(msg, ex);
 	}
     }
@@ -83,17 +83,17 @@ public class TesseractService {
 
 	} catch (final IOException ex) {
 
-	    final var msg = format("Image {0} has IO error {1}, X {2}, Y {3}, Width {4} and Heigh {5}.", data.getOriginalFilename(), getRootCauseMessage(ex), x, y, width, height);
+	    final var msg = format("Image {0} has IO error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", data.getOriginalFilename(), getRootCauseMessage(ex), x, y, width, height);
 	    throw new ConvertionException(msg, ex);
 
 	} catch (final TesseractException | Error ex) {
 
-	    final var msg = format("Image {0} has Tessarct error {1}, X {2}, Y {3}, Width {4} and Heigh {5}.", getRootCauseMessage(ex), x, y, width, height);
+	    final var msg = format("Image {0} has Tessarct error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", data.getOriginalFilename(), getRootCauseMessage(ex), x, y, width, height);
 	    throw new TesseractConvertionException(msg, ex);
 
 	} catch (final Exception ex) {
 
-	    final var msg = format("Unexpected error {0}, X {1}, Y {2}, Width {3} and Heigh {4}.", getRootCauseMessage(ex), x, y, width, height);
+	    final var msg = format("Unexpected error: ''{0}'', X {1}, Y {2}, Width {3} and Heigh {4}.", getRootCauseMessage(ex), x, y, width, height);
 	    throw new ImageConvertServiceException(msg, ex);
 	}
     }
