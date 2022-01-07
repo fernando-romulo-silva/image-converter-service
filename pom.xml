@@ -16,13 +16,10 @@
 
 		<spring-boot.version>2.6.1</spring-boot.version>
 		<spring-boot-cloud.version>2021.0.0</spring-boot-cloud.version>
-		 
-		<!--		 
-		<spring-boot.version>2.5.7</spring-boot.version>
-		<spring-boot-cloud.version>2020.0.4</spring-boot-cloud.version>
-		 -->			
-	
-		<!-- <springdoc-openapi.version>1.6.1</springdoc-openapi.version>  bug? -->
+
+		<!-- <spring-boot.version>2.5.7</spring-boot.version> <spring-boot-cloud.version>2020.0.4</spring-boot-cloud.version> -->
+
+		<!-- <springdoc-openapi.version>1.6.1</springdoc-openapi.version> bug? -->
 		<springdoc-openapi.version>1.5.13</springdoc-openapi.version>
 
 
@@ -117,6 +114,14 @@
 			<artifactId>springdoc-openapi-data-rest</artifactId>
 			<version>${springdoc-openapi.version}</version>
 		</dependency>
+
+	 	<!-- 
+		<dependency>
+			<groupId>com.github.gavlyukovskiy</groupId>
+			<artifactId>datasource-proxy-spring-boot-starter</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		 -->
 
 		<dependency>
 			<groupId>com.h2database</groupId>

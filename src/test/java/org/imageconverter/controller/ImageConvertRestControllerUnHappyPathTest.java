@@ -151,7 +151,6 @@ public class ImageConvertRestControllerUnHappyPathTest {
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
 			.andReturn();
-	;
 
 	// create another
 	mvc.perform(multipart(REST_URL + "/area") //
