@@ -25,7 +25,9 @@
 
 		<junit-platform.version>5.3.1</junit-platform.version>
 
-		<!-- <checkstyle.config.location>checkstyle.xml</checkstyle.config.location> -->
+		<!-- <checkstyle.config.location>checkstyle-checks.xml</checkstyle.config.location> -->
+		<!-- <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location> -->
+
 	</properties>
 
 	<dependencyManagement>
@@ -115,7 +117,7 @@
 			<version>${springdoc-openapi.version}</version>
 		</dependency>
 
-	 	<!-- 
+		<!-- 
 		<dependency>
 			<groupId>com.github.gavlyukovskiy</groupId>
 			<artifactId>datasource-proxy-spring-boot-starter</artifactId>
@@ -274,7 +276,6 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
-						<!-- <ruleset>rulesets/java/quickstart.xml</ruleset> -->
 						<ruleset>default-extensions/pmd/java/pmd-ruleset.xml</ruleset>
 					</rulesets>
 				</configuration>
@@ -296,6 +297,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<!--
+				<configuration>
+					<configLocation>default-extensions/checkstyle/checkstyle-checks.xml</configLocation>
+					<suppressionsLocation>default-extensions/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+				</configuration>
+				-->
 			</plugin>
 
 			<plugin>
