@@ -53,19 +53,21 @@ $ docker build -f src/docker/Dockerfile -t image-service-converter-image .
 
 ```bash
 # clone it
-git clone https://github.com/fernando-romulo-silva/image-converter
+$ git clone https://github.com/fernando-romulo-silva/image-converter
 
 # for spring boot
-cd image-converter\image-converter-springboot
+$ cd image-converter\image-converter-springboot
 
 # execute
-mvn spring-boot:run
+$ mvn spring-boot:run
 
 or
 
-docker image build -f src/main/docker/Dockerfile -t image-converter-service-iso .
+$ export DOCKER_BUILDKIT=1
 
-docker run -p 5000:8080 -d --name mage-converter-service-1 image-converter-service-iso
+$ docker image build -f src/main/docker/Dockerfile -t image-converter-service-iso .
+
+$ docker run -p 5000:8080 -d --name mage-converter-service-1 image-converter-service-iso
 
 
 ```

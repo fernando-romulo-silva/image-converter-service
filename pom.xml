@@ -329,7 +329,7 @@
 					<layers>
 						<enabled>true</enabled>
 						<includeLayerTools>true</includeLayerTools>
-						<configuration>${project.basedir}/src/resources/layers.xml</configuration>
+						<configuration>${project.basedir}/src/main/resources/layers.xml</configuration>
 					</layers>
 				</configuration>
 				<executions>

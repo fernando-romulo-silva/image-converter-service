@@ -1,7 +1,8 @@
-FROM adoptopenjdk/openjdk16:alpine-jre as builder
+FROM eclipse-temurin:17.0.1_12-jre-alpine as builder
 WORKDIR /application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
+RUN ls -la
 COPY src/main/tesseract/eng.tar.xz tesseract/tessdata/eng.tar.xz
 
 RUN java -Djarmode=layertools -jar application.jar extract \
@@ -11,7 +12,7 @@ RUN java -Djarmode=layertools -jar application.jar extract \
 
 #=================================================================================
 
-FROM adoptopenjdk/openjdk16:alpine-jre
+FROM eclipse-temurin:17.0.1_12-jre-alpine
 #RUN apk add --update --no-cache tesseract-ocr \
 #      && addgroup --system javauser \ 
 #      && adduser -S -s /bin/false -G javauser javauser
