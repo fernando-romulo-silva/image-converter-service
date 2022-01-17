@@ -35,7 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "IMAGE_CONVERTION")
-public class ImageConvertion {
+public class ImageConvertion { // NOPMD - Provide accessors on private constructor
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

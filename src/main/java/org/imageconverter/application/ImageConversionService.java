@@ -37,16 +37,16 @@ public class ImageConversionService {
 
     @Transactional
     public ImageConverterResponse convert(@NotNull @Valid final ImageConverterRequestInterface request) {
-	
+
 	final var imageConvertionNew = new ImageConvertion.Builder() //
 			.with(request).build();
-	
+
 	final var fileName = imageConvertionNew.getFileName();
-	
+
 	final var imageConvertionOptional = repository.findByFileName(fileName);
-	
+
 	if (imageConvertionOptional.isPresent()) {
-	    throw new ElementAlreadyExistsException(ImageConvertion.class, "fileName '" + fileName + "' and with text '"+ imageConvertionOptional.get().getText() +"'");
+	    throw new ElementAlreadyExistsException(ImageConvertion.class, "fileName '" + fileName + "' and with text '" + imageConvertionOptional.get().getText() + "'");
 	}
 
 	final var imageConvertion = repository.save(imageConvertionNew);

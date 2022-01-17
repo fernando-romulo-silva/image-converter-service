@@ -71,3 +71,24 @@ $ docker run -p 5000:8080 -d --name mage-converter-service-1 image-converter-ser
 
 
 ```
+
+
+cd target
+
+java -Djarmode=layertools -jar image-converter-service-0.0.1-SNAPSHOT.jar extract
+
+jdeps --ignore-missing-deps -q --multi-release 17 --print-module-deps --class-path dependencies/BOOT-INF/lib/* image-converter-service-0.0.1-SNAPSHOT.jar > jre-deps.info
+
+jdeps --ignore-missing-deps -q --multi-release 17 --print-module-deps image-converter-service-0.0.1-SNAPSHOT.jar > jre-deps.info
+
+
+
+jdeps \
+    -classpath \'${TMP_DIR}/BOOT-INF/lib/*:${TMP_DIR}/BOOT-INF/classes:${TMP_DIR}\' \
+    --print-module-deps \
+    --ignore-missing-deps \
+    --module-path ${TMP_DIR}/BOOT-INF/lib/jakarta.activation-api-1.2.2.jar \
+    --recursive \
+    --multi-release ${TARGET_VER} \
+    -quiet \
+    ${TMP_DIR}/org ${TMP_DIR}/BOOT-INF/classes ${TMP_DIR}/BOOT-INF/lib/*.jar
