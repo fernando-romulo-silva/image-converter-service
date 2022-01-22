@@ -13,6 +13,11 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
+/**
+ * Application's starter, just a main class
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @OpenAPIDefinition( //
 		info = @Info( //
 				title = "Image Converter API", //
@@ -31,14 +36,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 				url = "https://github.com/fernando-romulo-silva/image-converter-service#readme", //
 				description = "Project's Documentation" //
 		) //
-//		servers = @Server( //
-//				description = "Vintage Store server 1", //
-//				url = "http://{host}.vintage-store/{port}", //
-//				variables = { //
-//					@ServerVariable(name = "host", description = "Vintage Store main server", defaultValue = "localhost"), //
-//					@ServerVariable(name = "port", description = "Vintage Store listening port", defaultValue = "80") //
-//				} //
-//		) //
+// servers = @Server( @ServerVariable
 )
 @SecurityScheme( //
 		name = "BASIC", //
@@ -50,6 +48,11 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 @SpringBootApplication
 public class ImageServiceApplication { // NOPMD - It's not a util class, it's a starter
 
+    /**
+     * Main method
+     * 
+     * @param args the application arguments
+     */
     public static void main(final String[] args) {
 
 	run(ImageServiceApplication.class, args);

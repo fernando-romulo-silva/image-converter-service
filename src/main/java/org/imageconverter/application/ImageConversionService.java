@@ -23,18 +23,36 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Application service that execute convertion.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Service
 @Loggable
 public class ImageConversionService {
 
     private final ImageConvertionRepository repository;
 
+    /**
+     * Default constructor.
+     * 
+     * @param repository ImageCoversion repository
+     */
     @Autowired
-    public ImageConversionService(final ImageConvertionRepository repository) {
+    ImageConversionService(final ImageConvertionRepository repository) {
 	super();
 	this.repository = repository;
     }
 
+    /**
+     * Convert an image on text.
+     * 
+     * @param request A image that it'll be convert
+     * @return A imageConverterResponse with the conversion
+     * @see ImageConverterResponse
+     * @exception ElementAlreadyExistsException if image, file name, has already converted
+     */
     @Transactional
     public ImageConverterResponse convert(@NotNull @Valid final ImageConverterRequestInterface request) {
 
@@ -54,6 +72,12 @@ public class ImageConversionService {
 	return new ImageConverterResponse(imageConvertion.getId(), imageConvertion.getFileName(), imageConvertion.getText());
     }
 
+    /**
+     * Find all stored convertions.
+     * 
+     * @return A list of ImageConverterResponse or a empty list
+     * @see ImageConverterResponse
+     */
     @Transactional(readOnly = true)
     public List<ImageConverterResponse> findAll() {
 
@@ -63,6 +87,14 @@ public class ImageConversionService {
 			.toList(); //
     }
 
+    /**
+     * Find a stored convertion by id.
+     * 
+     * @param id The image convertion's id
+     * @return A list of ImageConverterResponse
+     * @see ImageConverterResponse
+     * @exception ElementNotFoundException if image, file name, has already converted
+     */
     @Transactional(readOnly = true)
     public ImageConverterResponse findById(@NotNull final Long id) {
 
