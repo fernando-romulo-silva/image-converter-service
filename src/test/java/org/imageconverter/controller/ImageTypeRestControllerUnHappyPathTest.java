@@ -52,7 +52,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Test the image type controller, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-public class ImageTypeRestControllerUnHappyPathTest {
+class ImageTypeRestControllerUnHappyPathTest {
 
     @Autowired
     private ObjectMapper mapper;

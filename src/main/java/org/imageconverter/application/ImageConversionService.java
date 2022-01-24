@@ -14,6 +14,8 @@ import org.imageconverter.domain.convertion.ImageConvertionRepository;
 import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
 import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;
@@ -40,7 +42,7 @@ public class ImageConversionService {
      * @param repository ImageCoversion repository
      */
     @Autowired
-    ImageConversionService(final ImageConvertionRepository repository) {
+    public ImageConversionService(final ImageConvertionRepository repository) {
 	super();
 	this.repository = repository;
     }
@@ -48,16 +50,16 @@ public class ImageConversionService {
     /**
      * Convert an image on text.
      * 
-     * @param request A image that it'll be convert
-     * @return A imageConverterResponse with the conversion
-     * @see ImageConverterResponse
-     * @exception ElementAlreadyExistsException if image, file name, has already converted
+     * @param request A image ({@link ImageConverterRequest} or {@link ImageConverterRequestArea}) that it'll be convert
+     * @return A {@link ImageConverterResponse} with the conversion
+     * @exception ElementAlreadyExistsException if image (file name) has already converted
      */
     @Transactional
     public ImageConverterResponse convert(@NotNull @Valid final ImageConverterRequestInterface request) {
 
 	final var imageConvertionNew = new ImageConvertion.Builder() //
-			.with(request).build();
+			.with(request) //
+			.build();
 
 	final var fileName = imageConvertionNew.getFileName();
 
@@ -73,17 +75,16 @@ public class ImageConversionService {
     }
 
     /**
-     * Find all stored convertions.
+     * Find all stored convertions or a empty list.
      * 
-     * @return A list of ImageConverterResponse or a empty list
-     * @see ImageConverterResponse
+     * @return A list of {@link ImageConverterResponse} or a empty list
      */
     @Transactional(readOnly = true)
     public List<ImageConverterResponse> findAll() {
 
 	return repository.findAll() //
 			.stream() //
-			.map(ic -> new ImageConverterResponse(ic.getId(), ic.getFileName(), ic.getText())) //
+			.map(icr -> new ImageConverterResponse(icr.getId(), icr.getFileName(), icr.getText())) //
 			.toList(); //
     }
 
@@ -91,9 +92,8 @@ public class ImageConversionService {
      * Find a stored convertion by id.
      * 
      * @param id The image convertion's id
-     * @return A list of ImageConverterResponse
-     * @see ImageConverterResponse
-     * @exception ElementNotFoundException if image, file name, has already converted
+     * @return A {@link ImageConverterResponse} object
+     * @exception ElementNotFoundException if a element with id not found
      */
     @Transactional(readOnly = true)
     public ImageConverterResponse findById(@NotNull final Long id) {
@@ -104,6 +104,13 @@ public class ImageConversionService {
 	return new ImageConverterResponse(imageConvertion.getId(), imageConvertion.getFileName(), imageConvertion.getText());
     }
 
+    /**
+     * Find image convertions by spring specification
+     * 
+     * @param spec The query specification, a {@link Specification} object
+     * @return A {@link ImageConverterResponse}'s list with result or a empty list
+     * @exception ElementInvalidException if a specification is invalid
+     */
     @Transactional(readOnly = true)
     public List<ImageConverterResponse> findBySpecification(final Specification<ImageConvertion> spec) {
 
@@ -111,7 +118,7 @@ public class ImageConversionService {
 
 	    return repository.findAll(spec) //
 			    .stream() //
-			    .map(ic -> new ImageConverterResponse(ic.getId(), ic.getFileName(), ic.getText())) //
+			    .map(icr -> new ImageConverterResponse(icr.getId(), icr.getFileName(), icr.getText())) //
 			    .toList();
 
 	} catch (final InvalidDataAccessApiUsageException ex) {

@@ -45,7 +45,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 @Tag("integration")
 @DisplayName("Integration Test for ImageConversionService, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestInstance(PER_CLASS)
-public class ImageConversionServiceUnHappyPathTest {
+class ImageConversionServiceUnHappyPathTest {
 
     @Autowired
     private ImageConversionService imageConversionService;

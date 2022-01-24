@@ -5,8 +5,8 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.imageconverter.domain.convertion.ExecutionType.BATCH;
 import static org.imageconverter.domain.convertion.ExecutionType.WS;
-import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.DB_CONVERTION_NUMBER;
-import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.IMAGE_PNG_CONVERTION_NUMBER;
+import static org.imageconverter.domain.convertion.TestConstants.DB_CONVERTION_NUMBER;
+import static org.imageconverter.domain.convertion.TestConstants.IMAGE_PNG_CONVERTION_NUMBER;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 

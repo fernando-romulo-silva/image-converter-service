@@ -9,7 +9,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 
-public class TesseractHealthTest {
+public abstract class AbstractTesseractHealthTest {
 
     @LocalServerPort
     protected int serverPort;

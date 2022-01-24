@@ -36,7 +36,7 @@ import org.springframework.web.client.RestTemplate;
 @DisplayName("Test the tesseract Health, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-public class TesseractHealthHappyTest extends TesseractHealthTest {
+class TesseractHealthHappyTest extends AbstractTesseractHealthTest {
 
     @Test
     @Order(1)

@@ -44,7 +44,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @Tag("performance")
 @DisplayName("Test the performance's image type controller :0")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ImageConvertRestControllerPerfmanceTest {
+class ImageConvertRestControllerPerfmanceTest {
 
     @Autowired
     private MockMvc mvc;

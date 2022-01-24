@@ -45,13 +45,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 @Tag("unit")
 @DisplayName("Test the image type entity, happy Path :) ")
 @TestInstance(PER_CLASS)
-public class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
-
-    public static final String IMAGE_PNG_CONVERTION_NUMBER = "03399905748110000007433957701015176230000017040";
-
-    public static final String DB_CONVERTION_NUMBER = "02325678908110000003556752101015176230000023560";
-
-    public static final String FILE_NAME_IMAGE_PNG = "bill.png";
+class ImageConvertionHappyPathTest extends ImageConvertionConfigTest implements TestConstants {
 
     @BeforeAll
     public void setUp() throws Exception {

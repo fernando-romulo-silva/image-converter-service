@@ -25,7 +25,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 //
 @Tag("integration")
 @DisplayName("Integration Test for ImageTypeService, happy path :D ")
-public class ImageTypeServiceHappyPathTest {
+class ImageTypeServiceHappyPathTest {
 
     @Autowired
     private ImageTypeService imageTypeService;

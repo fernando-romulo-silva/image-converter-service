@@ -47,7 +47,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 @DisplayName("Test the image type entity, happy Path :) ")
 @ExtendWith(MockitoExtension.class)
 @TestInstance(PER_CLASS)
-public class ImageTypeHappyPathTest {
+class ImageTypeHappyPathTest {
 
     @Mock
     private ApplicationContext applicationContext;

@@ -46,7 +46,7 @@ import org.springframework.web.client.RestTemplate;
 @DisplayName("Test the image convertion, unhappy path FULL :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-public class ImageConvertRestControllerFullUnHappyPathTest extends TesseractHealthTest {
+class ImageConvertRestControllerFullUnHappyPathTest extends AbstractTesseractHealthTest {
 
     @Value("classpath:bill.png")
     private Resource imageFile;

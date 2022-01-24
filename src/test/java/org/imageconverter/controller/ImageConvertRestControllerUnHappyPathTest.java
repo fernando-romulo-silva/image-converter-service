@@ -46,7 +46,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("Test the image convertion, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-public class ImageConvertRestControllerUnHappyPathTest {
+class ImageConvertRestControllerUnHappyPathTest {
 
     // JSqlParser
     // @Value("classpath:db/db-data-test.sql")

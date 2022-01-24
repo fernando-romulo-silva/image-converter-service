@@ -29,7 +29,7 @@ import org.springframework.context.ApplicationContext;
 @DisplayName("Test the image type entity, unhappy path :( ")
 @ExtendWith(MockitoExtension.class)
 @TestInstance(PER_CLASS)
-public class ImageTypeUnHappyPathTest {
+class ImageTypeUnHappyPathTest {
 
     @Mock
     private ApplicationContext applicationContext;

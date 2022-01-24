@@ -11,24 +11,40 @@ import org.springframework.context.annotation.Configuration;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
+/**
+ * Tesseract configuration bean
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Configuration
-//@EnableConfigurationProperties(MultipartProperties.class)
 public class ImageConfig {
 
+    /**
+     * Create a valid tesseract object or return a <code>null</code> if it was not possible.
+     * 
+     * @return A {@link Tesseract} object or null
+     */
     @Bean
     @RefreshScope
     public ITesseract tesseractTess4j() {
 
-	final var path = Paths.get(BeanUtil.getEnvironment().getProperty("tesseract.folder"));
-	
+	final var environment = BeanUtil.getEnvironment();
+
+	final var path = Paths.get(environment.getProperty("tesseract.folder"));
+
+	final ITesseract tesseract;
+
 	if (Files.notExists(path)) {
-	    return null;
+
+	    tesseract = null;
+
+	} else {
+
+	    tesseract = new Tesseract();
+	    tesseract.setDatapath(environment.getProperty("tesseract.folder"));
+	    tesseract.setLanguage(environment.getProperty("tesseract.language"));
+	    tesseract.setTessVariable("user_defined_dpi", environment.getProperty("tesseract.dpi"));
 	}
-	
-	final var tesseract = new Tesseract();
-	tesseract.setDatapath(BeanUtil.getEnvironment().getProperty("tesseract.folder"));
-	tesseract.setLanguage(BeanUtil.getEnvironment().getProperty("tesseract.language"));
-	tesseract.setTessVariable("user_defined_dpi", BeanUtil.getEnvironment().getProperty("tesseract.dpi"));
 
 	return tesseract;
     }

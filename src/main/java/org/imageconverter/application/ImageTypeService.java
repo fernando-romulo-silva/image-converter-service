@@ -26,18 +26,35 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Application service that manages (CRUD) image types.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Service
 @Loggable
 public class ImageTypeService {
 
     public final ImageTypeRespository repository;
 
+    /**
+     * Default constructor.
+     * 
+     * @param repository imageType repository
+     */
     @Autowired
     public ImageTypeService(final ImageTypeRespository repository) {
 	super();
 	this.repository = repository;
     }
 
+    /**
+     * Create a image type.
+     * 
+     * @param request A image type ({@link CreateImageTypeRequest}) request to create
+     * @return A {@link ImageTypeResponse} with the conversion
+     * @exception ElementAlreadyExistsException if image type (file extension) has already exists
+     */
     @Transactional
     public ImageTypeResponse createImageType(@NotNull @Valid final CreateImageTypeRequest request) {
 
@@ -54,6 +71,14 @@ public class ImageTypeService {
 	return new ImageTypeResponse(imageType.getId(), imageConvertion.getExtension(), imageType.getName());
     }
 
+    /**
+     * Update a image type.
+     * 
+     * @param id      The image type's id
+     * @param request A image type ({@link UpdateImageTypeRequest}) requested to update
+     * @return A {@link ImageTypeResponse} with the update's result
+     * @exception ElementNotFoundException if image type (file extension) doesn't exists
+     */
     @Transactional
     public ImageTypeResponse updateImageType(@NotNull final Long id, @NotNull @Valid final UpdateImageTypeRequest request) {
 
@@ -67,6 +92,39 @@ public class ImageTypeService {
 	return new ImageTypeResponse(imageTypeNew.getId(), imageTypeNew.getExtension(), imageTypeNew.getName());
     }
 
+    /**
+     * Delete a image type.
+     * 
+     * @param id      The image type's id
+     * @param request A image type ({@link UpdateImageTypeRequest}) requested to delete
+     * @exception ElementNotFoundException if image type (file extension) doesn't exists
+     * @exception ElementConflictException if amage type already been used on image convertion
+     */
+    @Transactional
+    public void deleteImageType(@NotNull final Long id) {
+
+	final var imageType = repository.findById(id) //
+			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, id));
+
+	try {
+
+	    repository.delete(imageType);
+
+	    repository.flush();
+
+	} catch (final DataIntegrityViolationException ex) {
+
+	    throw new ElementConflictException(format("You cannot delete the image type {0} because it is already used", id.toString()), ex);
+	}
+    }
+
+    /**
+     * Find a stored image type by id.
+     * 
+     * @param id The image type's id
+     * @return A {@link ImageTypeResponse} object
+     * @exception ElementNotFoundException if a element with id not found
+     */
     @Transactional(readOnly = true)
     public ImageTypeResponse findById(@NotNull final Long id) {
 
@@ -76,6 +134,11 @@ public class ImageTypeService {
 	return new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName());
     }
 
+    /**
+     * Find all stored image types or a empty list.
+     * 
+     * @return A list of {@link ImageTypeResponse} or a empty list
+     */
     @Transactional(readOnly = true)
     public List<ImageTypeResponse> findAll() {
 
@@ -85,6 +148,13 @@ public class ImageTypeService {
 			.toList();
     }
 
+    /**
+     * Find image types by spring specification
+     * 
+     * @param spec The query specification, a {@link Specification} object
+     * @return A {@link ImageTypeResponse}'s list with result or a empty list
+     * @exception ElementInvalidException if a specification is invalid
+     */
     @Transactional(readOnly = true)
     public List<ImageTypeResponse> findBySpecification(final Specification<ImageType> spec) {
 
@@ -106,23 +176,4 @@ public class ImageTypeService {
 	    throw new ElementInvalidException(msg, ex);
 	}
     }
-
-    @Transactional
-    public void deleteImageType(@NotNull final Long id) {
-
-	final var imageType = repository.findById(id) //
-			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, id));
-
-	try {
-
-	    repository.delete(imageType);
-
-	    repository.flush();
-
-	} catch (final DataIntegrityViolationException ex) {
-
-	    throw new ElementConflictException(format("You cannot delete the image type {0} because it is already used", id.toString()), ex);
-	}
-    }
-
 }
