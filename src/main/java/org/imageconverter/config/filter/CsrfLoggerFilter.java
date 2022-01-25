@@ -11,8 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * Filter created to pass the CSRF token on response.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 public final class CsrfLoggerFilter extends OncePerRequestFilter {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
 
@@ -20,7 +28,7 @@ public final class CsrfLoggerFilter extends OncePerRequestFilter {
 
 	if (Objects.nonNull(csrfToken)) {
 	    response.setHeader("X-CSRF-TOKEN", csrfToken.getToken());
-	} 
+	}
 
 	filterChain.doFilter(request, response);
     }

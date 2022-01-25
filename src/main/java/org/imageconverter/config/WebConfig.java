@@ -25,6 +25,11 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 
+/**
+ * Web configuration bean.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Configuration
 @EnableWebSecurity
 @EnableWebMvc
@@ -33,6 +38,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 @EnableTransactionManagement
 public class WebConfig implements WebMvcConfigurer {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configurePathMatch(final PathMatchConfigurer configurer) {
 
@@ -41,12 +49,20 @@ public class WebConfig implements WebMvcConfigurer {
 	configurer.setUrlPathHelper(urlPathHelper);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
 	registry.addResourceHandler("/swagger-ui/**")//
 			.addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/4.1.3/");
     }
 
+    /**
+     * Create a valid {@link JsonMapper} object configured.
+     * 
+     * @return A {@link JsonMapper} object
+     */
     @Bean
     @Primary
     public JsonMapper objectMapper() {
@@ -62,6 +78,11 @@ public class WebConfig implements WebMvcConfigurer {
 			.build();
     }
 
+    /**
+     * Create a valid {@link CommonsMultipartResolver} object configured (max upload and default encoding).
+     * 
+     * @return A {@link CommonsMultipartResolver} object
+     */
     @Bean
     public CommonsMultipartResolver multipartResolver() {
 	final var resolver = new CommonsMultipartResolver();

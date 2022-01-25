@@ -35,17 +35,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Loggable
 public class ImageTypeService {
 
-    public final ImageTypeRespository repository;
+    private final ImageTypeRespository repository;
 
     /**
      * Default constructor.
      * 
-     * @param repository imageType repository
+     * @param newRepository imageType repository
      */
     @Autowired
-    public ImageTypeService(final ImageTypeRespository repository) {
+    public ImageTypeService(final ImageTypeRespository newRepository) {
 	super();
-	this.repository = repository;
+	this.repository = newRepository;
     }
 
     /**
@@ -149,7 +149,7 @@ public class ImageTypeService {
     }
 
     /**
-     * Find image types by spring specification
+     * Find image types by spring specification.
      * 
      * @param spec The query specification, a {@link Specification} object
      * @return A {@link ImageTypeResponse}'s list with result or a empty list

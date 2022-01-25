@@ -14,8 +14,6 @@ import org.imageconverter.domain.convertion.ImageConvertionRepository;
 import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
 import org.imageconverter.infra.exceptions.ElementInvalidException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;
@@ -39,18 +37,18 @@ public class ImageConversionService {
     /**
      * Default constructor.
      * 
-     * @param repository ImageCoversion repository
+     * @param newRepository ImageCoversion repository
      */
     @Autowired
-    public ImageConversionService(final ImageConvertionRepository repository) {
+    public ImageConversionService(final ImageConvertionRepository newRepository) {
 	super();
-	this.repository = repository;
+	this.repository = newRepository;
     }
 
     /**
      * Convert an image on text.
      * 
-     * @param request A image ({@link ImageConverterRequest} or {@link ImageConverterRequestArea}) that it'll be convert
+     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea}) that it'll be convert
      * @return A {@link ImageConverterResponse} with the conversion
      * @exception ElementAlreadyExistsException if image (file name) has already converted
      */

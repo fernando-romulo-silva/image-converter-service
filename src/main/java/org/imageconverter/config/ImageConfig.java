@@ -12,7 +12,7 @@ import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
 /**
- * Tesseract configuration bean
+ * Tesseract configuration bean.
  * 
  * @author Fernando Romulo da Silva
  */
