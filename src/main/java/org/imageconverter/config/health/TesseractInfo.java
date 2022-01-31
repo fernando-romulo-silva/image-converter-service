@@ -40,7 +40,7 @@ public class TesseractInfo {
     private RefreshEndpoint refreshEndpoint;
 
     @ReadOperation
-    public TesseractDetails read() {
+    public TesseractDetailsData read() {
 
 	final var details = new LinkedHashMap<String, Object>();
 
@@ -55,7 +55,7 @@ public class TesseractInfo {
 	    details.put("tesseractInit", "FAIL");
 	}
 
-	return new TesseractDetails(details);
+	return new TesseractDetailsData(details);
     }
 
 //    @ReadOperation
@@ -99,35 +99,41 @@ public class TesseractInfo {
 
 	final var tesseractBeanProvider = BeanUtil.getBeanProviderFrom(ITesseract.class);
 	final var tesseract = tesseractBeanProvider.getObject();
-	
+
+	boolean result = false;
+
 	if (Objects.isNull(tesseract)) {
-	    return false;
-	}
-	
-	try {
-	    final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");
+	    
+	    result = false;
+	    
+	} else {
 
-	    if (equalsIgnoreCase(numberOne, "033")) {
-		return true;
+	    try {
+		
+		final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");
+
+		if (equalsIgnoreCase(numberOne, "033")) {
+		    result = true;
+		}
+
+	    } catch (final TesseractException | IOException | IllegalArgumentException ex) {
+		result = false;
 	    }
-
-	} catch (final TesseractException | IOException | IllegalArgumentException ex) {
-	    return false;
 	}
 
-	return false;
+	return result;
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class TesseractDetails {
+    public static class TesseractDetailsData {
 
 	private final Map<String, Object> tesseractDetails;
 
-	TesseractDetails(final Map<String, Object> tesseractDetails) {
+	TesseractDetailsData(final Map<String, Object> tesseractDetails) {
 	    super();
 	    this.tesseractDetails = tesseractDetails;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@JsonAnyGetter
 	public Map<String, Object> getTesseractDetails() {

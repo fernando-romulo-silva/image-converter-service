@@ -48,7 +48,8 @@ public class ImageConversionService {
     /**
      * Convert an image on text.
      * 
-     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea}) that it'll be convert
+     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} 
+     * or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea}) that it'll be convert
      * @return A {@link ImageConverterResponse} with the conversion
      * @exception ElementAlreadyExistsException if image (file name) has already converted
      */

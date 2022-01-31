@@ -45,7 +45,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 @Tag("unit")
 @DisplayName("Test the image type entity, happy Path :) ")
 @TestInstance(PER_CLASS)
-class ImageConvertionHappyPathTest extends ImageConvertionConfigTest implements TestConstants {
+class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
     @BeforeAll
     public void setUp() throws Exception {
@@ -55,10 +55,10 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest implements 
 			.thenReturn(new TesseractService());
 
 	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any())) //
-			.thenReturn(IMAGE_PNG_CONVERTION_NUMBER);
+			.thenReturn(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
 
 	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any())) //
-			.thenReturn(IMAGE_PNG_CONVERTION_NUMBER);
+			.thenReturn(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
 
 	final var imageType = Optional.of(new ImageType("png", "PNG", "Portable Network Graphics"));
 

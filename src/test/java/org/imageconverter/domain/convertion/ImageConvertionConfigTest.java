@@ -1,7 +1,6 @@
 package org.imageconverter.domain.convertion;
 
 import static javax.validation.Validation.buildDefaultValidatorFactory;
-import static org.imageconverter.domain.convertion.ImageConvertionHappyPathTest.FILE_NAME_IMAGE_PNG;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
@@ -43,7 +42,7 @@ public abstract class ImageConvertionConfigTest {
 	final var validator = buildDefaultValidatorFactory().getValidator();
 
 	// ------------------------------------
-	final var file = new File("src/test/resources/" + FILE_NAME_IMAGE_PNG);
+	final var file = new File("src/test/resources/" + TestConstants.FILE_NAME_IMAGE_PNG);
 
 	final var image = ImageIO.read(file);
 	final var baos = new ByteArrayOutputStream();
@@ -51,7 +50,7 @@ public abstract class ImageConvertionConfigTest {
 	ImageIO.write(image, "png", baos);
 	final var bytes = baos.toByteArray();
 
-	mockMultipartFile = new MockMultipartFile("file", FILE_NAME_IMAGE_PNG, MULTIPART_FORM_DATA_VALUE, bytes);
+	mockMultipartFile = new MockMultipartFile("file", TestConstants.FILE_NAME_IMAGE_PNG, MULTIPART_FORM_DATA_VALUE, bytes);
 
 	// ------------------------------------
 	MockitoAnnotations.openMocks(this);
