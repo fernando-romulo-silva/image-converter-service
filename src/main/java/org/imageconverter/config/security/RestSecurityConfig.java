@@ -17,10 +17,15 @@ import org.springframework.security.web.firewall.HttpFirewall;
 
 // https://freecontent.manning.com/five-awkward-things-about-spring-security-that-actually-make-sense/
 
+/**
+ * Project http's config.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Configuration
 public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final String[] swaggerUiURL = new String[] { //
+    private final String[] swaggerUiURL = { //
 	    "/v3/api-docs/**", //
 	    "/swagger-ui/**", //
 	    "/swagger-ui.html", //
@@ -45,9 +50,14 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 	this.csrfTokenRepository = httpSessionCsrfTokenRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
 
+	final var restUrl = "/rest/**";
+	
 	http.addFilterAfter(new CsrfLoggerFilter(), CsrfFilter.class) //
 			.securityContext() //
 			.and().exceptionHandling() //
@@ -59,19 +69,19 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*--*/.antMatchers(swaggerUiURL) //
 			/*------*/.permitAll()
 			//
-			/*--*/.antMatchers(GET, "/rest/**") // /rest/images/type
+			/*--*/.antMatchers(GET, restUrl) // /rest/images/type
 			/*------*/.hasAnyRole("USER") // , "GUEST"
 			//
-			/*--*/.antMatchers(POST, "/rest/**") //
+			/*--*/.antMatchers(POST, restUrl) //
 			/*------*/.hasRole("USER") //
 			//
 //			/*--*/.antMatchers("/actuator/**")
 //			/*------*/.hasRole("ADMIN") 			
 			//
-			/*--*/.antMatchers(DELETE, "/rest/**") //
+			/*--*/.antMatchers(DELETE, restUrl) //
 			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
 			//
-			/*--*/.antMatchers("/rest/**") //
+			/*--*/.antMatchers(restUrl) //
 			/*------*/.hasAnyRole("ADMIN", "USER")
 			//
 			.and().formLogin() // disable redirect
@@ -89,6 +99,9 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 			/*------*/.ignoringAntMatchers("/actuator/**");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(final WebSecurity web) throws Exception {
 	super.configure(web);

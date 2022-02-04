@@ -12,9 +12,17 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.stereotype.Component;
 
+/**
+ * Handler to clear saved cache, just for security.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Component
 public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) {
 	

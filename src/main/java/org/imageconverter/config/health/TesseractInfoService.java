@@ -28,17 +28,42 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.TesseractException;
 
+/**
+ * Component to show informations about tesseract configs.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Component
 @Endpoint(id = "tesseract")
 // @Endpoint, @JmxEndpoint, and @WebEndpoint
-public class TesseractInfo {
+public class TesseractInfoService {
 
-    @Value("classpath:check-image.png")
-    private Resource imageFile;
+    private final Resource imageFile;
 
-    @Autowired
-    private RefreshEndpoint refreshEndpoint;
+    private final RefreshEndpoint refreshEndpoint;
 
+    /**
+     * Default constructor.
+     * 
+     * @param newImageFile       Image to check if the tesseract works
+     * @param newRefreshEndpoint Represh point to update infos
+     */
+    TesseractInfoService( //
+		    @Value("classpath:check-image.png") //
+		    final Resource newImageFile, //
+		    //
+		    @Autowired //
+		    final RefreshEndpoint newRefreshEndpoint) {
+	super();
+	this.imageFile = newImageFile;
+	this.refreshEndpoint = newRefreshEndpoint;
+    }
+
+    /**
+     * Read data about tesseract configs.
+     * 
+     * @return A {@link TesseractDetailsData} with the data
+     */
     @ReadOperation
     public TesseractDetailsData read() {
 
@@ -63,6 +88,13 @@ public class TesseractInfo {
 //	return "custom-end-point";
 //    }
 
+    /**
+     * Update values from request http, JMX, etc.
+     * 
+     * @param tesseractFolder   The tesseract intalled dictionary
+     * @param tesseractLanguage The tesseract language
+     * @param tesseractDpi      The resolution quality
+     */
     @WriteOperation
     public void writeOperation(@Nullable final String tesseractFolder, @Nullable final String tesseractLanguage, @Nullable final String tesseractDpi) {
 	final var env = (ConfigurableEnvironment) BeanUtil.getEnvironment();
@@ -103,13 +135,13 @@ public class TesseractInfo {
 	boolean result = false;
 
 	if (Objects.isNull(tesseract)) {
-	    
+
 	    result = false;
-	    
+
 	} else {
 
 	    try {
-		
+
 		final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");
 
 		if (equalsIgnoreCase(numberOne, "033")) {

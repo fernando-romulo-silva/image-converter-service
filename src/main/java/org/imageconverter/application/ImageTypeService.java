@@ -43,7 +43,7 @@ public class ImageTypeService {
      * @param newRepository imageType repository
      */
     @Autowired
-    public ImageTypeService(final ImageTypeRespository newRepository) {
+    ImageTypeService(final ImageTypeRespository newRepository) {
 	super();
 	this.repository = newRepository;
     }
