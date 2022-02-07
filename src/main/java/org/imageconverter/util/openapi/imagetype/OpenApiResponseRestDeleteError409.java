@@ -26,11 +26,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 								   "timestamp":"2021-12-19T10:20:52.208177754",
 								   "status":409,
 								   "error":"Conflict",
-								   "message":"ElementConflictException: You cannot delete the image type '1' because it is already used",
+								   "message":"ElementAlreadyExistsException: ImageType with extension 'BMP' already exists",
 								   "traceId":"82a11390bfa08d1d",
 								   "spanId":"e133d34a5560a0c0"
 								}
 																""")))
-@interface OpenApiResponseRestPostError409 {
+@interface OpenApiResponseRestDeleteError409 {
 
 }

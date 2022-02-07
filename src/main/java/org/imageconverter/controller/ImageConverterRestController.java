@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.domain.convertion.ImageConvertion;
+import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
@@ -19,6 +20,7 @@ import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetByIdO
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetBySearchOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostAreaOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostOpenApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,6 +40,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * Image convert http rest.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @SecurityRequirement(name = "BASIC")
 @Tag( //
 		name = "Image Convert", //
@@ -56,16 +63,29 @@ public class ImageConverterRestController {
 
     private final ImageConversionService imageConversionService;
 
+    /**
+     * Default constructor.
+     * 
+     * @param imageConversionService The image convert service
+     */
+    @Autowired
     ImageConverterRestController(final ImageConversionService imageConversionService) {
 	super();
 	this.imageConversionService = imageConversionService;
     }
-    
+
+    /**
+     * Get a convertion already done.
+     * 
+     * @param id The image convertion's id
+     * @return A {@link ImageConverterResponse} object
+     * @exception ElementNotFoundException if a element with id not found
+     */
     @ImageConverterRestGetByIdOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
-    public ImageConverterResponse show( //
+    public ImageConverterResponse getById( //
 		    @Parameter(name = "id", description = "The image conversion id's", required = true, example = "3") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
@@ -73,20 +93,32 @@ public class ImageConverterRestController {
 	return imageConversionService.findById(id);
     }
 
+    /**
+     * Get all convertions done.
+     * 
+     * @return A {@link List} or a empty list
+     */
     @ImageConverterRestGetAllOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public List<ImageConverterResponse> showAll() {
+    public List<ImageConverterResponse> getAll() {
 
 	return imageConversionService.findAll();
     }
 
+    /**
+     * Get convertions by filter.
+     * 
+     * @param filter A object {@link Specification} that specific the filter the search
+     * @param page   A object {@link Pageable} that page the result
+     * @return A {@link List} or a empty list
+     */
     @ImageConverterRestGetBySearchOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
-    public List<ImageConverterResponse> show( //
+    public List<ImageConverterResponse> getByFilter( //
 		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=fileName:'image.png'") //
 		    @Filter //
 		    final Specification<ImageConvertion> filter, final Pageable page) {
@@ -94,6 +126,12 @@ public class ImageConverterRestController {
 	return imageConversionService.findBySpecification(filter);
     }
 
+    /**
+     * Convert a image file on text.
+     * 
+     * @param file The image to convert
+     * @return A {@link ImageConverterResponse} object with response.
+     */
     @ImageConverterRestPostOpenApi
     //
     @ResponseStatus(CREATED)
@@ -106,6 +144,16 @@ public class ImageConverterRestController {
 	return imageConversionService.convert(new ImageConverterRequest(file, WS));
     }
 
+    /**
+     * Convert a image file with area on text.
+     * 
+     * @param file   The image to convert
+     * @param x      The image's x coordinate
+     * @param y      The image's y coordinate
+     * @param width  The image's width in pixels
+     * @param height The image's height in pixels
+     * @return A {@link ImageConverterResponse} object with response.
+     */
     @ImageConverterRestPostAreaOpenApi
     //
     @ResponseStatus(CREATED)

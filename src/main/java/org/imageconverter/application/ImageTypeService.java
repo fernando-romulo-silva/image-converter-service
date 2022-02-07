@@ -114,7 +114,7 @@ public class ImageTypeService {
 
 	} catch (final DataIntegrityViolationException ex) {
 
-	    throw new ElementConflictException(format("You cannot delete the image type {0} because it is already used", id.toString()), ex);
+	    throw new ElementConflictException(format("You cannot delete the image type ''{0}'' because it is already used", id.toString()), ex);
 	}
     }
 

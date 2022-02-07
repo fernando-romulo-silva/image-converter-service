@@ -249,7 +249,7 @@ class ImageTypeRestControllerUnHappyPathTest {
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isConflict()) //
-			.andExpect(jsonPath("$.message").value(containsString("You cannot delete the image type 1001 because it is already used"))) //
+			.andExpect(jsonPath("$.message").value(containsString("You cannot delete the image type '1001' because it is already used"))) //
 	;
     }
 

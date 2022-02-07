@@ -14,15 +14,18 @@ import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
 import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
-import org.imageconverter.util.openapi.imagetype.ImageTypeRestPostOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetAllOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetByIdOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetBySearchOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestPostOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestPutOpenApi;
 import org.imageconverter.util.openapi.imagetype.UpdateImageTypeRequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
@@ -44,6 +47,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * Image type CRUD.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @SecurityRequirement(name = "BASIC")
 @Tag( //
 		name = "Image Type", //
@@ -62,17 +70,29 @@ public class ImageTypeRestController {
 
     private final ImageTypeService imageTypeService;
 
+    /**
+     * Default constructor.
+     * 
+     * @param imageConversionService The image type service
+     */
     @Autowired
     ImageTypeRestController(final ImageTypeService imageTypeService) {
 	super();
 	this.imageTypeService = imageTypeService;
     }
 
+    /**
+     * Get a image type already done.
+     * 
+     * @param id The image type's id
+     * @return A {@link ImageTypeResponse} object
+     * @exception ElementNotFoundException if a element with id not found
+     */
     @ImageTypeRestGetByIdOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
-    public ImageTypeResponse show( //
+    public ImageTypeResponse getById( //
 		    @Parameter(description = "The image type id's", example = "1000") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
@@ -80,20 +100,32 @@ public class ImageTypeRestController {
 	return imageTypeService.findById(id);
     }
 
+    /**
+     * Get all image types.
+     * 
+     * @return A {@link List} or a empty list
+     */
     @ImageTypeRestGetAllOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public List<ImageTypeResponse> showAll() {
+    public List<ImageTypeResponse> getAll() {
 
 	return imageTypeService.findAll();
     }
 
+    /**
+     * Get image types by filter.
+     * 
+     * @param filter A object {@link Specification} that specific the filter the search
+     * @param page   A object {@link Pageable} that page the result
+     * @return A {@link List} or a empty list
+     */
     @ImageTypeRestGetBySearchOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
-    public List<ImageTypeResponse> get( //
+    public List<ImageTypeResponse> getByFilter( //
 		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=extension:'png'") //
 		    @Filter //
 		    final Specification<ImageType> filter, final Pageable page) {
@@ -101,6 +133,12 @@ public class ImageTypeRestController {
 	return imageTypeService.findBySpecification(filter);
     }
 
+    /**
+     * Create a image type.
+     * 
+     * @param request A {@link CreateImageTypeRequest} object. It works as a structure to create a {@link org.imageconverter.domain.imagetype.ImageType}
+     * @return A string with image type's id
+     */
     @ImageTypeRestPostOpenApi
     //
     @ResponseStatus(CREATED)
@@ -117,6 +155,13 @@ public class ImageTypeRestController {
 	return format("Image Type ''{0,number,#}'' created", result.id());
     }
 
+    /**
+     * Update a image type.
+     * 
+     * @param request A {@link UpdateImageTypeRequest} object. It works as a structure to update a {@link org.imageconverter.domain.imagetype.ImageType}
+     */
+    @ImageTypeRestPutOpenApi
+    //
     @ResponseStatus(NO_CONTENT)
     @PutMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
     public void update( //
@@ -133,6 +178,14 @@ public class ImageTypeRestController {
 	imageTypeService.updateImageType(id, request);
     }
 
+    
+    /**
+     * Update a image type.
+     * 
+     * @param request A {@link UpdateImageTypeRequest} object. It works as a structure to update a {@link org.imageconverter.domain.imagetype.ImageType}
+     */
+    @ImageTypeRestDeleteOpenApi
+    //
     @ResponseStatus(NO_CONTENT)
     @DeleteMapping("/{id:[\\d]*}")
     public void delete( //
