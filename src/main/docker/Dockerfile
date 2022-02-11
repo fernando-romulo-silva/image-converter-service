@@ -77,14 +77,24 @@ USER javauser
 ENTRYPOINT [\
                "dumb-init",\
                "java",\
-               "--enable-preview",\
+               # Preview Features
+               # "--enable-preview",\  Preview
+			   # Profiling
+               "-Dcom.sun.management.jmxremote.port=9010",\ 
+               "-Dcom.sun.management.jmxremote.ssl=false",\ 
+               "-Dcom.sun.management.jmxremote.authenticate=false",\
+               "-Dcom.sun.management.jmxremote.local.only=false",\
+               # Spring  
                "-Dspring.profiles.active=local",\
+               # VM
 			   "-XX:+UseContainerSupport",\ 
 			   "-XX:InitialRAMPercentage=40.0",\ 
 			   "-XX:MinRAMPercentage=20.0",\ 
 			   "-XX:MaxRAMPercentage=80.0",\
+			   # Exec
                "org.springframework.boot.loader.JarLauncher"\
 ]
 
 EXPOSE 5000
 EXPOSE 5090
+EXPOSE 9010

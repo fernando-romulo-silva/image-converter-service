@@ -82,7 +82,7 @@ public class ImageTypeRestController {
     }
 
     /**
-     * Get a image type already done.
+     * Get a image type by id.
      * 
      * @param id The image type's id
      * @return A {@link ImageTypeResponse} object
@@ -178,11 +178,10 @@ public class ImageTypeRestController {
 	imageTypeService.updateImageType(id, request);
     }
 
-    
     /**
-     * Update a image type.
+     * Delete a image type.
      * 
-     * @param request A {@link UpdateImageTypeRequest} object. It works as a structure to update a {@link org.imageconverter.domain.imagetype.ImageType}
+     * @param id The image type's id
      */
     @ImageTypeRestDeleteOpenApi
     //

@@ -155,10 +155,10 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	public MultipartFile file;
 
 	@Min(value = 0, message = "The axis 'x' cannot be less than zero")
-	public Integer x;
+	public Integer xAxis;
 
 	@Min(value = 0, message = "The axis 'y' cannot be less than zero")
-	public Integer y;
+	public Integer yAxis;
 
 	@Min(value = 0, message = "The 'width' cannot be less than zero")
 	public Integer width;
@@ -199,11 +199,11 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	    this.executionType = request.executionType();
 
 	    if (request instanceof ImageConverterRequestArea image //
-			    && nonNull(image.x()) && nonNull(image.y()) //
+			    && nonNull(image.xAxis()) && nonNull(image.yAxis()) //
 			    && nonNull(image.width()) && nonNull(image.height())) {
 
-		this.x = image.x();
-		this.y = image.y();
+		this.xAxis = image.xAxis();
+		this.yAxis = image.yAxis();
 		this.width = image.width();
 		this.height = image.height();
 	    }
@@ -231,8 +231,8 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	    this.fileName = file.getOriginalFilename();
 	    this.fileSize = file.getSize() / 1024;
 
-	    if (nonNull(x) && nonNull(y) && nonNull(width) && nonNull(height)) {
-		this.text = tesseractService.convert(file, x, y, width, height);
+	    if (nonNull(xAxis) && nonNull(yAxis) && nonNull(width) && nonNull(height)) {
+		this.text = tesseractService.convert(file, xAxis, yAxis, width, height);
 		this.area = true;
 	    } else {
 		this.text = tesseractService.convert(file);

@@ -21,11 +21,11 @@ public record ImageConverterRequestArea( //
 		//
 		@Schema(name = "x", description = "The x axis image point", required = false, example = "145") //
 		@Min(value = 0, message = "The x point must be greater than zero") //
-		Integer x, //
+		Integer xAxis, //
 		//
 		@Schema(name = "y", description = "The y axis image point", required = false, example = "123") //
 		@Min(value = 0, message = "The y point must be greater than zero") //
-		Integer y, //
+		Integer yAxis, //
 		//
 		@Schema(name = "width", description = "The width area", required = false, example = "123") //
 		@Min(value = 0, message = "The with must be greater than zero") //

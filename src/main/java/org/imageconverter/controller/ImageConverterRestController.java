@@ -5,6 +5,7 @@ import static org.imageconverter.util.controllers.imageconverter.ImageConverterC
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import java.util.List;
 
@@ -135,7 +136,7 @@ public class ImageConverterRestController {
     @ImageConverterRestPostOpenApi
     //
     @ResponseStatus(CREATED)
-    @PostMapping(consumes = { "multipart/form-data" }, produces = "application/json")
+    @PostMapping(consumes = { MULTIPART_FORM_DATA_VALUE }, produces = "application/json")
     public ImageConverterResponse convert( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true, example = "image.bmp") //
 		    @RequestParam(name = "file", required = true) //
@@ -148,8 +149,8 @@ public class ImageConverterRestController {
      * Convert a image file with area on text.
      * 
      * @param file   The image to convert
-     * @param x      The image's x coordinate
-     * @param y      The image's y coordinate
+     * @param xAxis      The image's x coordinate
+     * @param yAxis      The image's y coordinate
      * @param width  The image's width in pixels
      * @param height The image's height in pixels
      * @return A {@link ImageConverterResponse} object with response.
@@ -157,7 +158,7 @@ public class ImageConverterRestController {
     @ImageConverterRestPostAreaOpenApi
     //
     @ResponseStatus(CREATED)
-    @PostMapping(value = "/area", consumes = { "multipart/form-data" }, produces = "application/json")
+    @PostMapping(value = "/area", consumes = { MULTIPART_FORM_DATA_VALUE }, produces = "application/json")
     public ImageConverterResponse convertWithArea( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true, example = "image.bmp") //
 		    @RequestParam(value = "file", required = true) //
@@ -165,11 +166,11 @@ public class ImageConverterRestController {
 		    //
 		    @Parameter(description = "The vertical position", required = true, example = "3") //
 		    @RequestParam(required = true) //
-		    final Integer x, //
+		    final Integer xAxis, //
 		    //
 		    @Parameter(description = "The horizontal position", required = true, example = "4") //
 		    @RequestParam(required = true) //
-		    final Integer y, //
+		    final Integer yAxis, //
 		    //
 		    @Parameter(description = "The width size's area", required = true, example = "56") //
 		    @RequestParam(required = true) //
@@ -179,6 +180,6 @@ public class ImageConverterRestController {
 		    @RequestParam(required = true) //
 		    final Integer height) {
 
-	return imageConversionService.convert(new ImageConverterRequestArea(file, WS, x, y, width, height));
+	return imageConversionService.convert(new ImageConverterRequestArea(file, WS, xAxis, yAxis, width, height));
     }
 }

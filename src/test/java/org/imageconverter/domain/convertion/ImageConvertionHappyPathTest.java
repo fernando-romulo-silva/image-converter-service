@@ -104,13 +104,13 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     @DisplayName("Test the imageConvertion's creation")
     public void createValidImageConvertionTest( //
 		    final MultipartFile file, final ExecutionType executionType, //
-		    final boolean area, final Integer x, final Integer y, final Integer width, final Integer height) {
+		    final boolean area, final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 
 	final var imageConvertionBuilder = new ImageConvertion.Builder().with($ -> {
 	    $.file = file;
 	    $.executionType = executionType;
-	    $.x = x;
-	    $.y = y;
+	    $.xAxis = xAxis;
+	    $.yAxis = yAxis;
 	    $.width = width;
 	    $.height = height;
 	});

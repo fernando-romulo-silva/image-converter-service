@@ -15,8 +15,8 @@ import io.swagger.v3.oas.annotations.Operation;
 @Inherited
 //
 @Operation( //
-		summary = "Update a image's type", //
-		description = "This method update a new image's type" //
+		summary = "Delete a image's type", //
+		description = "This method delete a new image's type" //
 )
 @OpenApiResponseRestDelete204
 @OpenApiResponseError404

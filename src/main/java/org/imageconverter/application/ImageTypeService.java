@@ -95,8 +95,7 @@ public class ImageTypeService {
     /**
      * Delete a image type.
      * 
-     * @param id      The image type's id
-     * @param request A image type ({@link UpdateImageTypeRequest}) requested to delete
+     * @param id The image type's id
      * @exception ElementNotFoundException if image type (file extension) doesn't exists
      * @exception ElementConflictException if amage type already been used on image convertion
      */
@@ -119,7 +118,7 @@ public class ImageTypeService {
     }
 
     /**
-     * Find a stored image type by id.
+     * Find a image type by id.
      * 
      * @param id The image type's id
      * @return A {@link ImageTypeResponse} object
