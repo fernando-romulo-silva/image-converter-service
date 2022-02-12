@@ -116,24 +116,28 @@ public class ImageType {
     @Override
     public boolean equals(final Object obj) {
 
+	final boolean result;
+
 	if (this == obj) {
-	    return true;
+	    result = true;
+	    
+	} else if (obj instanceof ImageType other) {
+	    result = Objects.equals(this.id, other.id);
+	    
+	} else {
+	    result = false;
 	}
 
-	if (!(obj instanceof ImageType other)) {
-	    return false;
-	}
-
-	return Objects.equals(this.id, other.id);
+	return result;
     }
 
     @Override
     public String toString() {
-	final var builder = new StringBuilder();
+	final var builder = new StringBuilder(34);
 	builder.append("ImageType [id=").append(id) //
 			.append(", extension=").append(extension) //
 			.append(", name=").append(name) //
-			.append("]");
+			.append(']');
 	return builder.toString();
     }
 }

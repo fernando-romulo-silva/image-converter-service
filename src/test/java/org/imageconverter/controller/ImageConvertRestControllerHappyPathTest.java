@@ -159,8 +159,8 @@ public class ImageConvertRestControllerHappyPathTest {
 	final var result = mvc.perform(multipart(REST_URL + "/area") //
 			.file(multipartFile) //
 			.accept(APPLICATION_JSON) //
-			.param("x", "885") //
-			.param("y", "1417") //
+			.param("xAxis", "885") //
+			.param("yAxis", "1417") //
 			.param("width", "1426") //
 			.param("height", "57") //
 			.with(csrf())) //

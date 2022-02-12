@@ -4,6 +4,11 @@ import static org.apache.commons.lang3.StringUtils.upperCase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Convertion execution's type.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Schema(enumAsRef = true)
 public enum ExecutionType {
 
@@ -17,6 +22,12 @@ public enum ExecutionType {
     
     DESKTOP;
     
+    /**
+     * Convert string to objects
+     * 
+     * @param string The string to 
+     * @return A object {@link ExecutionType} enum
+     */
     public static ExecutionType from(final String string) {
 	   
 	final var stringTypeNew = upperCase(string);

@@ -149,8 +149,8 @@ public class ImageConverterRestController {
      * Convert a image file with area on text.
      * 
      * @param file   The image to convert
-     * @param xAxis      The image's x coordinate
-     * @param yAxis      The image's y coordinate
+     * @param xAxis  The image's x coordinate
+     * @param yAxis  The image's y coordinate
      * @param width  The image's width in pixels
      * @param height The image's height in pixels
      * @return A {@link ImageConverterResponse} object with response.

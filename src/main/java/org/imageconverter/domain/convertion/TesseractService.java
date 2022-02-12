@@ -23,12 +23,23 @@ import org.springframework.web.multipart.MultipartFile;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.TesseractException;
 
+/**
+ * A Java class to access tesseract application
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Service
 @Loggable
 public class TesseractService {
 
     // @PreAuthorize("hasAuthority('ADMIN') or @accessChecker.hasLocalAccess(authentication)")
-    public String convert(final MultipartFile data) {
+    /**
+     * Convert a file image to text.
+     * 
+     * @param file A file that will be convert
+     * @return A {@link String} object with the conversion
+     */
+    public String convert(final MultipartFile file) {
 
 	final var tesseractTess4j = BeanUtil.getBeanProviderFrom(ITesseract.class).getIfAvailable();
 
@@ -38,7 +49,7 @@ public class TesseractService {
 
 	try {
 
-	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(data.getBytes()));
+	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
 
 	    return tesseractTess4j.doOCR(bufferedImage);
 
@@ -48,22 +59,33 @@ public class TesseractService {
 
 	} catch (final IOException ex) {
 
-	    final var msg = format("Image {0} has IO error: ''{1}''.", data.getOriginalFilename(), getRootCauseMessage(ex));
+	    final var msg = format("Image {0} has IO error: ''{1}''.", file.getOriginalFilename(), getRootCauseMessage(ex));
 	    throw new ConvertionException(msg, ex);
 
 	} catch (final TesseractException | Error ex) {
 
-	    final var msg = format("Image {0} has Tessarct error: ''{1}''.", data.getOriginalFilename(), getRootCauseMessage(ex));
+	    final var msg = format("Image {0} has Tessarct error: ''{1}''.", file.getOriginalFilename(), getRootCauseMessage(ex));
 	    throw new TesseractConvertionException(msg, ex);
 
-	} catch (final Exception ex) {
-
-	    final var msg = format("Unexpected error: ''{0}''.", getRootCauseMessage(ex));
-	    throw new ImageConvertServiceException(msg, ex);
+//	} catch (final Exception ex) {
+//
+//	    final var msg = format("Unexpected error: ''{0}''.", getRootCauseMessage(ex));
+//	    throw new ImageConvertServiceException(msg, ex);
 	}
     }
 
-    public String convert(final MultipartFile data, final int x, final int y, final int width, final int height) {
+    /**
+     * Convert a file image to text.
+     * 
+     * @param file   The image to convert
+     * @param xAxis  The image's x coordinate
+     * @param yAxis  The image's y coordinate
+     * @param width  The image's width in pixels
+     * @param height The image's height in pixels
+     * 
+     * @return A {@link String} object with the conversion
+     */
+    public String convert(final MultipartFile file, final int xAxis, final int yAxis, final int width, final int height) {
 
 	final var tesseractTess4j = BeanUtil.getBeanProviderFrom(ITesseract.class).getIfAvailable();
 
@@ -73,9 +95,9 @@ public class TesseractService {
 
 	try {
 
-	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(data.getBytes()));
+	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
 
-	    return tesseractTess4j.doOCR(bufferedImage, new Rectangle(x, y, width, height));
+	    return tesseractTess4j.doOCR(bufferedImage, new Rectangle(xAxis, yAxis, width, height));
 
 	} catch (final IllegalArgumentException ex) {
 
@@ -83,18 +105,18 @@ public class TesseractService {
 
 	} catch (final IOException ex) {
 
-	    final var msg = format("Image {0} has IO error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", data.getOriginalFilename(), getRootCauseMessage(ex), x, y, width, height);
+	    final var msg = format("Image {0} has IO error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", file.getOriginalFilename(), getRootCauseMessage(ex), xAxis, yAxis, width, height);
 	    throw new ConvertionException(msg, ex);
 
 	} catch (final TesseractException | Error ex) {
 
-	    final var msg = format("Image {0} has Tessarct error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", data.getOriginalFilename(), getRootCauseMessage(ex), x, y, width, height);
+	    final var msg = format("Image {0} has Tessarct error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", file.getOriginalFilename(), getRootCauseMessage(ex), xAxis, yAxis, width, height);
 	    throw new TesseractConvertionException(msg, ex);
 
-	} catch (final Exception ex) {
-
-	    final var msg = format("Unexpected error: ''{0}'', X {1}, Y {2}, Width {3} and Heigh {4}.", getRootCauseMessage(ex), x, y, width, height);
-	    throw new ImageConvertServiceException(msg, ex);
+//	} catch (final Exception ex) {
+//
+//	    final var msg = format("Unexpected error: ''{0}'', X {1}, Y {2}, Width {3} and Heigh {4}.", getRootCauseMessage(ex), xAxis, yAxis, width, height);
+//	    throw new ImageConvertServiceException(msg, ex);
 	}
     }
 }

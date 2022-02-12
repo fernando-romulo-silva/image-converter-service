@@ -7,6 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Structure to execute the image convertion.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Schema(name = "ImageConverterRequest", description = "Resquest structure to convert Image")
 public record ImageConverterRequest( //
 		//

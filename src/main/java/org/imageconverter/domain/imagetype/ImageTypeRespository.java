@@ -8,9 +8,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Image type's repository
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Repository
 public interface ImageTypeRespository extends JpaRepository<ImageType, Long>, JpaSpecificationExecutor<ImageType> {
 
+    /**
+     * Find a image type by extension
+     * 
+     * @param extension The convertion file name
+     * @return A {@link Optional} with {@link ImageType} or a empty {@link Optional}
+     */
     @Query("select o from ImageType o where o.extension = :extension")
     Optional<ImageType> findByExtension(@Param("extension") final String extension);
 }

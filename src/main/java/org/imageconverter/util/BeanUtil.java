@@ -1,5 +1,7 @@
 package org.imageconverter.util;
 
+import java.util.Objects;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
@@ -12,14 +14,17 @@ public class BeanUtil implements ApplicationContextAware {
 
     private static ApplicationContext context;
 
-    public static synchronized void defineContext(final ApplicationContext newContext) {
-	context = newContext;
+    public static void defineContext(final ApplicationContext newContext) {
+
+	if (Objects.isNull(context)) {
+	    context = newContext;
+	}
     }
 
     public static <T> T getBeanFrom(final Class<T> beanClass) {
 	return context.getBean(beanClass);
     }
-    
+
     public static <T> ObjectProvider<T> getBeanProviderFrom(final Class<T> beanClass) {
 	return context.getBeanProvider(beanClass);
     }

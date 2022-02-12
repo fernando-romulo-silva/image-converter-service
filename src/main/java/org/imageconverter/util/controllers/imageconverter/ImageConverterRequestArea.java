@@ -8,6 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Structure with area (x, y, width and height) to execute the image convertion.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Schema(name = "ImageConverterRequestArea", description = "Resquest structure to convert Image with specific area")
 public record ImageConverterRequestArea( //
 
@@ -19,11 +24,11 @@ public record ImageConverterRequestArea( //
 		@NotNull(message = "The executionType cannot be null") //
 		ExecutionType executionType, //
 		//
-		@Schema(name = "x", description = "The x axis image point", required = false, example = "145") //
+		@Schema(name = "xAxis", description = "The x axis image point", required = false, example = "145") //
 		@Min(value = 0, message = "The x point must be greater than zero") //
 		Integer xAxis, //
 		//
-		@Schema(name = "y", description = "The y axis image point", required = false, example = "123") //
+		@Schema(name = "yAxis", description = "The y axis image point", required = false, example = "123") //
 		@Min(value = 0, message = "The y point must be greater than zero") //
 		Integer yAxis, //
 		//

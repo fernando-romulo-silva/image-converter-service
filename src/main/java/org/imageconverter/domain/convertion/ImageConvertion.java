@@ -119,31 +119,35 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
+
+	final boolean result;
 
 	if (this == obj) {
-	    return true;
+	    result = true;
+
+	} else if (obj instanceof ImageConvertion other) {
+	    result = Objects.equals(id, other.id);
+	    
+	} else {
+	    result = false;
 	}
 
-	if (!(obj instanceof ImageConvertion other)) {
-	    return false;
-	}
-
-	return Objects.equals(id, other.id);
+	return result;
     }
 
     @Override
     public String toString() {
-	final var sb = new StringBuilder();
+	final var sbToString = new StringBuilder(76);
 
-	sb.append("ImageConvertion [id=").append(id) //
+	sbToString.append("ImageConvertion [id=").append(id) //
 			.append(", fileName=").append(fileName) //
 			.append(", fileType=").append(fileType) //
 			.append(", fileSize=").append(fileSize) //
 			.append(", created=").append(created) //
-			.append(", type=").append(type).append("]");
+			.append(", type=").append(type).append(']');
 
-	return sb.toString();
+	return sbToString.toString();
     }
 
     public static final class Builder {
@@ -194,7 +198,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	    if (isNull(request)) {
 		throw new ConvertionException("Empty request to convert!");
 	    }
-	    
+
 	    this.file = request.file();
 	    this.executionType = request.executionType();
 
@@ -216,7 +220,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	    if (isNull(file) || file.isEmpty()) {
 		throw new ConvertionException("Empty file to convert!");
 	    }
-	    
+
 	    final var tesseractService = getBeanFrom(TesseractService.class);
 
 	    final var imageTypeRepository = getBeanFrom(ImageTypeRespository.class);
@@ -231,7 +235,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	    this.fileName = file.getOriginalFilename();
 	    this.fileSize = file.getSize() / 1024;
 
-	    if (nonNull(xAxis) && nonNull(yAxis) && nonNull(width) && nonNull(height)) {
+	    if (checkParams()) {
 		this.text = tesseractService.convert(file, xAxis, yAxis, width, height);
 		this.area = true;
 	    } else {
@@ -240,11 +244,16 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	    }
 
 	    final var violations = validator.validate(this);
+
 	    if (!violations.isEmpty()) {
 		throw new ConstraintViolationException(violations);
 	    }
 
 	    return new ImageConvertion(this);
+	}
+
+	private boolean checkParams() {
+	    return nonNull(xAxis) && nonNull(yAxis) && nonNull(width) && nonNull(height);
 	}
     }
 
