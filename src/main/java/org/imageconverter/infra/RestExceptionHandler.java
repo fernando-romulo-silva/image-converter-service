@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 /**
- * @author Fernando 
+ * This class handle exceptions and create response properly.
+ * 
+ * @author Fernando Romulo da Silva
  */
 @ControllerAdvice
 public class RestExceptionHandler extends AbstractRestExceptionHandler {

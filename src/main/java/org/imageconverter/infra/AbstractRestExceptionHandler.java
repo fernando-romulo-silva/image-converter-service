@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.imageconverter.infra.exceptions.ImageConverterServiceException;
+import org.imageconverter.infra.exceptions.BaseApplicationException;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
- * Defaults handlers methodss
+ * Defaults handlers methods
  * 
  * @author Fernando Romulo da Silva
  */
@@ -85,14 +85,16 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
     }
 
     /**
-     * @param ex
-     * @param request
-     * @param status
-     * @return
+     * Handle exceptions, especially {@link BaseApplicationException} and its descendents and use the exception's message.
+     * 
+     * @param ex      The exception
+     * @param request Request object, to create response body.
+     * @param status  The error status
+     * @return A {@link ResponseEntity} object that's the response
      */
     protected ResponseEntity<Object> handleObjectException(final Throwable ex, final WebRequest request, final HttpStatus status) {
 
-	final var msg = ex instanceof ImageConverterServiceException ? escapeJava(getMessage(ex)) : escapeJava(getRootCauseMessage(ex));
+	final var msg = ex instanceof BaseApplicationException ? escapeJava(getMessage(ex)) : escapeJava(getRootCauseMessage(ex));
 
 	final var body = buildResponseBody(msg, status, ex, request);
 
@@ -104,11 +106,13 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
     }
 
     /**
-     * @param msg
-     * @param ex
-     * @param request
-     * @param status
-     * @return
+     * Handle exceptions using the message on response.
+     * 
+     * @param msg     The message that it'll be used
+     * @param ex      The exception
+     * @param request Request object, to create response body.
+     * @param status  The error status
+     * @return A {@link ResponseEntity} object that's the response
      */
     protected ResponseEntity<Object> handleObjectException(final String msg, final Throwable ex, final WebRequest request, final HttpStatus status) {
 

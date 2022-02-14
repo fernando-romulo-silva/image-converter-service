@@ -1,6 +1,11 @@
 package org.imageconverter.infra.exceptions;
 
-public class ElementNotFoundException extends ImageConverterServiceException {
+/**
+ * Element not found on search.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+public class ElementNotFoundException extends BaseApplicationException {
 
     private static final long serialVersionUID = 1L;
 

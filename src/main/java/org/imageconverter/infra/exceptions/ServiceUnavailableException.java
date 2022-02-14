@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exceptions;
 
-public class ServiceUnavailableException extends ImageConverterServiceException {
+public class ServiceUnavailableException extends BaseApplicationException {
 
     private static final long serialVersionUID = 1L;
 

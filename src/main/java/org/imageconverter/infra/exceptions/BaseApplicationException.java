@@ -1,21 +1,21 @@
 package org.imageconverter.infra.exceptions;
 
 /**
- * Convert image exception
+ * Base applicaton exception.
  * 
  * @author Fernando Romulo da Silva
  */
-public class ImageConvertServiceException extends BaseApplicationException {
+public class BaseApplicationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new ImageConvertServiceException exception with the specified detail message.
+     * Constructs a new BaseApplicationException exception with the specified detail message.
      * 
      * @param msg The detail message
      */
-    public ImageConvertServiceException(final String message) {
-	super(message);
+    public BaseApplicationException(final String msg) {
+	super(msg);
     }
 
     /**
@@ -24,7 +24,7 @@ public class ImageConvertServiceException extends BaseApplicationException {
      * @param msg The detail message
      * @param ex  The cause
      */
-    public ImageConvertServiceException(final String message, final Throwable cause) {
-	super(message, cause);
+    public BaseApplicationException(final String msg, final Throwable ex) {
+	super(msg, ex);
     }
 }
