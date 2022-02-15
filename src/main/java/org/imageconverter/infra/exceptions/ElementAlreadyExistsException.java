@@ -13,7 +13,7 @@ public class ElementAlreadyExistsException extends ElementConflictException {
      * Constructs a new ElementAlreadyExistsException exception and create detail message regard of parameters. </br>
      * The exception detail msg will be: cls.getSimpleName() + " with id '" + id + "' already exists". </br>
      * For instance for Person object with id 10: </br>
-     * "Person with id '10' already exists."
+     * "Person with id '10' already exists"
      * 
      * @param <T> The class type
      * @param cls Class element
@@ -27,7 +27,7 @@ public class ElementAlreadyExistsException extends ElementConflictException {
      * Constructs a new ElementAlreadyExistsException exception and create detail message regard of parameters. </br>
      * The exception detail msg will be: cls.getSimpleName() + " with " + msg + " already exists". </br>
      * For instance for Person object and msg equals to "id '10' and name 'Fernando'": </br>
-     * "Person with id '10' and name 'Fernando' already exists."
+     * "Person with id '10' and name 'Fernando' already exists"
      * 
      * @param <T> The class type
      * @param cls Class element
