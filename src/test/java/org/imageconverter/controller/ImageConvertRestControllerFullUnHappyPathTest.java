@@ -54,7 +54,7 @@ class ImageConvertRestControllerFullUnHappyPathTest extends AbstractTesseractHea
     @Test
     @Order(1)
     @DisplayName("convert the image with invalid tesseract conf")
-    public void convertWithInvalidTesseractConfTest() throws Exception {
+    void convertWithInvalidTesseractConfTest() throws Exception {
 
 	final var restTemplate = new RestTemplate();
 

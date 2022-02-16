@@ -51,7 +51,7 @@ class ImageTypeServiceUnHappyPathTest {
     @ValueSource(longs = 1L) // id '1' don't exist
     @Order(1)
     @DisplayName("Search a image type that doesn't exist by id")
-    public void getImageTypeByIdTest(final Long id) throws Exception {
+    void getImageTypeByIdTest(final Long id) throws Exception {
 
 	assertThatThrownBy(() -> imageTypeService.findById(id)) //
 			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
@@ -61,7 +61,7 @@ class ImageTypeServiceUnHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("Get a image type by invalid specification")
-    public void getImageTypeByInvalidExtensionTest() throws Exception {
+    void getImageTypeByInvalidExtensionTest() throws Exception {
 
 	final var specFieldOneNotExists = (Specification<ImageType>) (rt, cq, cb) -> cb.equal(rt.get("fieldOneNotExists"), "blabla");
 	final var specFieldTwoNotExists = (Specification<ImageType>) (rt, cq, cb) -> cb.equal(rt.get("fieldTwoNotExists"), "blabla");
@@ -73,7 +73,7 @@ class ImageTypeServiceUnHappyPathTest {
 	}).isInstanceOf(ElementInvalidException.class);
     }
 
-    public Stream<Arguments> createImageTypeInvalidData() throws IOException {
+    Stream<Arguments> createImageTypeInvalidData() throws IOException {
 
 	final CreateImageTypeRequest nullCreateImageTypeRequest = null;
 
@@ -88,7 +88,7 @@ class ImageTypeServiceUnHappyPathTest {
     @MethodSource("createImageTypeInvalidData")
     @Order(4)
     @DisplayName("Try to create a invalid image type")
-    public void createImageTypeInvalidTest(final CreateImageTypeRequest request) throws Exception {
+    void createImageTypeInvalidTest(final CreateImageTypeRequest request) throws Exception {
 
 	assertThatThrownBy(() -> {
 
@@ -101,7 +101,7 @@ class ImageTypeServiceUnHappyPathTest {
     @Test
     @Order(5)
     @DisplayName("Create twice the same image type")
-    public void createSameImageTypeTest() throws Exception {
+    void createSameImageTypeTest() throws Exception {
 
 	final var createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
 
@@ -117,7 +117,7 @@ class ImageTypeServiceUnHappyPathTest {
 	}).isInstanceOfAny(ElementAlreadyExistsException.class);
     }
 
-    public Stream<Arguments> updateImageTypeDoesNotExistData() throws IOException {
+    Stream<Arguments> updateImageTypeDoesNotExistData() throws IOException {
 
 	final UpdateImageTypeRequest nullUpdateImageTypeRequest = null;
 
@@ -132,7 +132,7 @@ class ImageTypeServiceUnHappyPathTest {
     @MethodSource("updateImageTypeDoesNotExistData")
     @Order(6)
     @DisplayName("Try to update a image type that doesn't exist")
-    public void updateImageTypeDoesNotExistTest(final Long id, final UpdateImageTypeRequest request) throws Exception {
+    void updateImageTypeDoesNotExistTest(final Long id, final UpdateImageTypeRequest request) throws Exception {
 
 	assertThatThrownBy(() -> {
 
@@ -146,7 +146,7 @@ class ImageTypeServiceUnHappyPathTest {
     @ValueSource(longs = 1L) // id '1' don't exist
     @Order(7)
     @DisplayName("Try to delete a image type that doesn't exist")
-    public void deleteImageTypeDoesNotExistTest(final Long id) throws Exception {
+    void deleteImageTypeDoesNotExistTest(final Long id) throws Exception {
 
 	assertThatThrownBy(() -> {
 
@@ -158,7 +158,7 @@ class ImageTypeServiceUnHappyPathTest {
     @Test
     @Order(8)
     @DisplayName("Try to delete a image type that has a relation with other record")
-    public void deleteImageTypeRestrictionTest() throws Exception {
+    void deleteImageTypeRestrictionTest() throws Exception {
 
 	final var id = 1001L; // already exists and has a convertion image relation
 

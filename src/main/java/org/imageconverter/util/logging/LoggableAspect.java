@@ -23,20 +23,38 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.stereotype.Component;
 
+/**
+ * The Aspect to log the method enters and method exists.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Aspect
 @Component
 public class LoggableAspect {
 
+    /**
+     * The pointcut to annotated class.
+     */
     @Pointcut("@annotation(org.imageconverter.util.logging.Loggable)")
     public void annotatedMethod() {
 	// just to execute the Around
     }
 
+    /**
+     * The pointcut to annotated method.
+     */
     @Pointcut("@within(org.imageconverter.util.logging.Loggable)")
     public void annotatedClass() {
 	// just to execute the Around
     }
 
+    /**
+     * Execute the wrap method.
+     * 
+     * @param point The object that support around advice in @AJ aspects
+     * @return The methot's return
+     * @throws Throwable If something wrong happens
+     */
     @Around("execution(* *(..)) && (annotatedMethod() || annotatedClass())")
     public Object log(final ProceedingJoinPoint point) throws Throwable {
 
@@ -66,7 +84,7 @@ public class LoggableAspect {
 	final var start = Instant.now();
 
 	final var lowerCaseUnit = unit.name().toLowerCase(ROOT);
-	
+
 	try {
 
 	    final var response = ofNullable(point.proceed()) //
@@ -74,14 +92,13 @@ public class LoggableAspect {
 
 	    final var end = Instant.now();
 
-	    
 	    final var duration = format("%s %s", unit.between(start, end), lowerCaseUnit);
 
 	    executeLog(logger, level, exit(methodName, duration, response, showResult, showExecutionTime));
 
 	    return response;
 
-	} catch (final Exception ex) {
+	} catch (final Exception ex) { // NOPMD - point.proceed() throw it
 
 	    final var end = Instant.now();
 
@@ -94,7 +111,7 @@ public class LoggableAspect {
 
     }
 
-    static String entry(final String methodName, final boolean showArgs, final String[] params, final Object[] args) {
+    private String entry(final String methodName, final boolean showArgs, final String[] params, final Object[] args) {
 	final var message = new StringJoiner(" ").add("Started").add(methodName).add("method");
 
 	if (showArgs && nonNull(params) && nonNull(args) && params.length == args.length) {
@@ -111,7 +128,7 @@ public class LoggableAspect {
 	return message.toString();
     }
 
-    static String exit(final String methodName, final String duration, final Object result, final boolean showResult, final boolean showExecutionTime) {
+    private String exit(final String methodName, final String duration, final Object result, final boolean showResult, final boolean showExecutionTime) {
 	final var message = new StringJoiner(" ").add("Finished").add(methodName).add("method");
 
 	if (showExecutionTime) {
@@ -125,7 +142,7 @@ public class LoggableAspect {
 	return message.toString();
     }
 
-    static String error(final String methodName, final String duration, final Throwable ex, final boolean showExecutionTime) {
+    private String error(final String methodName, final String duration, final Throwable ex, final boolean showExecutionTime) {
 
 	final var message = new StringJoiner(" ").add("Finished").add(methodName).add("method").add("with").add("error").add(getRootCauseMessage(ex));
 
@@ -136,14 +153,14 @@ public class LoggableAspect {
 	return message.toString();
     }
 
-    static void executeLog(final Logger logger, final LogLevel level, final String message) {
+    private void executeLog(final Logger logger, final LogLevel level, final String message) {
 	final var finalMsg = StringEscapeUtils.escapeJava(message);
 	switch (level) {
-        	case DEBUG -> logger.debug(finalMsg);
-        	case TRACE -> logger.trace(finalMsg);
-        	case WARN -> logger.warn(finalMsg);
-        	case ERROR, FATAL -> logger.error(finalMsg);
-        	default -> logger.info(finalMsg);
+	case DEBUG -> logger.debug(finalMsg);
+	case TRACE -> logger.trace(finalMsg);
+	case WARN -> logger.warn(finalMsg);
+	case ERROR, FATAL -> logger.error(finalMsg);
+	default -> logger.info(finalMsg);
 	}
     }
 }

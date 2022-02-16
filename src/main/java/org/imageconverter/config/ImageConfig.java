@@ -28,9 +28,7 @@ public class ImageConfig {
     @RefreshScope
     public ITesseract tesseractTess4j() {
 
-	final var environment = BeanUtil.getEnvironment();
-
-	final var path = Paths.get(environment.getProperty("tesseract.folder"));
+	final var path = Paths.get(BeanUtil.getPropertyValue("tesseract.folder"));
 
 	final ITesseract tesseract;
 
@@ -41,9 +39,9 @@ public class ImageConfig {
 	} else {
 
 	    tesseract = new Tesseract();
-	    tesseract.setDatapath(environment.getProperty("tesseract.folder"));
-	    tesseract.setLanguage(environment.getProperty("tesseract.language"));
-	    tesseract.setTessVariable("user_defined_dpi", environment.getProperty("tesseract.dpi"));
+	    tesseract.setDatapath(BeanUtil.getPropertyValue("tesseract.folder"));
+	    tesseract.setLanguage(BeanUtil.getPropertyValue("tesseract.language"));
+	    tesseract.setTessVariable("user_defined_dpi", BeanUtil.getPropertyValue("tesseract.dpi"));
 	}
 
 	return tesseract;

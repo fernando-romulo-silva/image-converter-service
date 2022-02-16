@@ -70,7 +70,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("Try to get a image convertion that not exists")
-    public void tryToGetImageConvertionByIdTest() throws Exception {
+    void tryToGetImageConvertionByIdTest() throws Exception {
 
 	final var id = "1234";
 
@@ -85,7 +85,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Test
     @Order(2)
     @DisplayName("Search a image convertion that not exists by search")
-    public void getImageConvertionBySearchTest() throws Exception {
+    void getImageConvertionBySearchTest() throws Exception {
 
 	final var fileName = "some_file.png";
 
@@ -100,7 +100,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("Search a image convertion by invalid field search")
-    public void getImageConvertionByInvalidFieldSearchTest() throws Exception {
+    void getImageConvertionByInvalidFieldSearchTest() throws Exception {
 
 	final var fileName = "some_file.png";
 
@@ -116,7 +116,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Test
     @Order(4)
     @DisplayName("convert the image with unknow extension")
-    public void convertTest() throws Exception {
+    void convertTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 
@@ -134,7 +134,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Order(5)
     @DisplayName("Convert the same image")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void convertSameImageTest() throws Exception {
+    void convertSameImageTest() throws Exception {
 
 	// create one
 	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
@@ -171,7 +171,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Order(6)
     @DisplayName("Convert a corrupted image")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void convertCorruptedImageTest() throws Exception {
+    void convertCorruptedImageTest() throws Exception {
 
 	// create one
 	final var multipartFile = new MockMultipartFile("file", corruptedImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, corruptedImageFile.getInputStream());
@@ -193,7 +193,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Order(7)
     @DisplayName("Convert a empty image")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void convertEmptyImageTest() throws Exception {
+    void convertEmptyImageTest() throws Exception {
 
 	// create one
 	final var multipartFile = new MockMultipartFile("file", emptyImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, emptyImageFile.getInputStream());
@@ -214,7 +214,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Order(8)
     @DisplayName("Convert a corrupted image with area")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void convertCorruptedImageAreaTest() throws Exception {
+    void convertCorruptedImageAreaTest() throws Exception {
 
 	// create one
 	final var multipartFile = new MockMultipartFile("file", corruptedImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, corruptedImageFile.getInputStream());
@@ -240,7 +240,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Order(9)
     @DisplayName("Convert a empty image with area")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void convertEmptyImageAreaTest() throws Exception {
+    void convertEmptyImageAreaTest() throws Exception {
 
 	// create one
 	final var multipartFile = new MockMultipartFile("file", emptyImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, emptyImageFile.getInputStream());
@@ -264,7 +264,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Test
     @Order(10)
     @DisplayName("convert the image with area with parameter null")
-    public void convertAreaParameterNullTest() throws Exception {
+    void convertAreaParameterNullTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 
@@ -286,7 +286,7 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Test
     @Order(11)
     @DisplayName("convert the image with area with parameter Y invalid")
-    public void convertAreaParameterInvalidYTest() throws Exception {
+    void convertAreaParameterInvalidYTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 

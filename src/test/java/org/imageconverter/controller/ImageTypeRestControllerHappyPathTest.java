@@ -73,7 +73,7 @@ class ImageTypeRestControllerHappyPathTest {
     @Order(1)
     @DisplayName("get a image type by id")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void getImageTypeByIdTest() throws Exception {
+    void getImageTypeByIdTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
@@ -91,7 +91,7 @@ class ImageTypeRestControllerHappyPathTest {
     @Order(2)
     @DisplayName("get all image types")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void getAllImageTypeTest() throws Exception {
+    void getAllImageTypeTest() throws Exception {
 
 	// create one
 	mvc.perform(post(REST_URL) //
@@ -120,7 +120,7 @@ class ImageTypeRestControllerHappyPathTest {
     @Order(3)
     @DisplayName("get a image type by search")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void getImageTypeByExtensionTest() throws Exception {
+    void getImageTypeByExtensionTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
 	final var extension = "png";
@@ -139,7 +139,7 @@ class ImageTypeRestControllerHappyPathTest {
     @Order(4)
     @DisplayName("Create a new image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void createImageTypeTest() throws Exception {
+    void createImageTypeTest() throws Exception {
 
 	// create a new image type
 	final var result = mvc.perform(post(REST_URL) //
@@ -170,7 +170,7 @@ class ImageTypeRestControllerHappyPathTest {
     @Order(5)
     @DisplayName("Update a image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void updateImageTypeTest() throws Exception {
+    void updateImageTypeTest() throws Exception {
 
 	// create a new image type
 	final var createResult = mvc.perform(post(REST_URL) //
@@ -214,7 +214,7 @@ class ImageTypeRestControllerHappyPathTest {
     @Order(6)
     @DisplayName("Delete a new image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void deleteImageTypeTest() throws Exception {
+    void deleteImageTypeTest() throws Exception {
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
 
@@ -245,7 +245,7 @@ class ImageTypeRestControllerHappyPathTest {
 
     }
 
-    public String asJsonString(final Object object) {
+    String asJsonString(final Object object) {
 
 	try {
 	    return mapper.writeValueAsString(object);

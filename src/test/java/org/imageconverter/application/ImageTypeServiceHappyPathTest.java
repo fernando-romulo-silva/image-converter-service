@@ -36,7 +36,7 @@ class ImageTypeServiceHappyPathTest {
     @Order(1)
     @DisplayName("Get a image type by id")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void getImageTypeByIdTest() throws Exception {
+    void getImageTypeByIdTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
 	final var id = 1000L;
@@ -50,7 +50,7 @@ class ImageTypeServiceHappyPathTest {
     @Order(2)
     @DisplayName("Get all image types")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void getAllImageTypeTest() throws Exception {
+    void getAllImageTypeTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
 	final var id = 1000L;
@@ -69,7 +69,7 @@ class ImageTypeServiceHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("Get a image type by specification")
-    public void getImageTypeBySpecificationTest() throws Exception {
+    void getImageTypeBySpecificationTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
 	final var extension = "png";
@@ -91,7 +91,7 @@ class ImageTypeServiceHappyPathTest {
     @Order(4)
     @DisplayName("Create a new image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void createImageTypeTest() throws Exception {
+    void createImageTypeTest() throws Exception {
 
 	final var response = imageTypeService.createImageType(createImageTypeRequest);
 
@@ -106,7 +106,7 @@ class ImageTypeServiceHappyPathTest {
     @Order(5)
     @DisplayName("Update a image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void updateImageTypeTest() throws Exception {
+    void updateImageTypeTest() throws Exception {
 
 	final var createResponse = imageTypeService.createImageType(createImageTypeRequest);
 
@@ -129,7 +129,7 @@ class ImageTypeServiceHappyPathTest {
     @Order(6)
     @DisplayName("Delete a new image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void deleteImageTypeTest() throws Exception {
+    void deleteImageTypeTest() throws Exception {
 
 	final var createResponse = imageTypeService.createImageType(createImageTypeRequest);
 

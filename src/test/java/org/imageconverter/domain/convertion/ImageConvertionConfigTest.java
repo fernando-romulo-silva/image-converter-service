@@ -20,7 +20,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import net.sourceforge.tess4j.ITesseract;
 
-public abstract class ImageConvertionConfigTest {
+abstract class ImageConvertionConfigTest {
 
     protected MockMultipartFile mockMultipartFile;
 

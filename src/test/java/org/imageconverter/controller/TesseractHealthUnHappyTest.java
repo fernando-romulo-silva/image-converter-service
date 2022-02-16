@@ -38,7 +38,7 @@ class TesseractHealthUnHappyTest extends AbstractTesseractHealthTest {
     @Test
     @Order(1)
     @DisplayName("get actuator health invalid status")
-    public void getActuatorHealthInvalidTest() throws Exception {
+    void getActuatorHealthInvalidTest() throws Exception {
 
 	final var restTemplate = new RestTemplate();
 
@@ -69,7 +69,7 @@ class TesseractHealthUnHappyTest extends AbstractTesseractHealthTest {
     @Test
     @Order(2)
     @DisplayName("get actuator tesseract fail status")
-    public void getActuatorTesseractInvalidTest() throws Exception {
+    void getActuatorTesseractInvalidTest() throws Exception {
 
 	final var restTemplate = new RestTemplate();
 

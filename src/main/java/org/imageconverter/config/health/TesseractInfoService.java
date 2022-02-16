@@ -70,9 +70,9 @@ public class TesseractInfoService {
 	final var details = new LinkedHashMap<String, Object>();
 
 	details.put("tesseractVersion", "4.11");
-	details.put("tesseractFolder", BeanUtil.getEnvironment().getProperty("tesseract.folder"));
-	details.put("tesseractLanguage", BeanUtil.getEnvironment().getProperty("tesseract.language"));
-	details.put("tesseractDpi", BeanUtil.getEnvironment().getProperty("tesseract.dpi"));
+	details.put("tesseractFolder", BeanUtil.getPropertyValue("tesseract.folder"));
+	details.put("tesseractLanguage", BeanUtil.getPropertyValue("tesseract.language"));
+	details.put("tesseractDpi", BeanUtil.getPropertyValue("tesseract.dpi"));
 
 	if (checkTesseract()) {
 	    details.put("tesseractInit", "SUCCESSFUL");

@@ -48,7 +48,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
     @BeforeAll
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
 	setUpSuper();
 
 	when(applicationContext.getBean(TesseractService.class)) //
@@ -69,7 +69,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     @Test
     @Order(1)
     @DisplayName("Test the equals And HashCode Contract")
-    public void equalsAndHashCodeContractTest() {
+    void equalsAndHashCodeContractTest() {
 
 	EqualsVerifier.forClass(ImageConvertion.class) //
 			.suppress(NONFINAL_FIELDS, STRICT_INHERITANCE, REFERENCE_EQUALITY) //
@@ -82,7 +82,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     @Test
     @Order(2)
     @DisplayName("Test the toString method")
-    public void toStringTest() {
+    void toStringTest() {
 	ToStringVerifier.forClass(ImageConvertion.class) //
 			.withIgnoredFields("text", "created", "area") //
 			.withClassName(SIMPLE_NAME) //
@@ -90,7 +90,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 			.verify();
     }
 
-    public Stream<Arguments> createValidImageConvertionData() throws IOException {
+    Stream<Arguments> createValidImageConvertionData() throws IOException {
 
 	return Stream.of( //
 			Arguments.of(mockMultipartFile, WEB, false, null, null, null, null), //
@@ -102,7 +102,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     @MethodSource("createValidImageConvertionData")
     @Order(3)
     @DisplayName("Test the imageConvertion's creation")
-    public void createValidImageConvertionTest( //
+    void createValidImageConvertionTest( //
 		    final MultipartFile file, final ExecutionType executionType, //
 		    final boolean area, final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 

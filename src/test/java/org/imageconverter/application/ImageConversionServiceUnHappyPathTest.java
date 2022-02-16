@@ -58,7 +58,7 @@ class ImageConversionServiceUnHappyPathTest {
     @NullSource
     @ValueSource(longs = 1L) // id '1' don't exist
     @DisplayName("try to get a image convertion by id doens't ")
-    public void getImageConvertionByInvalidIdTest(final Long id) throws Exception {
+    void getImageConvertionByInvalidIdTest(final Long id) throws Exception {
 
 	assertThatThrownBy(() -> imageConversionService.findById(id)) //
 			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
@@ -83,7 +83,7 @@ class ImageConversionServiceUnHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("get a image convertion by invalid specification")
-    public void getImageConvertionByInvalidExtensionTest() throws Exception {
+    void getImageConvertionByInvalidExtensionTest() throws Exception {
 
 	final var specFieldOneNotExists = (Specification<ImageConvertion>) (rt, cq, cb) -> cb.equal(rt.get("fieldOneNotExists"), "blabla");
 	final var specFieldTwoNotExists = (Specification<ImageConvertion>) (rt, cq, cb) -> cb.equal(rt.get("fieldTwoNotExists"), "blabla");
@@ -97,7 +97,7 @@ class ImageConversionServiceUnHappyPathTest {
 
     // ---------------------------------------------------------------------------------------------------------------
 
-    public Stream<Arguments> convertInvalidParameterData() throws IOException {
+    Stream<Arguments> convertInvalidParameterData() throws IOException {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
@@ -114,7 +114,7 @@ class ImageConversionServiceUnHappyPathTest {
     @MethodSource("convertInvalidParameterData")
     @Order(4)
     @DisplayName("convert the image with invalid parameters")
-    public void convertInvalidParameterTest(final ImageConverterRequest request) throws IOException {
+    void convertInvalidParameterTest(final ImageConverterRequest request) throws IOException {
 
 	assertThatThrownBy(() -> {
 
@@ -125,7 +125,7 @@ class ImageConversionServiceUnHappyPathTest {
 
     // ---------------------------------------------------------------------------------------------------------------
 
-    public Stream<Arguments> convertAreaInvalidParameterData() throws IOException {
+    Stream<Arguments> convertAreaInvalidParameterData() throws IOException {
 
 	final var mockMultipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
@@ -146,7 +146,7 @@ class ImageConversionServiceUnHappyPathTest {
     @MethodSource("convertAreaInvalidParameterData")
     @Order(5)
     @DisplayName("convert the image with area")
-    public void convertAreaInvalidParameterTest(final ImageConverterRequestArea request) throws Exception {
+    void convertAreaInvalidParameterTest(final ImageConverterRequestArea request) throws Exception {
 
 	assertThatThrownBy(() -> {
 

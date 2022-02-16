@@ -66,7 +66,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(1)
     @DisplayName("Search a image type that doesn't exist by id")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void getImageTypeByIdTest() throws Exception {
+    void getImageTypeByIdTest() throws Exception {
 
 	final var id = "1234";
 
@@ -83,7 +83,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(2)
     @DisplayName("Search a image type that not exists by search")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void getImageTypeBySearchTest() throws Exception {
+    void getImageTypeBySearchTest() throws Exception {
 
 	final var extension = "bmp";
 
@@ -100,7 +100,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(3)
     @DisplayName("Search a image type by invalid search")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void getImageTypeBySearchInvalidSearchTest() throws Exception {
+    void getImageTypeBySearchInvalidSearchTest() throws Exception {
 
 	mvc.perform(get(REST_URL + "/search?filter=invalidField:'bmp'") //
 			.accept(APPLICATION_JSON) //
@@ -115,7 +115,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(4)
     @DisplayName("Create twice the same image type")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void createSameImageTypeTest() throws Exception {
+    void createSameImageTypeTest() throws Exception {
 
 	// create one
 	mvc.perform(post(REST_URL) //
@@ -144,7 +144,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(5)
     @DisplayName("Try to create image type with invalid json")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void createInvalidImageTypeTest() throws Exception {
+    void createInvalidImageTypeTest() throws Exception {
 
 	// invalid json
 	final var json = """
@@ -171,7 +171,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(6)
     @DisplayName("Try to create image type with invalid value")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void createInvalidImageTypeTest2() throws Exception {
+    void createInvalidImageTypeTest2() throws Exception {
 
 	// invalid json
 	final var json = """
@@ -197,7 +197,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(7)
     @DisplayName("Try to update a image type that doesn't exist")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void updateImageTypeDoesNotExistTest() throws Exception {
+    void updateImageTypeDoesNotExistTest() throws Exception {
 
 	// what's id?
 	final var id = "12345";
@@ -221,7 +221,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(8)
     @DisplayName("Try to delete a image type that doesn't exist")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void deleteImageTypeDoesNotExistTest() throws Exception {
+    void deleteImageTypeDoesNotExistTest() throws Exception {
 
 	final var id = "12356";
 
@@ -239,7 +239,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(9)
     @DisplayName("Try to delete a image type that has a relation with other record")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void deleteImageTypeRestrictionTest() throws Exception {
+    void deleteImageTypeRestrictionTest() throws Exception {
 
 	final var id = "1001";
 
@@ -257,7 +257,7 @@ class ImageTypeRestControllerUnHappyPathTest {
     @Order(10)
     @DisplayName("Try to access a invalid url")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    public void invalidUrlTest() throws Exception {
+    void invalidUrlTest() throws Exception {
 
 	mvc.perform(get(REST_URL + "/blablabla") //
 			.accept(ALL, TEXT_HTML, APPLICATION_JSON, TEXT_PLAIN) //
@@ -270,7 +270,7 @@ class ImageTypeRestControllerUnHappyPathTest {
 
     }
 
-    public String asJsonString(final Object object) {
+    String asJsonString(final Object object) {
 
 	try {
 	    return mapper.writeValueAsString(object);

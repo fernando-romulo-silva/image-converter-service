@@ -31,10 +31,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag("unit")
 @DisplayName("Test the image type entity, Unhappy Path :(")
 @TestInstance(PER_CLASS)
-public class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
+class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 
     @BeforeAll
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
 
 	setUpSuper();
 
@@ -53,7 +53,7 @@ public class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 			.thenReturn(EMPTY);
     }
 
-    public Stream<Arguments> createInvalidImageConvertionData() throws IOException {
+    Stream<Arguments> createInvalidImageConvertionData() throws IOException {
 
 	return Stream.of( //
 			Arguments.of(null, WEB, null, null, null, null), //
@@ -70,7 +70,7 @@ public class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
     @MethodSource("createInvalidImageConvertionData")
     @Order(1)
     @DisplayName("Test the imageConvertion's creation with invalid values")
-    public void createInvalidImageConvertionTest( //
+    void createInvalidImageConvertionTest( //
 		    final MultipartFile file, final ExecutionType executionType, //
 		    final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 

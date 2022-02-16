@@ -53,7 +53,7 @@ class ImageTypeHappyPathTest {
     private ApplicationContext applicationContext;
 
     @BeforeAll
-    public void setUp() {
+    void setUp() {
 	final var validator = buildDefaultValidatorFactory().getValidator();
 
 	MockitoAnnotations.openMocks(this);
@@ -67,7 +67,7 @@ class ImageTypeHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("Test the equals And HashCode Contract")
-    public void equalsAndHashCodeContractTest() {
+    void equalsAndHashCodeContractTest() {
 
 	EqualsVerifier.forClass(ImageType.class) //
 			.suppress(NONFINAL_FIELDS, STRICT_INHERITANCE, REFERENCE_EQUALITY) //
@@ -80,7 +80,7 @@ class ImageTypeHappyPathTest {
     @Test
     @Order(2)
     @DisplayName("Test the toString method")
-    public void toStringTest() {
+    void toStringTest() {
 	ToStringVerifier.forClass(ImageType.class) //
 			.withIgnoredFields("description", "created", "updated") //
 			.withClassName(SIMPLE_NAME) //
@@ -88,7 +88,7 @@ class ImageTypeHappyPathTest {
 			.verify();
     }
 
-    public Stream<Arguments> createValidImageTypeData() throws IOException {
+    Stream<Arguments> createValidImageTypeData() throws IOException {
 
 	return Stream.of( //
 			Arguments.of("png", "PNG", "Portable Network Graphics"), //
@@ -100,7 +100,7 @@ class ImageTypeHappyPathTest {
     @MethodSource("createValidImageTypeData")
     @Order(3)
     @DisplayName("Test the imageTypes creation")
-    public void createValidImageTypeTest(final String name, final String extension, final String description) {
+    void createValidImageTypeTest(final String name, final String extension, final String description) {
 
 	final var imageType = new ImageType(extension, name, description);
 
@@ -117,7 +117,7 @@ class ImageTypeHappyPathTest {
     @Test
     @Order(4)
     @DisplayName("Test the imageTypes update")
-    public void updateValidImageTypeTest() {
+    void updateValidImageTypeTest() {
 
 	final var imageType = new ImageType("png", "PNG", "Portable Network Graphics");
 

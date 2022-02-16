@@ -41,7 +41,7 @@ class TesseractHealthHappyTest extends AbstractTesseractHealthTest {
     @Test
     @Order(1)
     @DisplayName("get actuator health status")
-    public void getActuatorHealthTest() throws Exception {
+    void getActuatorHealthTest() throws Exception {
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
@@ -56,7 +56,7 @@ class TesseractHealthHappyTest extends AbstractTesseractHealthTest {
     @Test
     @Order(2)
     @DisplayName("get actuator tesseract status")
-    public void getActuatorTesseractTest() throws Exception {
+    void getActuatorTesseractTest() throws Exception {
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
@@ -74,7 +74,7 @@ class TesseractHealthHappyTest extends AbstractTesseractHealthTest {
     @Test
     @Order(3)
     @DisplayName("post actuator refresh")
-    public void postActuatorRefreshTest() throws Exception {
+    void postActuatorRefreshTest() throws Exception {
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());

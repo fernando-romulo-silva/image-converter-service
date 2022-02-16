@@ -53,7 +53,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Test the image convertion, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-public class ImageConvertRestControllerHappyPathTest {
+class ImageConvertRestControllerHappyPathTest {
 
     @Autowired
     private ObjectMapper mapper;
@@ -71,7 +71,7 @@ public class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("get a image convertion by id")
-    public void getImageConvertionByIdTest() throws Exception {
+    void getImageConvertionByIdTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
@@ -89,7 +89,7 @@ public class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(2)
     @DisplayName("get all image convertions")
-    public void getAllImageConvertionTest() throws Exception {
+    void getAllImageConvertionTest() throws Exception {
 
 	// get all, the db-data-test.sql
 	mvc.perform(get(REST_URL) //
@@ -107,7 +107,7 @@ public class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("get a image convertion by search")
-    public void getImageTypeByExtensionTest() throws Exception {
+    void getImageTypeByExtensionTest() throws Exception {
 
 	// already on db, due to the db-data-test.sql
 	final var fileName = "image_test.jpg";
@@ -126,7 +126,7 @@ public class ImageConvertRestControllerHappyPathTest {
     @Order(4)
     @DisplayName("convert the image")
     @Sql(statements = "DELETE FROM image_convertion ")
-    public void convertTest() throws Exception {
+    void convertTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
 
@@ -151,7 +151,7 @@ public class ImageConvertRestControllerHappyPathTest {
     @Order(5)
     @DisplayName("convert the image with area")
     @Sql(statements = "DELETE FROM image_convertion ")
-    public void convertAreaTest() throws Exception {
+    void convertAreaTest() throws Exception {
 
 	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
 

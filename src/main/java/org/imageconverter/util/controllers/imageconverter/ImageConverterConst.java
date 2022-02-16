@@ -1,5 +1,10 @@
 package org.imageconverter.util.controllers.imageconverter;
 
+/**
+ * Image Converter URLs.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 public final class ImageConverterConst {
 
     public static final String BASE_URL = "/image-converter";

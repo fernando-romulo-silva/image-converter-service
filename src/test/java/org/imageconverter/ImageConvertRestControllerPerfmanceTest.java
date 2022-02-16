@@ -2,9 +2,7 @@ package org.imageconverter;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,18 +24,25 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import org.springframework.test.context.jdbc.SqlConfig.ErrorMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+/**
+ * Class to execute a performance test.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
-@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = ErrorMode.CONTINUE_ON_ERROR))
 //
 @Disabled("It's not working yeat")
 @ExtendWith(SpringExtension.class)
@@ -50,22 +55,23 @@ class ImageConvertRestControllerPerfmanceTest {
     private MockMvc mvc;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
 	System.setProperty("junit.jupiter.execution.parallel.enabled", "true");
 	System.setProperty("junit.jupiter.execution.parallel.config.strategy", "fixed");
 	System.setProperty("junit.jupiter.execution.parallel.config.fixed.parallelism", "4");
     }
 
+    /**
+     * Execute the performance test.
+     */
     @Order(1)
     @DisplayName("get a image type by id")
     @Execution(ExecutionMode.CONCURRENT)
     @RepeatedTest(value = 10, name = "{displayName} {currentRepetition}/{totalRepetitions}") // Jconsole or visualVMS
-    public void metho() throws Exception {
+    void performanceTest() throws Exception { // NOPMD
 
-	// final var createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
-	
 	mvc.perform(get(REST_URL) //
-			.accept(APPLICATION_JSON) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
@@ -75,7 +81,6 @@ class ImageConvertRestControllerPerfmanceTest {
 	;
 
 	TimeUnit.SECONDS.sleep(2);
-
     }
 
 }

@@ -35,7 +35,7 @@ class ImageTypeUnHappyPathTest {
     private ApplicationContext applicationContext;
 
     @BeforeAll
-    public void setUp() {
+    void setUp() {
 	final var validator = buildDefaultValidatorFactory().getValidator();
 
 	MockitoAnnotations.openMocks(this);
@@ -46,7 +46,7 @@ class ImageTypeUnHappyPathTest {
 			.thenReturn(validator);
     }
 
-    public Stream<Arguments> createInvalidImageTypeData() throws IOException {
+    Stream<Arguments> createInvalidImageTypeData() throws IOException {
 
 	return Stream.of( //
 			Arguments.of(null, "PNG", "Portable Network Graphics"), //
@@ -60,7 +60,7 @@ class ImageTypeUnHappyPathTest {
     @MethodSource("createInvalidImageTypeData")
     @Order(1)
     @DisplayName("Test the imageTypes creation with invalid values")
-    public void createInvalidImageTypeTest(final String name, final String extension, final String description) {
+    void createInvalidImageTypeTest(final String name, final String extension, final String description) {
 
 	assertThatThrownBy(() -> {
 

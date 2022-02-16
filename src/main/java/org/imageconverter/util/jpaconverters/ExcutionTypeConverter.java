@@ -7,14 +7,25 @@ import javax.persistence.Converter;
 
 import org.imageconverter.domain.convertion.ExecutionType;
 
+/**
+ * Converter for {@link ExecutionType} enum to String for JPA framework.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Converter(autoApply = true)
 public class ExcutionTypeConverter implements AttributeConverter<ExecutionType, String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String convertToDatabaseColumn(final ExecutionType attribute) {
 	return upperCase(attribute.toString());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ExecutionType convertToEntityAttribute(final String dbData) {
 	return ExecutionType.from(dbData);
