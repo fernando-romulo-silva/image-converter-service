@@ -52,11 +52,15 @@ import org.springframework.test.context.jdbc.SqlConfig;
 @TestInstance(PER_CLASS)
 class ImageConversionServiceUnHappyPathTest {
 
-    @Autowired
-    private ImageConversionService imageConversionService;
+    private final ImageConversionService imageConversionService;
 
-    @Value("classpath:bill.png")
-    private Resource imageFile;
+    private final Resource imageFile;
+    
+    ImageConversionServiceUnHappyPathTest(@Autowired final ImageConversionService imageConversionService, @Value("classpath:bill.png") final Resource imageFile) {
+	super();
+	this.imageConversionService = imageConversionService;
+	this.imageFile = imageFile;
+    }
 
     @Order(1)
     @ParameterizedTest

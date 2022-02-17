@@ -40,11 +40,15 @@ import org.springframework.test.context.jdbc.SqlConfig;
 @DisplayName("Integration Test for ImageConversionService, happy path :D ")
 class ImageConversionServiceHappyPathTest {
 
-    @Autowired
-    private ImageConversionService imageConversionService;
+    private final ImageConversionService imageConversionService;
 
-    @Value("classpath:bill.png")
-    private Resource imageFile;
+    private final Resource imageFile;
+
+    ImageConversionServiceHappyPathTest(@Autowired final ImageConversionService imageConversionService, @Value("classpath:bill.png") final Resource imageFile) {
+	super();
+	this.imageConversionService = imageConversionService;
+	this.imageFile = imageFile;
+    }
 
     @Test
     @Order(1)
@@ -120,7 +124,7 @@ class ImageConversionServiceHappyPathTest {
     @Test
     @Order(5)
     @DisplayName("convert the image with area")
-    void convertAreaTest() throws IOException  { 
+    void convertAreaTest() throws IOException {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
