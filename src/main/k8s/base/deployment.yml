@@ -33,14 +33,14 @@ spec:
       - containerPort: 8080
       readinessProbe:
         httpGet:
-          path: /actuator/health/liveness # ${PROJECT_NAME}/actuator
+          path: /actuator/health/liveness
           port: 5090
         initialDelaySeconts: 30
         periodSeconds: 30
         timeoutSeconds: 10
       livenessProbe:
         httpGet:
-          path: /actuator/health/readiness # ${PROJECT_NAME}/actuator
+          path: /actuator/health/readiness
           port: 5090
         initialDelaySeconts: 30
         periodSeconds: 30

@@ -38,6 +38,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+/**
+ * Test the {@link ImageConversionService} unhappy path
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
@@ -58,7 +63,7 @@ class ImageConversionServiceUnHappyPathTest {
     @NullSource
     @ValueSource(longs = 1L) // id '1' don't exist
     @DisplayName("try to get a image convertion by id doens't ")
-    void getImageConvertionByInvalidIdTest(final Long id) throws Exception {
+    void findImageConvertionByInvalidIdTest(final Long id) {
 
 	assertThatThrownBy(() -> imageConversionService.findById(id)) //
 			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
@@ -83,10 +88,10 @@ class ImageConversionServiceUnHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("get a image convertion by invalid specification")
-    void getImageConvertionByInvalidExtensionTest() throws Exception {
+    void findImageConvertionByInvalidExtensionTest() {
 
-	final var specFieldOneNotExists = (Specification<ImageConvertion>) (rt, cq, cb) -> cb.equal(rt.get("fieldOneNotExists"), "blabla");
-	final var specFieldTwoNotExists = (Specification<ImageConvertion>) (rt, cq, cb) -> cb.equal(rt.get("fieldTwoNotExists"), "blabla");
+	final var specFieldOneNotExists = (Specification<ImageConvertion>) (root, query, builder) -> builder.equal(root.get("fieldOneNotExists"), "blabla");
+	final var specFieldTwoNotExists = (Specification<ImageConvertion>) (root, query, builder) -> builder.equal(root.get("fieldTwoNotExists"), "blabla");
 
 	assertThatThrownBy(() -> {
 
@@ -146,7 +151,7 @@ class ImageConversionServiceUnHappyPathTest {
     @MethodSource("convertAreaInvalidParameterData")
     @Order(5)
     @DisplayName("convert the image with area")
-    void convertAreaInvalidParameterTest(final ImageConverterRequestArea request) throws Exception {
+    void convertAreaInvalidParameterTest(final ImageConverterRequestArea request) {
 
 	assertThatThrownBy(() -> {
 

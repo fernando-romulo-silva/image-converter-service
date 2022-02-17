@@ -27,6 +27,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+/**
+ * Test the {@link ImageConversionService} happy path
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
@@ -44,7 +49,7 @@ class ImageConversionServiceHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("get a image convertion by id")
-    void getImageConvertionByIdTest() throws Exception { // NOPMD
+    void findImageConvertionByIdTest() {
 
 	// already on db, due to the db-data-test.sql
 	final var id = 1000L;
@@ -60,22 +65,22 @@ class ImageConversionServiceHappyPathTest {
     @Test
     @Order(2)
     @DisplayName("get all image convertions")
-    void getAllImageConvertionTest() throws Exception { // NOPMD
+    void findAllImageConvertionTest() {
 
 	// already on db, due to the db-data-test.sql
 	final var id = 1000L;
 
 	final var responses = imageConversionService.findAll();
 
-	assertThat(responses).map(f -> f.id()).contains(id);
+	assertThat(responses).map(imageConverterResponse -> imageConverterResponse.id()).contains(id);
 
-	assertThat(responses).map(f -> f.text()).containsAnyOf(TestConstants.DB_CONVERTION_NUMBER);
+	assertThat(responses).map(imageConverterResponse -> imageConverterResponse.text()).containsAnyOf(TestConstants.DB_CONVERTION_NUMBER);
     }
 
     @Test
     @Order(3)
     @DisplayName("get a image convertion by specification")
-    void getImageConvertionBySpecificationTest() throws Exception { // NOPMD
+    void findImageConvertionBySpecificationTest() {
 
 	// already on db, due to the db-data-test.sql
 	final var fileName = "image_test.jpg";
@@ -84,7 +89,7 @@ class ImageConversionServiceHappyPathTest {
 
 	final var responses1 = imageConversionService.findBySpecification(equalsFileName(fileName));
 
-	assertThat(responses1).map(f -> f.fileName()).containsAnyOf(fileName);
+	assertThat(responses1).map(imageConverterResponse -> imageConverterResponse.fileName()).containsAnyOf(fileName);
 
 	final var responses2 = imageConversionService.findBySpecification(null);
 
@@ -92,13 +97,13 @@ class ImageConversionServiceHappyPathTest {
     }
 
     static Specification<ImageConvertion> equalsFileName(final String fileName) {
-	return (rt, cq, cb) -> cb.equal(rt.get("fileName"), fileName);
+	return (root, query, builder) -> builder.equal(root.get("fileName"), fileName);
     }
 
     @Test
     @Order(4)
     @DisplayName("convert the image")
-    void convertTest() throws IOException { // NOPMD
+    void convertTest() throws IOException {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
@@ -115,7 +120,7 @@ class ImageConversionServiceHappyPathTest {
     @Test
     @Order(5)
     @DisplayName("convert the image with area")
-    void convertAreaTest() throws Exception { // NOPMD
+    void convertAreaTest() throws IOException  { 
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
