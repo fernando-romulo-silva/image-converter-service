@@ -34,6 +34,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+/**
+ * Test the {@link ImageTypeService} on unhappy path
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
@@ -51,7 +56,7 @@ class ImageTypeServiceUnHappyPathTest {
     @ValueSource(longs = 1L) // id '1' don't exist
     @Order(1)
     @DisplayName("Search a image type that doesn't exist by id")
-    void getImageTypeByIdTest(final Long id) throws Exception {
+    void findImageTypeByIdTest(final Long id) {
 
 	assertThatThrownBy(() -> imageTypeService.findById(id)) //
 			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
@@ -61,10 +66,10 @@ class ImageTypeServiceUnHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("Get a image type by invalid specification")
-    void getImageTypeByInvalidExtensionTest() throws Exception {
+    void findImageTypeByInvalidExtensionTest() {
 
-	final var specFieldOneNotExists = (Specification<ImageType>) (rt, cq, cb) -> cb.equal(rt.get("fieldOneNotExists"), "blabla");
-	final var specFieldTwoNotExists = (Specification<ImageType>) (rt, cq, cb) -> cb.equal(rt.get("fieldTwoNotExists"), "blabla");
+	final var specFieldOneNotExists = (Specification<ImageType>) (root, query, builder) -> builder.equal(root.get("fieldOneNotExists"), "blabla");
+	final var specFieldTwoNotExists = (Specification<ImageType>) (root, query, builder) -> builder.equal(root.get("fieldTwoNotExists"), "blabla");
 
 	assertThatThrownBy(() -> {
 
@@ -88,7 +93,7 @@ class ImageTypeServiceUnHappyPathTest {
     @MethodSource("createImageTypeInvalidData")
     @Order(4)
     @DisplayName("Try to create a invalid image type")
-    void createImageTypeInvalidTest(final CreateImageTypeRequest request) throws Exception {
+    void createImageTypeInvalidTest(final CreateImageTypeRequest request) {
 
 	assertThatThrownBy(() -> {
 
@@ -101,7 +106,7 @@ class ImageTypeServiceUnHappyPathTest {
     @Test
     @Order(5)
     @DisplayName("Create twice the same image type")
-    void createSameImageTypeTest() throws Exception {
+    void createSameImageTypeTest() {
 
 	final var createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
 
@@ -122,7 +127,7 @@ class ImageTypeServiceUnHappyPathTest {
 	final UpdateImageTypeRequest nullUpdateImageTypeRequest = null;
 
 	return Stream.of( //
-			Arguments.of(12345L, new UpdateImageTypeRequest(null, "BitmapNew", null)), //
+			Arguments.of(12_345L, new UpdateImageTypeRequest(null, "BitmapNew", null)), //
 			Arguments.of(null, new UpdateImageTypeRequest(null, "BitmapNew", null)), //
 			Arguments.of(1000L, nullUpdateImageTypeRequest) //
 	);
@@ -132,7 +137,7 @@ class ImageTypeServiceUnHappyPathTest {
     @MethodSource("updateImageTypeDoesNotExistData")
     @Order(6)
     @DisplayName("Try to update a image type that doesn't exist")
-    void updateImageTypeDoesNotExistTest(final Long id, final UpdateImageTypeRequest request) throws Exception {
+    void updateImageTypeDoesNotExistTest(final Long id, final UpdateImageTypeRequest request) {
 
 	assertThatThrownBy(() -> {
 
@@ -146,7 +151,7 @@ class ImageTypeServiceUnHappyPathTest {
     @ValueSource(longs = 1L) // id '1' don't exist
     @Order(7)
     @DisplayName("Try to delete a image type that doesn't exist")
-    void deleteImageTypeDoesNotExistTest(final Long id) throws Exception {
+    void deleteImageTypeDoesNotExistTest(final Long id) {
 
 	assertThatThrownBy(() -> {
 
@@ -158,14 +163,14 @@ class ImageTypeServiceUnHappyPathTest {
     @Test
     @Order(8)
     @DisplayName("Try to delete a image type that has a relation with other record")
-    void deleteImageTypeRestrictionTest() throws Exception {
+    void deleteImageTypeRestrictionTest() {
 
 	final var id = 1001L; // already exists and has a convertion image relation
 
 	assertThatThrownBy(() -> {
-	    
+
 	    imageTypeService.deleteImageType(id);
-	    
+
 	}).isInstanceOfAny(ElementConflictException.class);
     }
 

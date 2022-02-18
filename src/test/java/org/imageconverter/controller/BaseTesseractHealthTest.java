@@ -9,17 +9,28 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 
-abstract class AbstractTesseractHealthTest {
+/**
+ * Base class to test with csf.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+class BaseTesseractHealthTest {
 
     @LocalServerPort
     protected int serverPort;
-    
+
     @LocalManagementPort
     protected int managementPort;
 
     @Autowired
     protected CsrfTokenRepository httpSessionCsrfTokenRepository;
-    
+
+    /**
+     * Create headers with basic authentication
+     * 
+     * @return A HttpHeaders object
+     * @throws UnsupportedEncodingException If something get wrong
+     */
     protected HttpHeaders basicAuthHeaders() throws UnsupportedEncodingException {
 	final var plainCreds = "user:password"; // application-test.yml-application.user_login: user
 	final var plainCredsBytes = plainCreds.getBytes("UTF-8");
@@ -31,6 +42,12 @@ abstract class AbstractTesseractHealthTest {
 	return headers;
     }
 
+    /**
+     * Create headers with basic authentication with csrf
+     * 
+     * @return A HttpHeaders object
+     * @throws UnsupportedEncodingException If something get wrong
+     */
     protected HttpHeaders csrfHeaders() throws UnsupportedEncodingException {
 
 	final var csrfToken = httpSessionCsrfTokenRepository.generateToken(null);

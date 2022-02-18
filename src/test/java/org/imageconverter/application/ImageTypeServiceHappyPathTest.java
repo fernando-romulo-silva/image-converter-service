@@ -1,8 +1,10 @@
 package org.imageconverter.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
+
+import java.util.Objects;
 
 import org.assertj.core.api.Assertions;
 import org.imageconverter.domain.imagetype.ImageType;
@@ -122,11 +124,9 @@ class ImageTypeServiceHappyPathTest {
 
 	final var updateResponse = imageTypeService.updateImageType(createResponse.id(), newTypeRequest);
 
-	assertThat(updateResponse).isNotNull();
-
-	assertThat(updateResponse.id()).isEqualTo(createResponse.id());
-
-	assertThat(updateResponse.extension()).isEqualTo(createResponse.extension());
+	assertThat(Objects.equals(updateResponse.id(), createResponse.id()) //
+			&& Objects.equals(updateResponse.extension(), createResponse.extension()) //
+	).isTrue();
 
 	assertThat(updateResponse.name()).isNotEqualTo(createResponse.name());
 

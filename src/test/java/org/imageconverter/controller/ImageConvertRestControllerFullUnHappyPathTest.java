@@ -3,14 +3,13 @@ package org.imageconverter.controller;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.ContentDisposition.builder;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,23 +30,29 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import org.springframework.test.context.jdbc.SqlConfig.ErrorMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpServerErrorException.InternalServerError;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Test the actuator on unhappy path
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = ErrorMode.CONTINUE_ON_ERROR))
 //
 @ExtendWith(SpringExtension.class)
 @Tag("acceptance")
 @DisplayName("Test the image convertion, unhappy path FULL :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(PER_CLASS)
-class ImageConvertRestControllerFullUnHappyPathTest extends AbstractTesseractHealthTest {
+@TestInstance(Lifecycle.PER_CLASS)
+class ImageConvertRestControllerFullUnHappyPathTest extends BaseTesseractHealthTest {
 
     @Value("classpath:bill.png")
     private Resource imageFile;
@@ -54,7 +60,7 @@ class ImageConvertRestControllerFullUnHappyPathTest extends AbstractTesseractHea
     @Test
     @Order(1)
     @DisplayName("convert the image with invalid tesseract conf")
-    void convertWithInvalidTesseractConfTest() throws Exception {
+    void convertWithInvalidTesseractConfTest() throws IOException {
 
 	final var restTemplate = new RestTemplate();
 
