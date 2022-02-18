@@ -30,28 +30,29 @@ spec:
         - secretRef:
             name: image-convert-service-secrets # ${PROJECT_NAME}-secrets
       ports:
-      - containerPort: 8080
+      - containerPort: 5000
       readinessProbe:
         httpGet:
           path: /actuator/health/liveness
           port: 5090
-        initialDelaySeconts: 30
+        initialDelaySeconts: 200
         periodSeconds: 30
         timeoutSeconds: 10
       livenessProbe:
         httpGet:
           path: /actuator/health/readiness
           port: 5090
-        initialDelaySeconts: 30
+        failureThreshold: 3
+        initialDelaySeconts: 200
         periodSeconds: 30
         timeoutSeconds: 10
       resources:
         requests: 
-          memory: "1Gi"
-          cpu: "200m"
+          memory: 1Gi
+          cpu: 200m
         limits:
-          memory: "2Gi"
-          cpu: "500m"          
+          memory: 2Gi
+          cpu: 500m          
       volumes:
       - name: my-secret-volume   
         secret:
