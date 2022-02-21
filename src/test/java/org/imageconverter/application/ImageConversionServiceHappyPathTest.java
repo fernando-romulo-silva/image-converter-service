@@ -7,9 +7,9 @@ import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE
 
 import java.io.IOException;
 
+import org.imageconverter.TestConstants;
 import org.imageconverter.domain.convertion.ExecutionType;
 import org.imageconverter.domain.convertion.ImageConvertion;
-import org.imageconverter.domain.convertion.TestConstants;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.junit.jupiter.api.DisplayName;
@@ -106,7 +106,7 @@ class ImageConversionServiceHappyPathTest {
 
     @Test
     @Order(4)
-    @DisplayName("convert the image")
+    @DisplayName("convert image")
     void convertTest() throws IOException {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
@@ -123,7 +123,7 @@ class ImageConversionServiceHappyPathTest {
 
     @Test
     @Order(5)
-    @DisplayName("convert the image with area")
+    @DisplayName("convert image with area")
     void convertAreaTest() throws IOException {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());

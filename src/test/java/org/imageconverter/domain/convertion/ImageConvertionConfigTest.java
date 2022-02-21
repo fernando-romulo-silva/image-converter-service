@@ -10,6 +10,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.validation.Validator;
 
+import org.imageconverter.TestConstants;
 import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.util.BeanUtil;
 import org.mockito.Mock;

@@ -1,10 +1,17 @@
 package org.imageconverter.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.imageconverter.TestConstants.HEIGHT;
+import static org.imageconverter.TestConstants.HEIGHT_VALUE;
+import static org.imageconverter.TestConstants.WIDTH;
+import static org.imageconverter.TestConstants.WIDTH_VALUE;
+import static org.imageconverter.TestConstants.X_AXIS;
+import static org.imageconverter.TestConstants.X_AXIS_VALUE;
+import static org.imageconverter.TestConstants.Y_AXIS;
+import static org.imageconverter.TestConstants.Y_AXIS_VALUE;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -35,6 +44,11 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+/**
+ * Test the {@link ImageConverterRestController} controller on unhappy path
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
@@ -63,19 +77,19 @@ class ImageConvertRestControllerUnHappyPathTest {
 
     @Value("classpath:emptyImage.png")
     private Resource emptyImageFile;
-    
+
     @Autowired
     private MockMvc mvc;
 
     @Test
     @Order(1)
     @DisplayName("Try to get a image convertion that not exists")
-    void tryToGetImageConvertionByIdTest() throws Exception {
+    void tryToGetImageConvertionByIdTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	final var id = "1234";
 
 	mvc.perform(get(REST_URL + "/{id}", id) //
-			.accept(APPLICATION_JSON) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
@@ -85,12 +99,13 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Test
     @Order(2)
     @DisplayName("Search a image convertion that not exists by search")
-    void getImageConvertionBySearchTest() throws Exception {
+    void tryToGetImageConvertionBySearchTest() throws Exception {// NOPMD - MockMvc throws Exception
 
 	final var fileName = "some_file.png";
 
-	mvc.perform(get(REST_URL + "/search?filter=fileName:'" + fileName + "'") //
-			.accept(APPLICATION_JSON) //
+	mvc.perform(get(REST_URL + "/search") //
+			.param("filter", "fileName:'" + fileName + "'") //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
@@ -100,29 +115,30 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Test
     @Order(3)
     @DisplayName("Search a image convertion by invalid field search")
-    void getImageConvertionByInvalidFieldSearchTest() throws Exception {
+    void tryToGetImageConvertionByInvalidFieldSearchTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	final var fileName = "some_file.png";
 
-	mvc.perform(get(REST_URL + "/search?filter=fileName:'" + fileName + "' and filedNotExist:'blablabla'") //
-			.accept(APPLICATION_JSON) //
+	mvc.perform(get(REST_URL + "/search") //
+			.param("filter", "fileName:'" + fileName + "' and fieldNotExist:'blablabla'") //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isBadRequest()) //
-			.andExpect(jsonPath("$.message").value(containsString("Unable to locate Attribute with the the given name 'filedNotExist' on ImageConvertion"))) //
+			.andExpect(jsonPath("$.message").value(containsString("Unable to locate Attribute with the the given name 'fieldNotExist' on ImageConvertion"))) //
 			.andReturn();
     }
 
     @Test
     @Order(4)
     @DisplayName("convert the image with unknow extension")
-    void convertTest() throws Exception {
+    void tryToConvertTest() throws Exception { // NOPMD - MockMvc throws Exception
 
-	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 
 	mvc.perform(multipart(REST_URL) //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
@@ -134,19 +150,19 @@ class ImageConvertRestControllerUnHappyPathTest {
     @Order(5)
     @DisplayName("Convert the same image")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void convertSameImageTest() throws Exception {
+    void tryToConvertSameImageTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// create one
-	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
 
 	// create one
 	mvc.perform(multipart(REST_URL + "/area") //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
-			.param("xAxis", "885") //
-			.param("yAxis", "1417") //
-			.param("width", "1426") //
-			.param("height", "57") //
+			.accept(MediaType.APPLICATION_JSON) //
+			.param(X_AXIS, X_AXIS_VALUE) //
+			.param(Y_AXIS, Y_AXIS_VALUE) //
+			.param(WIDTH, WIDTH_VALUE) //
+			.param(HEIGHT, HEIGHT_VALUE) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
@@ -155,154 +171,170 @@ class ImageConvertRestControllerUnHappyPathTest {
 	// create another
 	mvc.perform(multipart(REST_URL + "/area") //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
-			.param("xAxis", "885") //
-			.param("yAxis", "1417") //
-			.param("width", "1426") //
-			.param("height", "57") //
+			.accept(MediaType.APPLICATION_JSON) //
+			.param(X_AXIS, X_AXIS_VALUE) //
+			.param(Y_AXIS, Y_AXIS_VALUE) //
+			.param(WIDTH, WIDTH_VALUE) //
+			.param(HEIGHT, HEIGHT_VALUE) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isConflict()) //
 			.andExpect(jsonPath("$.message").value(containsString("ElementAlreadyExistsException: ImageConvertion with fileName 'bill.png'"))) //
 	;
     }
-    
+
     @Test
     @Order(6)
     @DisplayName("Convert a corrupted image")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void convertCorruptedImageTest() throws Exception {
+    void tryToConvertCorruptedImageTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// create one
-	final var multipartFile = new MockMultipartFile("file", corruptedImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, corruptedImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", corruptedImageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, corruptedImageFile.getInputStream());
 
 	// create one
-	mvc.perform(multipart(REST_URL) //
+	final var result = mvc.perform(multipart(REST_URL) //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath("$.message").value(containsString("Image corruptedImage.png has IO error: 'IIOException: Image width <= 0!'"))) //
+			.andReturn() //
 	;
 
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
-    
-    
+
     @Test
     @Order(7)
     @DisplayName("Convert a empty image")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void convertEmptyImageTest() throws Exception {
+    void tryToConvertEmptyImageTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// create one
-	final var multipartFile = new MockMultipartFile("file", emptyImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, emptyImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", emptyImageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, emptyImageFile.getInputStream());
 
 	// create one
-	mvc.perform(multipart(REST_URL) //
+	final var result = mvc.perform(multipart(REST_URL) //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isServiceUnavailable()) //
 			.andExpect(jsonPath("$.message").value(containsString("Image emptyImage.png has Tessarct error: 'IllegalArgumentException: image == null!'"))) //
+			.andReturn() //
 	;
 
-    } 
-    
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
+
+    }
+
     @Test
     @Order(8)
     @DisplayName("Convert a corrupted image with area")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void convertCorruptedImageAreaTest() throws Exception {
+    void tryToConvertCorruptedImageAreaTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// create one
-	final var multipartFile = new MockMultipartFile("file", corruptedImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, corruptedImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", corruptedImageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, corruptedImageFile.getInputStream());
 
 	// create one
-	mvc.perform(multipart(REST_URL + "/area") //
+	final var result = mvc.perform(multipart(REST_URL + "/area") //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
-			.param("xAxis", "885") //
-			.param("yAxis", "1417") //
-			.param("width", "1426") //
-			.param("height", "57") //
+			.accept(MediaType.APPLICATION_JSON) //
+			.param(X_AXIS, X_AXIS_VALUE) //
+			.param(Y_AXIS, Y_AXIS_VALUE) //
+			.param(WIDTH, WIDTH_VALUE) //
+			.param(HEIGHT, HEIGHT_VALUE) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath("$.message").value(containsString("Image corruptedImage.png has IO error: 'IIOException: Image width <= 0!'"))) //
-	;
+			.andReturn();
 
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
-    
-    
+
     @Test
     @Order(9)
     @DisplayName("Convert a empty image with area")
     @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void convertEmptyImageAreaTest() throws Exception {
+    void tryToConvertEmptyImageAreaTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// create one
-	final var multipartFile = new MockMultipartFile("file", emptyImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, emptyImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", emptyImageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, emptyImageFile.getInputStream());
 
 	// create one
-	mvc.perform(multipart(REST_URL + "/area") //
+	final var result = mvc.perform(multipart(REST_URL + "/area") //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
-			.param("xAxis", "885") //
-			.param("yAxis", "1417") //
-			.param("width", "1426") //
-			.param("height", "57") //
+			.accept(MediaType.APPLICATION_JSON) //
+			.param(X_AXIS, X_AXIS_VALUE) //
+			.param(Y_AXIS, Y_AXIS_VALUE) //
+			.param(WIDTH, WIDTH_VALUE) //
+			.param(HEIGHT, HEIGHT_VALUE) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isServiceUnavailable()) //
-			.andExpect(jsonPath("$.message").value(containsString("Image emptyImage.png has Tessarct error: 'IllegalArgumentException: image == null!'"))) //
+			.andReturn() //
 	;
 
-    }    
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
+
+    }
 
     @Test
     @Order(10)
     @DisplayName("convert the image with area with parameter null")
-    void convertAreaParameterNullTest() throws Exception {
+    void tryToConvertAreaParameterNullTest() throws Exception { // NOPMD - MockMvc throws Exception
 
-	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 
 	// create one
-	mvc.perform(multipart(REST_URL + "/area") //
+	final var result = mvc.perform(multipart(REST_URL + "/area") //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
-			.param("xAxis", "885") //
-			.param("yAxis", "1417") //
-			.param("width", "1426") //
+			.accept(MediaType.APPLICATION_JSON) //
+			.param(X_AXIS, X_AXIS_VALUE) //
+			.param(Y_AXIS, Y_AXIS_VALUE) //
+			.param(WIDTH, WIDTH_VALUE) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath("$.message").value(containsString("MissingServletRequestParameterException: The parameter 'height' is missing"))) //
 			.andReturn();
 
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.BAD_REQUEST.value());
+
     }
 
     @Test
     @Order(11)
     @DisplayName("convert the image with area with parameter Y invalid")
-    void convertAreaParameterInvalidYTest() throws Exception {
+    void tryToConvertAreaParameterInvalidYTest() throws Exception { // NOPMD - MockMvc throws Exception
 
-	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", beachImageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, beachImageFile.getInputStream());
 
 	// create one
-	mvc.perform(multipart(REST_URL + "/area") //
+	final var result = mvc.perform(multipart(REST_URL + "/area") //
 			.file(multipartFile) //
-			.accept(APPLICATION_JSON) //
-			.param("xAxis", "885") //
-			.param("yAxis", "-1") //
-			.param("width", "1426") //
-			.param("height", "57") //
+			.accept(MediaType.APPLICATION_JSON) //
+			.param(X_AXIS, X_AXIS_VALUE) //
+			.param(Y_AXIS, "-1") //
+			.param(WIDTH, WIDTH_VALUE) //
+			.param(HEIGHT, HEIGHT_VALUE) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath("$.message").value(containsString("The y point must be greater than zero"))) //
 			.andReturn();
+
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.BAD_REQUEST.value());
 
     }
 }
