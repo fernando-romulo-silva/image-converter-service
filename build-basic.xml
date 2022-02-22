@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="image-converter-service-basic" basedir=".">
+	<import>
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-art.xml" />
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-build.xml" />
+	</import>
+</project>

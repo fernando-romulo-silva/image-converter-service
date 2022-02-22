@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="image-converter-service-test" basedir=".">
+	<import>
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-test.xml" />
+	</import>
+</project>

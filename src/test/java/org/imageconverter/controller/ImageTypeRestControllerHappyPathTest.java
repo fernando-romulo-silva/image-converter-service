@@ -4,11 +4,9 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -18,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.imageconverter.TestConstants;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +25,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,27 +35,31 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import org.springframework.test.context.jdbc.SqlConfig.ErrorMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Test the {@link ImageTypeRestController} controller on happy path
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
-@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = ErrorMode.CONTINUE_ON_ERROR))
+@Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
 //
 @Tag("acceptance")
 @ExtendWith(SpringExtension.class)
 @DisplayName("Test the image type controller, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(PER_CLASS)
+@TestInstance(Lifecycle.PER_CLASS)
 class ImageTypeRestControllerHappyPathTest {
-
-    @Autowired
-    private ObjectMapper mapper;
 
     // JSqlParser
     // @Value("classpath:db/db-data-test.sql")
@@ -64,34 +68,42 @@ class ImageTypeRestControllerHappyPathTest {
     // @Value("classpath:image.png")
     // private Resource imageFile;
 
-    @Autowired
-    private MockMvc mvc;
+    private final ObjectMapper mapper;
 
-    private CreateImageTypeRequest createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+    private final MockMvc mvc;
+
+    private final CreateImageTypeRequest createImageTypeRequest;
+
+    @Autowired
+    ImageTypeRestControllerHappyPathTest(final ObjectMapper mapper, final MockMvc mvc) {
+	super();
+	this.mapper = mapper;
+	this.mvc = mvc;
+	this.createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+    }
 
     @Test
     @Order(1)
     @DisplayName("get a image type by id")
-    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void getImageTypeByIdTest() throws Exception {
+    void findImageTypeByIdTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
 
-	mvc.perform(get(REST_URL + "/{id}", id) //
+	final var result = mvc.perform(get(REST_URL + "/{id}", id) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(id)) //
+			.andReturn() //
 	;
     }
 
     @Test
     @Order(2)
     @DisplayName("get all image types")
-    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void getAllImageTypeTest() throws Exception {
+    void findAllImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// create one
 	mvc.perform(post(REST_URL) //
@@ -105,7 +117,7 @@ class ImageTypeRestControllerHappyPathTest {
 	;
 
 	// get all, the db-data-test.sql has png and jpg image types
-	mvc.perform(get(REST_URL) //
+	final var result = mvc.perform(get(REST_URL) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
@@ -113,33 +125,34 @@ class ImageTypeRestControllerHappyPathTest {
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
 			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder("png", "jpg", createImageTypeRequest.extension()))) //
+			.andReturn() //
 	;
     }
 
     @Test
     @Order(3)
     @DisplayName("get a image type by search")
-    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void getImageTypeByExtensionTest() throws Exception {
+    void findImageTypeByExtensionTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// already on db, due to the db-data-test.sql
 	final var extension = "png";
 
-	mvc.perform(get(REST_URL + "/search?filter=extension:'" + extension + "'") //
+	final var result = mvc.perform(get(REST_URL + "/search?filter=extension:'" + extension + "'") //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder(extension)));
+			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder(extension))) //
+			.andReturn() //
+	;
     }
 
     @Test
     @Order(4)
     @DisplayName("Create a new image type")
-    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void createImageTypeTest() throws Exception {
+    void createImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// create a new image type
 	final var result = mvc.perform(post(REST_URL) //
@@ -169,8 +182,7 @@ class ImageTypeRestControllerHappyPathTest {
     @Test
     @Order(5)
     @DisplayName("Update a image type")
-    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void updateImageTypeTest() throws Exception {
+    void updateImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
 
 	// create a new image type
 	final var createResult = mvc.perform(post(REST_URL) //
@@ -200,21 +212,21 @@ class ImageTypeRestControllerHappyPathTest {
 	;
 
 	// check if it updtated
-	mvc.perform(get(REST_URL + "/{id}", createdId) //
+	final var result = mvc.perform(get(REST_URL + "/{id}", createdId) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(createdId)) //
 			.andExpect(jsonPath("$.name").value(newTypeRequest.name())) //
+			.andReturn() //
 	;
     }
 
     @Test
     @Order(6)
     @DisplayName("Delete a new image type")
-    @Sql(statements = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ")
-    void deleteImageTypeTest() throws Exception {
+    void deleteImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
 
@@ -236,11 +248,12 @@ class ImageTypeRestControllerHappyPathTest {
 	;
 
 	// check it again
-	mvc.perform(get(REST_URL + "/{id}", id) //
+	final var result = mvc.perform(get(REST_URL + "/{id}", id) //
 			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
+			.andReturn() //
 	;
 
     }

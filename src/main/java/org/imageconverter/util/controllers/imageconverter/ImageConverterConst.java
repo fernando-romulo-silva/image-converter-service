@@ -11,6 +11,8 @@ public final class ImageConverterConst {
 
     public static final String REST_URL = "/rest/images/convertion";
 
+    public static final String REST_URL_AREA = "/rest/images/convertion/area";
+    
     public static final String ACTION_URL = "/gui/images/convertion";
 
     private ImageConverterConst() {

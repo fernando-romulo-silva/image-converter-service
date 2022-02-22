@@ -28,5 +28,9 @@ public class TestConstants {
     public static final String Y_AXIS = "yAxis";
 
     public static final String X_AXIS = "xAxis";
+    
+    public static final String SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ";
+
+    public static final String JSON_MESSAGE = "$.message";
 
 }
