@@ -1,11 +1,12 @@
 package org.imageconverter.controller;
 
 import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.imageconverter.TestConstants.FILTER_PARAM_ID;
+import static org.imageconverter.TestConstants.ID_PARAM_VALUE;
 import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,6 +32,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -90,14 +93,17 @@ class ImageTypeRestControllerHappyPathTest {
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
 
-	final var result = mvc.perform(get(REST_URL + "/{id}", id) //
-			.accept(APPLICATION_JSON) //
+	final var result = mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$.id").value(id)) //
+			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
 			.andReturn() //
 	;
+
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -108,8 +114,8 @@ class ImageTypeRestControllerHappyPathTest {
 	// create one
 	mvc.perform(post(REST_URL) //
 			.content(asJsonString(createImageTypeRequest)) //
-			.contentType(APPLICATION_JSON) //
-			.accept(TEXT_PLAIN, APPLICATION_JSON) //
+			.contentType(MediaType.APPLICATION_JSON) //
+			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
@@ -118,7 +124,7 @@ class ImageTypeRestControllerHappyPathTest {
 
 	// get all, the db-data-test.sql has png and jpg image types
 	final var result = mvc.perform(get(REST_URL) //
-			.accept(APPLICATION_JSON) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
@@ -127,6 +133,9 @@ class ImageTypeRestControllerHappyPathTest {
 			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder("png", "jpg", createImageTypeRequest.extension()))) //
 			.andReturn() //
 	;
+
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -137,8 +146,9 @@ class ImageTypeRestControllerHappyPathTest {
 	// already on db, due to the db-data-test.sql
 	final var extension = "png";
 
-	final var result = mvc.perform(get(REST_URL + "/search?filter=extension:'" + extension + "'") //
-			.accept(APPLICATION_JSON) //
+	final var result = mvc.perform(get(REST_URL + "/search") //
+			.accept(MediaType.APPLICATION_JSON) //
+			.param("filter", "extension:'" + extension + "'") //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
@@ -147,6 +157,9 @@ class ImageTypeRestControllerHappyPathTest {
 			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder(extension))) //
 			.andReturn() //
 	;
+
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -157,8 +170,8 @@ class ImageTypeRestControllerHappyPathTest {
 	// create a new image type
 	final var result = mvc.perform(post(REST_URL) //
 			.content(asJsonString(createImageTypeRequest)) //
-			.contentType(APPLICATION_JSON) //
-			.accept(TEXT_PLAIN, APPLICATION_JSON) //
+			.contentType(MediaType.APPLICATION_JSON) //
+			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
@@ -169,13 +182,16 @@ class ImageTypeRestControllerHappyPathTest {
 	final var id = substringBetween(result.getResponse().getContentAsString(), "'", "'");
 
 	// check if it exists
-	mvc.perform(get(REST_URL + "/{id}", id) //
-			.accept(APPLICATION_JSON) //
+	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$.id").value(id)) //
+			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
 	;
+
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.CREATED.value());
 
     }
 
@@ -187,8 +203,8 @@ class ImageTypeRestControllerHappyPathTest {
 	// create a new image type
 	final var createResult = mvc.perform(post(REST_URL) //
 			.content(asJsonString(createImageTypeRequest)) //
-			.contentType(APPLICATION_JSON) //
-			.accept(TEXT_PLAIN, APPLICATION_JSON) //
+			.contentType(MediaType.APPLICATION_JSON) //
+			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
@@ -202,25 +218,28 @@ class ImageTypeRestControllerHappyPathTest {
 	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
 
 	// update the image type
-	mvc.perform(put(REST_URL + "/{id}", createdId) //
+	mvc.perform(put(REST_URL + ID_PARAM_VALUE, createdId) //
 			.content(asJsonString(newTypeRequest)) //
-			.contentType(APPLICATION_JSON) //
-			.accept(TEXT_PLAIN, APPLICATION_JSON) //
+			.contentType(MediaType.APPLICATION_JSON) //
+			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNoContent()) //
 	;
 
 	// check if it updtated
-	final var result = mvc.perform(get(REST_URL + "/{id}", createdId) //
-			.accept(APPLICATION_JSON) //
+	final var result = mvc.perform(get(REST_URL + ID_PARAM_VALUE, createdId) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$.id").value(createdId)) //
+			.andExpect(jsonPath(FILTER_PARAM_ID).value(createdId)) //
 			.andExpect(jsonPath("$.name").value(newTypeRequest.name())) //
 			.andReturn() //
 	;
+
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -231,30 +250,33 @@ class ImageTypeRestControllerHappyPathTest {
 	final var id = "1000";
 
 	// check if the image type
-	mvc.perform(get(REST_URL + "/{id}", id) //
-			.accept(APPLICATION_JSON) //
+	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
-			.andExpect(jsonPath("$.id").value(id)) //
+			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
 	;
 
 	// delete the image type
-	mvc.perform(delete(REST_URL + "/{id}", id) //
-			.accept(APPLICATION_JSON) //
+	mvc.perform(delete(REST_URL + ID_PARAM_VALUE, id) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNoContent()) //
 	;
 
 	// check it again
-	final var result = mvc.perform(get(REST_URL + "/{id}", id) //
-			.accept(APPLICATION_JSON) //
+	final var result = mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
 			.andReturn() //
 	;
+
+	assertThat(result.getResponse().getStatus()) //
+			.isEqualTo(HttpStatus.NOT_FOUND.value());
 
     }
 

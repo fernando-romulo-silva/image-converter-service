@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.validation.Validator;
@@ -21,7 +22,12 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import net.sourceforge.tess4j.ITesseract;
 
-abstract class ImageConvertionConfigTest {
+/**
+ * Class base for convertion unit tests.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+class ImageConvertionConfigTest {
 
     protected MockMultipartFile mockMultipartFile;
 
@@ -37,7 +43,7 @@ abstract class ImageConvertionConfigTest {
     @Mock
     protected ObjectProvider<ITesseract> objectProvider;
 
-    protected void setUpSuper() throws Exception {
+    protected void setUpSuper() throws IOException {
 
 	// ------------------------------------
 	final var validator = buildDefaultValidatorFactory().getValidator();

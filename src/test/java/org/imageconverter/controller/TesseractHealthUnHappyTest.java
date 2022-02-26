@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
+import static org.imageconverter.TestConstants.HTTP_127_0_0_1;
+
+import java.io.UnsupportedEncodingException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -24,6 +27,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpServerErrorException.ServiceUnavailable;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Test the {@link TesseractInfoService} actuator controller on unhappy path
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -38,24 +46,24 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
     @Test
     @Order(1)
     @DisplayName("get actuator health invalid status")
-    void getActuatorHealthInvalidTest() throws Exception {
+    void findActuatorHealthInvalidTest() throws UnsupportedEncodingException {
 
 	final var restTemplate = new RestTemplate();
 
 	final var json = """
-			  {
-			    "tesseractFolder": "/blabla"
-			  }""";
-	
+			{
+			  "tesseractFolder": "/blabla"
+			}""";
+
 	final var requestEntityUpdateTesseract = new HttpEntity<String>(json, csrfHeaders());
-	final var responseUpdateTesseract = restTemplate.postForEntity("http://127.0.0.1:" + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
+	final var responseUpdateTesseract = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
 	assertThat(responseUpdateTesseract.getStatusCode()).isEqualTo(NO_CONTENT);
 
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
 
 	try {
 
-	    restTemplate.exchange("http://127.0.0.1:" + managementPort + "/actuator/health", GET, requestEntity, String.class);
+	    restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/health", GET, requestEntity, String.class);
 
 	} catch (final ServiceUnavailable ex) {
 
@@ -69,31 +77,30 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
     @Test
     @Order(2)
     @DisplayName("get actuator tesseract fail status")
-    void getActuatorTesseractInvalidTest() throws Exception {
+    void findActuatorTesseractInvalidTest() throws UnsupportedEncodingException {
 
 	final var restTemplate = new RestTemplate();
 
 	final var json = """
-			  {
-			    "tesseractFolder": "/blabla",
-			    "tesseractLanguage": "pt",
-			    "tesseractDpi": "90"			
-			  }""";
-	
+			{
+			  "tesseractFolder": "/blabla",
+			  "tesseractLanguage": "pt",
+			  "tesseractDpi": "90"
+			}""";
+
 	final var requestEntityUpdateTesseract = new HttpEntity<String>(json, csrfHeaders());
-	final var responseUpdateTesseract = restTemplate.postForEntity("http://127.0.0.1:" + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
+	final var responseUpdateTesseract = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
 	assertThat(responseUpdateTesseract.getStatusCode()).isEqualTo(NO_CONTENT);
-	
-	
+
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
-	final var response = restTemplate.exchange("http://127.0.0.1:" + managementPort + "/actuator/tesseract", GET, requestEntity, String.class);
+	final var response = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", GET, requestEntity, String.class);
 
 	final var body = response.getBody();
 
-	assertThat(body).contains("\"tesseractInit\":\"FAIL\"");
-	assertThat(body).contains("\"tesseractVersion\":\"4.11\"");
-	assertThat(body).contains("\"tesseractLanguage\":\"pt\"");
-	assertThat(body).contains("\"tesseractDpi\":\"90\"");
+	assertThat(body).contains("\"tesseractInit\":\"FAIL\"") //
+			.contains("\"tesseractVersion\":\"4.11\"") //
+			.contains("\"tesseractLanguage\":\"pt\"") //
+			.contains("\"tesseractDpi\":\"90\"");
     }
 
 }

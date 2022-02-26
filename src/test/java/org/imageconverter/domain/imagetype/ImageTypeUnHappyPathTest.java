@@ -31,6 +31,8 @@ import org.springframework.context.ApplicationContext;
 @TestInstance(PER_CLASS)
 class ImageTypeUnHappyPathTest {
 
+    private static final String PORTABLE_NETWORK_GRAPHICS_TXT = "Portable Network Graphics";
+   
     @Mock
     private ApplicationContext applicationContext;
 
@@ -49,10 +51,10 @@ class ImageTypeUnHappyPathTest {
     Stream<Arguments> createInvalidImageTypeData() throws IOException {
 
 	return Stream.of( //
-			Arguments.of(null, "PNG", "Portable Network Graphics"), //
-			Arguments.of("", "PNG", "Portable Network Graphics"), //
-			Arguments.of("png", null, "Portable Network Graphics"), //
-			Arguments.of("png", "", "Portable Network Graphics")//
+			Arguments.of(null, "PNG", PORTABLE_NETWORK_GRAPHICS_TXT), //
+			Arguments.of("", "PNG", PORTABLE_NETWORK_GRAPHICS_TXT), //
+			Arguments.of("png", null, PORTABLE_NETWORK_GRAPHICS_TXT), //
+			Arguments.of("png", "", PORTABLE_NETWORK_GRAPHICS_TXT)//
 	);
     }
 

@@ -28,6 +28,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Test the {@link ImageConvertion} class on unhappy path.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Tag("unit")
 @DisplayName("Test the image type entity, Unhappy Path :(")
 @TestInstance(PER_CLASS)

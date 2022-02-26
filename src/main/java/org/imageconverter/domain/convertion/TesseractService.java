@@ -11,7 +11,6 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 
 import org.imageconverter.infra.exceptions.ConvertionException;
-import org.imageconverter.infra.exceptions.ImageConvertServiceException;
 import org.imageconverter.infra.exceptions.TesseractConvertionException;
 import org.imageconverter.infra.exceptions.TesseractNotSetException;
 import org.imageconverter.util.BeanUtil;

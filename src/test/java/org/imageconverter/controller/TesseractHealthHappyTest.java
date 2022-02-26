@@ -5,7 +5,11 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
+import static org.imageconverter.TestConstants.HTTP_127_0_0_1;
 
+import java.io.UnsupportedEncodingException;
+
+import org.imageconverter.config.health.TesseractInfoService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -23,6 +27,11 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Test the {@link TesseractInfoService} actuator controller on happy path.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest( //
@@ -41,11 +50,11 @@ class TesseractHealthHappyTest extends BaseTesseractHealthTest {
     @Test
     @Order(1)
     @DisplayName("get actuator health status")
-    void getActuatorHealthTest() throws Exception {
+    void findActuatorHealthTest() throws UnsupportedEncodingException {
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
-	final var response = restTemplate.exchange("http://127.0.0.1:" + managementPort + "/actuator/health", GET, requestEntity, String.class);
+	final var response = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/health", GET, requestEntity, String.class);
 
 	final var body = response.getBody();
 
@@ -56,29 +65,29 @@ class TesseractHealthHappyTest extends BaseTesseractHealthTest {
     @Test
     @Order(2)
     @DisplayName("get actuator tesseract status")
-    void getActuatorTesseractTest() throws Exception {
+    void findActuatorTesseractTest() throws UnsupportedEncodingException { 
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
-	final var response = restTemplate.exchange("http://127.0.0.1:" + managementPort + "/actuator/tesseract", GET, requestEntity, String.class);
+	final var response = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", GET, requestEntity, String.class);
 
 	final var body = response.getBody();
 
-	assertThat(body).contains("\"tesseractInit\":\"SUCCESSFUL\"");
-	assertThat(body).contains("\"tesseractVersion\":\"4.11\"");
-	assertThat(body).contains("\"tesseractLanguage\":\"eng\"");
-	assertThat(body).contains("\"tesseractDpi\":\"100\"");
+	assertThat(body).contains("\"tesseractInit\":\"SUCCESSFUL\"") //
+			.contains("\"tesseractVersion\":\"4.11\"") //
+			.contains("\"tesseractLanguage\":\"eng\"") //
+			.contains("\"tesseractDpi\":\"100\"");
 
     }
 
     @Test
     @Order(3)
     @DisplayName("post actuator refresh")
-    void postActuatorRefreshTest() throws Exception {
+    void postActuatorRefreshTest() throws UnsupportedEncodingException {
 
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
-	final var response = restTemplate.postForEntity("http://127.0.0.1:" + managementPort + "/actuator/refresh", requestEntity, Void.class);
+	final var response = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + "/actuator/refresh", requestEntity, Void.class);
 
 	assertThat(response.getStatusCode()).isEqualTo(OK);
     }

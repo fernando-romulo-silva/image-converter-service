@@ -1,6 +1,7 @@
 package org.imageconverter.domain.convertion;
 
 import static com.jparams.verifier.tostring.NameStyle.SIMPLE_NAME;
+import static java.text.MessageFormat.format;
 import static nl.jqno.equalsverifier.Warning.NONFINAL_FIELDS;
 import static nl.jqno.equalsverifier.Warning.REFERENCE_EQUALITY;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
@@ -43,6 +44,11 @@ import com.jparams.verifier.tostring.ToStringVerifier;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
+/**
+ * Test the {@link ImageConvertion} class on happy path.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Tag("unit")
 @DisplayName("Test the image type entity, happy Path :) ")
 @TestInstance(PER_CLASS)
@@ -70,7 +76,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     @Test
     @Order(1)
     @DisplayName("Test the equals And HashCode Contract")
-    void equalsAndHashCodeContractTest() {
+    void tryEqualsAndHashCodeContractTest() { // NOPMD - JUnitTestsShouldIncludeAssert: EqualsVerifier already do it
 
 	EqualsVerifier.forClass(ImageConvertion.class) //
 			.suppress(NONFINAL_FIELDS, STRICT_INHERITANCE, REFERENCE_EQUALITY) //
@@ -83,7 +89,8 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     @Test
     @Order(2)
     @DisplayName("Test the toString method")
-    void toStringTest() {
+    void tryToStringTest() { // NOPMD - JUnitTestsShouldIncludeAssert: ToStringVerifier already do it
+
 	ToStringVerifier.forClass(ImageConvertion.class) //
 			.withIgnoredFields("text", "created", "area") //
 			.withClassName(SIMPLE_NAME) //
@@ -118,14 +125,14 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
 	final var imageConvertion = imageConvertionBuilder.build();
 
-	assertThat(imageConvertion.getFileName()).isEqualToIgnoringCase(file.getOriginalFilename());
+	final var fileExtension = getExtension(file.getOriginalFilename());
 
-	assertThat(imageConvertion.getFileType().getExtension()).isEqualToIgnoringCase(getExtension(file.getOriginalFilename()));
+	assertThat(imageConvertion) //
+			.as(format(" Check the fileName ''{0}'', executionType ''{1}'', area ''{2}'' and fileExtension ''{3}''", file.getOriginalFilename(), executionType, area, fileExtension)) //
+			.extracting("fileName", "type", "area") //
+			.containsExactly(file.getOriginalFilename(), executionType, area) //
+			.extracting(extension -> imageConvertion.getFileType().getExtension()) //
+			.containsAnyOf(fileExtension);
 
-	assertThat(imageConvertion.getFileSize()).isEqualTo(1878L);
-
-	assertThat(imageConvertion.getType()).isEqualTo(executionType);
-
-	assertThat(imageConvertion.getArea()).isEqualTo(area);
     }
 }

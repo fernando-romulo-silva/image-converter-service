@@ -43,6 +43,11 @@ import com.jparams.verifier.tostring.ToStringVerifier;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
+/**
+ * Test the {@link ImageType} class on happy path.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Tag("unit")
 @DisplayName("Test the image type entity, happy Path :) ")
 @ExtendWith(MockitoExtension.class)
@@ -67,7 +72,7 @@ class ImageTypeHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("Test the equals And HashCode Contract")
-    void equalsAndHashCodeContractTest() {
+    void tryEqualsAndHashCodeContractTest() { // NOPMD - JUnitTestsShouldIncludeAssert: EqualsVerifier already do it
 
 	EqualsVerifier.forClass(ImageType.class) //
 			.suppress(NONFINAL_FIELDS, STRICT_INHERITANCE, REFERENCE_EQUALITY) //
@@ -80,7 +85,7 @@ class ImageTypeHappyPathTest {
     @Test
     @Order(2)
     @DisplayName("Test the toString method")
-    void toStringTest() {
+    void tryToStringTest() { // NOPMD - JUnitTestsShouldIncludeAssert: ToStringVerifier already do it
 	ToStringVerifier.forClass(ImageType.class) //
 			.withIgnoredFields("description", "created", "updated") //
 			.withClassName(SIMPLE_NAME) //

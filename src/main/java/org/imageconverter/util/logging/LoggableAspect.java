@@ -111,7 +111,7 @@ public class LoggableAspect {
 
     }
 
-    private String entry(final String methodName, final boolean showArgs, final String[] params, final Object[] args) {
+    private String entry(final String methodName, final boolean showArgs, final String[] params, final Object... args) {
 	final var message = new StringJoiner(" ").add("Started").add(methodName).add("method");
 
 	if (showArgs && nonNull(params) && nonNull(args) && params.length == args.length) {
@@ -154,13 +154,15 @@ public class LoggableAspect {
     }
 
     private void executeLog(final Logger logger, final LogLevel level, final String message) {
+	
 	final var finalMsg = StringEscapeUtils.escapeJava(message);
-	switch (level) {
-	case DEBUG -> logger.debug(finalMsg);
-	case TRACE -> logger.trace(finalMsg);
-	case WARN -> logger.warn(finalMsg);
-	case ERROR, FATAL -> logger.error(finalMsg);
-	default -> logger.info(finalMsg);
+	
+	switch (level) { // NOPMD - SwitchStmtsShouldHaveDefault: Actually we have a 'default'
+		case DEBUG -> logger.debug(finalMsg);
+		case TRACE -> logger.trace(finalMsg);
+		case WARN -> logger.warn(finalMsg);
+		case ERROR, FATAL -> logger.error(finalMsg);
+		default -> logger.info(finalMsg);
 	}
     }
 }

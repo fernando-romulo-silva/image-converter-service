@@ -1,5 +1,6 @@
 package org.imageconverter.application;
 
+import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,10 +61,13 @@ class ImageConversionServiceHappyPathTest {
 
 	final var response = imageConversionService.findById(id);
 
-	assertThat(response.id()).isEqualTo(id);
-
-	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
-			.containsIgnoringCase(TestConstants.DB_CONVERTION_NUMBER);
+	assertThat(response) //
+			.as(format("Check the 'response' has fileName ''{0}'' and convertion txt ''{1}''", id, TestConstants.DB_CONVERTION_NUMBER)) //
+			.extracting( //
+					$ -> $.id(), //
+					$ -> $.text().replaceAll("[^x0-9]", "") //
+			).containsExactly(id, TestConstants.DB_CONVERTION_NUMBER) //
+	;
     }
 
     @Test

@@ -32,5 +32,10 @@ public class TestConstants {
     public static final String SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP = "DELETE FROM image_type WHERE IMT_EXTENSION = 'BMP' ";
 
     public static final String JSON_MESSAGE = "$.message";
-
+    
+    public static final String ID_PARAM_VALUE = "/{id}";
+    
+    public static final String FILTER_PARAM_ID = "$.id";
+    
+    public static final String HTTP_127_0_0_1 = "http://127.0.0.1:";
 }

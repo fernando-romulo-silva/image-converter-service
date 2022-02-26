@@ -24,7 +24,7 @@ public class ValidatorAspect {
     /**
      * Default constructor.
      */
-    public ValidatorAspect() {
+    ValidatorAspect() {
 	validatorFactory = Validation.buildDefaultValidatorFactory();
     }
 
