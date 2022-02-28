@@ -1,6 +1,5 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.imagetype;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -16,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.imageconverter.TestConstants;
+import org.imageconverter.controller.ImageTypeRestController;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -57,12 +56,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Test the image type controller, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHappyPathBaseTest {
+class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerUnHappyPathBaseTest {
 
     private final CreateImageTypeRequest createImageTypeRequest;
     
     @Autowired
-    ImageTypeRestControllerUnHappyPathTest(final ObjectMapper mapper, final MockMvc mvc) {
+    ImageTypeRestControllerUnHappyPathMovTest(final ObjectMapper mapper, final MockMvc mvc) {
 	super(mapper, mvc);
 	this.createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");   
     }
@@ -70,7 +69,7 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
     @Test
     @Order(4)
     @DisplayName("Create twice the same image type")
-    void createSameImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void createSameImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create one
 	mvc.perform(post(REST_URL) //
@@ -84,7 +83,7 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 	;
 
 	// create another
-	final var result = mvc.perform(post(REST_URL) //
+	mvc.perform(post(REST_URL) //
 			.content(asJsonString(createImageTypeRequest)) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
@@ -94,15 +93,12 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageType with extension '" + createImageTypeRequest.extension() + "' already exists"))) //
 			.andReturn();
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.CONFLICT.value());
-
     }
 
     @Test
     @Order(5)
     @DisplayName("Try to create image type with invalid json")
-    void createInvalidImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void createInvalidImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// invalid json
 	final var json = """
@@ -114,7 +110,7 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 								""";
 
 	// try to create
-	final var result = mvc.perform(post(REST_URL) //
+	mvc.perform(post(REST_URL) //
 			.content(json) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
@@ -124,15 +120,12 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Missing required creator property 'extension'"))) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @Order(6)
     @DisplayName("Try to create image type with invalid value")
-    void createInvalidImageTypeTest2() throws Exception { // NOPMD - MockMvc throws Exception
+    void createInvalidImageTypeTest2() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// invalid json
 	final var json = """
@@ -143,7 +136,7 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 			} """;
 
 	// try to create
-	final var result = mvc.perform(post(REST_URL) //
+	mvc.perform(post(REST_URL) //
 			.content(json) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
@@ -154,14 +147,12 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 			.andReturn() //
 	;
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @Order(7)
     @DisplayName("Try to update a image type that doesn't exist")
-    void updateImageTypeDoesNotExistTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void updateImageTypeDoesNotExistTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// what's id?
 	final var id = "12345";
@@ -170,7 +161,7 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
 
 	// update the image type that doesn't exist
-	final var result = mvc.perform(put(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	mvc.perform(put(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.content(asJsonString(newTypeRequest)) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
@@ -180,20 +171,17 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageType with id '" + id + "' not found"))) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     @Order(8)
     @DisplayName("Try to delete a image type that doesn't exist")
-    void deleteImageTypeDoesNotExistTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void deleteImageTypeDoesNotExistTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	final var id = "12356";
 
 	// delete the image type
-	final var result = mvc.perform(delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	mvc.perform(delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
@@ -201,20 +189,17 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageType with id '" + id + "' not found"))) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     @Order(9)
     @DisplayName("Try to delete a image type that has a relation with other record")
-    void deleteImageTypeRestrictionTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void deleteImageTypeRestrictionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	final var id = "1001";
 
 	// delete the image type
-	final var result = mvc.perform(delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	mvc.perform(delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
@@ -222,17 +207,14 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("You cannot delete the image type '1001' because it is already used"))) //
 			.andReturn() //
 	;
-	
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     @Test
     @Order(10)
     @DisplayName("Try to access a invalid url")
-    void invalidUrlTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void invalidUrlTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	final var result = mvc.perform(get(REST_URL + "/blablabla") //
+	mvc.perform(get(REST_URL + "/blablabla") //
 			.accept(MediaType.ALL, MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN) //
 			.with(csrf())) //
 			.andDo(print()) //
@@ -242,8 +224,6 @@ class ImageTypeRestControllerUnHappyPathTest extends ImageTypeRestControllerUnHa
 			.andReturn() //
 	;
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.NOT_FOUND.value());
 
     }
 }

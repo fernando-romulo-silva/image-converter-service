@@ -14,7 +14,7 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
  * 
  * @author Fernando Romulo da Silva
  */
-class BaseTesseractHealthTest {
+public class BaseTesseractHealthTest {
 
     @LocalServerPort
     protected int serverPort;

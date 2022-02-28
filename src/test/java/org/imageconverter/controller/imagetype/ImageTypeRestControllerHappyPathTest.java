@@ -1,7 +1,5 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.imagetype;
 
-import static org.apache.commons.lang3.StringUtils.substringBetween;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.TestConstants.FILTER_PARAM_ID;
@@ -17,7 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.TestConstants;
+import org.imageconverter.controller.ImageTypeRestController;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -88,12 +87,12 @@ class ImageTypeRestControllerHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("get a image type by id")
-    void findImageTypeByIdTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void findImageTypeByIdTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
 
-	final var result = mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
@@ -101,15 +100,12 @@ class ImageTypeRestControllerHappyPathTest {
 			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
     @Order(2)
     @DisplayName("get all image types")
-    void findAllImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void findAllImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create one
 	mvc.perform(post(REST_URL) //
@@ -123,7 +119,7 @@ class ImageTypeRestControllerHappyPathTest {
 	;
 
 	// get all, the db-data-test.sql has png and jpg image types
-	final var result = mvc.perform(get(REST_URL) //
+	mvc.perform(get(REST_URL) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
@@ -134,19 +130,17 @@ class ImageTypeRestControllerHappyPathTest {
 			.andReturn() //
 	;
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
     @Order(3)
     @DisplayName("get a image type by search")
-    void findImageTypeByExtensionTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void findImageTypeByExtensionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// already on db, due to the db-data-test.sql
 	final var extension = "png";
 
-	final var result = mvc.perform(get(REST_URL + "/search") //
+	mvc.perform(get(REST_URL + "/search") //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param("filter", "extension:'" + extension + "'") //
 			.with(csrf())) //
@@ -157,15 +151,13 @@ class ImageTypeRestControllerHappyPathTest {
 			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder(extension))) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.OK.value());
+	
     }
 
     @Test
     @Order(4)
     @DisplayName("Create a new image type")
-    void createImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void createImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create a new image type
 	final var result = mvc.perform(post(REST_URL) //
@@ -179,7 +171,7 @@ class ImageTypeRestControllerHappyPathTest {
 			.andReturn();
 
 	// what's id?
-	final var id = substringBetween(result.getResponse().getContentAsString(), "'", "'");
+	final var id = StringUtils.substringBetween(result.getResponse().getContentAsString(), "'", "'");
 
 	// check if it exists
 	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
@@ -189,16 +181,12 @@ class ImageTypeRestControllerHappyPathTest {
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.CREATED.value());
-
     }
 
     @Test
     @Order(5)
     @DisplayName("Update a image type")
-    void updateImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void updateImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create a new image type
 	final var createResult = mvc.perform(post(REST_URL) //
@@ -212,7 +200,7 @@ class ImageTypeRestControllerHappyPathTest {
 			.andReturn();
 
 	// what's id?
-	final var createdId = substringBetween(createResult.getResponse().getContentAsString(), "'", "'");
+	final var createdId = StringUtils.substringBetween(createResult.getResponse().getContentAsString(), "'", "'");
 
 	// create a new values
 	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
@@ -228,7 +216,7 @@ class ImageTypeRestControllerHappyPathTest {
 	;
 
 	// check if it updtated
-	final var result = mvc.perform(get(REST_URL + ID_PARAM_VALUE, createdId) //
+	mvc.perform(get(REST_URL + ID_PARAM_VALUE, createdId) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
@@ -237,15 +225,12 @@ class ImageTypeRestControllerHappyPathTest {
 			.andExpect(jsonPath("$.name").value(newTypeRequest.name())) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
     @Order(6)
     @DisplayName("Delete a new image type")
-    void deleteImageTypeTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void deleteImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 	// already on db, due to the db-data-test.sql
 	final var id = "1000";
 
@@ -267,16 +252,13 @@ class ImageTypeRestControllerHappyPathTest {
 	;
 
 	// check it again
-	final var result = mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNotFound()) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.NOT_FOUND.value());
 
     }
 

@@ -1,5 +1,6 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.imagetype;
 
+import org.imageconverter.controller.ImageTypeRestController;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class ImageTypeRestControllerUnHappyPathBaseTest {
 
     protected final ObjectMapper mapper;
+    
     protected final MockMvc mvc;
 
     ImageTypeRestControllerUnHappyPathBaseTest(final ObjectMapper mapper, final MockMvc mvc) {

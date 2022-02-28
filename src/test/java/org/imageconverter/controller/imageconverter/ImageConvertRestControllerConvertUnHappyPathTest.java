@@ -1,11 +1,9 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.imageconverter;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.imageconverter.TestConstants.HEIGHT;
 import static org.imageconverter.TestConstants.HEIGHT_VALUE;
 import static org.imageconverter.TestConstants.JSON_MESSAGE;
-import static org.imageconverter.TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP;
 import static org.imageconverter.TestConstants.WIDTH;
 import static org.imageconverter.TestConstants.WIDTH_VALUE;
 import static org.imageconverter.TestConstants.X_AXIS;
@@ -14,9 +12,7 @@ import static org.imageconverter.TestConstants.Y_AXIS;
 import static org.imageconverter.TestConstants.Y_AXIS_VALUE;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL_AREA;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -24,12 +20,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 
+import org.imageconverter.TestConstants;
+import org.imageconverter.controller.ImageConverterRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +36,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import org.springframework.test.context.jdbc.SqlConfig.ErrorMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -56,13 +55,13 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
-@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
+@Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = ErrorMode.CONTINUE_ON_ERROR))
 //
 @ExtendWith(SpringExtension.class)
 @Tag("acceptance")
 @DisplayName("Test the image convertion, unhappy convert path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(PER_CLASS)
+@TestInstance(Lifecycle.PER_CLASS)
 class ImageConvertRestControllerConvertUnHappyPathTest {
 
     private final MockMvc mvc;
@@ -104,9 +103,9 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @Test
     @Order(1)
     @DisplayName("convert the image with unknow extension")
-    void tryToConvertTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void tryToConvertTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	final var result = mvc.perform(multipart(REST_URL) //
+	mvc.perform(multipart(REST_URL) //
 			.file(multipartBeachImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
@@ -115,16 +114,13 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ImageType with extension jpeg not found"))) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     @Order(2)
     @DisplayName("Convert the same image")
-    @Sql(statements = SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
-    void tryToConvertSameImageTest() throws Exception { // NOPMD - MockMvc throws Exception
+    @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
+    void tryToConvertSameImageTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create one
 	mvc.perform(multipart(REST_URL_AREA) //
@@ -140,7 +136,7 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andReturn();
 
 	// create another
-	final var result = mvc.perform(multipart(REST_URL_AREA) //
+	mvc.perform(multipart(REST_URL_AREA) //
 			.file(multipartBillImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
@@ -153,19 +149,16 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ElementAlreadyExistsException: ImageConvertion with fileName 'bill.png'"))) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     @Test
     @Order(3)
     @DisplayName("Convert a corrupted image")
-    @Sql(statements = SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
-    void tryToConvertCorruptedImageTest() throws Exception { // NOPMD - MockMvc throws Exception
+    @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
+    void tryToConvertCorruptedImageTest() throws Exception {// NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create one
-	final var result = mvc.perform(multipart(REST_URL) //
+	mvc.perform(multipart(REST_URL) //
 			.file(multipartCorruptedImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
@@ -175,18 +168,16 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andReturn() //
 	;
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @Order(4)
     @DisplayName("Convert a empty image")
-    @Sql(statements = SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
-    void tryToConvertEmptyImageTest() throws Exception { // NOPMD - MockMvc throws Exception
+    @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
+    void tryToConvertEmptyImageTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create one
-	final var result = mvc.perform(multipart(REST_URL) //
+	mvc.perform(multipart(REST_URL) //
 			.file(multipartEmptyImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
@@ -195,20 +186,15 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Image emptyImage.png has Tessarct error: 'IllegalArgumentException: image == null!'"))) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
-
     }
 
     @Test
     @Order(5)
     @DisplayName("Convert a corrupted image with area")
-    @Sql(statements = SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
-    void tryToConvertCorruptedImageAreaTest() throws Exception { // NOPMD - MockMvc throws Exception
+    @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
+    void tryToConvertCorruptedImageAreaTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// create one
-	final var result = mvc.perform(multipart(REST_URL_AREA) //
+	mvc.perform(multipart(REST_URL_AREA) //
 			.file(multipartCorruptedImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
@@ -220,19 +206,15 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Image corruptedImage.png has IO error: 'IIOException: Image width <= 0!'"))) //
 			.andReturn();
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @Order(6)
     @DisplayName("Convert a empty image with area")
-    @Sql(statements = SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
-    void tryToConvertEmptyImageAreaTest() throws Exception { // NOPMD - MockMvc throws Exception
+    @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
+    void tryToConvertEmptyImageAreaTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// create one
-	final var result = mvc.perform(multipart(REST_URL_AREA) //
+	mvc.perform(multipart(REST_URL_AREA) //
 			.file(multipartEmptyImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
@@ -245,18 +227,14 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andReturn() //
 	;
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
-
     }
 
     @Test
     @Order(7)
     @DisplayName("convert the image with area with parameter null")
-    void tryToConvertAreaParameterNullTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void tryToConvertAreaParameterNullTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// create one
-	final var result = mvc.perform(multipart(REST_URL_AREA) //
+	mvc.perform(multipart(REST_URL_AREA) //
 			.file(multipartBeachImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
@@ -268,18 +246,14 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("MissingServletRequestParameterException: The parameter 'height' is missing"))) //
 			.andReturn();
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.BAD_REQUEST.value());
-
     }
 
     @Test
     @Order(8)
     @DisplayName("convert the image with area with parameter Y invalid")
-    void tryToConvertAreaParameterInvalidYTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void tryToConvertAreaParameterInvalidYTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// create one
-	final var result = mvc.perform(multipart(REST_URL_AREA) //
+	mvc.perform(multipart(REST_URL_AREA) //
 			.file(multipartBeachImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
@@ -291,9 +265,6 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("The y point must be greater than zero"))) //
 			.andReturn();
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }

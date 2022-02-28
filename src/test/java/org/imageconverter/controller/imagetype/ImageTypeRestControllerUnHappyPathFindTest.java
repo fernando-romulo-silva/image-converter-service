@@ -1,6 +1,5 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.imagetype;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -13,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.imageconverter.TestConstants;
+import org.imageconverter.controller.ImageTypeRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -62,11 +61,11 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
     @Test
     @Order(1)
     @DisplayName("Search a image type that doesn't exist by id")
-    void findImageTypeByIdTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void findImageTypeByIdTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	final var id = "1234";
 
-	final var result = mvc.perform(get(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	mvc.perform(get(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
@@ -75,19 +74,16 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
 			.andReturn() //
 	;
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.NOT_FOUND.value());
-
     }
 
     @Test
     @Order(2)
     @DisplayName("Search a image type that not exists by search")
-    void findImageTypeBySearchTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void findImageTypeBySearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	final var extension = "bmp";
 
-	final var result = mvc.perform(get(REST_URL + "/search") //
+	mvc.perform(get(REST_URL + "/search") //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param("filter", "extension:'" + extension + "'") //
 			.with(csrf())) //
@@ -97,16 +93,14 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
 			.andReturn() //
 	;
 
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
     @Order(3)
     @DisplayName("Search a image type by invalid search")
-    void findImageTypeBySearchInvalidSearchTest() throws Exception { // NOPMD - MockMvc throws Exception
+    void findImageTypeBySearchInvalidSearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	final var result = mvc.perform(get(REST_URL + "/search") //
+	mvc.perform(get(REST_URL + "/search") //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param("filter", "invalidField:'bmp'") //
 			.with(csrf())) //
@@ -115,9 +109,6 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Unable to locate Attribute with the the given name 'invalidField' on ImageType"))) //
 			.andReturn() //
 	;
-
-	assertThat(result.getResponse().getStatus()) //
-			.isEqualTo(HttpStatus.BAD_REQUEST.value());
 
     }
 }

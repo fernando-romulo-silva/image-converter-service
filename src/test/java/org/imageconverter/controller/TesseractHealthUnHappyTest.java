@@ -57,7 +57,10 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
 
 	final var requestEntityUpdateTesseract = new HttpEntity<String>(json, csrfHeaders());
 	final var responseUpdateTesseract = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
-	assertThat(responseUpdateTesseract.getStatusCode()).isEqualTo(NO_CONTENT);
+
+	assertThat(responseUpdateTesseract.getStatusCode()) //
+			.as("Updating the tesseract's configs to wrong values") //
+			.isEqualTo(NO_CONTENT);
 
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
 
@@ -69,8 +72,9 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
 
 	    final var body = ex.getResponseBodyAsString();
 
-	    assertThat(body).contains("\"status\":\"DOWN\"");
-	    assertThat(body).contains("\"tesseract\":{\"status\":\"DOWN\"");
+	    assertThat(body).as("Check if tesseract is out") //
+			    .contains("\"status\":\"DOWN\"") //
+			    .contains("\"tesseract\":{\"status\":\"DOWN\"");
 	}
     }
 
@@ -97,7 +101,8 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
 
 	final var body = response.getBody();
 
-	assertThat(body).contains("\"tesseractInit\":\"FAIL\"") //
+	assertThat(body).as("Check the wrong tesseract values") //
+			.contains("\"tesseractInit\":\"FAIL\"") //
 			.contains("\"tesseractVersion\":\"4.11\"") //
 			.contains("\"tesseractLanguage\":\"pt\"") //
 			.contains("\"tesseractDpi\":\"90\"");

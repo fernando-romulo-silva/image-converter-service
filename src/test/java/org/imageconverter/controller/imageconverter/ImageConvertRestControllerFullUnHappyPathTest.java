@@ -1,4 +1,4 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.imageconverter;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,6 +12,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.imageconverter.controller.BaseTesseractHealthTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -80,7 +81,10 @@ class ImageConvertRestControllerFullUnHappyPathTest extends BaseTesseractHealthT
 
 	final var requestEntityUpdateTesseract = new HttpEntity<String>(json, csrfHeaders());
 	final var responseUpdateTesseract = restTemplate.postForEntity("http://127.0.0.1:" + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
-	assertThat(responseUpdateTesseract.getStatusCode()).isEqualTo(NO_CONTENT);
+
+	assertThat(responseUpdateTesseract.getStatusCode()) //
+			.as("Update tesseract's configs with wrong values") //
+			.isEqualTo(NO_CONTENT);
 
 	// ---------------------------------------------------------------------------------------------------------------
 	final var headers = basicAuthHeaders();
@@ -112,8 +116,10 @@ class ImageConvertRestControllerFullUnHappyPathTest extends BaseTesseractHealthT
 
 	    final var result = ex.getResponseBodyAsString();
 
-	    assertThat(result).contains("TesseractNotSetException: Tessarct configuration is invalid: folder /blabla, language: pt and dpi 90");
-	    assertThat(result).contains("\"status\":500");
+	    assertThat(result) //
+			    .as("Check the error while converting") //
+			    .contains("TesseractNotSetException: Tessarct configuration is invalid: folder /blabla, language: pt and dpi 90") //
+			    .contains("\"status\":500");
 	}
 
     }
