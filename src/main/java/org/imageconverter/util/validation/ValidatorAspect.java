@@ -1,4 +1,4 @@
-package org.imageconverter.util.logging;
+package org.imageconverter.util.validation;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;

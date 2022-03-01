@@ -70,12 +70,17 @@ RUN apk add --update --no-cache tesseract-ocr dumb-init \
       && adduser -S -s /bin/false -G javauser javauser \
       && chown -R javauser:javauser /application
 
+
+ENV TESSERACT_FOLDER=/application/tesseract/tessdata/
+RUN export TESSERACT_FOLDER=/application/tesseract/tessdata/ \ 
+    && echo $TESSERACT_FOLDER
+
 # user the user 'javauser'
 USER javauser
 
 # execute the application
 ENTRYPOINT [\
-               "dumb-init",\
+              "dumb-init",\
                "java",\
                # Preview Features
                # "--enable-preview",\  Preview
@@ -95,6 +100,5 @@ ENTRYPOINT [\
                "org.springframework.boot.loader.JarLauncher"\
 ]
 
-EXPOSE 5000
-EXPOSE 5090
+EXPOSE 8080
 EXPOSE 9010

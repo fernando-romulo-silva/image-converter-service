@@ -1,4 +1,4 @@
-# image-converter
+# image-converter-service
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Project status](https://img.shields.io/badge/Project%20status-Maintenance-orange.svg)](https://img.shields.io/badge/Project%20status-Maintenance-orange.svg)
@@ -8,87 +8,117 @@
 I use this project to learn new technologies related to microservices. In this case, the image convert. So it'll get new things all time.
 
 
-tesseract --version
-
-
-
-Ribbon and Hystrix
-
-http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
-
-
 # About
 
-A project that converts image text into simple text using diverse technologies.  
-I used [tesseract](https://github.com/tesseract-ocr/tesseract) for it and exposes it as a web service using spring boot, jakarta microprofile, quarkus, etc.
+A project that converts images with text into simple text using diverse technologies.  
+I used [tesseract](https://github.com/tesseract-ocr/tesseract) for it and exposes it as a web service using spring boot.
 
 # Model
+
 It's very simple application, just a controller and a service:
-![Model](https://github.com/fernando-romulo-silva/image-converter/blob/master/doc/class-diagram.png)
+![Model](https://github.com/fernando-romulo-silva/image-converter-service/blob/master/doc/class-diagram.png)
 
 # Technologies
 
 - Java
 - Maven
-- Spring Boot
-- Spring Security
-- Spring MVC
+- Spring Frameworks (boot, data, security, etc)
 - Tesseract
+- Docker (optional)
 
-[//]: # (## Implantação em produção - Back end: Heroku %})
 
-# Modules
 
-## image-converter-springboot
+# Start
 
-The idea here is to use spring boot with the smallest docker container using spring boot technologies, like layer and modularization.
-
-### How to Execute
-
-requirements: 
- - Java 17
- - Maven 3
- 
-$ docker build -f src/docker/Dockerfile -t image-service-converter-image .
+To start, clone it:
 
 ```bash
-# clone it
-$ git clone https://github.com/fernando-romulo-silva/image-converter
+$ git clone https://github.com/fernando-romulo-silva/image-converter-service
+```
 
-# for spring boot
-$ cd image-converter\image-converter-springboot
+# How to Execute
 
-# execute
-$ mvn spring-boot:run
+To execute, please folow these steps:
 
+## Build application
+
+```bash
+$ mvn package
+```
+
+## Using Docker
+
+First check your docker version:
+
+```bash
+$ docker version
+```
+
+Then build the image:
+
+```bash 
+$ docker build -f src/main/docker/Dockerfile -t image-service-converter-iso .
+```
 or
 
+```bash 
 $ export DOCKER_BUILDKIT=1
 
 $ docker image build -f src/main/docker/Dockerfile -t image-converter-service-iso .
-
-$ docker run -p 5000:8080 -d --name mage-converter-service-1 image-converter-service-iso
-
-
 ```
 
+To run the project:
 
-cd target
+```bash 
+$ docker run -p 8080:8080 -d --name mage-converter-service-1 image-converter-service-iso
+```
 
-java -Djarmode=layertools -jar image-converter-service-0.0.1-SNAPSHOT.jar extract
+## Using Java Local
 
-jdeps --ignore-missing-deps -q --multi-release 17 --print-module-deps --class-path dependencies/BOOT-INF/lib/* image-converter-service-0.0.1-SNAPSHOT.jar > jre-deps.info
+Requirements: 
 
-jdeps --ignore-missing-deps -q --multi-release 17 --print-module-deps image-converter-service-0.0.1-SNAPSHOT.jar > jre-deps.info
+1) Java 17
 
+```bash
+$ java -version 
+```
 
+2) Maven 3
 
-jdeps \
-    -classpath \'${TMP_DIR}/BOOT-INF/lib/*:${TMP_DIR}/BOOT-INF/classes:${TMP_DIR}\' \
-    --print-module-deps \
-    --ignore-missing-deps \
-    --module-path ${TMP_DIR}/BOOT-INF/lib/jakarta.activation-api-1.2.2.jar \
-    --recursive \
-    --multi-release ${TARGET_VER} \
-    -quiet \
-    ${TMP_DIR}/org ${TMP_DIR}/BOOT-INF/classes ${TMP_DIR}/BOOT-INF/lib/*.jar
+```bash
+$ mvn --version
+```
+
+3) Ant 1.10 (optional)
+
+```bash
+$ ant -version
+```
+
+4) Tesseract >= 4
+ 
+```bash
+$ tesseract --version
+```
+
+Tesseract needs a dictionary, the application use the English dictionary called eng.traineddata and you can get it on /src/main/tesseract.
+
+You have to define at least the dictionary folder on environment variable or edit application-local.yml file:
+
+```bash
+$ export TESSERACT_FOLDER=/home/YourUser/tools/tessdata/
+```
+
+Then execute:
+
+```bash
+$ mvn spring-boot:run -Dspring.profiles.active=local
+```
+
+# API Documentation
+
+To access the API's documentation:
+
+```url
+http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
+```

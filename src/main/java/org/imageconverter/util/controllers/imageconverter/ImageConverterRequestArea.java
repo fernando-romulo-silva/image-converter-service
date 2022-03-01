@@ -39,4 +39,10 @@ public record ImageConverterRequestArea( //
 		@Schema(name = "height", description = "The height area", required = false, example = "343") //
 		@Min(value = 0, message = "The height must be greater than zero") //
 		Integer height) implements ImageConverterRequestInterface {
+    
+    public ImageConverterRequestArea {
+	
+	
+	
+    }
 }

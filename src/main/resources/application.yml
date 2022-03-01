@@ -60,7 +60,7 @@ server:
         enabled: true
 #    compression:
 #        enabled: true        
-    port: 5090
+    port: 8080
     servlet:
         context-path: /
         encoding:
