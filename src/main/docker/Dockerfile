@@ -8,12 +8,9 @@ WORKDIR /application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
 
-COPY src/main/tesseract/eng.tar.xz tesseract/tessdata/eng.tar.xz
+ADD src/main/tesseract/eng.tar.xz tesseract/tessdata/eng.tar.xz
 
-RUN java -Djarmode=layertools -jar application.jar extract \
-		&& cd tesseract/tessdata/ \
-        && zcat eng.tar.xz | tar -xvf - \
-        && rm eng.tar.xz
+RUN java -Djarmode=layertools -jar application.jar extract
 
 # only when your application has modularization
 # find JDK dependencies dynamically from jar
@@ -30,7 +27,6 @@ RUN java -Djarmode=layertools -jar application.jar extract \
 #       --class-path dependencies/BOOT-INF/lib/* \
 #       # pipe the result of running jdeps on the app jar to file
 #       application.jar > jre-deps.info
-
 
 # new jre
 # RUN $JAVA_HOME/bin/jlink --verbose \
@@ -69,11 +65,6 @@ RUN apk add --update --no-cache tesseract-ocr dumb-init \
       && addgroup --system javauser \
       && adduser -S -s /bin/false -G javauser javauser \
       && chown -R javauser:javauser /application
-
-
-ENV TESSERACT_FOLDER=/application/tesseract/tessdata/
-RUN export TESSERACT_FOLDER=/application/tesseract/tessdata/ \ 
-    && echo $TESSERACT_FOLDER
 
 # user the user 'javauser'
 USER javauser

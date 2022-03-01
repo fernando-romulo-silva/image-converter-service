@@ -7,7 +7,6 @@
 
 I use this project to learn new technologies related to microservices. In this case, the image convert. So it'll get new things all time.
 
-
 # About
 
 A project that converts images with text into simple text using diverse technologies.  
@@ -24,9 +23,7 @@ It's very simple application, just a controller and a service:
 - Maven
 - Spring Frameworks (boot, data, security, etc)
 - Tesseract
-- Docker (optional)
-
-
+- Docker
 
 # Start
 
@@ -57,20 +54,15 @@ $ docker version
 Then build the image:
 
 ```bash 
-$ docker build -f src/main/docker/Dockerfile -t image-service-converter-iso .
-```
-or
-
-```bash 
 $ export DOCKER_BUILDKIT=1
 
-$ docker image build -f src/main/docker/Dockerfile -t image-converter-service-iso .
+$ docker build --file src/main/docker/Dockerfile --tag image-service-converter-iso .
 ```
 
 To run the project:
 
 ```bash 
-$ docker run -p 8080:8080 -d --name mage-converter-service-1 image-converter-service-iso
+$ docker run --publish 8080:8080 --detach --name mage-converter-service-1 --env-file src/main/docker/Dockerfile.env image-converter-service-iso
 ```
 
 ## Using Java Local
@@ -101,7 +93,9 @@ $ ant -version
 $ tesseract --version
 ```
 
-Tesseract needs a dictionary, the application use the English dictionary called eng.traineddata and you can get it on /src/main/tesseract.
+Tesseract needs a dictionary and the application use the English dictionary called 'eng.traineddata.'
+
+The dictionary can be found in /src/main/tesseract on this project.
 
 You have to define at least the dictionary folder on environment variable or edit application-local.yml file:
 
