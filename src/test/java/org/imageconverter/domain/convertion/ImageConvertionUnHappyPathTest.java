@@ -26,7 +26,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Test the {@link ImageConvertion} class on unhappy path.
@@ -59,28 +58,33 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
     }
 
     Stream<Arguments> createInvalidImageConvertionData() throws IOException {
+	
+	final var fileName = mockMultipartFile.getOriginalFilename();
+	final var fileBytes = mockMultipartFile.getBytes();
 
 	return Stream.of( //
-			Arguments.of(null, WEB, null, null, null, null), //
-			Arguments.of(mockMultipartFile, null, null, null, null, null), //
-			Arguments.of(mockMultipartFile, WS, -1, 1417, 1426, 57), //
-			Arguments.of(mockMultipartFile, WS, 885, -1, 1426, 57), //
-			Arguments.of(mockMultipartFile, WS, 885, 1417, -1, 57), //
-			Arguments.of(mockMultipartFile, WS, 885, 1417, 1426, -1), //
-			Arguments.of(mockMultipartFile, WS, 885, 1417, 1426, 57) //
+			Arguments.of(null, fileBytes, WEB, null, null, null, null), //
+			Arguments.of(fileName, null, WEB, null, null, null, null), //
+			Arguments.of(fileName, fileBytes, null, null, null, null, null), //
+			Arguments.of(fileName, fileBytes, WS, -1, 1417, 1426, 57), //
+			Arguments.of(fileName, fileBytes, WS, 885, -1, 1426, 57), //
+			Arguments.of(fileName, fileBytes, WS, 885, 1417, -1, 57), //
+			Arguments.of(fileName, fileBytes, WS, 885, 1417, 1426, -1), //
+			Arguments.of(fileName, fileBytes, WS, 885, 1417, 1426, 57) //
 	);
     }
 
-    @ParameterizedTest(name = "Pos {index} : executionType ''{1}'' ")
+    @ParameterizedTest(name = "Pos {index} : fileName ''{0}'', type ''{2}'' ")
     @MethodSource("createInvalidImageConvertionData")
     @Order(1)
     @DisplayName("Test the imageConvertion's creation with invalid values")
     void createInvalidImageConvertionTest( //
-		    final MultipartFile file, final ExecutionType executionType, //
+		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
 		    final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 
 	assertThatThrownBy(() -> new ImageConvertion.Builder().with($ -> {
-	    $.file = file;
+	    $.fileName = fileName;
+	    $.fileContent = fileContent;
 	    $.executionType = executionType;
 	    $.xAxis = xAxis;
 	    $.yAxis = yAxis;

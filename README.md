@@ -40,7 +40,7 @@ To execute, please folow these steps:
 ## Build application
 
 ```bash
-$ mvn package
+$ mvn package -DskipTests
 ```
 
 ## Using Docker

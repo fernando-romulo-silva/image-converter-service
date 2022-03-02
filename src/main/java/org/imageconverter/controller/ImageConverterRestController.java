@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.imageconverter.application.ImageConversionService;
@@ -142,7 +143,9 @@ public class ImageConverterRestController {
 		    @RequestParam(name = "file", required = true) //
 		    final MultipartFile file) {
 
-	return imageConversionService.convert(new ImageConverterRequest(file, WS));
+	final var bytes = extractBytes(file);
+
+	return imageConversionService.convert(new ImageConverterRequest(file.getOriginalFilename(), bytes, WS));
     }
 
     /**
@@ -180,6 +183,18 @@ public class ImageConverterRestController {
 		    @RequestParam(required = true) //
 		    final Integer height) {
 
-	return imageConversionService.convert(new ImageConverterRequestArea(file, WS, xAxis, yAxis, width, height));
+	final byte[] bytes = extractBytes(file);
+
+	return imageConversionService.convert(new ImageConverterRequestArea(file.getOriginalFilename(), bytes, WS, xAxis, yAxis, width, height));
+    }
+
+    private byte[] extractBytes(final MultipartFile file) {
+	byte[] bytes;
+	try {
+	    bytes = file.getBytes();
+	} catch (final IOException e) {
+	    bytes = new byte[0];
+	}
+	return bytes;
     }
 }

@@ -1,7 +1,6 @@
 package org.imageconverter.util.controllers.imageconverter;
 
 import org.imageconverter.domain.convertion.ExecutionType;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Interface to execute the image convertion.
@@ -13,9 +12,16 @@ public sealed interface ImageConverterRequestInterface permits ImageConverterReq
     /**
      * File parameter.
      * 
-     * @return a {@link MultipartFile} object
+     * @return a {@link String} object
      */
-    MultipartFile file();
+    String fileName();
+
+    /**
+     * File parameter.
+     * 
+     * @return a byte[] with file.
+     */
+    byte[] fileContent();
 
     /**
      * Execution type.

@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import javax.validation.ConstraintViolationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.domain.convertion.ImageConvertion;
 import org.imageconverter.infra.exceptions.ConvertionException;
 import org.imageconverter.infra.exceptions.ElementInvalidException;
@@ -55,8 +56,13 @@ class ImageConversionServiceUnHappyPathTest {
     private final ImageConversionService imageConversionService;
 
     private final Resource imageFile;
-    
-    ImageConversionServiceUnHappyPathTest(@Autowired final ImageConversionService imageConversionService, @Value("classpath:bill.png") final Resource imageFile) {
+
+    ImageConversionServiceUnHappyPathTest( //
+		    @Autowired //
+		    final ImageConversionService imageConversionService, //
+		    //
+		    @Value("classpath:bill.png") //
+		    final Resource imageFile) {
 	super();
 	this.imageConversionService = imageConversionService;
 	this.imageFile = imageFile;
@@ -112,9 +118,12 @@ class ImageConversionServiceUnHappyPathTest {
 
 	final ImageConverterRequest nullImageConverterRequest = null;
 
+	final var filename = multipartFile.getOriginalFilename();
+
 	return Stream.of( //
-			Arguments.of(new ImageConverterRequest(null, WEB)), //
-			Arguments.of(new ImageConverterRequest(multipartFile, null)), //
+			Arguments.of(new ImageConverterRequest(null, multipartFile.getBytes(), WEB)), //
+			Arguments.of(new ImageConverterRequest(filename, null, WEB)), //
+			Arguments.of(new ImageConverterRequest(filename, multipartFile.getBytes(), null)), //
 			Arguments.of(nullImageConverterRequest) //
 	);
     }
@@ -136,17 +145,24 @@ class ImageConversionServiceUnHappyPathTest {
 
     Stream<Arguments> convertAreaInvalidParameterData() throws IOException {
 
-	final var mockMultipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
 	final ImageConverterRequestArea nullImageConverterRequestArea = null;
 
+	final var fileName = multipartFile.getOriginalFilename();
+
+	final var fileBytes = multipartFile.getBytes();
+
 	return Stream.of( //
-			Arguments.of(new ImageConverterRequestArea(null, WEB, null, null, null, null)), //
-			Arguments.of(new ImageConverterRequestArea(mockMultipartFile, null, null, null, null, null)), //
-			Arguments.of(new ImageConverterRequestArea(mockMultipartFile, WS, -1, 1417, 1426, 57)), //
-			Arguments.of(new ImageConverterRequestArea(mockMultipartFile, WS, 885, -1, 1426, 57)), //
-			Arguments.of(new ImageConverterRequestArea(mockMultipartFile, WS, 885, 1417, -1, 57)), //
-			Arguments.of(new ImageConverterRequestArea(mockMultipartFile, WS, 885, 1417, 1426, -1)), //
+			Arguments.of(new ImageConverterRequestArea(null, fileBytes, WS, 885, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(StringUtils.EMPTY, fileBytes, WS, 885, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, null, WEB, 885, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, new byte[0], WEB, 885, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, null, null, null, null, null)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, WS, -1, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, WS, 885, -1, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, WS, 885, 1417, -1, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, WS, 885, 1417, 1426, -1)), //
 			Arguments.of(nullImageConverterRequestArea) //
 	);
     }

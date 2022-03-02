@@ -38,7 +38,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.jparams.verifier.tostring.ToStringVerifier;
 
@@ -100,22 +99,26 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
     Stream<Arguments> createValidImageConvertionData() throws IOException {
 
+	final var fileName = mockMultipartFile.getOriginalFilename();
+	final var fileBytes = mockMultipartFile.getBytes();
+	
 	return Stream.of( //
-			Arguments.of(mockMultipartFile, WEB, false, null, null, null, null), //
-			Arguments.of(mockMultipartFile, WS, true, 885, 1417, 1426, 57) //
+			Arguments.of(fileName, fileBytes, WEB, false, null, null, null, null), //
+			Arguments.of(fileName, fileBytes, WS, true, 885, 1417, 1426, 57) //
 	);
     }
 
-    @ParameterizedTest(name = "Pos {index} : executionType ''{1}'', area ''{2}'' ")
+    @ParameterizedTest(name = "Pos {index} : fileName ''{0}'', type ''{2}'' ")
     @MethodSource("createValidImageConvertionData")
     @Order(3)
     @DisplayName("Test the imageConvertion's creation")
     void createValidImageConvertionTest( //
-		    final MultipartFile file, final ExecutionType executionType, //
+		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
 		    final boolean area, final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 
 	final var imageConvertionBuilder = new ImageConvertion.Builder().with($ -> {
-	    $.file = file;
+	    $.fileName = fileName;
+	    $.fileContent = fileContent;
 	    $.executionType = executionType;
 	    $.xAxis = xAxis;
 	    $.yAxis = yAxis;
@@ -125,12 +128,12 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
 	final var imageConvertion = imageConvertionBuilder.build();
 
-	final var fileExtension = getExtension(file.getOriginalFilename());
+	final var fileExtension = getExtension(fileName);
 
 	assertThat(imageConvertion) //
-			.as(format(" Check the fileName ''{0}'', executionType ''{1}'', area ''{2}'' and fileExtension ''{3}''", file.getOriginalFilename(), executionType, area, fileExtension)) //
+			.as(format(" Check the fileName ''{0}'', executionType ''{1}'', area ''{2}'' and fileExtension ''{3}''", fileName, executionType, area, fileExtension)) //
 			.extracting("fileName", "type", "area") //
-			.containsExactly(file.getOriginalFilename(), executionType, area) //
+			.containsExactly(fileName, executionType, area) //
 			.extracting(extension -> imageConvertion.getFileType().getExtension()) //
 			.containsAnyOf(fileExtension);
 

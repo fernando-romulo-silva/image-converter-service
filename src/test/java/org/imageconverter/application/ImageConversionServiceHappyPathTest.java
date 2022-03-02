@@ -115,7 +115,7 @@ class ImageConversionServiceHappyPathTest {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
-	final var request = new ImageConverterRequest(multipartFile, ExecutionType.WS);
+	final var request = new ImageConverterRequest(multipartFile.getOriginalFilename(), multipartFile.getBytes(), ExecutionType.WS);
 
 	final var response = imageConversionService.convert(request);
 
@@ -132,7 +132,7 @@ class ImageConversionServiceHappyPathTest {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
-	final var request = new ImageConverterRequestArea(multipartFile, ExecutionType.BATCH, 885, 1417, 1426, 57);
+	final var request = new ImageConverterRequestArea(multipartFile.getOriginalFilename(), multipartFile.getBytes(), ExecutionType.BATCH, 885, 1417, 1426, 57);
 
 	final var response = imageConversionService.convert(request);
 

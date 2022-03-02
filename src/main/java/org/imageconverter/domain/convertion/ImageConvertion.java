@@ -25,13 +25,13 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.infra.exceptions.ConvertionException;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
-import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "IMAGE_CONVERTION")
@@ -128,7 +128,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 
 	} else if (obj instanceof ImageConvertion other) {
 	    result = Objects.equals(id, other.id);
-	    
+
 	} else {
 	    result = false;
 	}
@@ -155,8 +155,11 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	@NotNull(message = "The 'fileType' cannot be null")
 	public ExecutionType executionType;
 
-	@NotNull(message = "The 'file' cannot be null")
-	public MultipartFile file;
+	@NotEmpty(message = "The 'fileName' cannot be empty")
+	public String fileName;
+
+	@NotNull(message = "The 'fileContent' cannot be null")
+	public byte[] fileContent;
 
 	@Min(value = 0, message = "The axis 'x' cannot be less than zero")
 	public Integer xAxis;
@@ -174,9 +177,6 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	// --------------------------------------------------------------------------
 	@NotNull(message = "The 'fileType' cannot be null")
 	private ImageType fileType;
-
-	@NotEmpty(message = "The 'fileName' cannot be empty")
-	private String fileName;
 
 	@Min(value = 0, message = "The 'fileSize' cannot be less than zero")
 	@NotNull(message = "The 'fileSize' can't be null")
@@ -199,7 +199,8 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 		throw new ConvertionException("Empty request to convert!");
 	    }
 
-	    this.file = request.file();
+	    this.fileName = request.fileName();
+	    this.fileContent = request.fileContent();
 	    this.executionType = request.executionType();
 
 	    if (request instanceof ImageConverterRequestArea image //
@@ -217,7 +218,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 
 	public ImageConvertion build() {
 
-	    if (isNull(file) || file.isEmpty()) {
+	    if (StringUtils.isBlank(fileName) || isNull(fileContent) || fileContent.length == 0L) {
 		throw new ConvertionException("Empty file to convert!");
 	    }
 
@@ -227,19 +228,18 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 
 	    final var validator = getBeanFrom(Validator.class);
 
-	    final var extensionTxt = getExtension(file.getOriginalFilename());
+	    final var extensionTxt = getExtension(fileName);
 
 	    this.fileType = imageTypeRepository.findByExtension(extensionTxt) //
 			    .orElseThrow(() -> new ElementNotFoundException(ImageType.class, "extension " + extensionTxt));
 
-	    this.fileName = file.getOriginalFilename();
-	    this.fileSize = file.getSize() / 1024;
+	    this.fileSize = fileContent.length / 1024L;
 
 	    if (checkParams()) {
-		this.text = tesseractService.convert(file, xAxis, yAxis, width, height);
+		this.text = tesseractService.convert(fileName, fileContent, xAxis, yAxis, width, height);
 		this.area = true;
 	    } else {
-		this.text = tesseractService.convert(file);
+		this.text = tesseractService.convert(fileName, fileContent);
 		this.area = false;
 	    }
 

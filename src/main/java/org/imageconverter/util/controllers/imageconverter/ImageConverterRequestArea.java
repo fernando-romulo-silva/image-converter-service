@@ -1,10 +1,10 @@
 package org.imageconverter.util.controllers.imageconverter;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.imageconverter.domain.convertion.ExecutionType;
-import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -15,10 +15,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(name = "ImageConverterRequestArea", description = "Resquest structure to convert Image with specific area")
 public record ImageConverterRequestArea( //
-
-		@Schema(name = "file", description = "The uploaded image file", required = true, example = "image.bmp") //
-		@NotNull(message = "The file cannot be null") //
-		MultipartFile file, //
+		
+		@Schema(name = "fileName", description = "The uploaded image file name", required = true, example = "image.bmp") //
+		@NotEmpty(message = "The 'fileName' cannot be empty") //
+		String fileName, //
+		//
+		@Schema(name = "fileContent", description = "The uploaded image file bytes", required = true, example = "image.bmp") //
+		@NotNull(message = "The 'fileContent' cannot be null") //
+		byte[] fileContent, //
 		//
 		@Schema(name = "executionType", description = "Execution's type", required = true, implementation = ExecutionType.class) //
 		@NotNull(message = "The executionType cannot be null") //
@@ -40,9 +44,4 @@ public record ImageConverterRequestArea( //
 		@Min(value = 0, message = "The height must be greater than zero") //
 		Integer height) implements ImageConverterRequestInterface {
     
-    public ImageConverterRequestArea {
-	
-	
-	
-    }
 }
