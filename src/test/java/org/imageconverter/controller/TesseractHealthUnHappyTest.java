@@ -94,7 +94,10 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
 
 	final var requestEntityUpdateTesseract = new HttpEntity<String>(json, csrfHeaders());
 	final var responseUpdateTesseract = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
-	assertThat(responseUpdateTesseract.getStatusCode()).isEqualTo(NO_CONTENT);
+
+	assertThat(responseUpdateTesseract.getStatusCode()) //
+			.as("Updating the tesseract's configs to wrong values") //
+			.isEqualTo(NO_CONTENT);
 
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
 	final var response = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", GET, requestEntity, String.class);

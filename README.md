@@ -62,7 +62,7 @@ $ docker build --file src/main/docker/Dockerfile --tag image-service-converter-i
 To run the project:
 
 ```bash 
-$ docker run --publish 8080:8080 --detach --name mage-converter-service-1 --env-file src/main/docker/Dockerfile.env image-converter-service-iso
+$ docker run --publish 8080:8080 --detach --name image-converter-service-1 --env-file src/main/docker/Dockerfile.env image-converter-service-iso
 ```
 
 ## Using Java Local
