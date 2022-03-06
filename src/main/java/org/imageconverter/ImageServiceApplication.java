@@ -46,7 +46,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 )
 //
 @SpringBootApplication
-public class ImageServiceApplication { // NOPMD - It's not a util class, it's a starter
+public class ImageServiceApplication { // NOPMD - UseUtilityClass: It's not a util class, it's a starter
 
     /**
      * Main method

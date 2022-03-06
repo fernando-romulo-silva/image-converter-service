@@ -11,7 +11,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 /**
- * Aspect to use beans validations on application.
+ * Aspect to use beans validation on application.
  * 
  * @author Fernando Romulo da Silva
  */
@@ -29,7 +29,7 @@ public class ValidatorAspect {
     }
 
     /**
-     * Execute the around with valition contraints.
+     * Execute the around with valition contraints for methods.
      * 
      * @param point The object that support around advice in @AJ aspects
      * @return The metho's return
@@ -52,7 +52,7 @@ public class ValidatorAspect {
     }
 
     /**
-     * Execute the around with valition contraints.
+     * Execute the around with valition contraints for attributes.
      * 
      * @param point The object that support around advice in @AJ aspects
      * @return The metho's return
