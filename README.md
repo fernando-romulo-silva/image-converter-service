@@ -30,7 +30,7 @@ It's very simple application, just a controller and a service:
 To start, clone it:
 
 ```bash
-$ git clone https://github.com/fernando-romulo-silva/image-converter-service
+git clone https://github.com/fernando-romulo-silva/image-converter-service
 ```
 
 # How to Execute
@@ -48,7 +48,7 @@ Please get this project before continuing.
 ## Build application
 
 ```bash
-$ mvn package -DskipTests
+mvn package -DskipTests
 ```
 
 ## Using Docker
@@ -56,21 +56,21 @@ $ mvn package -DskipTests
 First check your docker version:
 
 ```bash
-$ docker version
+docker version
 ```
 
 Then build the image:
 
 ```bash 
-$ export DOCKER_BUILDKIT=1
+export DOCKER_BUILDKIT=1
 
-$ docker build --file src/main/docker/Dockerfile --tag image-service-converter-iso .
+docker build --file src/main/docker/Dockerfile --tag image-service-converter-iso .
 ```
 
 To run the project:
 
 ```bash 
-$ docker run --publish 8080:8080 --detach --name image-converter-service-1 --env-file src/main/docker/Dockerfile.env image-converter-service-iso
+docker run --publish 8080:8080 --detach --name image-converter-service-1 --env-file src/main/docker/Dockerfile.env image-converter-service-iso
 ```
 
 ## Using Java Local
@@ -80,25 +80,25 @@ Requirements:
 1) Java 17
 
 ```bash
-$ java -version 
+java -version 
 ```
 
 2) Maven 3
 
 ```bash
-$ mvn --version
+mvn --version
 ```
 
 3) Ant 1.10 (optional)
 
 ```bash
-$ ant -version
+ant -version
 ```
 
 4) Tesseract >= 4
  
 ```bash
-$ tesseract --version
+tesseract --version
 ```
 
 Tesseract needs a dictionary and the application use the English dictionary called 'eng.traineddata.'
