@@ -40,7 +40,7 @@ To execute, please folow these steps:
 
 ## Get parent's project
 
-This project use the [allset-java](https://github.com/fernando-romulo-silva/allset-java) to use plugins and configurations. 
+This project use the [allset-java](https://github.com/fernando-romulo-silva/allset-java) project to use plugins and configurations. 
 
 Please get this project before continuing.
 

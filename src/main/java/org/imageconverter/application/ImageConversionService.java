@@ -40,7 +40,7 @@ public class ImageConversionService {
      * @param newRepository ImageCoversion repository
      */
     @Autowired
-    public ImageConversionService(final ImageConvertionRepository newRepository) {
+    ImageConversionService(final ImageConvertionRepository newRepository) {
 	super();
 	this.repository = newRepository;
     }
