@@ -61,26 +61,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Test the image type controller, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-class ImageTypeRestControllerHappyPathTest {
-
-    // JSqlParser
-    // @Value("classpath:db/db-data-test.sql")
-    // private Resource dbDataTest;
-
-    // @Value("classpath:image.png")
-    // private Resource imageFile;
-
-    private final ObjectMapper mapper;
-
-    private final MockMvc mvc;
+class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHappyPathBaseTest {
 
     private final CreateImageTypeRequest createImageTypeRequest;
 
     @Autowired
     ImageTypeRestControllerHappyPathTest(final ObjectMapper mapper, final MockMvc mvc) {
-	super();
-	this.mapper = mapper;
-	this.mvc = mvc;
+	super(mapper, mvc);
 	this.createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
     }
 

@@ -13,6 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 class ImageTypeRestControllerUnHappyPathBaseTest {
 
+    // JSqlParser
+    // @Value("classpath:db/db-data-test.sql")
+    // private Resource dbDataTest;
+
+    // @Value("classpath:image.png")
+    // private Resource imageFile;
+    
     protected final ObjectMapper mapper;
     
     protected final MockMvc mvc;

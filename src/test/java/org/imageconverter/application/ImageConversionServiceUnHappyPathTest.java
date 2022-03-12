@@ -1,5 +1,6 @@
 package org.imageconverter.application;
 
+import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.imageconverter.domain.convertion.ExecutionType.WEB;
 import static org.imageconverter.domain.convertion.ExecutionType.WS;
@@ -76,6 +77,7 @@ class ImageConversionServiceUnHappyPathTest {
     void findImageConvertionByInvalidIdTest(final Long id) {
 
 	assertThatThrownBy(() -> imageConversionService.findById(id)) //
+			.as(format("Check invalid values of id ''{0}''", id)) //
 			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
 
     }
@@ -107,7 +109,8 @@ class ImageConversionServiceUnHappyPathTest {
 
 	    imageConversionService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists));
 
-	}).isInstanceOf(ElementInvalidException.class);
+	}).as(format("Check invalid Specification")) //
+			.isInstanceOf(ElementInvalidException.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------
@@ -138,7 +141,8 @@ class ImageConversionServiceUnHappyPathTest {
 
 	    imageConversionService.convert(request);
 
-	}).isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+	}).as(format("Check invalid request ''{0}''", request)) //
+			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------
@@ -177,7 +181,8 @@ class ImageConversionServiceUnHappyPathTest {
 
 	    imageConversionService.convert(request);
 
-	}).isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+	}).as(format("Check invalid request area ''{0}''", request)) //
+			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
 
     }
 }

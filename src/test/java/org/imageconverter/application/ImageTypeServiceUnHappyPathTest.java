@@ -1,5 +1,6 @@
 package org.imageconverter.application;
 
+import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
@@ -59,6 +60,7 @@ class ImageTypeServiceUnHappyPathTest {
     void findImageTypeByIdTest(final Long id) {
 
 	assertThatThrownBy(() -> imageTypeService.findById(id)) //
+			.as(format("Check invalid values of id ''{0}''", id)) //
 			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
 
     }
@@ -75,7 +77,8 @@ class ImageTypeServiceUnHappyPathTest {
 
 	    imageTypeService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists));
 
-	}).isInstanceOf(ElementInvalidException.class);
+	}).as(format("Check invalid Specification")) //
+			.isInstanceOf(ElementInvalidException.class);
     }
 
     Stream<Arguments> createImageTypeInvalidData() throws IOException {
@@ -99,7 +102,8 @@ class ImageTypeServiceUnHappyPathTest {
 
 	    imageTypeService.createImageType(request);
 
-	}).isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+	}).as(format("Check invalid request ''{0}''", request)) //
+			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
 
     }
 
@@ -119,7 +123,8 @@ class ImageTypeServiceUnHappyPathTest {
 
 	    imageTypeService.createImageType(createImageTypeRequestAgain);
 
-	}).isInstanceOfAny(ElementAlreadyExistsException.class);
+	}).as(format("Check if throw an exception on same request ''{0}''", createImageTypeRequest)) //
+			.isInstanceOfAny(ElementAlreadyExistsException.class);
     }
 
     Stream<Arguments> updateImageTypeDoesNotExistData() throws IOException {
@@ -143,7 +148,8 @@ class ImageTypeServiceUnHappyPathTest {
 
 	    imageTypeService.updateImageType(id, request);
 
-	}).isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+	}).as(format("Check if throw a exception on invalid request ''{0}''", request)) //
+			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
     }
 
     @ParameterizedTest
@@ -157,7 +163,8 @@ class ImageTypeServiceUnHappyPathTest {
 
 	    imageTypeService.deleteImageType(id);
 
-	}).isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+	}).as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
+			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
     }
 
     @Test
@@ -171,7 +178,8 @@ class ImageTypeServiceUnHappyPathTest {
 
 	    imageTypeService.deleteImageType(id);
 
-	}).isInstanceOfAny(ElementConflictException.class);
+	}).as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
+			.isInstanceOfAny(ElementConflictException.class);
     }
 
 }

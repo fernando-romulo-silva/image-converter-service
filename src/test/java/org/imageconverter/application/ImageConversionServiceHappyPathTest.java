@@ -80,9 +80,15 @@ class ImageConversionServiceHappyPathTest {
 
 	final var responses = imageConversionService.findAll();
 
-	assertThat(responses).map(imageConverterResponse -> imageConverterResponse.id()).contains(id);
+	assertThat(responses) //
+			.as(format("Check if there's a id ''{0}'' on the result", id))//
+			.map(imageConverterResponse -> imageConverterResponse.id()) //
+			.contains(id);
 
-	assertThat(responses).map(imageConverterResponse -> imageConverterResponse.text()).containsAnyOf(TestConstants.DB_CONVERTION_NUMBER);
+	assertThat(responses) //
+			.as(format("Check if there's a text convertion ''{0}'' on the result", id))//
+			.map(imageConverterResponse -> imageConverterResponse.text()) //
+			.containsAnyOf(TestConstants.DB_CONVERTION_NUMBER);
     }
 
     @Test
@@ -93,15 +99,22 @@ class ImageConversionServiceHappyPathTest {
 	// already on db, due to the db-data-test.sql
 	final var fileName = "image_test.jpg";
 
-	// Specification<ImageConvertion> spec = (rt, cq, cb) -> cb.equal(rt.get("fileName"), fileName);
+	// Specification<ImageConvertion> equalsFileName = (rt, cq, cb) -> cb.equal(rt.get("fileName"), fileName);
 
 	final var responses1 = imageConversionService.findBySpecification(equalsFileName(fileName));
 
-	assertThat(responses1).map(imageConverterResponse -> imageConverterResponse.fileName()).containsAnyOf(fileName);
+	assertThat(responses1) //
+			.as(format("Check if there's a response file name ''{0}'' on the result", fileName))//
+			.map(imageConverterResponse -> imageConverterResponse.fileName()) //
+			.containsAnyOf(fileName);
 
 	final var responses2 = imageConversionService.findBySpecification(null);
 
-	assertThat(responses2).hasSize(1);
+	final var responseQty = 1;
+
+	assertThat(responses2) //
+			.as(format("Check if the resutl's qty is ''{0}''", responseQty))//
+			.hasSize(responseQty);
     }
 
     static Specification<ImageConvertion> equalsFileName(final String fileName) {
@@ -119,9 +132,12 @@ class ImageConversionServiceHappyPathTest {
 
 	final var response = imageConversionService.convert(request);
 
-	assertThat(response.id()).isGreaterThan(LONG_ZERO);
+	assertThat(response.id()) //
+			.as(format("Check if the response's id is greater than Zero ''{0}''", response.id()))//
+			.isGreaterThan(LONG_ZERO);
 
 	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
+			.as(format("Check if the response's text is equal to ''{0}''", TestConstants.IMAGE_PNG_CONVERTION_NUMBER))//
 			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
     }
 
@@ -136,9 +152,12 @@ class ImageConversionServiceHappyPathTest {
 
 	final var response = imageConversionService.convert(request);
 
-	assertThat(response.id()).isGreaterThan(LONG_ZERO);
+	assertThat(response.id()) //
+			.as(format("Check if the response's id is greater than Zero ''{0}''", response.id()))//
+			.isGreaterThan(LONG_ZERO);
 
 	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
-			.isEqualTo(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
+			.as(format("Check if the response's text is equal to ''{0}''", TestConstants.IMAGE_PNG_CONVERTION_NUMBER))//
+			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
     }
 }

@@ -1,5 +1,6 @@
 package org.imageconverter.application;
 
+import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
@@ -56,7 +57,7 @@ class ImageTypeServiceHappyPathTest {
 	final var result = imageTypeService.findById(id);
 
 	assertThat(result.id()) //
-			.as("Check response id is equal to '" + id + "'") //
+			.as(format("Check response id is equal to ''{0}''", id)) //
 			.isEqualTo(id);
     }
 
@@ -71,7 +72,7 @@ class ImageTypeServiceHappyPathTest {
 	final var responses = imageTypeService.findAll();
 
 	assertThat(responses) //
-			.as("Responses contains id '" + id + "'") //
+			.as(format("Check if responses contains id ''{0}''", id)) //
 			.map(imageTypeResponse -> imageTypeResponse.id()) //
 			.contains(id);
 
@@ -96,7 +97,7 @@ class ImageTypeServiceHappyPathTest {
 	final var responses1 = imageTypeService.findBySpecification(equalsExtension(extension));
 
 	assertThat(responses1) //
-			.as("Response1 contains the extension '" + extension + "'") //
+			.as(format("Check if response1 contains the extension  ''{0}''", extension)) //
 			.map(imageTypeResponse -> imageTypeResponse.extension()) //
 			.containsAnyOf(extension);
 
@@ -119,8 +120,8 @@ class ImageTypeServiceHappyPathTest {
 	final var response = imageTypeService.createImageType(createImageTypeRequest);
 
 	assertThat(response) //
-			.as("Response is not null and has extension '" + createImageTypeRequest.extension() + "' and name '" + createImageTypeRequest.name() + "'") //
 			.isNotNull() //
+			.as(format("Check if response is not null and has extension ''{0}'' and name ''{1}'' ", createImageTypeRequest.extension(), createImageTypeRequest.name())) //
 			.hasFieldOrPropertyWithValue("extension", createImageTypeRequest.extension()) //
 			.hasFieldOrPropertyWithValue("name", createImageTypeRequest.name()) //
 	;
@@ -138,14 +139,14 @@ class ImageTypeServiceHappyPathTest {
 	final var updateResponse = imageTypeService.updateImageType(createResponse.id(), newTypeRequest);
 
 	assertThat(updateResponse) //
-			.as("Update response not changed id '" + createResponse.id() + "' and extension '" + createResponse.extension() + "'") //
 			.isNotNull() //
+			.as(format("Update response not changed id ''{0}'' and extension ''{1}'' ", createResponse.id(), createResponse.extension())) //
 			.hasFieldOrPropertyWithValue("id", createResponse.id()) //
 			.hasFieldOrPropertyWithValue("extension", createResponse.extension()); //
 
 	assertThat(updateResponse.name()) //
-			.as("Update response changed name '" + updateResponse.name() + "'") //
 			.isNotEmpty() //
+			.as(format("Update response changed name ''{0}'' ", updateResponse.name())) //
 			.isNotEqualTo(createResponse.name()).isEqualTo(newTypeRequest.name());
     }
 
@@ -159,7 +160,8 @@ class ImageTypeServiceHappyPathTest {
 	final var findByIdResponse = imageTypeService.findById(createResponse.id());
 
 	assertThat(findByIdResponse.id()) //
-			.as("Check the imageType was created").isEqualTo(createResponse.id());
+			.as(format("Check the imageType with id ''{0}'' was created", createResponse.id()))//
+			.isEqualTo(createResponse.id());
 
 	// ----------------------------------------------------------
 
@@ -172,7 +174,7 @@ class ImageTypeServiceHappyPathTest {
 	    imageTypeService.findById(createResponse.id()); //
 
 	}) //
-			.as("Check the imageType was deleted") //
+			.as(format("Check the imageType with id ''{0}'' was deleted", createResponse.id()))//
 			.isInstanceOfAny(ElementNotFoundException.class);
     }
 }
