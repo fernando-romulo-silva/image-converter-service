@@ -1,6 +1,7 @@
 package org.imageconverter.domain.imagetype;
 
 import static com.jparams.verifier.tostring.NameStyle.SIMPLE_NAME;
+import static java.text.MessageFormat.format;
 import static java.util.Optional.ofNullable;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static nl.jqno.equalsverifier.Warning.NONFINAL_FIELDS;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.persistence.Column;
@@ -109,39 +111,60 @@ class ImageTypeHappyPathTest {
 
 	final var imageType = new ImageType(extension, name, description);
 
-	assertThat(imageType.getName()).isEqualToIgnoringCase(name);
+	assertThat(imageType) //
+			.as(format("Check the name ''{0}'', extension ''{1}'' and description ''{3}''", name, extension, description)) //
+			.extracting("name", "extension", "description") //
+			.containsExactly(name, extension, ofNullable(description)) //
+	;
 
-	assertThat(imageType.getExtension()).isEqualToIgnoringCase(extension);
+	final var now = LocalDateTime.now();
 
-	assertThat(imageType.getDescription()).isEqualTo(ofNullable(description));
-	
-	assertThat(imageType.getCreated()).isBeforeOrEqualTo(LocalDateTime.now());
+	assertThat(imageType.getCreated()) //
+			.as(format("Check the dt created is before or equal to ''{0}''", now)) //
+			.isBeforeOrEqualTo(now);
     }
-    
-    
+
     @Test
     @Order(4)
     @DisplayName("Test the imageTypes update")
     void updateValidImageTypeTest() {
 
-	final var imageType = new ImageType("png", "PNG", "Portable Network Graphics");
+	final var extension = "png";
+	final var name = "PNG";
+	final var description = "Portable Network Graphics";
 
-	final var extension = "png_new"; 
-	
-	final var name = "PNG_NEW";
-	
-	final var description = "new Description";
-	
-	assertThat(imageType.getName()).isNotEqualTo(name);
-	
-	assertThat(imageType.getUpdated()).isEmpty();
-	
-	imageType.update(null, name, null);
-	
-	imageType.update(extension, null, null);
-	
-	imageType.update(null, null, description);
-	
-	assertThat(imageType.getUpdated().get()).isBeforeOrEqualTo(LocalDateTime.now());
+	final var imageType = new ImageType(extension, name, description);
+
+	final var newExtension = "png_new";
+
+	final var newName = "PNG_NEW";
+
+	final var newDescription = "new Description";
+
+	final LocalDateTime localDateTime = null;
+
+	assertThat(imageType) //
+			.as(format("Check if name ''{0}'' is not changed and updated is empty", imageType.getName())) //
+			.extracting("updated", "name") //
+			.containsExactly(ofNullable(localDateTime), name) //
+	;
+
+	imageType.update(null, newName, null);
+
+	imageType.update(newExtension, null, null);
+
+	imageType.update(null, null, newDescription);
+
+	assertThat(imageType) //
+			.as(format("Check if updated name ''{0}'' ", imageType.getName())) //
+			.extracting("name", "extension", "description") //
+			.containsExactly(newName, newExtension, Optional.of(newDescription)) //
+	;
+
+	assertThat(imageType.getUpdated().get()) //
+			.as("Check if changed is updated") //
+			.isBeforeOrEqualTo(LocalDateTime.now()) //
+	;
+
     }
 }

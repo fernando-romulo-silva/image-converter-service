@@ -41,7 +41,6 @@ import org.springframework.test.context.jdbc.SqlConfig.ErrorMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -138,7 +137,7 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder(extension))) //
 			.andReturn() //
 	;
-	
+
     }
 
     @Test
@@ -247,14 +246,5 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.andReturn() //
 	;
 
-    }
-
-    String asJsonString(final Object object) {
-
-	try {
-	    return mapper.writeValueAsString(object);
-	} catch (final JsonProcessingException e) {
-	    throw new IllegalStateException(e);
-	}
     }
 }

@@ -1,5 +1,6 @@
 package org.imageconverter.domain.imagetype;
 
+import static java.text.MessageFormat.format;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.imageconverter.util.BeanUtil.defineContext;
@@ -68,7 +69,9 @@ class ImageTypeUnHappyPathTest {
 
 	    new ImageType(extension, name, description);
 
-	}).isInstanceOf(RuntimeException.class);
+	}) //
+	.as(format("Check the invalid extension ''{0}'', name ''{1}'' and description ''{2}'' ", extension, name, description)) //
+	.isInstanceOf(RuntimeException.class);
     }
 
 }

@@ -1,5 +1,6 @@
 package org.imageconverter.domain.convertion;
 
+import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.imageconverter.domain.convertion.ExecutionType.WEB;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -58,7 +60,7 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
     }
 
     Stream<Arguments> createInvalidImageConvertionData() throws IOException {
-	
+
 	final var fileName = mockMultipartFile.getOriginalFilename();
 	final var fileBytes = mockMultipartFile.getBytes();
 
@@ -82,6 +84,8 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
 		    final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 
+	final var area = Objects.nonNull(xAxis) ? "x " + xAxis + ", y " + yAxis + ", width " + width + ", height " + height : "";
+
 	assertThatThrownBy(() -> new ImageConvertion.Builder().with($ -> {
 	    $.fileName = fileName;
 	    $.fileContent = fileContent;
@@ -90,9 +94,9 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 	    $.yAxis = yAxis;
 	    $.width = width;
 	    $.height = height;
-	}).build()
-
-	).isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+	}).build()) //
+			.as(format("Check the invalid fileName ''{0}'', executionType ''{1}'' and area ''{2}'' ", fileName, executionType, area)) //
+			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
 
     }
 }

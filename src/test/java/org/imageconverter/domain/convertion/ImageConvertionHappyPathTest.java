@@ -115,7 +115,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     void createValidImageConvertionTest( //
 		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
 		    final boolean area, final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
-
+	
 	final var imageConvertionBuilder = new ImageConvertion.Builder().with($ -> {
 	    $.fileName = fileName;
 	    $.fileContent = fileContent;
@@ -131,7 +131,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 	final var fileExtension = getExtension(fileName);
 
 	assertThat(imageConvertion) //
-			.as(format(" Check the fileName ''{0}'', executionType ''{1}'', area ''{2}'' and fileExtension ''{3}''", fileName, executionType, area, fileExtension)) //
+			.as(format("Check the fileName ''{0}'', executionType ''{1}'', area ''{2}'' and fileExtension ''{3}''", fileName, executionType, area, fileExtension)) //
 			.extracting("fileName", "type", "area") //
 			.containsExactly(fileName, executionType, area) //
 			.extracting(extension -> imageConvertion.getFileType().getExtension()) //
