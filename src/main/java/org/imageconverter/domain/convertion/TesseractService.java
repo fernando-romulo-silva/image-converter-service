@@ -34,6 +34,7 @@ public class TesseractService {
     /**
      * Convert a file image to text.
      * 
+     * @param fileName  The file's name
      * @param fileBytes A file that will be convert
      * @return A {@link String} object with the conversion
      */
@@ -75,11 +76,12 @@ public class TesseractService {
     /**
      * Convert a file image to text.
      * 
-     * @param file   The image to convert
-     * @param xAxis  The image's x coordinate
-     * @param yAxis  The image's y coordinate
-     * @param width  The image's width in pixels
-     * @param height The image's height in pixels
+     * @param fileName  The file's name
+     * @param fileBytes A file that will be convert
+     * @param xAxis     The image's x coordinate
+     * @param yAxis     The image's y coordinate
+     * @param width     The image's width in pixels
+     * @param height    The image's height in pixels
      * 
      * @return A {@link String} object with the conversion
      */
@@ -92,7 +94,7 @@ public class TesseractService {
 	}
 
 	try {
-	    
+
 	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(fileBytes));
 
 	    return tesseractTess4j.doOCR(bufferedImage, new Rectangle(xAxis, yAxis, width, height));
