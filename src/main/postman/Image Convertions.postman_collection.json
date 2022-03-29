@@ -1,0 +1,248 @@
+{
+	"info": {
+		"_postman_id": "ef3885e3-0d61-412d-a6f8-55c8212ab873",
+		"name": "Image Convertions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Search",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/rest/images/convertion/search?filter=fileName:'image.png'",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"images",
+						"convertion",
+						"search"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "fileName:'image.png'"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Execute Convertion",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CSRF-TOKEN",
+						"value": "604d350c-2184-429a-91fa-6d685129f560",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/image.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/rest/images/convertion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"images",
+						"convertion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Execute Convertion Area",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CSRF-TOKEN",
+						"value": "581ef0ac-0cb1-4e63-952e-9bd0c6850ade",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/rest/images/convertion/area?x=885&y=1417&width=1426&height=57",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"images",
+						"convertion",
+						"area"
+					],
+					"query": [
+						{
+							"key": "x",
+							"value": "885"
+						},
+						{
+							"key": "y",
+							"value": "1417"
+						},
+						{
+							"key": "width",
+							"value": "1426"
+						},
+						{
+							"key": "height",
+							"value": "57"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/rest/images/convertion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"images",
+						"convertion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get By Id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/rest/images/convertion/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"images",
+						"convertion",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
