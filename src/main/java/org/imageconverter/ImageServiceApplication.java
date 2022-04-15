@@ -36,7 +36,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 				url = "https://github.com/fernando-romulo-silva/image-converter-service#readme", //
 				description = "Project's Documentation" //
 		) //
-// servers = @Server( @ServerVariable
+// servers = @Server( @ServerVariable)
 )
 @SecurityScheme( //
 		name = "BASIC", //
