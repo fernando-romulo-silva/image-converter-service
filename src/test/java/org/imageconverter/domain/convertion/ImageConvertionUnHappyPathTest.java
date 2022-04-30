@@ -81,11 +81,13 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
     @Order(1)
     @DisplayName("Test the imageConvertion's creation with invalid values")
     void createInvalidImageConvertionTest( //
+		    // given
 		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
 		    final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 
 	final var area = Objects.nonNull(xAxis) ? "x " + xAxis + ", y " + yAxis + ", width " + width + ", height " + height : "";
 
+	// when
 	assertThatThrownBy(() -> new ImageConvertion.Builder().with($ -> {
 	    $.fileName = fileName;
 	    $.fileContent = fileContent;
@@ -95,8 +97,8 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 	    $.width = width;
 	    $.height = height;
 	}).build()) //
-			.as(format("Check the invalid fileName ''{0}'', executionType ''{1}'' and area ''{2}'' ", fileName, executionType, area)) //
-			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
-
+	// then
+	.as(format("Check the invalid fileName ''{0}'', executionType ''{1}'' and area ''{2}'' ", fileName, executionType, area)) //
+	.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
     }
 }

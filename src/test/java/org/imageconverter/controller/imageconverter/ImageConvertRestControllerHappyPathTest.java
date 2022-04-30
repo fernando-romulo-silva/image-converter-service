@@ -82,17 +82,22 @@ class ImageConvertRestControllerHappyPathTest {
     @DisplayName("find a image convertion by id")
     void findImageConvertionByIdTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// already on db, due to the db-data-test.sql
-	final var id = "1000";
+	// given
+	final var id = "1000"; // already on db, due to the db-data-test.sql
 
-	mvc.perform(get(REST_URL + "/{id}", id) //
+	final var request = get(REST_URL + "/{id}", id) //
 			.accept(APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(id)) //
 			.andExpect(jsonPath("$.text").value(TestConstants.DB_CONVERTION_NUMBER)) //
-			.andReturn() //
 	;
 
     }
@@ -102,16 +107,22 @@ class ImageConvertRestControllerHappyPathTest {
     @DisplayName("find all image convertions")
     void findAllImageConvertionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// get all, the db-data-test.sql
-	mvc.perform(get(REST_URL) //
+	// given
+	final var request = get(REST_URL) //
 			.accept(APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// get all, the db-data-test.sql
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
 			.andExpect(jsonPath("$[*].text").value(containsInAnyOrder(TestConstants.DB_CONVERTION_NUMBER))) //
-			.andReturn() //
 	;
     }
 
@@ -120,19 +131,24 @@ class ImageConvertRestControllerHappyPathTest {
     @DisplayName("find a image convertion by search")
     void findImageTypeByExtensionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// already on db, due to the db-data-test.sql
-	final var fileName = "image_test.jpg";
+	// given
+	final var fileName = "image_test.jpg"; // already on db, due to the db-data-test.sql
 
-	mvc.perform(get(REST_URL + "/search") //
+	final var request = get(REST_URL + "/search") //
 			.param("filter", "fileName:'" + fileName + "'") //
 			.accept(APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
 			.andExpect(jsonPath("$[*].file_name").value(containsInAnyOrder(fileName))) //
-			.andReturn() //
 	;
     }
 
@@ -142,19 +158,25 @@ class ImageConvertRestControllerHappyPathTest {
     @Sql(statements = "DELETE FROM image_convertion ")
     void convertTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception)
 
+	// given
 	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
 
-	// create one
-	final var result = mvc.perform(multipart(REST_URL) //
+	final var request = multipart(REST_URL) //
 			.file(multipartFile) //
 			.accept(APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// create one
+	final var result = mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
 			.andReturn();
 
 	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterResponse.class);
 
+	// then
 	assertThat(response.id()) //
 			.as("Check the response's id is greater than zero") //
 			.isGreaterThan(NumberUtils.LONG_ZERO);
@@ -170,23 +192,29 @@ class ImageConvertRestControllerHappyPathTest {
     @Sql(statements = "DELETE FROM image_convertion ")
     void convertAreaTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception)
 
+	// given
 	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
 
-	// create one
-	final var result = mvc.perform(multipart(REST_URL + "/area") //
+	final var request = multipart(REST_URL + "/area") //
 			.file(multipartFile) //
 			.accept(APPLICATION_JSON) //
 			.param(TestConstants.X_AXIS, TestConstants.X_AXIS_VALUE) //
 			.param(TestConstants.Y_AXIS, TestConstants.Y_AXIS_VALUE) //
 			.param(TestConstants.WIDTH, TestConstants.WIDTH_VALUE) //
 			.param(TestConstants.HEIGHT, TestConstants.HEIGHT_VALUE) //
-			.with(csrf())) //
+			.with(csrf());
+	
+	// create one
+	final var result = mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
 			.andReturn();
 
 	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterResponse.class);
 
+	// then
 	assertThat(response.id()) //
 			.as("Check the response's id is greater than zero") //
 			.isGreaterThan(NumberUtils.LONG_ZERO);

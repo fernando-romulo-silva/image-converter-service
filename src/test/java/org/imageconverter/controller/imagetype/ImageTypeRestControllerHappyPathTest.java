@@ -75,16 +75,21 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
     @DisplayName("get a image type by id")
     void findImageTypeByIdTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// already on db, due to the db-data-test.sql
-	final var id = "1000";
+	// given
+	final var id = "1000"; // already on db, due to the db-data-test.sql
 
-	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+	final var request = get(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
-			.andReturn() //
 	;
     }
 
@@ -93,9 +98,12 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
     @DisplayName("get all image types")
     void findAllImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
+	final var content = asJsonString(createImageTypeRequest);
+
 	// create one
 	mvc.perform(post(REST_URL) //
-			.content(asJsonString(createImageTypeRequest)) //
+			.content(content) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
@@ -104,16 +112,21 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.andExpect(content().string(containsString("created"))) //
 	;
 
-	// get all, the db-data-test.sql has png and jpg image types
-	mvc.perform(get(REST_URL) //
+	final var request = get(REST_URL) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// get all, the db-data-test.sql has png and jpg image types
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
 			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder("png", "jpg", createImageTypeRequest.extension()))) //
-			.andReturn() //
 	;
 
     }
@@ -123,19 +136,24 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
     @DisplayName("get a image type by search")
     void findImageTypeByExtensionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// already on db, due to the db-data-test.sql
-	final var extension = "png";
+	// given
+	final var extension = "png"; // already on db, due to the db-data-test.sql
 
-	mvc.perform(get(REST_URL + "/search") //
+	final var request = get(REST_URL + "/search") //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param("filter", "extension:'" + extension + "'") //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
 			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder(extension))) //
-			.andReturn() //
 	;
 
     }
@@ -156,14 +174,20 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.andExpect(content().string(containsString("created"))) //
 			.andReturn();
 
-	// what's id?
+	// given
 	final var id = StringUtils.substringBetween(result.getResponse().getContentAsString(), "'", "'");
 
-	// check if it exists
-	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+	final var request = get(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// check if it exists
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
 	;
@@ -175,8 +199,11 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
     void updateImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create a new image type
+
+	final var content = asJsonString(createImageTypeRequest);
+
 	final var createResult = mvc.perform(post(REST_URL) //
-			.content(asJsonString(createImageTypeRequest)) //
+			.content(content) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
 			.with(csrf())) //
@@ -188,6 +215,7 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 	// what's id?
 	final var createdId = StringUtils.substringBetween(createResult.getResponse().getContentAsString(), "'", "'");
 
+	// given
 	// create a new values
 	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
 
@@ -201,15 +229,20 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.andExpect(status().isNoContent()) //
 	;
 
-	// check if it updtated
-	mvc.perform(get(REST_URL + ID_PARAM_VALUE, createdId) //
+	final var request = get(REST_URL + ID_PARAM_VALUE, createdId) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// check if it updtated
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath(FILTER_PARAM_ID).value(createdId)) //
 			.andExpect(jsonPath("$.name").value(newTypeRequest.name())) //
-			.andReturn() //
 	;
     }
 
@@ -217,13 +250,16 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
     @Order(6)
     @DisplayName("Delete a new image type")
     void deleteImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
-	// already on db, due to the db-data-test.sql
-	final var id = "1000";
 
-	// check if the image type
-	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+	// given
+	final var id = "1000"; // already on db, due to the db-data-test.sql
+
+	final var request = get(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// check if the image type already exists
+	mvc.perform(request) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
@@ -238,12 +274,13 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 	;
 
 	// check it again
-	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
-			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isNotFound()) //
-			.andReturn() //
 	;
 
     }

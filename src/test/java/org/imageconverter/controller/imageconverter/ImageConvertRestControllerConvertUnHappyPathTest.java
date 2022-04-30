@@ -105,14 +105,20 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @DisplayName("convert the image with unknow extension")
     void tryToConvertTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	mvc.perform(multipart(REST_URL) //
+	// given
+	final var request = multipart(REST_URL) //
 			.file(multipartBeachImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isNotFound()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ImageType with extension jpeg not found"))) //
-			.andReturn() //
 	;
     }
 
@@ -122,32 +128,31 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
     void tryToConvertSameImageTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// create one
-	mvc.perform(multipart(REST_URL_AREA) //
+	// given
+	final var request = multipart(REST_URL_AREA) //
 			.file(multipartBillImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
 			.param(Y_AXIS, Y_AXIS_VALUE) //
 			.param(WIDTH, WIDTH_VALUE) //
 			.param(HEIGHT, HEIGHT_VALUE) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// create one
+	mvc.perform(request) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-			.andReturn();
+	;
 
 	// create another
-	mvc.perform(multipart(REST_URL_AREA) //
-			.file(multipartBillImageFile) //
-			.accept(MediaType.APPLICATION_JSON) //
-			.param(X_AXIS, X_AXIS_VALUE) //
-			.param(Y_AXIS, Y_AXIS_VALUE) //
-			.param(WIDTH, WIDTH_VALUE) //
-			.param(HEIGHT, HEIGHT_VALUE) //
-			.with(csrf())) //
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isConflict()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ElementAlreadyExistsException: ImageConvertion with fileName 'bill.png'"))) //
-			.andReturn() //
 	;
     }
 
@@ -157,15 +162,21 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
     void tryToConvertCorruptedImageTest() throws Exception {// NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// create one
-	mvc.perform(multipart(REST_URL) //
+	// given
+	final var request = multipart(REST_URL) //
 			.file(multipartCorruptedImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// create one
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Image corruptedImage.png has IO error: 'IIOException: Image width <= 0!'"))) //
-			.andReturn() //
 	;
 
     }
@@ -176,15 +187,21 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
     void tryToConvertEmptyImageTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// create one
-	mvc.perform(multipart(REST_URL) //
+	// given
+	final var request = multipart(REST_URL) //
 			.file(multipartEmptyImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// create one
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isServiceUnavailable()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Image emptyImage.png has Tessarct error: 'IllegalArgumentException: image == null!'"))) //
-			.andReturn() //
 	;
     }
 
@@ -194,18 +211,25 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
     void tryToConvertCorruptedImageAreaTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	mvc.perform(multipart(REST_URL_AREA) //
+	// given
+	final var request = multipart(REST_URL_AREA) //
 			.file(multipartCorruptedImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
 			.param(Y_AXIS, Y_AXIS_VALUE) //
 			.param(WIDTH, WIDTH_VALUE) //
 			.param(HEIGHT, HEIGHT_VALUE) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Image corruptedImage.png has IO error: 'IIOException: Image width <= 0!'"))) //
-			.andReturn();
+	;
     }
 
     @Test
@@ -214,17 +238,23 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
     void tryToConvertEmptyImageAreaTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	mvc.perform(multipart(REST_URL_AREA) //
+	// given
+	final var request = multipart(REST_URL_AREA) //
 			.file(multipartEmptyImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
 			.param(Y_AXIS, Y_AXIS_VALUE) //
 			.param(WIDTH, WIDTH_VALUE) //
 			.param(HEIGHT, HEIGHT_VALUE) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isServiceUnavailable()) //
-			.andReturn() //
 	;
 
     }
@@ -234,17 +264,24 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @DisplayName("convert the image with area with parameter null")
     void tryToConvertAreaParameterNullTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	mvc.perform(multipart(REST_URL_AREA) //
+	// given
+	final var request = multipart(REST_URL_AREA) //
 			.file(multipartBeachImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
 			.param(Y_AXIS, Y_AXIS_VALUE) //
 			.param(WIDTH, WIDTH_VALUE) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("MissingServletRequestParameterException: The parameter 'height' is missing"))) //
-			.andReturn();
+	;
 
     }
 
@@ -253,18 +290,25 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
     @DisplayName("convert the image with area with parameter Y invalid")
     void tryToConvertAreaParameterInvalidYTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	mvc.perform(multipart(REST_URL_AREA) //
+	// given
+	final var request = multipart(REST_URL_AREA) //
 			.file(multipartBeachImageFile) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param(X_AXIS, X_AXIS_VALUE) //
 			.param(Y_AXIS, "-1") //
 			.param(WIDTH, WIDTH_VALUE) //
 			.param(HEIGHT, HEIGHT_VALUE) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("The y point must be greater than zero"))) //
-			.andReturn();
+	;
     }
 
 }

@@ -59,11 +59,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerUnHappyPathBaseTest {
 
     private final CreateImageTypeRequest createImageTypeRequest;
-    
+
     @Autowired
     ImageTypeRestControllerUnHappyPathMovTest(final ObjectMapper mapper, final MockMvc mvc) {
 	super(mapper, mvc);
-	this.createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");   
+	this.createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
     }
 
     @Test
@@ -71,27 +71,32 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
     @DisplayName("Create twice the same image type")
     void createSameImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	// create one
-	mvc.perform(post(REST_URL) //
-			.content(asJsonString(createImageTypeRequest)) //
+	final var content = asJsonString(createImageTypeRequest);
+
+	final var request = post(REST_URL) //
+			.content(content) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
 			.andExpect(content().string(containsString("created"))) //
 	;
 
 	// create another
-	mvc.perform(post(REST_URL) //
-			.content(asJsonString(createImageTypeRequest)) //
-			.contentType(MediaType.APPLICATION_JSON) //
-			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isConflict()) // ImageType with extension 'BMP' already exists
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageType with extension '" + createImageTypeRequest.extension() + "' already exists"))) //
-			.andReturn();
+	;
 
     }
 
@@ -100,6 +105,7 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
     @DisplayName("Try to create image type with invalid json")
     void createInvalidImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	// invalid json
 	final var json = """
 			{
@@ -109,16 +115,21 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
 			}
 								""";
 
-	// try to create
-	mvc.perform(post(REST_URL) //
+	final var request = post(REST_URL) //
 			.content(json) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// try to create
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Missing required creator property 'extension'"))) //
-			.andReturn() //
 	;
     }
 
@@ -127,6 +138,7 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
     @DisplayName("Try to create image type with invalid value")
     void createInvalidImageTypeTest2() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	// invalid json
 	final var json = """
 			{
@@ -135,16 +147,21 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
 			    "description": "Device independent bitmap"
 			} """;
 
-	// try to create
-	mvc.perform(post(REST_URL) //
+	final var request = post(REST_URL) //
 			.content(json) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// try to create
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("The 'name' cannot be empty"))) //
-			.andReturn() //
 	;
 
     }
@@ -154,22 +171,27 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
     @DisplayName("Try to update a image type that doesn't exist")
     void updateImageTypeDoesNotExistTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	// what's id?
+	// given
 	final var id = "12345";
 
 	// update values
 	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
 
-	// update the image type that doesn't exist
-	mvc.perform(put(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	final var request = put(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.content(asJsonString(newTypeRequest)) //
 			.contentType(MediaType.APPLICATION_JSON) //
 			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// update the image type that doesn't exist
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isNotFound()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageType with id '" + id + "' not found"))) //
-			.andReturn() //
 	;
     }
 
@@ -178,16 +200,22 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
     @DisplayName("Try to delete a image type that doesn't exist")
     void deleteImageTypeDoesNotExistTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	final var id = "12356";
 
-	// delete the image type
-	mvc.perform(delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	final var request = delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// delete the image type
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isNotFound()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageType with id '" + id + "' not found"))) //
-			.andReturn() //
 	;
     }
 
@@ -196,16 +224,22 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
     @DisplayName("Try to delete a image type that has a relation with other record")
     void deleteImageTypeRestrictionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	final var id = "1001";
 
-	// delete the image type
-	mvc.perform(delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	final var request = delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	// delete the image type
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isConflict()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("You cannot delete the image type '1001' because it is already used"))) //
-			.andReturn() //
 	;
     }
 
@@ -214,16 +248,21 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
     @DisplayName("Try to access a invalid url")
     void invalidUrlTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	mvc.perform(get(REST_URL + "/blablabla") //
+	// given
+	final var request = get(REST_URL + "/blablabla") //
 			.accept(MediaType.ALL, MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isNotFound()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE)
 					.value(containsString("Resource not found. Please check the /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config for more information"))) //
-			.andReturn() //
 	;
-
 
     }
 }

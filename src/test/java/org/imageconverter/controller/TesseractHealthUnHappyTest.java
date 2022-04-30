@@ -48,6 +48,7 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
     @DisplayName("get actuator health invalid status")
     void findActuatorHealthInvalidTest() throws UnsupportedEncodingException {
 
+	// given
 	final var restTemplate = new RestTemplate();
 
 	final var json = """
@@ -57,7 +58,7 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
 
 	final var requestEntityUpdateTesseract = new HttpEntity<String>(json, csrfHeaders());
 	final var responseUpdateTesseract = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
-
+	
 	assertThat(responseUpdateTesseract.getStatusCode()) //
 			.as("Updating the tesseract's configs to wrong values") //
 			.isEqualTo(NO_CONTENT);
@@ -66,13 +67,13 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
 
 	try {
 
+	    // when
 	    restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/health", GET, requestEntity, String.class);
 
 	} catch (final ServiceUnavailable ex) {
 
-	    final var body = ex.getResponseBodyAsString();
-
-	    assertThat(body).as("Check if tesseract is out") //
+	    // then
+	    assertThat(ex.getResponseBodyAsString()).as("Check if tesseract is out") //
 			    .contains("\"status\":\"DOWN\"") //
 			    .contains("\"tesseract\":{\"status\":\"DOWN\"");
 	}
@@ -83,6 +84,7 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
     @DisplayName("get actuator tesseract fail status")
     void findActuatorTesseractInvalidTest() throws UnsupportedEncodingException {
 
+	// given
 	final var restTemplate = new RestTemplate();
 
 	final var json = """
@@ -100,11 +102,12 @@ class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
 			.isEqualTo(NO_CONTENT);
 
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
+	
+	// when
 	final var response = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", GET, requestEntity, String.class);
 
-	final var body = response.getBody();
-
-	assertThat(body).as("Check the wrong tesseract values") //
+	// then
+	assertThat(response.getBody()).as("Check the wrong tesseract values") //
 			.contains("\"tesseractInit\":\"FAIL\"") //
 			.contains("\"tesseractVersion\":\"4.11\"") //
 			.contains("\"tesseractLanguage\":\"pt\"") //

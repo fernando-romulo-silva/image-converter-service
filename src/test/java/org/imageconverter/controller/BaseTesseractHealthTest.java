@@ -24,7 +24,7 @@ public class BaseTesseractHealthTest {
 
     @Autowired
     protected CsrfTokenRepository httpSessionCsrfTokenRepository;
-
+    
     /**
      * Create headers with basic authentication
      * 

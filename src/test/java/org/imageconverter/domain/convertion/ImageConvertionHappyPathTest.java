@@ -101,7 +101,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
 	final var fileName = mockMultipartFile.getOriginalFilename();
 	final var fileBytes = mockMultipartFile.getBytes();
-	
+
 	return Stream.of( //
 			Arguments.of(fileName, fileBytes, WEB, false, null, null, null, null), //
 			Arguments.of(fileName, fileBytes, WS, true, 885, 1417, 1426, 57) //
@@ -113,9 +113,11 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
     @Order(3)
     @DisplayName("Test the imageConvertion's creation")
     void createValidImageConvertionTest( //
+		    // given
 		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
 		    final boolean area, final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
-	
+
+	// when
 	final var imageConvertionBuilder = new ImageConvertion.Builder().with($ -> {
 	    $.fileName = fileName;
 	    $.fileContent = fileContent;
@@ -130,6 +132,7 @@ class ImageConvertionHappyPathTest extends ImageConvertionConfigTest {
 
 	final var fileExtension = getExtension(fileName);
 
+	// then
 	assertThat(imageConvertion) //
 			.as(format("Check the fileName ''{0}'', executionType ''{1}'', area ''{2}'' and fileExtension ''{3}''", fileName, executionType, area, fileExtension)) //
 			.extracting("fileName", "type", "area") //

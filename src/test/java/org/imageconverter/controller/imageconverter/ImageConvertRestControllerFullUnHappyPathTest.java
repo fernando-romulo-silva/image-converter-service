@@ -65,6 +65,7 @@ class ImageConvertRestControllerFullUnHappyPathTest extends BaseTesseractHealthT
 
 	final var restTemplate = new RestTemplate();
 
+	// given
 	// ---------------------------------------------------------------------------------------------------------------
 	final var requestEntityGetTypes = new HttpEntity<String>(basicAuthHeaders());
 	final var responseGetTypes = restTemplate.exchange("http://127.0.0.1:" + serverPort + REST_URL, GET, requestEntityGetTypes, String.class);
@@ -110,13 +111,13 @@ class ImageConvertRestControllerFullUnHappyPathTest extends BaseTesseractHealthT
 
 	try {
 
+	    // when
 	    restTemplate.exchange("http://127.0.0.1:" + serverPort + REST_URL + "?trace=true", POST, request, String.class);
 
 	} catch (final InternalServerError ex) {
 
-	    final var result = ex.getResponseBodyAsString();
-
-	    assertThat(result) //
+	    // then
+	    assertThat(ex.getResponseBodyAsString()) //
 			    .as("Check the error while converting") //
 			    .contains("TesseractNotSetException: Tessarct configuration is invalid: folder /blabla, language: pt and dpi 90") //
 			    .contains("\"status\":500");

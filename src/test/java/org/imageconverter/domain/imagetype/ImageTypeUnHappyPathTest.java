@@ -63,13 +63,16 @@ class ImageTypeUnHappyPathTest {
     @MethodSource("createInvalidImageTypeData")
     @Order(1)
     @DisplayName("Test the imageTypes creation with invalid values")
-    void createInvalidImageTypeTest(final String name, final String extension, final String description) {
+    void createInvalidImageTypeTest(
+		    // given
+		    final String name, final String extension, final String description) {
 
+	// when
 	assertThatThrownBy(() -> {
 
 	    new ImageType(extension, name, description);
 
-	}) //
+	}) // then 
 	.as(format("Check the invalid extension ''{0}'', name ''{1}'' and description ''{2}'' ", extension, name, description)) //
 	.isInstanceOf(RuntimeException.class);
     }

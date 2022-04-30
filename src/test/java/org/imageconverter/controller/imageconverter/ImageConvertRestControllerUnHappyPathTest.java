@@ -71,15 +71,21 @@ class ImageConvertRestControllerUnHappyPathTest {
     @DisplayName("Try to get a image convertion that not exists")
     void tryToGetImageConvertionByIdTest() throws Exception {// NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	final var id = "1234";
 
-	mvc.perform(get(REST_URL + ID_PARAM_VALUE, id) //
+	final var request = get(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isNotFound()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageConvertion with id '" + id + "' not found"))) //
-			.andReturn() //
 	;
 
     }
@@ -89,16 +95,22 @@ class ImageConvertRestControllerUnHappyPathTest {
     @DisplayName("Search a image convertion that not exists by search")
     void tryToGetImageConvertionBySearchTest() throws Exception {// NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	final var fileName = "some_file.png";
 
-	mvc.perform(get(REST_URL + "/search") //
+	final var request = get(REST_URL + "/search") //
 			.param("filter", "fileName:'" + fileName + "'") //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(content().string("[]")) //
-			.andReturn() //
 	;
 
     }
@@ -108,16 +120,22 @@ class ImageConvertRestControllerUnHappyPathTest {
     @DisplayName("Search a image convertion by invalid field search")
     void tryToGetImageConvertionByInvalidFieldSearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	final var fileName = "some_file.png";
 
-	mvc.perform(get(REST_URL + "/search") //
+	final var request = get(REST_URL + "/search") //
 			.param("filter", "fileName:'" + fileName + "' and fieldNotExist:'blablabla'") //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Unable to locate Attribute with the the given name 'fieldNotExist' on ImageConvertion"))) //
-			.andReturn() //
 	;
 
     }

@@ -63,15 +63,21 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
     @DisplayName("Search a image type that doesn't exist by id")
     void findImageTypeByIdTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
+	// given
 	final var id = "1234";
 
-	mvc.perform(get(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	final var request = get(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request)
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isNotFound()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageType with id '" + id + "' not found"))) //
-			.andReturn() //
 	;
 
     }
@@ -81,16 +87,20 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
     @DisplayName("Search a image type that not exists by search")
     void findImageTypeBySearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	final var extension = "bmp";
-
-	mvc.perform(get(REST_URL + "/search") //
+	// given
+	final var request = get(REST_URL + "/search") //
 			.accept(MediaType.APPLICATION_JSON) //
-			.param("filter", "extension:'" + extension + "'") //
-			.with(csrf())) //
+			.param("filter", "extension:'bmp'") //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isOk()) //
 			.andExpect(content().string("[]")) //
-			.andReturn() //
 	;
 
     }
@@ -100,14 +110,20 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
     @DisplayName("Search a image type by invalid search")
     void findImageTypeBySearchInvalidSearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
-	mvc.perform(get(REST_URL + "/search") //
+	// given
+	final var request = get(REST_URL + "/search") //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param("filter", "invalidField:'bmp'") //
-			.with(csrf())) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
 			.andDo(print()) //
+			//
+			// then
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Unable to locate Attribute with the the given name 'invalidField' on ImageType"))) //
-			.andReturn() //
 	;
 
     }

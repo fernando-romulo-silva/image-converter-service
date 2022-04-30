@@ -109,19 +109,22 @@ class ImageTypeHappyPathTest {
     @DisplayName("Test the imageTypes creation")
     void createValidImageTypeTest(final String name, final String extension, final String description) {
 
+	// given
+	final var now = LocalDateTime.now();
+	
+	// when
 	final var imageType = new ImageType(extension, name, description);
 
+	// then
 	assertThat(imageType) //
 			.as(format("Check the name ''{0}'', extension ''{1}'' and description ''{3}''", name, extension, description)) //
 			.extracting("name", "extension", "description") //
 			.containsExactly(name, extension, ofNullable(description)) //
 	;
 
-	final var now = LocalDateTime.now();
-
 	assertThat(imageType.getCreated()) //
 			.as(format("Check the dt created is before or equal to ''{0}''", now)) //
-			.isBeforeOrEqualTo(now);
+			.isAfterOrEqualTo(now);
     }
 
     @Test
@@ -129,6 +132,7 @@ class ImageTypeHappyPathTest {
     @DisplayName("Test the imageTypes update")
     void updateValidImageTypeTest() {
 
+	// given
 	final var extension = "png";
 	final var name = "PNG";
 	final var description = "Portable Network Graphics";
@@ -149,12 +153,16 @@ class ImageTypeHappyPathTest {
 			.containsExactly(ofNullable(localDateTime), name) //
 	;
 
+	
+	// when
 	imageType.update(null, newName, null);
 
 	imageType.update(newExtension, null, null);
 
 	imageType.update(null, null, newDescription);
 
+	
+	// then
 	assertThat(imageType) //
 			.as(format("Check if updated name ''{0}'' ", imageType.getName())) //
 			.extracting("name", "extension", "description") //

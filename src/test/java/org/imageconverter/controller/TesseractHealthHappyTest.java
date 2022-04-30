@@ -52,12 +52,15 @@ class TesseractHealthHappyTest extends BaseTesseractHealthTest {
     @DisplayName("get actuator health status")
     void findActuatorHealthTest() throws UnsupportedEncodingException {
 
+	// given
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
+	
+	// when
 	final var response = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/health", GET, requestEntity, String.class);
-
 	final var body = response.getBody();
 
+	// then
 	assertThat(body).as("Check if tesseract status is ok") //
 			.contains("\"status\":\"UP\"") //
 			.contains("\"tesseract\":{\"status\":\"UP\"}");
@@ -68,12 +71,15 @@ class TesseractHealthHappyTest extends BaseTesseractHealthTest {
     @DisplayName("get actuator tesseract status")
     void findActuatorTesseractTest() throws UnsupportedEncodingException {
 
+	// given
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
+	
+	// when
 	final var response = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", GET, requestEntity, String.class);
-
 	final var body = response.getBody();
 
+	// then
 	assertThat(body).as("Check the tesseract properties") //
 			.contains("\"tesseractInit\":\"SUCCESSFUL\"") //
 			.contains("\"tesseractVersion\":\"4.11\"") //
@@ -87,10 +93,14 @@ class TesseractHealthHappyTest extends BaseTesseractHealthTest {
     @DisplayName("post actuator refresh")
     void postActuatorRefreshTest() throws UnsupportedEncodingException {
 
+	// given
 	final var restTemplate = new RestTemplate();
 	final var requestEntity = new HttpEntity<>(csrfHeaders());
+	
+	// when
 	final var response = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + "/actuator/refresh", requestEntity, Void.class);
 
+	// then
 	assertThat(response.getStatusCode()) //
 			.as("Check the updating tesseract configs") //
 			.isEqualTo(OK);
