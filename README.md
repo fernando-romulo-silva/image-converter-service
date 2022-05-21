@@ -42,8 +42,14 @@ To execute, please folow these steps:
 
 This project use the [allset-java](https://github.com/fernando-romulo-silva/allset-java) parent maven project to use plugins and configurations. 
 
-Please get this project before continuing.
+Please get this project and install it on your repository before continuing.
 
+
+## Get extension's project
+
+This project use the [default-extensions](https://github.com/fernando-romulo-silva/default-extensions) to use plugins configurations (checkstyle-checks.xml, pmd-ruleset.xml, spotbugs-excludes.xml, etc).
+
+Please get this project and install it on your repository before continuing.
 
 ## Build application
 
