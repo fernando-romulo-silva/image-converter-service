@@ -10,6 +10,8 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.domain.convertion.ImageConvertion;
 import org.imageconverter.infra.exceptions.ElementNotFoundException;
@@ -141,11 +143,17 @@ public class ImageConverterRestController {
     public ImageConverterResponse convert( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true, example = "image.bmp") //
 		    @RequestParam(name = "file", required = true) //
-		    final MultipartFile file) {
-
+		    final MultipartFile file,
+		    //
+		    final HttpServletResponse response) {
+	
 	final var bytes = extractBytes(file);
-
-	return imageConversionService.convert(new ImageConverterRequest(file.getOriginalFilename(), bytes, WS));
+	
+	final var result = imageConversionService.convert(new ImageConverterRequest(file.getOriginalFilename(), bytes, WS));
+	
+	response.addHeader("Location", REST_URL + "/" + result.id());
+	
+	return result;
     }
 
     /**
@@ -181,11 +189,17 @@ public class ImageConverterRestController {
 		    //
 		    @Parameter(description = "The height's size area ", required = true, example = "345") //
 		    @RequestParam(required = true) //
-		    final Integer height) {
+		    final Integer height,
+		    //
+		    final HttpServletResponse response) {
 
 	final byte[] bytes = extractBytes(file);
 
-	return imageConversionService.convert(new ImageConverterRequestArea(file.getOriginalFilename(), bytes, WS, xAxis, yAxis, width, height));
+	final var result = imageConversionService.convert(new ImageConverterRequestArea(file.getOriginalFilename(), bytes, WS, xAxis, yAxis, width, height));
+	
+	response.addHeader("Location", REST_URL + "/" + result.id());
+	
+	return result;
     }
 
     private byte[] extractBytes(final MultipartFile file) {

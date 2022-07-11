@@ -1,6 +1,5 @@
 package org.imageconverter.controller.imagetype;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.TestConstants.FILTER_PARAM_ID;
 import static org.imageconverter.TestConstants.ID_PARAM_VALUE;
@@ -11,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -109,7 +107,6 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-			.andExpect(content().string(containsString("created"))) //
 	;
 
 	final var request = get(REST_URL) //
@@ -171,11 +168,10 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-			.andExpect(content().string(containsString("created"))) //
 			.andReturn();
 
 	// given
-	final var id = StringUtils.substringBetween(result.getResponse().getContentAsString(), "'", "'");
+	final var id = StringUtils.substringAfterLast(result.getResponse().getHeader("Location"), "/");
 
 	final var request = get(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
@@ -209,11 +205,10 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-			.andExpect(content().string(containsString("created"))) //
 			.andReturn();
 
 	// what's id?
-	final var createdId = StringUtils.substringBetween(createResult.getResponse().getContentAsString(), "'", "'");
+	final var createdId = StringUtils.substringAfterLast(createResult.getResponse().getHeader("Location"), "/");
 
 	// given
 	// create a new values

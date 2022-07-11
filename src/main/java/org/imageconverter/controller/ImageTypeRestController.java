@@ -1,6 +1,5 @@
 package org.imageconverter.controller;
 
-import static java.text.MessageFormat.format;
 import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -10,6 +9,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
@@ -143,16 +143,18 @@ public class ImageTypeRestController {
     //
     @ResponseStatus(CREATED)
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
-    public String create(//
+    public void create(//
 		    //
 		    @CreateImageTypeRequestBody //
 		    @Valid //
 		    @RequestBody //
-		    final CreateImageTypeRequest request) {
+		    final CreateImageTypeRequest request,
+		    //
+		    final HttpServletResponse response) {
 
 	final var result = imageTypeService.createImageType(request);
-
-	return format("Image Type ''{0,number,#}'' created", result.id());
+	
+	response.addHeader("Location", REST_URL + "/" + result.id());
     }
 
     /**
