@@ -65,7 +65,7 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Bean
     @Primary
-    public JsonMapper objectMapper() {
+    JsonMapper objectMapper() {
 	final var module = new JavaTimeModule();
 	module.addSerializer(new LocalDateSerializer(DateTimeFormatter.ISO_DATE));
 	module.addSerializer(new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
@@ -84,7 +84,7 @@ public class WebConfig implements WebMvcConfigurer {
      * @return A {@link CommonsMultipartResolver} object
      */
     @Bean
-    public CommonsMultipartResolver multipartResolver() {
+    CommonsMultipartResolver multipartResolver() {
 	final var resolver = new CommonsMultipartResolver();
 	resolver.setDefaultEncoding("utf-8");
 //        resolver.setMaxInMemorySize();

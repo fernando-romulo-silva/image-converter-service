@@ -1,14 +1,15 @@
 package org.imageconverter.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.imageconverter.TestConstants.HTTP_127_0_0_1;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
-import static org.imageconverter.TestConstants.HTTP_127_0_0_1;
 
 import java.io.UnsupportedEncodingException;
 
+import org.imageconverter.config.health.TesseractInfoService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -16,14 +17,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpServerErrorException.ServiceUnavailable;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,7 +32,6 @@ import org.springframework.web.client.RestTemplate;
  * @author Fernando Romulo da Silva
  */
 @ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //

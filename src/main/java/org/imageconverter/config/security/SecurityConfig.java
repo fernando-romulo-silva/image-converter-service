@@ -53,7 +53,7 @@ public class SecurityConfig {
      * @return a {@link HttpFirewall} configured
      */
     @Bean
-    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+    HttpFirewall allowUrlEncodedSlashHttpFirewall() {
 	final var firewall = new StrictHttpFirewall();
 	firewall.setAllowUrlEncodedSlash(true);
 	firewall.setAllowSemicolon(true);
@@ -67,7 +67,7 @@ public class SecurityConfig {
      * @return a {@link CsrfTokenRepository} configured
      */
     @Bean
-    public CsrfTokenRepository httpSessionCsrfTokenRepository() {
+    CsrfTokenRepository httpSessionCsrfTokenRepository() {
 
 	final var repo = new HttpSessionCsrfTokenRepository(); // session
 	repo.setParameterName("_csrf");
@@ -82,7 +82,7 @@ public class SecurityConfig {
      * @return a {@link CsrfTokenRepository} configured
      */
     @Bean
-    public CsrfTokenRepository cookieCsrfTokenRepository() {
+    CsrfTokenRepository cookieCsrfTokenRepository() {
 
 	return CookieCsrfTokenRepository.withHttpOnlyFalse(); // cookie
     }
@@ -93,7 +93,7 @@ public class SecurityConfig {
      * @return a {@link UserDetailsService} configured
      */
     @Bean
-    public UserDetailsService userDetailsService() {
+    UserDetailsService userDetailsService() {
 
 	final var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 

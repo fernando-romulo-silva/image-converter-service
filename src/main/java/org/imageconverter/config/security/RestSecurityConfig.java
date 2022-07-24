@@ -5,7 +5,6 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import org.imageconverter.config.filter.CsrfLoggerFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,7 +38,6 @@ public class RestSecurityConfig {
 
     private final CsrfTokenRepository csrfTokenRepository;
 
-    @Autowired
     RestSecurityConfig( //
 		    final RestAuthenticationSuccessHandler authenticationSuccessHandler, //
 		    final HttpFirewall allowUrlEncodedSlashHttpFirewall, //
@@ -52,7 +50,7 @@ public class RestSecurityConfig {
 
     
     @Bean
-    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
      
 	final var restUrl = "/rest/**";
 	
@@ -101,53 +99,8 @@ public class RestSecurityConfig {
         return http.build();
     }
     
-    protected void configure(final HttpSecurity http) throws Exception {
-
-	final var restUrl = "/rest/**";
-	
-	http.addFilterAfter(new CsrfLoggerFilter(), CsrfFilter.class) //
-			.securityContext() //
-			.and().exceptionHandling() //
-			.and().servletApi() //
-			.and().httpBasic() //
-			//
-			.and().authorizeRequests() //
-			//
-			/*--*/.antMatchers(swaggerUiURL) //
-			/*------*/.permitAll()
-			//
-			/*--*/.antMatchers(GET, restUrl) // /rest/images/type
-			/*------*/.hasAnyRole("USER") // , "GUEST"
-			//
-			/*--*/.antMatchers(POST, restUrl) //
-			/*------*/.hasRole("USER") //
-			//
-//			/*--*/.antMatchers("/actuator/**")
-//			/*------*/.hasRole("ADMIN") 			
-			//
-			/*--*/.antMatchers(DELETE, restUrl) //
-			/*------*/.access("hasRole('ROLE_ADMIN') or hasIpAddress('127.0.0.1') or hasIpAddress('0:0:0:0:0:0:0:1')") //
-			//
-			/*--*/.antMatchers(restUrl) //
-			/*------*/.hasAnyRole("ADMIN", "USER")
-			//
-			.and().formLogin() // disable redirect
-			/*------*/.successHandler(authenticationSuccessHandler) //
-			/*------*/.failureHandler(new SimpleUrlAuthenticationFailureHandler()) //
-			//
-			.and().logout() //
-			/*------*/.logoutSuccessUrl("/") //
-			/*------*/.invalidateHttpSession(true)//
-			/*------*/.clearAuthentication(true)//
-			//
-			.and().csrf() //
-//			/*------*/.disable() //
-			/*------*/.csrfTokenRepository(csrfTokenRepository)//
-			/*------*/.ignoringAntMatchers("/actuator/**");
-    }
-
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
+    WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> { web.ignoring().antMatchers(swaggerUiURL); web.httpFirewall(allowUrlEncodedSlashHttpFirewall);};
     }
 }

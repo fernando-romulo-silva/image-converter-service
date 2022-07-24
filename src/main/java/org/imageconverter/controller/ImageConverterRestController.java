@@ -24,7 +24,6 @@ import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetByIdO
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetBySearchOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostAreaOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostOpenApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -72,7 +71,6 @@ public class ImageConverterRestController {
      * 
      * @param imageConversionService The image convert service
      */
-    @Autowired
     ImageConverterRestController(final ImageConversionService imageConversionService) {
 	super();
 	this.imageConversionService = imageConversionService;

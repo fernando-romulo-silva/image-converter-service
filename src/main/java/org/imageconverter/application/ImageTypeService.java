@@ -19,7 +19,6 @@ import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.jpa.domain.Specification;
@@ -42,7 +41,6 @@ public class ImageTypeService {
      * 
      * @param newRepository imageType repository
      */
-    @Autowired
     ImageTypeService(final ImageTypeRespository newRepository) {
 	super();
 	this.repository = newRepository;

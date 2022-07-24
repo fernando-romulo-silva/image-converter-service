@@ -17,7 +17,6 @@ import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,6 @@ public class ImageConversionService {
      * 
      * @param newRepository ImageCoversion repository
      */
-    @Autowired
     ImageConversionService(final ImageConvertionRepository newRepository) {
 	super();
 	this.repository = newRepository;

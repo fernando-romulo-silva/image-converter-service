@@ -26,7 +26,7 @@ public class ImageConfig {
      */
     @Bean
     @RefreshScope
-    public ITesseract tesseractTess4j() {
+    ITesseract tesseractTess4j() {
 
 	final var path = Paths.get(BeanUtil.getPropertyValue("tesseract.folder"));
 

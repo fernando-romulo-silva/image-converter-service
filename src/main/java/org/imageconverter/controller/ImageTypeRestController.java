@@ -27,7 +27,6 @@ import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetBySearchOpenApi
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestPostOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestPutOpenApi;
 import org.imageconverter.util.openapi.imagetype.UpdateImageTypeRequestBody;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -75,7 +74,6 @@ public class ImageTypeRestController {
      * 
      * @param imageConversionService The image type service
      */
-    @Autowired
     ImageTypeRestController(final ImageTypeService imageTypeService) {
 	super();
 	this.imageTypeService = imageTypeService;
