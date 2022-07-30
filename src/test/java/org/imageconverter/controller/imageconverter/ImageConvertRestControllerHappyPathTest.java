@@ -2,6 +2,7 @@ package org.imageconverter.controller.imageconverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -11,6 +12,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imageconverter.TestConstants;
 import org.imageconverter.controller.ImageConverterRestController;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterPostResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -26,7 +28,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,7 +38,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +48,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Fernando Romulo da Silva
  */
 @ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
@@ -172,12 +171,16 @@ class ImageConvertRestControllerHappyPathTest {
 			// when
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
+			.andExpect(header().string("Location", notNullValue())) //
 			.andReturn();
 
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterResponse.class);
+	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterPostResponse.class);
+	
+	final var locationArray = result.getResponse().getHeader("Location").split("/");
+	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
 
 	// then
-	assertThat(response.id()) //
+	assertThat(id) //
 			.as("Check the response's id is greater than zero") //
 			.isGreaterThan(NumberUtils.LONG_ZERO);
 
@@ -210,12 +213,16 @@ class ImageConvertRestControllerHappyPathTest {
 			// when
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
+			.andExpect(header().string("Location", notNullValue())) //
 			.andReturn();
 
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterResponse.class);
+	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterPostResponse.class);
+	
+	final var locationArray = result.getResponse().getHeader("Location").split("/");
+	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
 
 	// then
-	assertThat(response.id()) //
+	assertThat(id) //
 			.as("Check the response's id is greater than zero") //
 			.isGreaterThan(NumberUtils.LONG_ZERO);
 

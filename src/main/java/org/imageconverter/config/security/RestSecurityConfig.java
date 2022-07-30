@@ -48,12 +48,11 @@ public class RestSecurityConfig {
 	this.csrfTokenRepository = httpSessionCsrfTokenRepository;
     }
 
-    
     @Bean
     SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-     
+
 	final var restUrl = "/rest/**";
-	
+
 	http.addFilterAfter(new CsrfLoggerFilter(), CsrfFilter.class) //
 			.securityContext() //
 			.and().exceptionHandling() //
@@ -93,14 +92,17 @@ public class RestSecurityConfig {
 //			/*------*/.disable() //
 			/*------*/.csrfTokenRepository(csrfTokenRepository)//
 			/*------*/.ignoringAntMatchers("/actuator/**");
- 
-        http.headers().frameOptions().sameOrigin();
- 
-        return http.build();
+
+	http.headers().frameOptions().sameOrigin();
+
+	return http.build();
     }
-    
+
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> { web.ignoring().antMatchers(swaggerUiURL); web.httpFirewall(allowUrlEncodedSlashHttpFirewall);};
+	return (web) -> {
+	    web.ignoring().antMatchers(swaggerUiURL);
+	    web.httpFirewall(allowUrlEncodedSlashHttpFirewall);
+	};
     }
 }

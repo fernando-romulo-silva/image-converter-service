@@ -1,4 +1,4 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.actuator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.imageconverter.TestConstants.HTTP_127_0_0_1;

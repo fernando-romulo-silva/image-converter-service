@@ -46,8 +46,8 @@ public class ImageConversionService {
     /**
      * Convert an image on text.
      * 
-     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} 
-     * or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea}) that it'll be convert
+     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea})
+     *                that it'll be convert
      * @return A {@link ImageConverterResponse} with the conversion
      * @exception ElementAlreadyExistsException if image (file name) has already converted
      */
@@ -60,11 +60,9 @@ public class ImageConversionService {
 
 	final var fileName = imageConvertionNew.getFileName();
 
-	final var imageConvertionOptional = repository.findByFileName(fileName);
-
-	if (imageConvertionOptional.isPresent()) {
-	    throw new ElementAlreadyExistsException(ImageConvertion.class, "fileName '" + fileName + "' and with text '" + imageConvertionOptional.get().getText() + "'");
-	}
+	repository.findByFileName(fileName).ifPresent(c -> {
+	    throw new ElementAlreadyExistsException(ImageConvertion.class, "fileName '" + fileName + "' and with text '" + c.getText() + "'");
+	});
 
 	final var imageConvertion = repository.save(imageConvertionNew);
 

@@ -1,4 +1,4 @@
-package org.imageconverter.controller;
+package org.imageconverter.controller.actuator;
 
 import java.io.UnsupportedEncodingException;
 
