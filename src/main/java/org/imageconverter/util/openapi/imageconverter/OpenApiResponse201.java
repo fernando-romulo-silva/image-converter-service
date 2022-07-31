@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterPostResponse;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 		responseCode = "201", //
 		description = "Successful converte image", //
 		content = { //
-			@Content(mediaType = "application/json", schema = @Schema(implementation = ImageConverterResponse.class)) //
+			@Content(mediaType = "application/json", schema = @Schema(implementation = ImageConverterPostResponse.class)) //
 		} //
 )
 @interface OpenApiResponse201 {

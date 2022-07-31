@@ -2,6 +2,7 @@ package org.imageconverter.controller.imageconverter;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.imageconverter.TestConstants.HTTP_127_0_0_1;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.http.ContentDisposition.builder;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -64,7 +65,9 @@ class ImageConvertRestControllerFullUnHappyPathTest extends BaseTesseractHealthT
 	// given
 	// ---------------------------------------------------------------------------------------------------------------
 	final var requestEntityGetTypes = new HttpEntity<String>(basicAuthHeaders());
-	final var responseGetTypes = restTemplate.exchange("http://127.0.0.1:" + serverPort + REST_URL, GET, requestEntityGetTypes, String.class);
+//	final var responseGetTypes = restTemplate.exchange(HTTP_127_0_0_1 + serverPort + REST_URL, GET, requestEntityGetTypes, String.class);
+	final var responseGetTypes = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/health", GET, requestEntityGetTypes, String.class);
+	
 	final var tokenList = responseGetTypes.getHeaders().get("X-CSRF-TOKEN");
 	final var cookies = responseGetTypes.getHeaders().get("Set-Cookie");
 
@@ -77,7 +80,7 @@ class ImageConvertRestControllerFullUnHappyPathTest extends BaseTesseractHealthT
 			}""";
 
 	final var requestEntityUpdateTesseract = new HttpEntity<String>(json, csrfHeaders());
-	final var responseUpdateTesseract = restTemplate.postForEntity("http://127.0.0.1:" + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
+	final var responseUpdateTesseract = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + "/actuator/tesseract", requestEntityUpdateTesseract, String.class);
 
 	assertThat(responseUpdateTesseract.getStatusCode()) //
 			.as("Update tesseract's configs with wrong values") //
@@ -108,7 +111,7 @@ class ImageConvertRestControllerFullUnHappyPathTest extends BaseTesseractHealthT
 	try {
 
 	    // when
-	    restTemplate.exchange("http://127.0.0.1:" + serverPort + REST_URL + "?trace=true", POST, request, String.class);
+	    restTemplate.exchange(HTTP_127_0_0_1 + serverPort + REST_URL + "?trace=true", POST, request, String.class);
 
 	} catch (final InternalServerError ex) {
 

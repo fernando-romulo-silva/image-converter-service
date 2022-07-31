@@ -61,7 +61,7 @@ public class ImageConversionService {
 	final var fileName = imageConvertionNew.getFileName();
 
 	repository.findByFileName(fileName).ifPresent(c -> {
-	    throw new ElementAlreadyExistsException(ImageConvertion.class, "fileName '" + fileName + "' and with text '" + c.getText() + "'");
+	    throw new ElementAlreadyExistsException(ImageConvertion.class, "fileName '" + fileName + "' and with id '" + c.getId() + "'");
 	});
 
 	final var imageConvertion = repository.save(imageConvertionNew);
