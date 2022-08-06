@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.imageconverter.TestConstants.ID_PARAM_VALUE;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -135,6 +136,30 @@ class ImageConvertRestControllerUnHappyPathTest {
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Unable to locate Attribute with the the given name 'fieldNotExist' on ImageConvertion"))) //
 	;
 
+    }
+    
+    @Test
+    @Order(4)
+    @DisplayName("Try to delete a image convertion that doesn't exist")
+    void deleteImageConvertionDoesNotExistTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+
+	// given
+	final var id = "12356";
+
+	final var request = delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+			.accept(MediaType.APPLICATION_JSON) //
+			.with(csrf());
+
+	// delete the image type
+	mvc.perform(request) //
+			//
+			// when
+			.andDo(print()) //
+			//
+			// then
+			.andExpect(status().isNotFound()) //
+			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageConvertion with id '" + id + "' not found"))) //
+	;
     }
 
 }

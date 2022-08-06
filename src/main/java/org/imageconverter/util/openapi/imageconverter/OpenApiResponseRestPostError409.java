@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 									  "timestamp": "2021-12-12T10:47:36.398207503",
 									  "status": 409,
 									  "error": "Conflict",
-									  "message": "ElementAlreadyExistsException: ImageConvertion with fileName 'bill.png' and with text '0339990574' already exists", 
+									  "message": "ElementAlreadyExistsException: ImageConvertion with fileName 'somefile.png' and with text '0339990574' already exists", 
 									  "traceId": "afab49eeb47d3660",
 									  "spanId": "afab49eeb47d3660"
 									}

@@ -3,6 +3,7 @@ package org.imageconverter.controller;
 import static org.imageconverter.domain.convertion.ExecutionType.WS;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -25,9 +26,11 @@ import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetByIdO
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetBySearchOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostAreaOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -199,6 +202,25 @@ public class ImageConverterRestController {
 	response.addHeader("Location", REST_URL + "/" + result.id());
 	
 	return new ImageConverterPostResponse(result.text());
+    }
+    
+    
+    /**
+     * Delete a image convertion.
+     * 
+     * @param id The convertion id
+     */
+    @ImageTypeRestDeleteOpenApi
+    //
+    @ResponseStatus(NO_CONTENT)
+    @DeleteMapping("/{id:[\\d]*}")
+    public void delete( //
+		    //
+		    @Parameter(description = "The convertion id's", example = "1000") //
+		    @PathVariable(name = "id", required = true) //
+		    final Long id) {
+
+	imageConversionService.deleteImageConvertion(id);
     }
 
     private byte[] extractBytes(final MultipartFile file) {

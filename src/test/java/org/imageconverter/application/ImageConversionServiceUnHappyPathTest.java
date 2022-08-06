@@ -82,23 +82,8 @@ class ImageConversionServiceUnHappyPathTest {
 
     }
 
-//    @Test
-//    @Order(2)
-//    @DisplayName("get all image convertions")
-//    public void getAllImageConvertionTest() throws Exception {
-//
-//	// already on db, due to the db-data-test.sql
-//	final var id = 1000L;
-//
-//	final var responses = imageConversionService.findAll();
-//
-//	assertThat(responses).map(f -> f.id()).contains(id);
-//
-//	assertThat(responses).map(f -> f.text()).containsAnyOf(DB_CONVERTION_NUMBER);
-//    }
-
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("get a image convertion by invalid specification")
     void findImageConvertionByInvalidExtensionTest() {
 
@@ -133,7 +118,7 @@ class ImageConversionServiceUnHappyPathTest {
 
     @ParameterizedTest(name = "Pos {index} : request ''{0}'' ")
     @MethodSource("convertInvalidParameterData")
-    @Order(4)
+    @Order(3)
     @DisplayName("convert the image with invalid parameters")
     void convertInvalidParameterTest(final ImageConverterRequest request) throws IOException {
 
@@ -173,7 +158,7 @@ class ImageConversionServiceUnHappyPathTest {
 
     @ParameterizedTest(name = "Pos {index} : request ''{0}'' ")
     @MethodSource("convertAreaInvalidParameterData")
-    @Order(5)
+    @Order(4)
     @DisplayName("convert the image with area")
     void convertAreaInvalidParameterTest(final ImageConverterRequestArea request) {
 
@@ -184,5 +169,20 @@ class ImageConversionServiceUnHappyPathTest {
 	}).as(format("Check invalid request area ''{0}''", request)) //
 			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
 
+    }
+    
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = 1L) // id '1' don't exist
+    @Order(7)
+    @DisplayName("Try to delete a image type that doesn't exist")
+    void deleteImageConvertionDoesNotExistTest(final Long id) {
+
+	assertThatThrownBy(() -> {
+
+	    imageConversionService.deleteImageConvertion(id);
+
+	}).as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
+			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
     }
 }

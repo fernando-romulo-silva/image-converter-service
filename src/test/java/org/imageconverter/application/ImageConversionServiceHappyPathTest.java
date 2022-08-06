@@ -4,6 +4,7 @@ import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import org.imageconverter.TestConstants;
 import org.imageconverter.domain.convertion.ExecutionType;
 import org.imageconverter.domain.convertion.ImageConvertion;
+import org.imageconverter.infra.exceptions.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.junit.jupiter.api.DisplayName;
@@ -159,5 +161,34 @@ class ImageConversionServiceHappyPathTest {
 	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
 			.as(format("Check if the response's text is equal to ''{0}''", TestConstants.IMAGE_PNG_CONVERTION_NUMBER))//
 			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
+    }
+    
+    @Test
+    @Order(6)
+    @DisplayName("Delete a image convertion")
+    void deleteImageTypeTest() throws IOException {
+
+	// given
+	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
+
+	final var request = new ImageConverterRequestArea(multipartFile.getOriginalFilename(), multipartFile.getBytes(), ExecutionType.WEB, 885, 1417, 1426, 57);
+
+	final var createResponse = imageConversionService.convert(request);
+
+	// ----------------------------------------------------------
+
+	// when
+	imageConversionService.deleteImageConvertion(createResponse.id());
+
+	// ----------------------------------------------------------
+
+	// then
+	assertThatThrownBy(() -> {
+
+	    imageConversionService.findById(createResponse.id()); //
+
+	}) //
+			.as(format("Check the ImageConvertion id ''{0}'' was deleted", createResponse.id()))//
+			.isInstanceOfAny(ElementNotFoundException.class);
     }
 }

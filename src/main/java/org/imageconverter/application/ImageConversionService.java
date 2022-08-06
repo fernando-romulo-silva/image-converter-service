@@ -68,6 +68,23 @@ public class ImageConversionService {
 
 	return new ImageConverterResponse(imageConvertion.getId(), imageConvertion.getFileName(), imageConvertion.getText());
     }
+    
+    /**
+     * Delete a convertion image.
+     * 
+     * @param id The image type's id
+     * @exception ElementNotFoundException if convertion (id) doesn't exists
+     */
+    @Transactional
+    public void deleteImageConvertion(@NotNull final Long id) {
+
+	final var imageConvertion = repository.findById(id) //
+			.orElseThrow(() -> new ElementNotFoundException(ImageConvertion.class, id));
+
+	repository.delete(imageConvertion);
+
+	repository.flush();
+    }
 
     /**
      * Find all stored convertions or a empty list.

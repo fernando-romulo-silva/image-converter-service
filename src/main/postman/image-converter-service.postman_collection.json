@@ -1,0 +1,982 @@
+{
+	"info": {
+		"_postman_id": "91225d02-2602-4b0c-9dd7-0c74a9d5e536",
+		"name": "image-converter-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8140164"
+	},
+	"item": [
+		{
+			"name": "pre-execute",
+			"item": [
+				{
+					"name": "Check Server",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Test server's health\", function (){",
+									"",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    // const jsonObject = JSON.parse(responseBody);",
+									"",
+									"    const status = pm.response.json().status;",
+									"",
+									"    if (status != \"UP\") {",
+									"        pm.expect.fail(\"Server is not configured\");",
+									"    }    ",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{ACTUATOR_URL}}/health",
+							"host": [
+								"{{ACTUATOR_URL}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "actuator",
+			"item": [
+				{
+					"name": "Desconfigure Tesseract",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Update tesseract folder\", function (){",
+									"",
+									"    pm.response.to.have.status(204);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"tesseractFolder\": \"/blabla/bla\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ACTUATOR_URL}}/tesseract",
+							"host": [
+								"{{ACTUATOR_URL}}"
+							],
+							"path": [
+								"tesseract"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Test server's health Again\", function (){",
+									"",
+									"    pm.response.to.have.status(503);",
+									"",
+									"    // const jsonObject = JSON.parse(responseBody);",
+									"",
+									"    const status = pm.response.json().status;",
+									"",
+									"    if (status != \"DOWN\") {",
+									"        pm.expect.fail(\"Server is not configured\")",
+									"    }    ",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{ACTUATOR_URL}}/health",
+							"host": [
+								"{{ACTUATOR_URL}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Configurations (Beans)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Refresh Configurations\", function (){",
+									"",
+									"    pm.response.to.have.status(200);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ACTUATOR_URL}}/refresh",
+							"host": [
+								"{{ACTUATOR_URL}}"
+							],
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Configure Tesseract",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Update tesseract folder\", function (){",
+									"",
+									"    pm.response.to.have.status(204);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"tesseractFolder\": \"/home/fernando/Development/tools/tesseract/tessdata/\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ACTUATOR_URL}}/tesseract",
+							"host": [
+								"{{ACTUATOR_URL}}"
+							],
+							"path": [
+								"tesseract"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Status - OnlyTesseract",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Test server's health Again\", function (){",
+									"",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    // const jsonObject = JSON.parse(responseBody);",
+									"",
+									"    const status = pm.response.json().tesseractInit;",
+									"",
+									"    if (status != \"SUCCESSFUL\") {",
+									"        pm.expect.fail(\"Server is OK\")",
+									"    }    ",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ACTUATOR_URL}}/tesseract",
+							"host": [
+								"{{ACTUATOR_URL}}"
+							],
+							"path": [
+								"tesseract"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Configurations (Beans) Again",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Refresh Configurations\", function (){",
+									"",
+									"    pm.response.to.have.status(200);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ACTUATOR_URL}}/refresh",
+							"host": [
+								"{{ACTUATOR_URL}}"
+							],
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "image-types",
+			"item": [
+				{
+					"name": "Get All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get all image types\", function (){",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    pm.expect(pm.response.json().length).to.be.above(0);",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get image types by search\", function (){",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    pm.expect(pm.response.json().length).to.be.above(0);",
+									"",
+									"    pm.expect(pm.response.json()[0].name).to.be.eq(\"PNG\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}/search?filter=extension:'png'",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							],
+							"path": [
+								"search"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "extension:'png'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a image type\", function (){",
+									"    pm.response.to.have.status(201);",
+									"   ",
+									"    const idImageType = pm.response.headers.get('Location').split('/').pop();",
+									"",
+									"    pm.environment.set(\"imageTypeId\", idImageType);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"extension\": \"BMP\",\n    \"name\": \"BitMap\",\n    \"description\": \"Device independent bitmap\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get a image type by id\", function (){",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}/{{imageTypeId}}",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							],
+							"path": [
+								"{{imageTypeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Update a image type\", function(){",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-CSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"extension\": \"BMP\",\n    \"name\": \"BitMapNew\",\n    \"description\": \"Device independent bitmap\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}/{{imageTypeId}}",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							],
+							"path": [
+								"{{imageTypeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Check Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get a image type by id\", function (){",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    const name = pm.response.json().name;",
+									"",
+									"    if (name != \"BitMapNew\") {",
+									"        pm.expect.fail(\"Not changed!\")",
+									"    } ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}/{{imageTypeId}}",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							],
+							"path": [
+								"{{imageTypeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete a image type\", function (){",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-CSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}/{{imageTypeId}}",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							],
+							"path": [
+								"{{imageTypeId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "image-convertions",
+			"item": [
+				{
+					"name": "Get All",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get all image types\", function (){",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    pm.expect(pm.response.json().length).to.be.eq(0);",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_CONVERTION_URL}}",
+							"host": [
+								"{{IMAGE_CONVERTION_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Converter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Execute Converter\", function (){",
+									"    pm.response.to.have.status(201);",
+									"   ",
+									"    const convertionId = pm.response.headers.get('Location').split('/').pop();",
+									"",
+									"    pm.environment.set(\"convertionId\", convertionId);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{IMAGE_CONVERTION_URL}}",
+							"host": [
+								"{{IMAGE_CONVERTION_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get a convertion by id\", function (){",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_CONVERTION_URL}}/{{convertionId}}",
+							"host": [
+								"{{IMAGE_CONVERTION_URL}}"
+							],
+							"path": [
+								"{{convertionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get image types by search\", function (){",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    pm.expect(pm.response.json().length).to.be.above(0);",
+									"",
+									"    pm.expect(pm.response.json()[0].file_name).to.be.eq(\"bill.png\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_CONVERTION_URL}}/search?filter=fileName:'bill.png'",
+							"host": [
+								"{{IMAGE_CONVERTION_URL}}"
+							],
+							"path": [
+								"search"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "fileName:'bill.png'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete a image convertion\", function (){",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-CSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{IMAGE_CONVERTION_URL}}/{{convertionId}}",
+							"host": [
+								"{{IMAGE_CONVERTION_URL}}"
+							],
+							"path": [
+								"{{convertionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Converter With Area",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Execute Converter\", function (){",
+									"    pm.response.to.have.status(201);",
+									"   ",
+									"    const convertionId = pm.response.headers.get('Location').split('/').pop();",
+									"",
+									"    pm.environment.set(\"convertionId\", convertionId);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{IMAGE_CONVERTION_AREA_URL}}?xAxis=885&yAxis=1417&width=1426&height=57",
+							"host": [
+								"{{IMAGE_CONVERTION_AREA_URL}}"
+							],
+							"query": [
+								{
+									"key": "xAxis",
+									"value": "885"
+								},
+								{
+									"key": "yAxis",
+									"value": "1417"
+								},
+								{
+									"key": "width",
+									"value": "1426"
+								},
+								{
+									"key": "height",
+									"value": "57"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get a convertion by id\", function (){",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_CONVERTION_URL}}/{{convertionId}}",
+							"host": [
+								"{{IMAGE_CONVERTION_URL}}"
+							],
+							"path": [
+								"{{convertionId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "clean-data",
+			"item": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{APP_PASSWORD}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{APP_USER}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.environment.set(\"APP_USER\", \"user\");",
+					"pm.environment.set(\"APP_PASSWORD\", \"password\");",
+					"pm.environment.set(\"PROJECT_URL\", \"http://127.0.0.1:8080\");"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

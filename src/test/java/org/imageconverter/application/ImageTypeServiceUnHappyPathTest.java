@@ -66,7 +66,7 @@ class ImageTypeServiceUnHappyPathTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("Get a image type by invalid specification")
     void findImageTypeByInvalidExtensionTest() {
 
@@ -94,7 +94,7 @@ class ImageTypeServiceUnHappyPathTest {
 
     @ParameterizedTest(name = "Pos {index} : request ''{0}'' ")
     @MethodSource("createImageTypeInvalidData")
-    @Order(4)
+    @Order(3)
     @DisplayName("Try to create a invalid image type")
     void createImageTypeInvalidTest(final CreateImageTypeRequest request) {
 
@@ -108,7 +108,7 @@ class ImageTypeServiceUnHappyPathTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     @DisplayName("Create twice the same image type")
     void createSameImageTypeTest() {
 
@@ -140,7 +140,7 @@ class ImageTypeServiceUnHappyPathTest {
 
     @ParameterizedTest(name = "Pos {index} : id ''{0}'', request ''{1}'' ")
     @MethodSource("updateImageTypeDoesNotExistData")
-    @Order(6)
+    @Order(5)
     @DisplayName("Try to update a image type that doesn't exist")
     void updateImageTypeDoesNotExistTest(final Long id, final UpdateImageTypeRequest request) {
 
@@ -155,7 +155,7 @@ class ImageTypeServiceUnHappyPathTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(longs = 1L) // id '1' don't exist
-    @Order(7)
+    @Order(6)
     @DisplayName("Try to delete a image type that doesn't exist")
     void deleteImageTypeDoesNotExistTest(final Long id) {
 
@@ -168,7 +168,7 @@ class ImageTypeServiceUnHappyPathTest {
     }
 
     @Test
-    @Order(8)
+    @Order(7)
     @DisplayName("Try to delete a image type that has a relation with other record")
     void deleteImageTypeRestrictionTest() {
 

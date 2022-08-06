@@ -3,12 +3,15 @@ package org.imageconverter.controller.imageconverter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.imageconverter.TestConstants.FILTER_PARAM_ID;
+import static org.imageconverter.TestConstants.ID_PARAM_VALUE;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,6 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -229,5 +233,67 @@ class ImageConvertRestControllerHappyPathTest {
 	assertThat(StringUtils.deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
 			.as("Check the number string") //
 			.isEqualTo(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
+    }
+    
+    @Test
+    @Order(6)
+    @DisplayName("Delete a new convertion")
+    void deleteImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+
+	// given
+	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
+
+	final var requestCreate = multipart(REST_URL + "/area") //
+			.file(multipartFile) //
+			.accept(APPLICATION_JSON) //
+			.param(TestConstants.X_AXIS, TestConstants.X_AXIS_VALUE) //
+			.param(TestConstants.Y_AXIS, TestConstants.Y_AXIS_VALUE) //
+			.param(TestConstants.WIDTH, TestConstants.WIDTH_VALUE) //
+			.param(TestConstants.HEIGHT, TestConstants.HEIGHT_VALUE) //
+			.with(csrf());
+	
+	// create one
+	final var result = mvc.perform(requestCreate) //
+			//
+			// when
+			.andDo(print()) //
+			.andExpect(status().isCreated()) //
+			.andExpect(header().string("Location", notNullValue())) //
+			.andReturn();
+
+	final var locationArray = result.getResponse().getHeader("Location").split("/");
+	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
+
+	final var request = get(REST_URL + ID_PARAM_VALUE, id) //
+			.accept(MediaType.APPLICATION_JSON) //
+			.with(csrf());
+
+	// check if the convertion already exists
+	mvc.perform(request) //
+			.andDo(print()) //
+			.andExpect(status().isOk()) //
+			.andExpect(jsonPath(FILTER_PARAM_ID).value(id)) //
+	;
+
+	// when
+	// delete the convertion
+	mvc.perform(delete(REST_URL + ID_PARAM_VALUE, id) //
+			.accept(MediaType.APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isNoContent()) //
+	;
+
+	// Then
+	// check it again
+	mvc.perform(request) //
+			//
+			// when
+			.andDo(print()) //
+			//
+			// then
+			.andExpect(status().isNotFound()) //
+	;
+
     }
 }
