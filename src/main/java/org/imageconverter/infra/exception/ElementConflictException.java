@@ -1,4 +1,4 @@
-package org.imageconverter.infra.exceptions;
+package org.imageconverter.infra.exception;
 
 /**
  * Element conflits exception, like delete a linked object.

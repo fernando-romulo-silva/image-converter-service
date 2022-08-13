@@ -10,9 +10,9 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
-import org.imageconverter.infra.exceptions.ConvertionException;
-import org.imageconverter.infra.exceptions.TesseractConvertionException;
-import org.imageconverter.infra.exceptions.TesseractNotSetException;
+import org.imageconverter.infra.exception.ConvertionException;
+import org.imageconverter.infra.exception.TesseractConvertionException;
+import org.imageconverter.infra.exception.TesseractNotSetException;
 import org.imageconverter.util.BeanUtil;
 import org.imageconverter.util.logging.Loggable;
 //import org.springframework.security.access.prepost.PreAuthorize;

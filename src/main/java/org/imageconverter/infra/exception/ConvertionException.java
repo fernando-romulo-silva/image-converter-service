@@ -1,4 +1,4 @@
-package org.imageconverter.infra.exceptions;
+package org.imageconverter.infra.exception;
 
 /**
  * Convertion image file to text error.

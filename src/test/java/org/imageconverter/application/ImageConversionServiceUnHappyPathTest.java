@@ -15,9 +15,9 @@ import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.domain.convertion.ImageConvertion;
-import org.imageconverter.infra.exceptions.ConvertionException;
-import org.imageconverter.infra.exceptions.ElementInvalidException;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.infra.exception.ConvertionException;
+import org.imageconverter.infra.exception.ElementInvalidException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.junit.jupiter.api.DisplayName;

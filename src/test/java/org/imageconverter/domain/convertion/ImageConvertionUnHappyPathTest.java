@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import javax.validation.ConstraintViolationException;
 
 import org.imageconverter.domain.imagetype.ImageType;
-import org.imageconverter.infra.exceptions.ConvertionException;
+import org.imageconverter.infra.exception.ConvertionException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;

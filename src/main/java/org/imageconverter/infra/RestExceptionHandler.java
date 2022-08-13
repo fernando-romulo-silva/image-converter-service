@@ -5,11 +5,11 @@ import static java.util.stream.Collectors.joining;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import org.imageconverter.infra.exceptions.ElementConflictException;
-import org.imageconverter.infra.exceptions.ElementInvalidException;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
-import org.imageconverter.infra.exceptions.ImageConvertServiceException;
-import org.imageconverter.infra.exceptions.ServiceUnavailableException;
+import org.imageconverter.infra.exception.ElementConflictException;
+import org.imageconverter.infra.exception.ElementInvalidException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
+import org.imageconverter.infra.exception.ImageConvertServiceException;
+import org.imageconverter.infra.exception.ServiceUnavailableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.domain.convertion.ImageConvertion;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterPostResponse;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
@@ -141,9 +141,9 @@ public class ImageConverterRestController {
     @ImageConverterRestPostOpenApi
     //
     @ResponseStatus(CREATED)
-    @PostMapping(consumes = { MULTIPART_FORM_DATA_VALUE }, produces = "application/json")
+    @PostMapping(consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
     public ImageConverterPostResponse convert( //
-		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true, example = "image.bmp") //
+		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image.bmp") //
 		    @RequestParam(name = "file", required = true) //
 		    final MultipartFile file,
 		    //
@@ -171,9 +171,9 @@ public class ImageConverterRestController {
     @ImageConverterRestPostAreaOpenApi
     //
     @ResponseStatus(CREATED)
-    @PostMapping(value = "/area", consumes = { MULTIPART_FORM_DATA_VALUE }, produces = "application/json")
+    @PostMapping(value = "/area", consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
     public ImageConverterPostResponse convertWithArea( //
-		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = "multipart/form-data"), required = true, example = "image.bmp") //
+		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image.bmp") //
 		    @RequestParam(value = "file", required = true) //
 		    final MultipartFile file, //
 		    //

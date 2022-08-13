@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
 import org.imageconverter.domain.imagetype.ImageType;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;

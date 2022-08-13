@@ -11,9 +11,9 @@ import javax.validation.constraints.NotNull;
 
 import org.imageconverter.domain.convertion.ImageConvertion;
 import org.imageconverter.domain.convertion.ImageConvertionRepository;
-import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
-import org.imageconverter.infra.exceptions.ElementInvalidException;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementAlreadyExistsException;
+import org.imageconverter.infra.exception.ElementInvalidException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
 import org.imageconverter.util.logging.Loggable;

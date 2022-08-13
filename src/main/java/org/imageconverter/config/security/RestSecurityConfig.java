@@ -101,7 +101,6 @@ public class RestSecurityConfig {
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
 	return (web) -> {
-	    web.ignoring().antMatchers(swaggerUiURL);
 	    web.httpFirewall(allowUrlEncodedSlashHttpFirewall);
 	};
     }

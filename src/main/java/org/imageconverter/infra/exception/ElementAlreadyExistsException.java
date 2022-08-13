@@ -1,4 +1,4 @@
-package org.imageconverter.infra.exceptions;
+package org.imageconverter.infra.exception;
 
 /**
  * Element already exists exception.

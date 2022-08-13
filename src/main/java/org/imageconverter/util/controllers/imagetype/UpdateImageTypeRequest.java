@@ -7,6 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Structure to update image type.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Schema(name = "UpdateImageTypeRequest", description = "Resquest structure to update Image Type")
 @JsonIgnoreProperties(ignoreUnknown = false)
 @JsonInclude(Include.NON_NULL)

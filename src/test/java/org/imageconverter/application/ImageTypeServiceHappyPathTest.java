@@ -8,7 +8,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE
 import java.util.List;
 
 import org.imageconverter.domain.imagetype.ImageType;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;

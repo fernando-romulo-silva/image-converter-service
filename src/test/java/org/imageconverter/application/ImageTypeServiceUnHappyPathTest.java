@@ -11,11 +11,10 @@ import java.util.stream.Stream;
 import javax.validation.ConstraintViolationException;
 
 import org.imageconverter.domain.imagetype.ImageType;
-import org.imageconverter.infra.exceptions.ConvertionException;
-import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
-import org.imageconverter.infra.exceptions.ElementConflictException;
-import org.imageconverter.infra.exceptions.ElementInvalidException;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementAlreadyExistsException;
+import org.imageconverter.infra.exception.ElementConflictException;
+import org.imageconverter.infra.exception.ElementInvalidException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -103,7 +102,7 @@ class ImageTypeServiceUnHappyPathTest {
 	    imageTypeService.createImageType(request);
 
 	}).as(format("Check invalid request ''{0}''", request)) //
-			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+			.isInstanceOfAny(ConstraintViolationException.class);
 
     }
 

@@ -1,4 +1,4 @@
-package org.imageconverter.infra.exceptions;
+package org.imageconverter.infra.exception;
 
 /**
  * Service not available for convertion.

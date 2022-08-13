@@ -12,7 +12,7 @@ import java.io.IOException;
 import org.imageconverter.TestConstants;
 import org.imageconverter.domain.convertion.ExecutionType;
 import org.imageconverter.domain.convertion.ImageConvertion;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.junit.jupiter.api.DisplayName;

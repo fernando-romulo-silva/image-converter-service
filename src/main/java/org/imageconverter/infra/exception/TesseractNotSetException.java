@@ -1,4 +1,4 @@
-package org.imageconverter.infra.exceptions;
+package org.imageconverter.infra.exception;
 
 import static java.text.MessageFormat.format;
 import static org.imageconverter.util.BeanUtil.getPropertyValue;

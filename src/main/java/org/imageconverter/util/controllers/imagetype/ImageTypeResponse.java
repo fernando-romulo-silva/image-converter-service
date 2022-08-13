@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Response to http methods for image type.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @Schema(name = "ImageTypeResponse", description = "Response structure to find Image Type")
 public record ImageTypeResponse( //
 

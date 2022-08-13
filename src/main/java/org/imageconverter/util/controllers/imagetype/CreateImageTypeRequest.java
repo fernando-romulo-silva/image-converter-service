@@ -7,6 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Structure create image type.
+ * 
+ * @author Fernando Romulo da Silva
+ */
 @JsonIgnoreProperties(ignoreUnknown = false)
 @Schema(name = "ImageTypeRequest", description = "Resquest structure to create Image Type")
 public record CreateImageTypeRequest( //

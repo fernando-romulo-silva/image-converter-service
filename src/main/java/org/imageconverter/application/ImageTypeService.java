@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 
 import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.domain.imagetype.ImageTypeRespository;
-import org.imageconverter.infra.exceptions.ElementAlreadyExistsException;
-import org.imageconverter.infra.exceptions.ElementConflictException;
-import org.imageconverter.infra.exceptions.ElementInvalidException;
-import org.imageconverter.infra.exceptions.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementAlreadyExistsException;
+import org.imageconverter.infra.exception.ElementConflictException;
+import org.imageconverter.infra.exception.ElementInvalidException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
