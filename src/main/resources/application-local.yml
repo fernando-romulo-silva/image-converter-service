@@ -23,9 +23,9 @@ management:
         port: 8080
         
 #============= Log ====================================================================================
-logging.level.org.hibernate:
-   SQL: debug
-   type.descriptor.sql: debug
+#logging.level.org.hibernate:
+#   SQL: debug
+#   type.descriptor.sql: debug
 
 
 #============== Data Source ===========================================================================

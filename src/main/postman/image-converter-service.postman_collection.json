@@ -661,7 +661,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Get all image types\", function (){",
+									"pm.test(\"Get all convertions\", function (){",
 									"    pm.response.to.have.status(200);",
 									"",
 									"    pm.expect(pm.response.json().length).to.be.eq(0);",
@@ -769,7 +769,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Get image types by search\", function (){",
+									"pm.test(\"Get conversions by search\", function (){",
 									"    pm.response.to.have.status(200);",
 									"",
 									"    pm.expect(pm.response.json().length).to.be.above(0);",
@@ -829,12 +829,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{IMAGE_CONVERSION_URL}}/{{conversionId}}",
+							"raw": "{{IMAGE_CONVERSION_URL}}/{{convertionId}}",
 							"host": [
 								"{{IMAGE_CONVERSION_URL}}"
 							],
 							"path": [
-								"{{conversionId}}"
+								"{{convertionId}}"
 							]
 						}
 					},
@@ -847,7 +847,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Execute Converter\", function (){",
+									"pm.test(\"Execute Converter with Area\", function (){",
 									"    pm.response.to.have.status(201);",
 									"   ",
 									"    const conversionId = pm.response.headers.get('Location').split('/').pop();",
