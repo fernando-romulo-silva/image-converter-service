@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 		content = @Content(//
 				mediaType = "application/json", //
 				examples = @ExampleObject(//
-						description = "Image Convertion not found", //
+						description = "Image Conversion not found", //
 						value = """
 								{
 								    "timestamp": "2021-12-12T10:58:54.730595376",

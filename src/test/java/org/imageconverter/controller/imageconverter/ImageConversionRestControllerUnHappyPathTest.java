@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.IOException;
 
 import org.imageconverter.TestConstants;
-import org.imageconverter.controller.ImageConverterRestController;
+import org.imageconverter.controller.ImageConversionRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -45,7 +45,7 @@ import org.springframework.test.context.jdbc.SqlConfig.ErrorMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
- * Test the {@link ImageConverterRestController} controller on convert unhappy path
+ * Test the {@link ImageConversionRestController} controller on convert unhappy path
  * 
  * @author Fernando Romulo da Silva
  */
@@ -56,10 +56,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = ErrorMode.CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
-@DisplayName("Test the image convertion, unhappy convert path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
+@DisplayName("Test the image conversion, unhappy convert path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-class ImageConvertRestControllerConvertUnHappyPathTest {
+class ImageConversionRestControllerUnHappyPathTest {
 
     private final MockMvc mvc;
 
@@ -71,7 +71,7 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 
     private final MockMultipartFile multipartCorruptedImageFile;
 
-    ImageConvertRestControllerConvertUnHappyPathTest( //
+    ImageConversionRestControllerUnHappyPathTest( //
 		    @Value("classpath:beach.jpeg") //
 		    final Resource beachImageFile, //
 		    //
@@ -149,7 +149,7 @@ class ImageConvertRestControllerConvertUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isConflict()) //
-			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ElementAlreadyExistsException: ImageConvertion with fileName 'bill.png'"))) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ElementAlreadyExistsException: ImageConversion with fileName 'bill.png'"))) //
 	;
     }
 

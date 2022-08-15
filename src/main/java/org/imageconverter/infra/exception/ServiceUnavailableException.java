@@ -1,7 +1,7 @@
 package org.imageconverter.infra.exception;
 
 /**
- * Service not available for convertion.
+ * Service not available for conversion.
  * 
  * @author Fernando Romulo da Silva
  */

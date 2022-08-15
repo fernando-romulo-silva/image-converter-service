@@ -1,4 +1,4 @@
-package org.imageconverter.domain.convertion;
+package org.imageconverter.domain.conversion;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -28,14 +28,14 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.domain.imagetype.ImageTypeRespository;
-import org.imageconverter.infra.exception.ConvertionException;
+import org.imageconverter.infra.exception.ConversionException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 
 @Entity
-@Table(name = "IMAGE_CONVERTION")
-public class ImageConvertion { // NOPMD - Provide accessors on private constructor
+@Table(name = "IMAGE_CONVERSION")
+public class ImageConversion { // NOPMD - Provide accessors on private constructor
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -65,11 +65,11 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
     @Column(name = "IMGC_CREATED")
     private LocalDateTime created;
 
-    ImageConvertion() {
+    ImageConversion() {
 	super();
     }
 
-    private ImageConvertion(@Valid final Builder builder) {
+    private ImageConversion(@Valid final Builder builder) {
 	super();
 	this.fileName = builder.fileName;
 	this.fileType = builder.fileType;
@@ -126,7 +126,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	if (this == obj) {
 	    result = true;
 
-	} else if (obj instanceof ImageConvertion other) {
+	} else if (obj instanceof ImageConversion other) {
 	    result = Objects.equals(id, other.id);
 
 	} else {
@@ -140,7 +140,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
     public String toString() {
 	final var sbToString = new StringBuilder(76);
 
-	sbToString.append("ImageConvertion [id=").append(id) //
+	sbToString.append("ImageConversion [id=").append(id) //
 			.append(", fileName=").append(fileName) //
 			.append(", fileType=").append(fileType) //
 			.append(", fileSize=").append(fileSize) //
@@ -196,7 +196,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	public Builder with(final ImageConverterRequestInterface request) {
 
 	    if (isNull(request)) {
-		throw new ConvertionException("Empty request to convert!");
+		throw new ConversionException("Empty request to convert!");
 	    }
 
 	    this.fileName = request.fileName();
@@ -216,10 +216,10 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 	    return this;
 	}
 
-	public ImageConvertion build() {
+	public ImageConversion build() {
 
 	    if (StringUtils.isBlank(fileName) || isNull(fileContent) || fileContent.length == 0L) {
-		throw new ConvertionException("Empty file to convert!");
+		throw new ConversionException("Empty file to convert!");
 	    }
 
 	    final var tesseractService = getBeanFrom(TesseractService.class);
@@ -249,7 +249,7 @@ public class ImageConvertion { // NOPMD - Provide accessors on private construct
 		throw new ConstraintViolationException(violations);
 	    }
 
-	    return new ImageConvertion(this);
+	    return new ImageConversion(this);
 	}
 
 	private boolean checkParams() {

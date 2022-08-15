@@ -19,13 +19,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 		content = @Content(//
 				mediaType = "application/json", //
 				examples = @ExampleObject(//
-						description = "Image Convertion not found", //
+						description = "Image Conversion not found", //
 						value = """
 								{
 								    "timestamp": "2021-12-05T20:18:41.80433145",
 								    "status": 404,
 								    "error": "Not Found",
-								    "message": "ElementNotFoundException: ImageConvertion with id '1' not found",
+								    "message": "ElementNotFoundException: ImageConversion with id '1' not found",
 								    "traceId": "1e3398a945ef0d79",
 								    "spanId": "1e3398a945ef0d79"
 								}

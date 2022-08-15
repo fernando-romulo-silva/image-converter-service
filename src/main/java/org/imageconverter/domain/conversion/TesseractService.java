@@ -1,4 +1,4 @@
-package org.imageconverter.domain.convertion;
+package org.imageconverter.domain.conversion;
 
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
@@ -10,8 +10,8 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
-import org.imageconverter.infra.exception.ConvertionException;
-import org.imageconverter.infra.exception.TesseractConvertionException;
+import org.imageconverter.infra.exception.ConversionException;
+import org.imageconverter.infra.exception.TesseractConversionException;
 import org.imageconverter.infra.exception.TesseractNotSetException;
 import org.imageconverter.util.BeanUtil;
 import org.imageconverter.util.logging.Loggable;
@@ -59,12 +59,12 @@ public class TesseractService {
 	} catch (final IOException ex) {
 
 	    final var msg = format("Image {0} has IO error: ''{1}''.", fileName, getRootCauseMessage(ex));
-	    throw new ConvertionException(msg, ex);
+	    throw new ConversionException(msg, ex);
 
 	} catch (final TesseractException | Error ex) {
 
 	    final var msg = format("Image {0} has Tessarct error: ''{1}''.", fileName, getRootCauseMessage(ex));
-	    throw new TesseractConvertionException(msg, ex);
+	    throw new TesseractConversionException(msg, ex);
 
 //	} catch (final Exception ex) {
 //
@@ -106,12 +106,12 @@ public class TesseractService {
 	} catch (final IOException ex) {
 
 	    final var msg = format("Image {0} has IO error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", fileName, getRootCauseMessage(ex), xAxis, yAxis, width, height);
-	    throw new ConvertionException(msg, ex);
+	    throw new ConversionException(msg, ex);
 
 	} catch (final TesseractException | Error ex) {
 
 	    final var msg = format("Image {0} has Tessarct error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", fileName, getRootCauseMessage(ex), xAxis, yAxis, width, height);
-	    throw new TesseractConvertionException(msg, ex);
+	    throw new TesseractConversionException(msg, ex);
 
 //	} catch (final Exception ex) {
 //

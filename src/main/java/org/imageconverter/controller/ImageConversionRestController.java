@@ -1,6 +1,6 @@
 package org.imageconverter.controller;
 
-import static org.imageconverter.domain.convertion.ExecutionType.WS;
+import static org.imageconverter.domain.conversion.ExecutionType.WS;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -14,12 +14,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.imageconverter.application.ImageConversionService;
-import org.imageconverter.domain.convertion.ImageConvertion;
+import org.imageconverter.domain.conversion.ImageConversion;
 import org.imageconverter.infra.exception.ElementNotFoundException;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterPostResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConversionPostResponse;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetAllOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetByIdOpenApi;
@@ -48,7 +48,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
- * Image convert http rest.
+ * Image converter http rest.
  * 
  * @author Fernando Romulo da Silva
  */
@@ -66,7 +66,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Description("Controller for image converstion API")
 @RequestMapping(REST_URL)
-public class ImageConverterRestController {
+public class ImageConversionRestController {
 
     private final ImageConversionService imageConversionService;
 
@@ -75,23 +75,23 @@ public class ImageConverterRestController {
      * 
      * @param imageConversionService The image convert service
      */
-    ImageConverterRestController(final ImageConversionService imageConversionService) {
+    ImageConversionRestController(final ImageConversionService imageConversionService) {
 	super();
 	this.imageConversionService = imageConversionService;
     }
 
     /**
-     * Get a convertion already done.
+     * Get a conversion already done.
      * 
-     * @param id The image convertion's id
-     * @return A {@link ImageConverterResponse} object
+     * @param id The image conversion's id
+     * @return A {@link ImageConversionResponse} object
      * @exception ElementNotFoundException if a element with id not found
      */
     @ImageConverterRestGetByIdOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
-    public ImageConverterResponse getById( //
+    public ImageConversionResponse getById( //
 		    @Parameter(name = "id", description = "The image conversion id's", required = true, example = "3") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
@@ -100,7 +100,7 @@ public class ImageConverterRestController {
     }
 
     /**
-     * Get all convertions done.
+     * Get all conversions done.
      * 
      * @return A {@link List} or a empty list
      */
@@ -108,13 +108,13 @@ public class ImageConverterRestController {
     //
     @ResponseStatus(OK)
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public List<ImageConverterResponse> getAll() {
+    public List<ImageConversionResponse> getAll() {
 
 	return imageConversionService.findAll();
     }
 
     /**
-     * Get convertions by filter.
+     * Get conversions by filter.
      * 
      * @param filter A object {@link Specification} that specific the filter the search
      * @param page   A object {@link Pageable} that page the result
@@ -124,10 +124,10 @@ public class ImageConverterRestController {
     //
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
-    public List<ImageConverterResponse> getByFilter( //
+    public List<ImageConversionResponse> getByFilter( //
 		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=fileName:'image.png'") //
 		    @Filter //
-		    final Specification<ImageConvertion> filter, final Pageable page) {
+		    final Specification<ImageConversion> filter, final Pageable page) {
 
 	return imageConversionService.findBySpecification(filter);
     }
@@ -136,13 +136,13 @@ public class ImageConverterRestController {
      * Convert a image file on text.
      * 
      * @param file The image to convert
-     * @return A {@link ImageConverterResponse} object with response.
+     * @return A {@link ImageConversionResponse} object with response.
      */
     @ImageConverterRestPostOpenApi
     //
     @ResponseStatus(CREATED)
     @PostMapping(consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
-    public ImageConverterPostResponse convert( //
+    public ImageConversionPostResponse convert( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image.bmp") //
 		    @RequestParam(name = "file", required = true) //
 		    final MultipartFile file,
@@ -155,7 +155,7 @@ public class ImageConverterRestController {
 	
 	response.addHeader("Location", REST_URL + "/" + result.id());
 	
-	return new ImageConverterPostResponse(result.text());
+	return new ImageConversionPostResponse(result.text());
     }
 
     /**
@@ -166,13 +166,13 @@ public class ImageConverterRestController {
      * @param yAxis  The image's y coordinate
      * @param width  The image's width in pixels
      * @param height The image's height in pixels
-     * @return A {@link ImageConverterResponse} object with response.
+     * @return A {@link ImageConversionResponse} object with response.
      */
     @ImageConverterRestPostAreaOpenApi
     //
     @ResponseStatus(CREATED)
     @PostMapping(value = "/area", consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
-    public ImageConverterPostResponse convertWithArea( //
+    public ImageConversionPostResponse convertWithArea( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image.bmp") //
 		    @RequestParam(value = "file", required = true) //
 		    final MultipartFile file, //
@@ -201,14 +201,14 @@ public class ImageConverterRestController {
 	
 	response.addHeader("Location", REST_URL + "/" + result.id());
 	
-	return new ImageConverterPostResponse(result.text());
+	return new ImageConversionPostResponse(result.text());
     }
     
     
     /**
-     * Delete a image convertion.
+     * Delete a image conversion.
      * 
-     * @param id The convertion id
+     * @param id The conversion id
      */
     @ImageTypeRestDeleteOpenApi
     //
@@ -216,11 +216,11 @@ public class ImageConverterRestController {
     @DeleteMapping("/{id:[\\d]*}")
     public void delete( //
 		    //
-		    @Parameter(description = "The convertion id's", example = "1000") //
+		    @Parameter(description = "The conversion id's", example = "1000") //
 		    @PathVariable(name = "id", required = true) //
 		    final Long id) {
 
-	imageConversionService.deleteImageConvertion(id);
+	imageConversionService.deleteImageConversion(id);
     }
 
     private byte[] extractBytes(final MultipartFile file) {

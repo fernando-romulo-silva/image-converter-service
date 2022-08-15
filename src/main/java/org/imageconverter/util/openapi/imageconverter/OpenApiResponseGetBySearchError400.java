@@ -19,13 +19,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 		content = @Content(//
 				mediaType = "application/json", //
 				examples = @ExampleObject(//
-						description = "Image Convertion not found", //
+						description = "Image Conversion not found", //
 						value = """
 								{
 								    "timestamp": "2021-12-12T10:47:36.398207503",
 								    "status": 400,
 								    "error": "Not Found",
-								    "message": "ElementInvalidException: Unable to locate Attribute with the the given name 'invalidField' on ImageConvertion",
+								    "message": "ElementInvalidException: Unable to locate Attribute with the the given name 'invalidField' on ImageConversion",
 								    "traceId": "afab49eeb47d3660",
 								    "spanId": "afab49eeb47d3660"
 								}

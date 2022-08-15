@@ -2,8 +2,8 @@ package org.imageconverter.application;
 
 import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.imageconverter.domain.convertion.ExecutionType.WEB;
-import static org.imageconverter.domain.convertion.ExecutionType.WS;
+import static org.imageconverter.domain.conversion.ExecutionType.WEB;
+import static org.imageconverter.domain.conversion.ExecutionType.WS;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.imageconverter.domain.convertion.ImageConvertion;
-import org.imageconverter.infra.exception.ConvertionException;
+import org.imageconverter.domain.conversion.ImageConversion;
+import org.imageconverter.infra.exception.ConversionException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
@@ -73,8 +73,8 @@ class ImageConversionServiceUnHappyPathTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(longs = 1L) // id '1' don't exist
-    @DisplayName("try to get a image convertion by id doens't ")
-    void findImageConvertionByInvalidIdTest(final Long id) {
+    @DisplayName("try to get a image conversion by id doens't ")
+    void findImageConversionByInvalidIdTest(final Long id) {
 
 	assertThatThrownBy(() -> imageConversionService.findById(id)) //
 			.as(format("Check invalid values of id ''{0}''", id)) //
@@ -84,11 +84,11 @@ class ImageConversionServiceUnHappyPathTest {
 
     @Test
     @Order(2)
-    @DisplayName("get a image convertion by invalid specification")
-    void findImageConvertionByInvalidExtensionTest() {
+    @DisplayName("get a image conversion by invalid specification")
+    void findImageConversionByInvalidExtensionTest() {
 
-	final var specFieldOneNotExists = (Specification<ImageConvertion>) (root, query, builder) -> builder.equal(root.get("fieldOneNotExists"), "blabla");
-	final var specFieldTwoNotExists = (Specification<ImageConvertion>) (root, query, builder) -> builder.equal(root.get("fieldTwoNotExists"), "blabla");
+	final var specFieldOneNotExists = (Specification<ImageConversion>) (root, query, builder) -> builder.equal(root.get("fieldOneNotExists"), "blabla");
+	final var specFieldTwoNotExists = (Specification<ImageConversion>) (root, query, builder) -> builder.equal(root.get("fieldTwoNotExists"), "blabla");
 
 	assertThatThrownBy(() -> {
 
@@ -127,7 +127,7 @@ class ImageConversionServiceUnHappyPathTest {
 	    imageConversionService.convert(request);
 
 	}).as(format("Check invalid request ''{0}''", request)) //
-			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+			.isInstanceOfAny(ConversionException.class, ConstraintViolationException.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------
@@ -167,7 +167,7 @@ class ImageConversionServiceUnHappyPathTest {
 	    imageConversionService.convert(request);
 
 	}).as(format("Check invalid request area ''{0}''", request)) //
-			.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+			.isInstanceOfAny(ConversionException.class, ConstraintViolationException.class);
 
     }
     
@@ -176,11 +176,11 @@ class ImageConversionServiceUnHappyPathTest {
     @ValueSource(longs = 1L) // id '1' don't exist
     @Order(7)
     @DisplayName("Try to delete a image type that doesn't exist")
-    void deleteImageConvertionDoesNotExistTest(final Long id) {
+    void deleteImageConversionDoesNotExistTest(final Long id) {
 
 	assertThatThrownBy(() -> {
 
-	    imageConversionService.deleteImageConvertion(id);
+	    imageConversionService.deleteImageConversion(id);
 
 	}).as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
 			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);

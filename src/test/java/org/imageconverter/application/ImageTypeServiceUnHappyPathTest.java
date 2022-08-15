@@ -171,7 +171,7 @@ class ImageTypeServiceUnHappyPathTest {
     @DisplayName("Try to delete a image type that has a relation with other record")
     void deleteImageTypeRestrictionTest() {
 
-	final var id = 1001L; // already exists and has a convertion image relation
+	final var id = 1001L; // already exists and has a conversion image relation
 
 	assertThatThrownBy(() -> {
 

@@ -643,7 +643,7 @@
 			]
 		},
 		{
-			"name": "image-convertions",
+			"name": "image-conversions",
 			"item": [
 				{
 					"name": "Get All",
@@ -677,9 +677,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{IMAGE_CONVERTION_URL}}",
+							"raw": "{{IMAGE_CONVERSION_URL}}",
 							"host": [
-								"{{IMAGE_CONVERTION_URL}}"
+								"{{IMAGE_CONVERSION_URL}}"
 							]
 						}
 					},
@@ -695,9 +695,9 @@
 									"pm.test(\"Execute Converter\", function (){",
 									"    pm.response.to.have.status(201);",
 									"   ",
-									"    const convertionId = pm.response.headers.get('Location').split('/').pop();",
+									"    const conversionId = pm.response.headers.get('Location').split('/').pop();",
 									"",
-									"    pm.environment.set(\"convertionId\", convertionId);",
+									"    pm.environment.set(\"conversionId\", conversionId);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -724,9 +724,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{IMAGE_CONVERTION_URL}}",
+							"raw": "{{IMAGE_CONVERSION_URL}}",
 							"host": [
-								"{{IMAGE_CONVERTION_URL}}"
+								"{{IMAGE_CONVERSION_URL}}"
 							]
 						}
 					},
@@ -739,7 +739,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Get a convertion by id\", function (){",
+									"pm.test(\"Get a conversion by id\", function (){",
 									"    pm.response.to.have.status(200);",
 									"});"
 								],
@@ -751,12 +751,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{IMAGE_CONVERTION_URL}}/{{convertionId}}",
+							"raw": "{{IMAGE_CONVERSION_URL}}/{{conversionId}}",
 							"host": [
-								"{{IMAGE_CONVERTION_URL}}"
+								"{{IMAGE_CONVERSION_URL}}"
 							],
 							"path": [
-								"{{convertionId}}"
+								"{{conversionId}}"
 							]
 						}
 					},
@@ -787,9 +787,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{IMAGE_CONVERTION_URL}}/search?filter=fileName:'bill.png'",
+							"raw": "{{IMAGE_CONVERSION_URL}}/search?filter=fileName:'bill.png'",
 							"host": [
-								"{{IMAGE_CONVERTION_URL}}"
+								"{{IMAGE_CONVERSION_URL}}"
 							],
 							"path": [
 								"search"
@@ -811,7 +811,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Delete a image convertion\", function (){",
+									"pm.test(\"Delete a image conversion\", function (){",
 									"    pm.response.to.have.status(204);",
 									"});"
 								],
@@ -829,12 +829,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{IMAGE_CONVERTION_URL}}/{{convertionId}}",
+							"raw": "{{IMAGE_CONVERSION_URL}}/{{conversionId}}",
 							"host": [
-								"{{IMAGE_CONVERTION_URL}}"
+								"{{IMAGE_CONVERSION_URL}}"
 							],
 							"path": [
-								"{{convertionId}}"
+								"{{conversionId}}"
 							]
 						}
 					},
@@ -850,9 +850,9 @@
 									"pm.test(\"Execute Converter\", function (){",
 									"    pm.response.to.have.status(201);",
 									"   ",
-									"    const convertionId = pm.response.headers.get('Location').split('/').pop();",
+									"    const conversionId = pm.response.headers.get('Location').split('/').pop();",
 									"",
-									"    pm.environment.set(\"convertionId\", convertionId);",
+									"    pm.environment.set(\"conversionId\", conversionId);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -879,9 +879,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{IMAGE_CONVERTION_AREA_URL}}?xAxis=885&yAxis=1417&width=1426&height=57",
+							"raw": "{{IMAGE_CONVERSION_AREA_URL}}?xAxis=885&yAxis=1417&width=1426&height=57",
 							"host": [
-								"{{IMAGE_CONVERTION_AREA_URL}}"
+								"{{IMAGE_CONVERSION_AREA_URL}}"
 							],
 							"query": [
 								{
@@ -912,7 +912,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Get a convertion by id\", function (){",
+									"pm.test(\"Get a conversion by id\", function (){",
 									"    pm.response.to.have.status(200);",
 									"});"
 								],
@@ -924,12 +924,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{IMAGE_CONVERTION_URL}}/{{convertionId}}",
+							"raw": "{{IMAGE_CONVERSION_URL}}/{{conversionId}}",
 							"host": [
-								"{{IMAGE_CONVERTION_URL}}"
+								"{{IMAGE_CONVERSION_URL}}"
 							],
 							"path": [
-								"{{convertionId}}"
+								"{{conversionId}}"
 							]
 						}
 					},

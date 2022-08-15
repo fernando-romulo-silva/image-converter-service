@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imageconverter.TestConstants;
-import org.imageconverter.controller.ImageConverterRestController;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterPostResponse;
+import org.imageconverter.controller.ImageConversionRestController;
+import org.imageconverter.util.controllers.imageconverter.ImageConversionPostResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -47,7 +47,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Test the {@link ImageConverterRestController} controller on happy path
+ * Test the {@link ImageConversionRestController} controller on happy path
  * 
  * @author Fernando Romulo da Silva
  */
@@ -58,10 +58,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
-@DisplayName("Test the image convertion, happy path :D ")
+@DisplayName("Test the image conversion, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-class ImageConvertRestControllerHappyPathTest {
+class ImageConversionRestControllerHappyPathTest {
 
     // JSqlParser
     // @Value("classpath:db/db-data-test.sql")
@@ -73,7 +73,7 @@ class ImageConvertRestControllerHappyPathTest {
 
     private final Resource billImageFile;
 
-    ImageConvertRestControllerHappyPathTest(@Autowired final ObjectMapper mapper, @Autowired final MockMvc mvc, @Value("classpath:bill.png") final Resource billImageFile) {
+    ImageConversionRestControllerHappyPathTest(@Autowired final ObjectMapper mapper, @Autowired final MockMvc mvc, @Value("classpath:bill.png") final Resource billImageFile) {
 	super();
 	this.mapper = mapper;
 	this.mvc = mvc;
@@ -82,8 +82,8 @@ class ImageConvertRestControllerHappyPathTest {
 
     @Test
     @Order(1)
-    @DisplayName("find a image convertion by id")
-    void findImageConvertionByIdTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    @DisplayName("find a image conversion by id")
+    void findImageConversionByIdTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var id = "1000"; // already on db, due to the db-data-test.sql
@@ -100,15 +100,15 @@ class ImageConvertRestControllerHappyPathTest {
 			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$.id").value(id)) //
-			.andExpect(jsonPath("$.text").value(TestConstants.DB_CONVERTION_NUMBER)) //
+			.andExpect(jsonPath("$.text").value(TestConstants.DB_CONVERSION_NUMBER)) //
 	;
 
     }
 
     @Test
     @Order(2)
-    @DisplayName("find all image convertions")
-    void findAllImageConvertionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    @DisplayName("find all image conversions")
+    void findAllImageConversionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var request = get(REST_URL) //
@@ -125,13 +125,13 @@ class ImageConvertRestControllerHappyPathTest {
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
 			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].text").value(containsInAnyOrder(TestConstants.DB_CONVERTION_NUMBER))) //
+			.andExpect(jsonPath("$[*].text").value(containsInAnyOrder(TestConstants.DB_CONVERSION_NUMBER))) //
 	;
     }
 
     @Test
     @Order(3)
-    @DisplayName("find a image convertion by search")
+    @DisplayName("find a image conversion by search")
     void findImageTypeByExtensionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
@@ -158,7 +158,7 @@ class ImageConvertRestControllerHappyPathTest {
     @Test
     @Order(4)
     @DisplayName("convert the image")
-    @Sql(statements = "DELETE FROM image_convertion ")
+    @Sql(statements = "DELETE FROM image_conversion ")
     void convertTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception)
 
 	// given
@@ -178,7 +178,7 @@ class ImageConvertRestControllerHappyPathTest {
 			.andExpect(header().string("Location", notNullValue())) //
 			.andReturn();
 
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterPostResponse.class);
+	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConversionPostResponse.class);
 	
 	final var locationArray = result.getResponse().getHeader("Location").split("/");
 	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
@@ -190,13 +190,13 @@ class ImageConvertRestControllerHappyPathTest {
 
 	assertThat(StringUtils.deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
 			.as("Check the number string") //
-			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
+			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
     }
 
     @Test
     @Order(5)
     @DisplayName("convert the image with area")
-    @Sql(statements = "DELETE FROM image_convertion ")
+    @Sql(statements = "DELETE FROM image_conversion ")
     void convertAreaTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception)
 
 	// given
@@ -220,7 +220,7 @@ class ImageConvertRestControllerHappyPathTest {
 			.andExpect(header().string("Location", notNullValue())) //
 			.andReturn();
 
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConverterPostResponse.class);
+	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConversionPostResponse.class);
 	
 	final var locationArray = result.getResponse().getHeader("Location").split("/");
 	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
@@ -232,12 +232,12 @@ class ImageConvertRestControllerHappyPathTest {
 
 	assertThat(StringUtils.deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
 			.as("Check the number string") //
-			.isEqualTo(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
+			.isEqualTo(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
     }
     
     @Test
     @Order(6)
-    @DisplayName("Delete a new convertion")
+    @DisplayName("Delete a new conversion")
     void deleteImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
@@ -268,7 +268,7 @@ class ImageConvertRestControllerHappyPathTest {
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf());
 
-	// check if the convertion already exists
+	// check if the conversion already exists
 	mvc.perform(request) //
 			.andDo(print()) //
 			.andExpect(status().isOk()) //
@@ -276,7 +276,7 @@ class ImageConvertRestControllerHappyPathTest {
 	;
 
 	// when
-	// delete the convertion
+	// delete the conversion
 	mvc.perform(delete(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf())) //

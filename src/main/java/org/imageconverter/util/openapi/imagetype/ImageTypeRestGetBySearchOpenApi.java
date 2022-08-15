@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 //
 @Operation( //
 		summary = "Get image types by criteria search", //
-		description = "This method return image convertions that satisfy a certain condition" //
+		description = "This method return image conversions that satisfy a certain condition" //
 )
 @ApiResponse( //
 		responseCode = "200", //

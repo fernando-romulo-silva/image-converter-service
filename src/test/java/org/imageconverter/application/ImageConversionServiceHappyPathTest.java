@@ -10,8 +10,8 @@ import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE
 import java.io.IOException;
 
 import org.imageconverter.TestConstants;
-import org.imageconverter.domain.convertion.ExecutionType;
-import org.imageconverter.domain.convertion.ImageConvertion;
+import org.imageconverter.domain.conversion.ExecutionType;
+import org.imageconverter.domain.conversion.ImageConversion;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
@@ -55,8 +55,8 @@ class ImageConversionServiceHappyPathTest {
 
     @Test
     @Order(1)
-    @DisplayName("get a image convertion by id")
-    void findImageConvertionByIdTest() {
+    @DisplayName("get a image conversion by id")
+    void findImageConversionByIdTest() {
 
 	// already on db, due to the db-data-test.sql
 	final var id = 1000L;
@@ -64,18 +64,18 @@ class ImageConversionServiceHappyPathTest {
 	final var response = imageConversionService.findById(id);
 
 	assertThat(response) //
-			.as(format("Check the 'response' has fileName ''{0}'' and convertion txt ''{1}''", id, TestConstants.DB_CONVERTION_NUMBER)) //
+			.as(format("Check the 'response' has fileName ''{0}'' and conversion txt ''{1}''", id, TestConstants.DB_CONVERSION_NUMBER)) //
 			.extracting( //
 					$ -> $.id(), //
 					$ -> $.text().replaceAll("[^x0-9]", "") //
-			).containsExactly(id, TestConstants.DB_CONVERTION_NUMBER) //
+			).containsExactly(id, TestConstants.DB_CONVERSION_NUMBER) //
 	;
     }
 
     @Test
     @Order(2)
-    @DisplayName("get all image convertions")
-    void findAllImageConvertionTest() {
+    @DisplayName("get all image conversions")
+    void findAllImageConversionTest() {
 
 	// already on db, due to the db-data-test.sql
 	final var id = 1000L;
@@ -88,20 +88,20 @@ class ImageConversionServiceHappyPathTest {
 			.contains(id);
 
 	assertThat(responses) //
-			.as(format("Check if there's a text convertion ''{0}'' on the result", id))//
+			.as(format("Check if there's a text conversion ''{0}'' on the result", id))//
 			.map(imageConverterResponse -> imageConverterResponse.text()) //
-			.containsAnyOf(TestConstants.DB_CONVERTION_NUMBER);
+			.containsAnyOf(TestConstants.DB_CONVERSION_NUMBER);
     }
 
     @Test
     @Order(3)
-    @DisplayName("get a image convertion by specification")
-    void findImageConvertionBySpecificationTest() {
+    @DisplayName("get a image conversion by specification")
+    void findImageConversionBySpecificationTest() {
 
 	// already on db, due to the db-data-test.sql
 	final var fileName = "image_test.jpg";
 
-	// Specification<ImageConvertion> equalsFileName = (rt, cq, cb) -> cb.equal(rt.get("fileName"), fileName);
+	// Specification<ImageConversion> equalsFileName = (rt, cq, cb) -> cb.equal(rt.get("fileName"), fileName);
 
 	final var responses1 = imageConversionService.findBySpecification(equalsFileName(fileName));
 
@@ -119,7 +119,7 @@ class ImageConversionServiceHappyPathTest {
 			.hasSize(responseQty);
     }
 
-    static Specification<ImageConvertion> equalsFileName(final String fileName) {
+    static Specification<ImageConversion> equalsFileName(final String fileName) {
 	return (root, query, builder) -> builder.equal(root.get("fileName"), fileName);
     }
 
@@ -139,8 +139,8 @@ class ImageConversionServiceHappyPathTest {
 			.isGreaterThan(LONG_ZERO);
 
 	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
-			.as(format("Check if the response's text is equal to ''{0}''", TestConstants.IMAGE_PNG_CONVERTION_NUMBER))//
-			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
+			.as(format("Check if the response's text is equal to ''{0}''", TestConstants.IMAGE_PNG_CONVERSION_NUMBER))//
+			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
     }
 
     @Test
@@ -159,13 +159,13 @@ class ImageConversionServiceHappyPathTest {
 			.isGreaterThan(LONG_ZERO);
 
 	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
-			.as(format("Check if the response's text is equal to ''{0}''", TestConstants.IMAGE_PNG_CONVERTION_NUMBER))//
-			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERTION_NUMBER);
+			.as(format("Check if the response's text is equal to ''{0}''", TestConstants.IMAGE_PNG_CONVERSION_NUMBER))//
+			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
     }
     
     @Test
     @Order(6)
-    @DisplayName("Delete a image convertion")
+    @DisplayName("Delete a image conversion")
     void deleteImageTypeTest() throws IOException {
 
 	// given
@@ -178,7 +178,7 @@ class ImageConversionServiceHappyPathTest {
 	// ----------------------------------------------------------
 
 	// when
-	imageConversionService.deleteImageConvertion(createResponse.id());
+	imageConversionService.deleteImageConversion(createResponse.id());
 
 	// ----------------------------------------------------------
 
@@ -188,7 +188,7 @@ class ImageConversionServiceHappyPathTest {
 	    imageConversionService.findById(createResponse.id()); //
 
 	}) //
-			.as(format("Check the ImageConvertion id ''{0}'' was deleted", createResponse.id()))//
+			.as(format("Check the ImageConversion id ''{0}'' was deleted", createResponse.id()))//
 			.isInstanceOfAny(ElementNotFoundException.class);
     }
 }

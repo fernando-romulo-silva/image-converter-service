@@ -4,12 +4,12 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.imageconverter.domain.convertion.ExecutionType;
+import org.imageconverter.domain.conversion.ExecutionType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Structure with area (x, y, width and height) to execute the image convertion.
+ * Structure with area (x, y, width and height) to execute the image conversion.
  * 
  * @author Fernando Romulo da Silva
  */

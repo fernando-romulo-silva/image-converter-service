@@ -19,7 +19,7 @@ public interface ImageTypeRespository extends JpaRepository<ImageType, Long>, Jp
     /**
      * Find a image type by extension
      * 
-     * @param extension The convertion file name
+     * @param extension The conversion file name
      * @return A {@link Optional} with {@link ImageType} or a empty {@link Optional}
      */
     @Query("select o from ImageType o where o.extension = :extension")

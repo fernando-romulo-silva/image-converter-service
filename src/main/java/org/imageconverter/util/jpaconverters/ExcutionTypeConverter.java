@@ -5,7 +5,7 @@ import static org.apache.commons.lang3.StringUtils.upperCase;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import org.imageconverter.domain.convertion.ExecutionType;
+import org.imageconverter.domain.conversion.ExecutionType;
 
 /**
  * Converter for {@link ExecutionType} enum to String for JPA framework.

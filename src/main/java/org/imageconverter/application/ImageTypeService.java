@@ -64,9 +64,9 @@ public class ImageTypeService {
 
 	final var imageType = new ImageType(request.extension(), request.name(), request.description());
 
-	final var imageConvertion = repository.save(imageType);
+	final var imageConversion = repository.save(imageType);
 
-	return new ImageTypeResponse(imageType.getId(), imageConvertion.getExtension(), imageType.getName());
+	return new ImageTypeResponse(imageType.getId(), imageConversion.getExtension(), imageType.getName());
     }
 
     /**
@@ -95,7 +95,7 @@ public class ImageTypeService {
      * 
      * @param id The image type's id
      * @exception ElementNotFoundException if image type (file extension) doesn't exists
-     * @exception ElementConflictException if amage type already been used on image convertion
+     * @exception ElementConflictException if amage type already been used on image conversion
      */
     @Transactional
     public void deleteImageType(@NotNull final Long id) {

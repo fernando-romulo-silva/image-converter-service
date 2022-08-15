@@ -1,9 +1,9 @@
 package org.imageconverter.util.controllers.imageconverter;
 
-import org.imageconverter.domain.convertion.ExecutionType;
+import org.imageconverter.domain.conversion.ExecutionType;
 
 /**
- * Interface to execute the image convertion.
+ * Interface to execute the image conversion.
  * 
  * @author Fernando Romulo da Silva
  */

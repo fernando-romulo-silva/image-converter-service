@@ -1,10 +1,10 @@
-package org.imageconverter.domain.convertion;
+package org.imageconverter.domain.conversion;
 
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.imageconverter.domain.convertion.ExecutionType.WEB;
-import static org.imageconverter.domain.convertion.ExecutionType.WS;
+import static org.imageconverter.domain.conversion.ExecutionType.WEB;
+import static org.imageconverter.domain.conversion.ExecutionType.WS;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import javax.validation.ConstraintViolationException;
 
 import org.imageconverter.domain.imagetype.ImageType;
-import org.imageconverter.infra.exception.ConvertionException;
+import org.imageconverter.infra.exception.ConversionException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -30,14 +30,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 
 /**
- * Test the {@link ImageConvertion} class on unhappy path.
+ * Test the {@link ImageConversion} class on unhappy path.
  * 
  * @author Fernando Romulo da Silva
  */
 @Tag("unit")
 @DisplayName("Test the image type entity, Unhappy Path :(")
 @TestInstance(PER_CLASS)
-class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
+class ImageConversionUnHappyPathTest extends ImageConversionConfigTest {
 
     @BeforeAll
     void setUp() throws Exception {
@@ -59,7 +59,7 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 			.thenReturn(EMPTY);
     }
 
-    Stream<Arguments> createInvalidImageConvertionData() throws IOException {
+    Stream<Arguments> createInvalidImageConversionData() throws IOException {
 
 	final var fileName = mockMultipartFile.getOriginalFilename();
 	final var fileBytes = mockMultipartFile.getBytes();
@@ -77,10 +77,10 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
     }
 
     @ParameterizedTest(name = "Pos {index} : fileName ''{0}'', type ''{2}'' ")
-    @MethodSource("createInvalidImageConvertionData")
+    @MethodSource("createInvalidImageConversionData")
     @Order(1)
-    @DisplayName("Test the imageConvertion's creation with invalid values")
-    void createInvalidImageConvertionTest( //
+    @DisplayName("Test the imageConversion's creation with invalid values")
+    void createInvalidImageConversionTest( //
 		    // given
 		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
 		    final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
@@ -88,7 +88,7 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 	final var area = Objects.nonNull(xAxis) ? "x " + xAxis + ", y " + yAxis + ", width " + width + ", height " + height : "";
 
 	// when
-	assertThatThrownBy(() -> new ImageConvertion.Builder().with($ -> {
+	assertThatThrownBy(() -> new ImageConversion.Builder().with($ -> {
 	    $.fileName = fileName;
 	    $.fileContent = fileContent;
 	    $.executionType = executionType;
@@ -99,6 +99,6 @@ class ImageConvertionUnHappyPathTest extends ImageConvertionConfigTest {
 	}).build()) //
 	// then
 	.as(format("Check the invalid fileName ''{0}'', executionType ''{1}'' and area ''{2}'' ", fileName, executionType, area)) //
-	.isInstanceOfAny(ConvertionException.class, ConstraintViolationException.class);
+	.isInstanceOfAny(ConversionException.class, ConstraintViolationException.class);
     }
 }

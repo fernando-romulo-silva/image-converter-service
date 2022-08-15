@@ -10,7 +10,7 @@ public class ElementInvalidException extends BaseApplicationException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new ConvertionException exception with the specified detail message.
+     * Constructs a new ConversionException exception with the specified detail message.
      * 
      * @param msg The detail message
      */

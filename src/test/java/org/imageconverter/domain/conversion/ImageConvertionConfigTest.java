@@ -1,4 +1,4 @@
-package org.imageconverter.domain.convertion;
+package org.imageconverter.domain.conversion;
 
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.mockito.Mockito.when;
@@ -23,11 +23,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import net.sourceforge.tess4j.ITesseract;
 
 /**
- * Class base for convertion unit tests.
+ * Class base for conversion unit tests.
  * 
  * @author Fernando Romulo da Silva
  */
-class ImageConvertionConfigTest {
+class ImageConversionConfigTest {
 
     protected MockMultipartFile mockMultipartFile;
 

@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Response to http methods for image convertion.
+ * Response to http methods for image conversion.
  * 
  * @author Fernando Romulo da Silva
  */
 @Schema(name = "ImageCon" + "verterResponse", description = "Response to convert image")
-public record ImageConverterResponse( //
+public record ImageConversionResponse( //
 		//
 		@Schema(name = "id", required = true, example = "1") //
 		@JsonProperty(value = "id", required = true) //

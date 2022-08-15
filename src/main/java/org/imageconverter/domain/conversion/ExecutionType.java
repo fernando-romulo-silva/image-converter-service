@@ -1,11 +1,11 @@
-package org.imageconverter.domain.convertion;
+package org.imageconverter.domain.conversion;
 
 import static org.apache.commons.lang3.StringUtils.upperCase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Convertion execution's type.
+ * Conversion execution's type.
  * 
  * @author Fernando Romulo da Silva
  */

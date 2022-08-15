@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Operation(summary = "Get all image type", description = "This method return all image types, watch out with it")
 @ApiResponse( //
 		responseCode = "200", //
-		description = "Image convertions found or a empty array if didn't find anything", //
+		description = "Image conversions found or a empty array if didn't find anything", //
 		content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ImageTypeResponse.class))) //
 )
 //

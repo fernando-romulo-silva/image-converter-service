@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.IOException;
 
 import org.imageconverter.TestConstants;
-import org.imageconverter.controller.ImageConverterRestController;
+import org.imageconverter.controller.ImageConversionRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -35,7 +35,7 @@ import org.springframework.test.context.jdbc.SqlConfig.ErrorMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
- * Test the {@link ImageConverterRestController} controller on unhappy path
+ * Test the {@link ImageConversionRestController} controller on unhappy path
  * 
  * @author Fernando Romulo da Silva
  */
@@ -46,10 +46,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = ErrorMode.CONTINUE_ON_ERROR))
 //
 @Tag("acceptance")
-@DisplayName("Test the image convertion, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
+@DisplayName("Test the image conversion, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-class ImageConvertRestControllerUnHappyPathTest {
+class ImageConvertRestControllerSearchUnHappyPathTest {
 
     // JSqlParser
     // @Value("classpath:db/db-data-test.sql")
@@ -57,7 +57,7 @@ class ImageConvertRestControllerUnHappyPathTest {
 
     private final MockMvc mvc;
 
-    ImageConvertRestControllerUnHappyPathTest( //
+    ImageConvertRestControllerSearchUnHappyPathTest( //
 		    @Autowired //
 		    final MockMvc mvc) throws IOException {
 	super();
@@ -66,8 +66,8 @@ class ImageConvertRestControllerUnHappyPathTest {
 
     @Test
     @Order(1)
-    @DisplayName("Try to get a image convertion that not exists")
-    void tryToGetImageConvertionByIdTest() throws Exception {// NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    @DisplayName("Try to get a image conversion that not exists")
+    void tryToGetImageConversionByIdTest() throws Exception {// NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var id = "1234";
@@ -83,15 +83,15 @@ class ImageConvertRestControllerUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isNotFound()) //
-			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageConvertion with id '" + id + "' not found"))) //
+			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageConversion with id '" + id + "' not found"))) //
 	;
 
     }
 
     @Test
     @Order(2)
-    @DisplayName("Search a image convertion that not exists by search")
-    void tryToGetImageConvertionBySearchTest() throws Exception {// NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    @DisplayName("Search a image conversion that not exists by search")
+    void tryToGetImageConversionBySearchTest() throws Exception {// NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var fileName = "some_file.png";
@@ -115,8 +115,8 @@ class ImageConvertRestControllerUnHappyPathTest {
 
     @Test
     @Order(3)
-    @DisplayName("Search a image convertion by invalid field search")
-    void tryToGetImageConvertionByInvalidFieldSearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    @DisplayName("Search a image conversion by invalid field search")
+    void tryToGetImageConversionByInvalidFieldSearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var fileName = "some_file.png";
@@ -133,15 +133,15 @@ class ImageConvertRestControllerUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isBadRequest()) //
-			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Unable to locate Attribute with the the given name 'fieldNotExist' on ImageConvertion"))) //
+			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Unable to locate Attribute with the the given name 'fieldNotExist' on ImageConversion"))) //
 	;
 
     }
     
     @Test
     @Order(4)
-    @DisplayName("Try to delete a image convertion that doesn't exist")
-    void deleteImageConvertionDoesNotExistTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    @DisplayName("Try to delete a image conversion that doesn't exist")
+    void deleteImageConversionDoesNotExistTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var id = "12356";
@@ -158,7 +158,7 @@ class ImageConvertRestControllerUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isNotFound()) //
-			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageConvertion with id '" + id + "' not found"))) //
+			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageConversion with id '" + id + "' not found"))) //
 	;
     }
 
