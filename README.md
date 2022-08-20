@@ -111,16 +111,22 @@ Tesseract needs a dictionary and the application use the English dictionary call
 
 The dictionary can be found in /src/main/tesseract on this project.
 
-You have to define at least the dictionary folder on environment variable or edit application-local.yml file:
+You have to define at least the dictionary folder on environment variable (TESSERACT_FOLDER) or edit application-local.yml file:
 
 ```bash
-$ export TESSERACT_FOLDER=/home/YourUser/tools/tessdata/
+export TESSERACT_FOLDER=/home/YourUser/tools/tessdata/
 ```
 
 Then execute:
 
 ```bash
-$ mvn spring-boot:run -Dspring.profiles.active=local
+mvn spring-boot:run -Dspring.profiles.active=local
+```
+
+For newman tests:
+
+```bash
+newman run src/main/postman/image-converter-service.postman_collection.json -e src/main/postman/image-converter-service.postman_environment.json
 ```
 
 # API Documentation

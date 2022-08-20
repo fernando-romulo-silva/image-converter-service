@@ -829,12 +829,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{IMAGE_CONVERSION_URL}}/{{convertionId}}",
+							"raw": "{{IMAGE_CONVERSION_URL}}/{{conversionId}}",
 							"host": [
 								"{{IMAGE_CONVERSION_URL}}"
 							],
 							"path": [
-								"{{convertionId}}"
+								"{{conversionId}}"
 							]
 						}
 					},
@@ -906,13 +906,13 @@
 					"response": []
 				},
 				{
-					"name": "Get By Id Copy",
+					"name": "Get By Id Area",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Get a conversion by id\", function (){",
+									"pm.test(\"Get a conversion by id Area\", function (){",
 									"    pm.response.to.have.status(200);",
 									"});"
 								],
@@ -923,6 +923,42 @@
 					"request": {
 						"method": "GET",
 						"header": [],
+						"url": {
+							"raw": "{{IMAGE_CONVERSION_URL}}/{{conversionId}}",
+							"host": [
+								"{{IMAGE_CONVERSION_URL}}"
+							],
+							"path": [
+								"{{conversionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Area",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete a image conversion Area\", function (){",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-CSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{IMAGE_CONVERSION_URL}}/{{conversionId}}",
 							"host": [
