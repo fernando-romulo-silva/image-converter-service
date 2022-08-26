@@ -719,7 +719,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
+									"src": "src/test/resources/bill.png"
 								}
 							]
 						},
@@ -874,7 +874,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
+									"src": "src/test/resources/bill.png"
 								}
 							]
 						},
