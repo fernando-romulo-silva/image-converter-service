@@ -7,8 +7,6 @@ package org.imageconverter.util.controllers.imageconverter;
  */
 public final class ImageConverterConst {
 
-    public static final String BASE_URL = "/image-converter";
-
     public static final String REST_URL = "/rest/images/conversion";
 
     public static final String REST_URL_AREA = "/rest/images/conversion/area";
