@@ -25,6 +25,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 
+import brave.sampler.Sampler;
+
 /**
  * Web configuration bean.
  * 
@@ -56,6 +58,11 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
 	registry.addResourceHandler("/swagger-ui/**")//
 			.addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/4.1.3/");
+    }
+    
+    @Bean
+    Sampler defaultSampler() {
+	return Sampler.ALWAYS_SAMPLE;
     }
 
     /**

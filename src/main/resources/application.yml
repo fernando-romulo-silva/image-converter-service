@@ -92,6 +92,7 @@ spring:
 #                 enabled: true
 #             trace:
 #                 enabled: true
+    # zipkin
     sleuth:
         enabled: true
         web.client.enabled: true
