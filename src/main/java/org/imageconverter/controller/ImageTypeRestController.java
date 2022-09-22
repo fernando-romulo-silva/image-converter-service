@@ -119,7 +119,7 @@ public class ImageTypeRestController {
      * @param page   A object {@link Pageable} that page the result
      * @return A {@link List} or a empty list
      */
-    @ImageTypeRestGetBySearchOpenApi
+//    @ImageTypeRestGetBySearchOpenApi
     //
     @ResponseStatus(OK)
     @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
