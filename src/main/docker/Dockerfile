@@ -60,7 +60,7 @@ COPY --from=builder application/internal-dependencies ./
 COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
-# install tesseract and create user 'javauser'
+# install tesseract
 RUN apk add --update --no-cache tesseract-ocr dumb-init
 
 # create usergroup 'javauser'      
