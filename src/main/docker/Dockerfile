@@ -61,8 +61,10 @@ COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
 # install tesseract and create user 'javauser'
-RUN apk add --update --no-cache tesseract-ocr dumb-init \
-      && addgroup --system javauser \
+RUN apk add --update --no-cache tesseract-ocr dumb-init
+
+# create usergroup 'javauser'      
+RUN addgroup --system javauser \
       && adduser -S -s /bin/false -G javauser javauser \
       && chown -R javauser:javauser /application
 
@@ -76,10 +78,10 @@ ENTRYPOINT [\
                # Preview Features
                # "--enable-preview",\  Preview
 			   # Profiling
-               "-Dcom.sun.management.jmxremote.port=9010",\ 
-               "-Dcom.sun.management.jmxremote.ssl=false",\ 
-               "-Dcom.sun.management.jmxremote.authenticate=false",\
-               "-Dcom.sun.management.jmxremote.local.only=false",\
+               # "-Dcom.sun.management.jmxremote.port=9010",\ 
+               # "-Dcom.sun.management.jmxremote.ssl=false",\ 
+               # "-Dcom.sun.management.jmxremote.authenticate=false",\
+               # "-Dcom.sun.management.jmxremote.local.only=false",\
                # Spring  
                "-Dspring.profiles.active=local",\
                # VM
