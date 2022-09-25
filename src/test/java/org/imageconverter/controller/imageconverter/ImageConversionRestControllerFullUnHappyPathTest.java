@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 import org.imageconverter.controller.actuator.BaseTesseractHealthTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -56,7 +55,7 @@ class ImageConversionRestControllerFullUnHappyPathTest extends BaseTesseractHeal
     @Value("classpath:bill.png")
     private Resource imageFile;
 
-    @Disabled("csr is not working")
+//    @Disabled("csr is not working")
     @Test
     @Order(1)
     @DisplayName("convert the image with invalid tesseract conf")

@@ -68,9 +68,8 @@ public class SecurityConfig {
      */
     @Bean
     CsrfTokenRepository httpSessionCsrfTokenRepository() {
-
 	final var repo = new HttpSessionCsrfTokenRepository(); // session
-	repo.setParameterName("_csrf");
+//	repo.setParameterName("_csrf");
 	repo.setHeaderName("X-CSRF-TOKEN");
 	return repo;
 
@@ -83,8 +82,9 @@ public class SecurityConfig {
      */
     @Bean
     CsrfTokenRepository cookieCsrfTokenRepository() {
-
-	return CookieCsrfTokenRepository.withHttpOnlyFalse(); // cookie
+        final var repo = CookieCsrfTokenRepository.withHttpOnlyFalse(); // cookie
+        repo.setHeaderName("X-CSRF-TOKEN");
+        return repo;	
     }
 
     /**

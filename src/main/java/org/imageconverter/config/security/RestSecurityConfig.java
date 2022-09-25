@@ -41,10 +41,13 @@ public class RestSecurityConfig {
     RestSecurityConfig( //
 		    final RestAuthenticationSuccessHandler authenticationSuccessHandler, //
 		    final HttpFirewall allowUrlEncodedSlashHttpFirewall, //
-		    final CsrfTokenRepository httpSessionCsrfTokenRepository) {
+		    final CsrfTokenRepository httpSessionCsrfTokenRepository
+//		    final CsrfTokenRepository cookieCsrfTokenRepository
+		    ) {
 	//
 	this.authenticationSuccessHandler = authenticationSuccessHandler;
 	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;
+//	this.csrfTokenRepository = cookieCsrfTokenRepository;
 	this.csrfTokenRepository = httpSessionCsrfTokenRepository;
     }
 
