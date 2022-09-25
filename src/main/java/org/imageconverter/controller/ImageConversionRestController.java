@@ -17,9 +17,9 @@ import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.domain.conversion.ImageConversion;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConversionPostResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
-import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetAllOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetByIdOpenApi;
@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -144,7 +145,7 @@ public class ImageConversionRestController {
     @PostMapping(consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
     public ImageConversionPostResponse convert( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image.bmp") //
-		    @RequestParam(name = "file", required = true) //
+		    @RequestPart(name = "file", required = true) // 
 		    final MultipartFile file,
 		    //
 		    final HttpServletResponse response) {
@@ -174,7 +175,7 @@ public class ImageConversionRestController {
     @PostMapping(value = "/area", consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
     public ImageConversionPostResponse convertWithArea( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image.bmp") //
-		    @RequestParam(value = "file", required = true) //
+		    @RequestPart(name = "file", required = true) // 
 		    final MultipartFile file, //
 		    //
 		    @Parameter(description = "The vertical position", required = true, example = "3") //

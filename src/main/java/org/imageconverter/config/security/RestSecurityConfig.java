@@ -91,7 +91,8 @@ public class RestSecurityConfig {
 			.and().csrf() //
 //			/*------*/.disable() //
 			/*------*/.csrfTokenRepository(csrfTokenRepository)//
-			/*------*/.ignoringAntMatchers("/actuator/**");
+			/*------*/.ignoringAntMatchers("/actuator/**")
+			;
 
 	http.headers().frameOptions().sameOrigin();
 
