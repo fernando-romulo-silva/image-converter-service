@@ -69,7 +69,7 @@ class ImageConversionRestControllerFullUnHappyPathTest extends BaseTesseractHeal
 //	final var responseGetTypes = restTemplate.exchange(HTTP_127_0_0_1 + serverPort + REST_URL, GET, requestEntityGetTypes, String.class);
 	final var responseGetTypes = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/health", GET, requestEntityGetTypes, String.class);
 	
-	final var tokenList = responseGetTypes.getHeaders().get("X-CSRF-TOKEN");
+	final var tokenList = responseGetTypes.getHeaders().get("XSRF-TOKEN");
 	final var cookies = responseGetTypes.getHeaders().get("Set-Cookie");
 
 	// ---------------------------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ class ImageConversionRestControllerFullUnHappyPathTest extends BaseTesseractHeal
 	// ---------------------------------------------------------------------------------------------------------------
 	final var headers = basicAuthHeaders();
 	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-	headers.add("X-CSRF-TOKEN", tokenList.get(0));
+	headers.add("X-XSRF-TOKEN", tokenList.get(0));
 	headers.set("Cookie", cookies.stream().collect(joining(";")));
 
 	final var fileName = Objects.nonNull(imageFile.getFilename()) ? imageFile.getFilename() : "file";

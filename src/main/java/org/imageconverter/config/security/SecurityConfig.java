@@ -70,7 +70,7 @@ public class SecurityConfig {
     CsrfTokenRepository httpSessionCsrfTokenRepository() {
 	final var repo = new HttpSessionCsrfTokenRepository(); // session
 //	repo.setParameterName("_csrf");
-	repo.setHeaderName("X-CSRF-TOKEN");
+//	repo.setHeaderName("X-CSRF-TOKEN");
 	return repo;
 
     }
@@ -83,7 +83,8 @@ public class SecurityConfig {
     @Bean
     CsrfTokenRepository cookieCsrfTokenRepository() {
         final var repo = CookieCsrfTokenRepository.withHttpOnlyFalse(); // cookie
-        repo.setHeaderName("X-CSRF-TOKEN");
+        // X-XSRF-TOKEN
+//        repo.setHeaderName("X-XSRF-TOKEN");
         return repo;	
     }
 

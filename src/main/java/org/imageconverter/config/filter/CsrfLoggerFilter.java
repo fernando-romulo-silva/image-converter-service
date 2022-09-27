@@ -27,7 +27,7 @@ public final class CsrfLoggerFilter extends OncePerRequestFilter {
 	final var csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
 	if (Objects.nonNull(csrfToken)) {
-	    response.setHeader("X-CSRF-TOKEN", csrfToken.getToken());
+	    response.setHeader("XSRF-TOKEN", csrfToken.getToken());
 	}
 
 	filterChain.doFilter(request, response);
