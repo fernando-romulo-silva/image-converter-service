@@ -66,7 +66,6 @@ class ImageConversionRestControllerFullUnHappyPathTest extends BaseTesseractHeal
 	// given
 	// ---------------------------------------------------------------------------------------------------------------
 	final var requestEntityGetTypes = new HttpEntity<String>(basicAuthHeaders());
-//	final var responseGetTypes = restTemplate.exchange(HTTP_127_0_0_1 + serverPort + REST_URL, GET, requestEntityGetTypes, String.class);
 	final var responseGetTypes = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + "/actuator/health", GET, requestEntityGetTypes, String.class);
 	
 	final var tokenList = responseGetTypes.getHeaders().get("XSRF-TOKEN");

@@ -28,7 +28,10 @@
 									"        pm.expect.fail(\"Server is not configured\");",
 									"    }    ",
 									"",
-									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -75,7 +78,7 @@
 									"pm.test(\"Update tesseract folder\", function (){",
 									"",
 									"    pm.response.to.have.status(204);",
-									"",
+									"    ",
 									"});"
 								],
 								"type": "text/javascript"
@@ -131,7 +134,10 @@
 									"        pm.expect.fail(\"Server is not configured\")",
 									"    }    ",
 									"",
-									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -170,7 +176,6 @@
 									"pm.test(\"Refresh Configurations\", function (){",
 									"",
 									"    pm.response.to.have.status(200);",
-									"",
 									"});"
 								],
 								"type": "text/javascript"
@@ -217,7 +222,6 @@
 									"pm.test(\"Update tesseract folder\", function (){",
 									"",
 									"    pm.response.to.have.status(204);",
-									"",
 									"});"
 								],
 								"type": "text/javascript"
@@ -273,7 +277,10 @@
 									"        pm.expect.fail(\"Server is OK\")",
 									"    }    ",
 									"",
-									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -359,7 +366,10 @@
 									"",
 									"    pm.expect(pm.response.json().length).to.be.above(0);",
 									"",
-									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -401,7 +411,10 @@
 									"",
 									"    pm.expect(pm.response.json()[0].name).to.be.eq(\"PNG\");",
 									"",
-									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -451,6 +464,7 @@
 									"    const idImageType = pm.response.headers.get('Location').split('/').pop();",
 									"",
 									"    pm.environment.set(\"imageTypeId\", idImageType);",
+									"",
 									"});"
 								],
 								"type": "text/javascript"
@@ -461,7 +475,7 @@
 						"method": "POST",
 						"header": [
 							{
-								"key": "X-CSRF-TOKEN",
+								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
 							}
@@ -493,6 +507,11 @@
 								"exec": [
 									"pm.test(\"Get a image type by id\", function (){",
 									"    pm.response.to.have.status(200);",
+									"",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);    ",
 									"});"
 								],
 								"type": "text/javascript"
@@ -542,7 +561,7 @@
 						"method": "PUT",
 						"header": [
 							{
-								"key": "X-CSRF-TOKEN",
+								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
 							}
@@ -583,6 +602,11 @@
 									"    if (name != \"BitMapNew\") {",
 									"        pm.expect.fail(\"Not changed!\")",
 									"    } ",
+									"",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);    ",
 									"});"
 								],
 								"type": "text/javascript"
@@ -623,7 +647,7 @@
 						"method": "DELETE",
 						"header": [
 							{
-								"key": "X-CSRF-TOKEN",
+								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
 							}
@@ -666,7 +690,10 @@
 									"",
 									"    pm.expect(pm.response.json().length).to.be.eq(0);",
 									"",
-									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);  ",
 									"});"
 								],
 								"type": "text/javascript"
@@ -708,7 +735,7 @@
 						"method": "POST",
 						"header": [
 							{
-								"key": "X-CSRF-TOKEN",
+								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
 							}
@@ -719,7 +746,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "src/test/resources/bill.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
 								}
 							]
 						},
@@ -741,6 +768,11 @@
 								"exec": [
 									"pm.test(\"Get a conversion by id\", function (){",
 									"    pm.response.to.have.status(200);",
+									"",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);    ",
 									"});"
 								],
 								"type": "text/javascript"
@@ -776,7 +808,10 @@
 									"",
 									"    pm.expect(pm.response.json()[0].file_name).to.be.eq(\"bill.png\");",
 									"",
-									"    pm.environment.set(\"CSRF_TOKEN\", pm.response.headers.get(\"X-CSRF-TOKEN\"));",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -823,7 +858,7 @@
 						"method": "DELETE",
 						"header": [
 							{
-								"key": "X-CSRF-TOKEN",
+								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
 							}
@@ -863,7 +898,7 @@
 						"method": "POST",
 						"header": [
 							{
-								"key": "X-CSRF-TOKEN",
+								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
 							}
@@ -874,7 +909,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "src/test/resources/bill.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
 								}
 							]
 						},
@@ -914,6 +949,11 @@
 								"exec": [
 									"pm.test(\"Get a conversion by id Area\", function (){",
 									"    pm.response.to.have.status(200);",
+									"",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -954,7 +994,7 @@
 						"method": "DELETE",
 						"header": [
 							{
-								"key": "X-CSRF-TOKEN",
+								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
 							}
