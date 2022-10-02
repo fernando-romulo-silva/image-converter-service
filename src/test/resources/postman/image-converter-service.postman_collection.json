@@ -738,6 +738,11 @@
 								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
+							},
+							{
+								"key": "Execution-Type",
+								"value": "WS",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -900,6 +905,11 @@
 							{
 								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "Execution-Type",
+								"value": "WS",
 								"type": "text"
 							}
 						],

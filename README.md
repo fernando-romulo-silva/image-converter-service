@@ -128,7 +128,7 @@ mvn spring-boot:run -Dspring.profiles.active=local
 For newman tests:
 
 ```bash
-newman run src/main/postman/image-converter-service.postman_collection.json -e src/main/postman/image-converter-service-local.postman_environment.json
+newman run src/test/resources/postman/image-converter-service.postman_collection.json -e src/test/resources/postman/image-converter-service-local.postman_environment.json
 ```
 
 # API Documentation
