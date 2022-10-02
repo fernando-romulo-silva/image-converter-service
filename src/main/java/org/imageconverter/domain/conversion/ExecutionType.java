@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(enumAsRef = true)
 public enum ExecutionType {
 
+    UNKNOWN,
+    
     BATCH,
 
     WS,
@@ -38,7 +40,7 @@ public enum ExecutionType {
 	        case "MS" -> MS; // Messaging Service
 	        case "WEB" -> WEB; // Spring MVC
 	        case "DESKTOP" -> DESKTOP; // 
-	        default -> throw new IllegalArgumentException("Unknown execution type '%s'".formatted(string));
+	        default -> UNKNOWN;
 	};
     }
 }

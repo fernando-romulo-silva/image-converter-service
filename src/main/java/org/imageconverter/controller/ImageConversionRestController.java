@@ -1,6 +1,5 @@
 package org.imageconverter.controller;
 
-import static org.imageconverter.domain.conversion.ExecutionType.WS;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -10,10 +9,14 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.application.ImageConversionService;
+import org.imageconverter.domain.conversion.ExecutionType;
 import org.imageconverter.domain.conversion.ImageConversion;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConversionPostResponse;
@@ -148,11 +151,14 @@ public class ImageConversionRestController {
 		    @RequestPart(name = "file", required = true) // 
 		    final MultipartFile file,
 		    //
+		    final HttpServletRequest request,
 		    final HttpServletResponse response) {
 	
 	final var bytes = extractBytes(file);
 	
-	final var result = imageConversionService.convert(new ImageConverterRequest(file.getOriginalFilename(), bytes, WS));
+	final var executionType = extractExecutionType(request);
+	
+	final var result = imageConversionService.convert(new ImageConverterRequest(file.getOriginalFilename(), bytes, executionType));
 	
 	response.addHeader("Location", REST_URL + "/" + result.id());
 	
@@ -194,11 +200,14 @@ public class ImageConversionRestController {
 		    @RequestParam(required = true) //
 		    final Integer height,
 		    //
+		    final HttpServletRequest request,
 		    final HttpServletResponse response) {
+	
+	final var executionType = extractExecutionType(request);
 
 	final byte[] bytes = extractBytes(file);
 
-	final var result = imageConversionService.convert(new ImageConverterRequestArea(file.getOriginalFilename(), bytes, WS, xAxis, yAxis, width, height));
+	final var result = imageConversionService.convert(new ImageConverterRequestArea(file.getOriginalFilename(), bytes, executionType, xAxis, yAxis, width, height));
 	
 	response.addHeader("Location", REST_URL + "/" + result.id());
 	
@@ -232,5 +241,12 @@ public class ImageConversionRestController {
 	    bytes = new byte[0];
 	}
 	return bytes;
+    }
+    
+    private ExecutionType extractExecutionType(final HttpServletRequest request) {
+	final var executionTypeHeader = Optional.ofNullable(request.getHeader("Execution-Type"))
+			.orElse(StringUtils.EMPTY);
+	
+	return ExecutionType.from(executionTypeHeader);
     }
 }
