@@ -249,8 +249,7 @@ class ImageConversionRestControllerHappyPathTest {
 	
 	assertThat(response) //
 		.as("Check the number string") //
-		.anyMatch(r -> containsIgnoreCase(deleteWhitespace(r.text().replaceAll("[^x0-9]", "")), TestConstants.IMAGE_PNG_CONVERSION_NUMBER)) //
-		;
+		.anyMatch(r -> containsIgnoreCase(deleteWhitespace(r.text().replaceAll("[^x0-9]", "")), TestConstants.IMAGE_PNG_CONVERSION_NUMBER));
     }
 
     @Test

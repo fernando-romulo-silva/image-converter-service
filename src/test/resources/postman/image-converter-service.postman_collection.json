@@ -751,7 +751,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
+									"src": "src/test/resources/bill01.png"
 								}
 							]
 						},
@@ -919,7 +919,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
+									"src": "src/test/resources/bill01.png"
 								}
 							]
 						},
@@ -1016,6 +1016,66 @@
 							],
 							"path": [
 								"{{conversionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Converter Multiple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Execute Converter\", function (){",
+									"    pm.response.to.have.status(201);",
+									"   ",
+									"    const conversionId = pm.response.headers.get('Location').split('/').pop();",
+									"",
+									"    pm.environment.set(\"conversionId\", conversionId);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "Execution-Type",
+								"value": "WS",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": "src/test/resources/bill01.png"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": "src/test/resources/bill02.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{IMAGE_CONVERSION_URL}}/multiple",
+							"host": [
+								"{{IMAGE_CONVERSION_URL}}"
+							],
+							"path": [
+								"multiple"
 							]
 						}
 					},

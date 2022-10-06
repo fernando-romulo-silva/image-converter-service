@@ -47,7 +47,12 @@ class ImageConversionServiceHappyPathTest {
 
     private final Resource imageFile;
 
-    ImageConversionServiceHappyPathTest(@Autowired final ImageConversionService imageConversionService, @Value("classpath:bill01.png") final Resource imageFile) {
+    ImageConversionServiceHappyPathTest( //
+		    @Autowired //
+		    final ImageConversionService imageConversionService, //
+		    //
+		    @Value("classpath:bill01.png") //
+		    final Resource imageFile) {
 	super();
 	this.imageConversionService = imageConversionService;
 	this.imageFile = imageFile;
@@ -67,8 +72,8 @@ class ImageConversionServiceHappyPathTest {
 			.as(format("Check the 'response' has fileName ''{0}'' and conversion txt ''{1}''", id, TestConstants.DB_CONVERSION_NUMBER)) //
 			.extracting( //
 					$ -> $.id(), //
-					$ -> $.text().replaceAll("[^x0-9]", "") //
-			).containsExactly(id, TestConstants.DB_CONVERSION_NUMBER) //
+					$ -> $.text().replaceAll("[^x0-9]", "")) //
+			.containsExactly(id, TestConstants.DB_CONVERSION_NUMBER) //
 	;
     }
 
@@ -162,7 +167,7 @@ class ImageConversionServiceHappyPathTest {
 			.as(format("Check if the response's text is equal to ''{0}''", TestConstants.IMAGE_PNG_CONVERSION_NUMBER))//
 			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
     }
-    
+
     @Test
     @Order(6)
     @DisplayName("Delete a image conversion")
@@ -185,7 +190,7 @@ class ImageConversionServiceHappyPathTest {
 	// then
 	assertThatThrownBy(() -> {
 
-	    imageConversionService.findById(createResponse.id()); //
+	    imageConversionService.findById(createResponse.id());
 
 	}) //
 			.as(format("Check the ImageConversion id ''{0}'' was deleted", createResponse.id()))//
