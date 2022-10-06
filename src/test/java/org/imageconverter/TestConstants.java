@@ -11,7 +11,7 @@ public class TestConstants {
 
     public static final String DB_CONVERSION_NUMBER = "02325678908110000003556752101015176230000023560";
 
-    public static final String FILE_NAME_IMAGE_PNG = "bill.png";
+    public static final String FILE_NAME_IMAGE_PNG = "bill01.png";
     
     public static final String HEIGHT_VALUE = "57";
 

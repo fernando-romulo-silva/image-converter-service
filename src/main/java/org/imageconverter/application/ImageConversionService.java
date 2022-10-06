@@ -4,6 +4,7 @@ import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -46,7 +47,8 @@ public class ImageConversionService {
     /**
      * Convert an image on text.
      * 
-     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea}) that it'll be convert
+     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea})
+     *                that it'll be convert
      * @return A {@link ImageConversionResponse} with the conversion
      * @exception ElementAlreadyExistsException if image (file name) has already converted
      */
@@ -67,7 +69,43 @@ public class ImageConversionService {
 
 	return new ImageConversionResponse(imageConversion.getId(), imageConversion.getFileName(), imageConversion.getText());
     }
-    
+
+    /**
+     * Convert a list of image on text.
+     * 
+     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea})
+     *                that it'll be convert
+     * @return A {@link ImageConversionResponse} with the conversion
+     * @exception ElementAlreadyExistsException if image (file name) has already converted
+     */
+    @Transactional
+    public List<ImageConversionResponse> convert(@NotNull @Valid final List<ImageConverterRequestInterface> requests) {
+
+	final var imageList = new ArrayList<ImageConversion>();
+
+	for (final var request : requests) {
+	    final var imageConversionNew = new ImageConversion.Builder() //
+			    .with(request) //
+			    .build();
+
+	    final var fileName = imageConversionNew.getFileName();
+
+	    repository.findByFileName(fileName).ifPresent(c -> {
+		throw new ElementAlreadyExistsException(ImageConversion.class, "fileName '" + fileName + "' and with id '" + c.getId() + "'");
+	    });
+
+	    imageList.add(imageConversionNew);
+	}
+
+	final var imagesConversion = repository.saveAll(imageList);
+
+	return imagesConversion //
+			.stream() //
+			.map(img -> new ImageConversionResponse(img.getId(), img.getFileName(), img.getText())) //
+			.toList();
+
+    }
+
     /**
      * Delete a conversion image.
      * 

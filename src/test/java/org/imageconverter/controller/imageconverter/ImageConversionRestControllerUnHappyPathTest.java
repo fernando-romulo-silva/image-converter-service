@@ -75,7 +75,7 @@ class ImageConversionRestControllerUnHappyPathTest {
 		    @Value("classpath:beach.jpeg") //
 		    final Resource beachImageFile, //
 		    //
-		    @Value("classpath:bill.png") //
+		    @Value("classpath:bill01.png") //
 		    final Resource billImageFile, //
 		    //
 		    @Value("classpath:corruptedImage.png") //
@@ -149,7 +149,7 @@ class ImageConversionRestControllerUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isConflict()) //
-			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ElementAlreadyExistsException: ImageConversion with fileName 'bill.png'"))) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ElementAlreadyExistsException: ImageConversion with fileName 'bill01.png'"))) //
 	;
     }
 

@@ -52,10 +52,9 @@ import org.springframework.web.client.RestTemplate;
 @TestInstance(Lifecycle.PER_CLASS)
 class ImageConversionRestControllerFullUnHappyPathTest extends BaseTesseractHealthTest {
 
-    @Value("classpath:bill.png")
+    @Value("classpath:bill01.png")
     private Resource imageFile;
 
-//    @Disabled("csr is not working")
     @Test
     @Order(1)
     @DisplayName("convert the image with invalid tesseract conf")

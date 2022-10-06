@@ -47,7 +47,7 @@ class ImageConversionServiceHappyPathTest {
 
     private final Resource imageFile;
 
-    ImageConversionServiceHappyPathTest(@Autowired final ImageConversionService imageConversionService, @Value("classpath:bill.png") final Resource imageFile) {
+    ImageConversionServiceHappyPathTest(@Autowired final ImageConversionService imageConversionService, @Value("classpath:bill01.png") final Resource imageFile) {
 	super();
 	this.imageConversionService = imageConversionService;
 	this.imageFile = imageFile;

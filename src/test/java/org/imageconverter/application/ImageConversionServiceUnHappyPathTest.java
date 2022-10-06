@@ -62,7 +62,7 @@ class ImageConversionServiceUnHappyPathTest {
 		    @Autowired //
 		    final ImageConversionService imageConversionService, //
 		    //
-		    @Value("classpath:bill.png") //
+		    @Value("classpath:bill01.png") //
 		    final Resource imageFile) {
 	super();
 	this.imageConversionService = imageConversionService;

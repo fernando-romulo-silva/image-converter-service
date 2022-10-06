@@ -1,5 +1,7 @@
 package org.imageconverter.controller.imageconverter;
 
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.notNullValue;
@@ -71,13 +73,27 @@ class ImageConversionRestControllerHappyPathTest {
 
     private final MockMvc mvc;
 
-    private final Resource billImageFile;
+    private final Resource bill01ImageFile;
 
-    ImageConversionRestControllerHappyPathTest(@Autowired final ObjectMapper mapper, @Autowired final MockMvc mvc, @Value("classpath:bill.png") final Resource billImageFile) {
+    private final Resource bill02ImageFile;
+
+    ImageConversionRestControllerHappyPathTest( //
+		    @Autowired //
+		    final ObjectMapper mapper, //
+		    //
+		    @Autowired //
+		    final MockMvc mvc, //
+		    //
+		    @Value("classpath:bill01.png") //
+		    final Resource bill01ImageFile,
+
+		    @Value("classpath:bill02.png") //
+		    final Resource bill02ImageFile) {
 	super();
 	this.mapper = mapper;
 	this.mvc = mvc;
-	this.billImageFile = billImageFile;
+	this.bill01ImageFile = bill01ImageFile;
+	this.bill02ImageFile = bill02ImageFile;
     }
 
     @Test
@@ -157,12 +173,12 @@ class ImageConversionRestControllerHappyPathTest {
 
     @Test
     @Order(4)
-    @DisplayName("convert the image")
+    @DisplayName("convert one image")
     @Sql(statements = "DELETE FROM image_conversion ")
-    void convertTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception)
+    void convertImageTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception)
 
 	// given
-	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", bill01ImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, bill01ImageFile.getInputStream());
 
 	final var request = multipart(REST_URL) //
 			.file(multipartFile) //
@@ -179,7 +195,7 @@ class ImageConversionRestControllerHappyPathTest {
 			.andReturn();
 
 	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConversionPostResponse.class);
-	
+
 	final var locationArray = result.getResponse().getHeader("Location").split("/");
 	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
 
@@ -194,13 +210,57 @@ class ImageConversionRestControllerHappyPathTest {
     }
 
     @Test
+    @Order(4)
+    @DisplayName("convert more than one image")
+    @Sql(statements = "DELETE FROM image_conversion ")
+    void convertImagesTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception)
+
+	// given
+	final var multipartFile1 = new MockMultipartFile("files", bill01ImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, bill01ImageFile.getInputStream());
+	final var multipartFile2 = new MockMultipartFile("files", bill02ImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, bill02ImageFile.getInputStream());
+
+	final var request = multipart(REST_URL + "/multiple") //
+			.file(multipartFile1) //
+			.file(multipartFile2) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf());
+
+	// create one
+	final var result = mvc.perform(request) //
+			//
+			// when
+			.andDo(print()) //
+			.andExpect(status().isCreated()) //
+			.andExpect(header().string("Location", notNullValue())) //
+			.andReturn();
+
+	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConversionPostResponse[].class);
+	final var locationsArray = result.getResponse().getHeader("Location").split(";");
+	
+	for (final var location : locationsArray) {
+	    final var locationArray = location.split("/");
+	    final var id = Long.valueOf(locationArray[locationArray.length - 1]);
+
+	    // then
+	    assertThat(id) //
+	    	.as("Check the response's id is greater than zero") //
+	    	.isGreaterThan(NumberUtils.LONG_ZERO);
+	}
+	
+	assertThat(response) //
+		.as("Check the number string") //
+		.anyMatch(r -> containsIgnoreCase(deleteWhitespace(r.text().replaceAll("[^x0-9]", "")), TestConstants.IMAGE_PNG_CONVERSION_NUMBER)) //
+		;
+    }
+
+    @Test
     @Order(5)
     @DisplayName("convert the image with area")
     @Sql(statements = "DELETE FROM image_conversion ")
     void convertAreaTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception)
 
 	// given
-	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", bill01ImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, bill01ImageFile.getInputStream());
 
 	final var request = multipart(REST_URL + "/area") //
 			.file(multipartFile) //
@@ -210,7 +270,7 @@ class ImageConversionRestControllerHappyPathTest {
 			.param(TestConstants.WIDTH, TestConstants.WIDTH_VALUE) //
 			.param(TestConstants.HEIGHT, TestConstants.HEIGHT_VALUE) //
 			.with(csrf());
-	
+
 	// create one
 	final var result = mvc.perform(request) //
 			//
@@ -221,7 +281,7 @@ class ImageConversionRestControllerHappyPathTest {
 			.andReturn();
 
 	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConversionPostResponse.class);
-	
+
 	final var locationArray = result.getResponse().getHeader("Location").split("/");
 	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
 
@@ -234,14 +294,14 @@ class ImageConversionRestControllerHappyPathTest {
 			.as("Check the number string") //
 			.isEqualTo(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
     }
-    
+
     @Test
     @Order(6)
     @DisplayName("Delete a new conversion")
     void deleteImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
-	final var multipartFile = new MockMultipartFile("file", billImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, billImageFile.getInputStream());
+	final var multipartFile = new MockMultipartFile("file", bill01ImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, bill01ImageFile.getInputStream());
 
 	final var requestCreate = multipart(REST_URL + "/area") //
 			.file(multipartFile) //
@@ -251,7 +311,7 @@ class ImageConversionRestControllerHappyPathTest {
 			.param(TestConstants.WIDTH, TestConstants.WIDTH_VALUE) //
 			.param(TestConstants.HEIGHT, TestConstants.HEIGHT_VALUE) //
 			.with(csrf());
-	
+
 	// create one
 	final var result = mvc.perform(requestCreate) //
 			//

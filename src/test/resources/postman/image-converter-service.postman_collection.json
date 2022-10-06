@@ -751,7 +751,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
 								}
 							]
 						},
@@ -811,7 +811,7 @@
 									"",
 									"    pm.expect(pm.response.json().length).to.be.above(0);",
 									"",
-									"    pm.expect(pm.response.json()[0].file_name).to.be.eq(\"bill.png\");",
+									"    pm.expect(pm.response.json()[0].file_name).to.be.eq(\"bill01.png\");",
 									"",
 									"    const token = pm.cookies.get('XSRF-TOKEN');",
 									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
@@ -827,7 +827,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{IMAGE_CONVERSION_URL}}/search?filter=fileName:'bill.png'",
+							"raw": "{{IMAGE_CONVERSION_URL}}/search?filter=fileName:'bill01.png'",
 							"host": [
 								"{{IMAGE_CONVERSION_URL}}"
 							],
@@ -837,7 +837,7 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "fileName:'bill.png'"
+									"value": "fileName:'bill01.png'"
 								}
 							]
 						}
@@ -919,7 +919,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
 								}
 							]
 						},

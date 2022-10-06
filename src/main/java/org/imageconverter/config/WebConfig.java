@@ -64,7 +64,7 @@ public class WebConfig implements WebMvcConfigurer {
     Sampler defaultSampler() {
 	return Sampler.ALWAYS_SAMPLE;
     }
-
+    
     /**
      * Create a valid {@link JsonMapper} object configured.
      * 

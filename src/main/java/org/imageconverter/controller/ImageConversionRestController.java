@@ -1,5 +1,6 @@
 package org.imageconverter.controller;
 
+import static java.util.stream.Collectors.joining;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -8,6 +9,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,7 @@ import org.imageconverter.util.controllers.imageconverter.ImageConversionPostRes
 import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetAllOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetByIdOpenApi;
@@ -148,20 +151,19 @@ public class ImageConversionRestController {
     @PostMapping(consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
     public ImageConversionPostResponse convert( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image.bmp") //
-		    @RequestPart(name = "file", required = true) // 
+		    @RequestPart(name = "file", required = true) //
 		    final MultipartFile file,
 		    //
-		    final HttpServletRequest request,
-		    final HttpServletResponse response) {
-	
+		    final HttpServletRequest request, final HttpServletResponse response) {
+
 	final var bytes = extractBytes(file);
-	
+
 	final var executionType = extractExecutionType(request);
-	
+
 	final var result = imageConversionService.convert(new ImageConverterRequest(file.getOriginalFilename(), bytes, executionType));
-	
+
 	response.addHeader("Location", REST_URL + "/" + result.id());
-	
+
 	return new ImageConversionPostResponse(result.text());
     }
 
@@ -181,7 +183,7 @@ public class ImageConversionRestController {
     @PostMapping(value = "/area", consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
     public ImageConversionPostResponse convertWithArea( //
 		    @Parameter(description = "The Image to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image.bmp") //
-		    @RequestPart(name = "file", required = true) // 
+		    @RequestPart(name = "file", required = true) //
 		    final MultipartFile file, //
 		    //
 		    @Parameter(description = "The vertical position", required = true, example = "3") //
@@ -200,21 +202,53 @@ public class ImageConversionRestController {
 		    @RequestParam(required = true) //
 		    final Integer height,
 		    //
-		    final HttpServletRequest request,
-		    final HttpServletResponse response) {
-	
+		    final HttpServletRequest request, final HttpServletResponse response) {
+
 	final var executionType = extractExecutionType(request);
 
 	final byte[] bytes = extractBytes(file);
 
 	final var result = imageConversionService.convert(new ImageConverterRequestArea(file.getOriginalFilename(), bytes, executionType, xAxis, yAxis, width, height));
-	
+
 	response.addHeader("Location", REST_URL + "/" + result.id());
-	
+
 	return new ImageConversionPostResponse(result.text());
     }
-    
-    
+
+    /**
+     * Convert multiple images file on text.
+     * 
+     * @param files The images' collection to convert
+     * @return A list of {@link ImageConversionResponse} with each response.
+     */
+    @ImageConverterRestPostOpenApi
+    //
+    @ResponseStatus(CREATED)
+    @PostMapping(value = "/multiple", consumes = { MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE)
+    public List<ImageConversionPostResponse> convert( //
+		    @Parameter(description = "The Images to be uploaded", content = @Content(mediaType = MULTIPART_FORM_DATA_VALUE), required = true, example = "image1.bmp, image2.png") //
+		    @RequestPart(name = "files", required = true) //
+		    final MultipartFile[] files, //
+		    //
+		    final HttpServletRequest request, //
+		    final HttpServletResponse response) {
+
+	final var executionType = extractExecutionType(request);
+
+	final var listRequest = new ArrayList<ImageConverterRequestInterface>();
+
+	for (final var file : files) {
+	    final var bytes = extractBytes(file);
+	    listRequest.add(new ImageConverterRequest(file.getOriginalFilename(), bytes, executionType));
+	}
+
+	final var result = imageConversionService.convert(listRequest);
+
+	response.addHeader("Location", result.stream().map(rst -> REST_URL + "/" + rst.id()).collect(joining(";")));
+
+	return result.stream().map(rst -> new ImageConversionPostResponse(rst.text())).toList();
+    }
+
     /**
      * Delete a image conversion.
      * 
@@ -242,11 +276,10 @@ public class ImageConversionRestController {
 	}
 	return bytes;
     }
-    
+
     private ExecutionType extractExecutionType(final HttpServletRequest request) {
-	final var executionTypeHeader = Optional.ofNullable(request.getHeader("Execution-Type"))
-			.orElse(StringUtils.EMPTY);
-	
+	final var executionTypeHeader = Optional.ofNullable(request.getHeader("Execution-Type")).orElse(StringUtils.EMPTY);
+
 	return ExecutionType.from(executionTypeHeader);
     }
 }
