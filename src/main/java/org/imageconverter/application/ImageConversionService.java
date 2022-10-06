@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.imageconverter.domain.conversion.ImageConversion;
@@ -79,7 +80,7 @@ public class ImageConversionService {
      * @exception ElementAlreadyExistsException if image (file name) has already converted
      */
     @Transactional
-    public List<ImageConversionResponse> convert(@NotNull @Valid final List<ImageConverterRequestInterface> requests) {
+    public List<ImageConversionResponse> convert(@NotNull @NotEmpty @Valid final List<ImageConverterRequestInterface> requests) {
 
 	final var imageList = new ArrayList<ImageConversion>();
 

@@ -7,7 +7,7 @@ import org.imageconverter.domain.conversion.ExecutionType;
  * 
  * @author Fernando Romulo da Silva
  */
-public sealed interface ImageConverterRequestInterface permits ImageConverterRequest,ImageConverterRequestArea {
+public sealed interface ImageConverterRequestInterface permits ImageConverterRequest, ImageConverterRequestArea {
 
     /**
      * File parameter.
