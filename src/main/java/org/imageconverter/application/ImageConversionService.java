@@ -62,8 +62,8 @@ public class ImageConversionService {
 
 	final var fileName = imageConversionNew.getFileName();
 
-	repository.findByFileName(fileName).ifPresent(c -> {
-	    throw new ElementAlreadyExistsException(ImageConversion.class, "fileName '" + fileName + "' and with id '" + c.getId() + "'");
+	repository.findByFileName(fileName).ifPresent(imageConversionResult -> {
+	    throw new ElementAlreadyExistsException(ImageConversion.class, "fileName '" + fileName + "' and with id '" + imageConversionResult.getId() + "'");
 	});
 
 	final var imageConversion = repository.save(imageConversionNew);
@@ -85,14 +85,12 @@ public class ImageConversionService {
 	final var imageList = new ArrayList<ImageConversion>();
 
 	for (final var request : requests) {
-	    final var imageConversionNew = new ImageConversion.Builder() //
+	    final var imageConversionNew = new ImageConversion.Builder() // NOPMD - AvoidInstantiatingObjectsInLoop: It's necessary to create a new object for each element
 			    .with(request) //
 			    .build();
 
-	    final var fileName = imageConversionNew.getFileName();
-
-	    repository.findByFileName(fileName).ifPresent(c -> {
-		throw new ElementAlreadyExistsException(ImageConversion.class, "fileName '" + fileName + "' and with id '" + c.getId() + "'");
+	    repository.findByFileName(imageConversionNew.getFileName()).ifPresent(imageConversionResult -> {
+		throw new ElementAlreadyExistsException(ImageConversion.class, "fileName '" + imageConversionResult.getFileName() + "' and with id '" + imageConversionResult.getId() + "'");
 	    });
 
 	    imageList.add(imageConversionNew);

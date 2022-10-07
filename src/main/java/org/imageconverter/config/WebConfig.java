@@ -78,7 +78,7 @@ public class WebConfig implements WebMvcConfigurer {
 	module.addSerializer(new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
 	module.addSerializer(new LocalTimeSerializer(DateTimeFormatter.ISO_TIME));
 
-	return (JsonMapper) JsonMapper.builder() //
+	return JsonMapper.builder() //
 			.configure(ALLOW_COERCION_OF_SCALARS, false) //
 			.serializationInclusion(NON_NULL) //
 			.addModule(module) //

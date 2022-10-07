@@ -23,5 +23,5 @@ public interface ImageTypeRespository extends JpaRepository<ImageType, Long>, Jp
      * @return A {@link Optional} with {@link ImageType} or a empty {@link Optional}
      */
     @Query("select o from ImageType o where o.extension = :extension")
-    Optional<ImageType> findByExtension(@Param("extension") final String extension);
+    Optional<ImageType> findByExtension(@Param("extension") String extension);
 }

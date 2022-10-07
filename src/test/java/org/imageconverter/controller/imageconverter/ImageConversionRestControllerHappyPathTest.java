@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imageconverter.TestConstants;
 import org.imageconverter.controller.ImageConversionRestController;
@@ -38,7 +37,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -68,6 +66,8 @@ class ImageConversionRestControllerHappyPathTest {
     // JSqlParser
     // @Value("classpath:db/db-data-test.sql")
     // private Resource dbDataTest;
+
+    public static final String HEADER_PARAMETER_LOCATION = "Location";
 
     private final ObjectMapper mapper;
 
@@ -191,12 +191,12 @@ class ImageConversionRestControllerHappyPathTest {
 			// when
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-			.andExpect(header().string("Location", notNullValue())) //
+			.andExpect(header().string(HEADER_PARAMETER_LOCATION, notNullValue())) //
 			.andReturn();
 
 	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConversionPostResponse.class);
 
-	final var locationArray = result.getResponse().getHeader("Location").split("/");
+	final var locationArray = result.getResponse().getHeader(HEADER_PARAMETER_LOCATION).split("/");
 	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
 
 	// then
@@ -204,7 +204,7 @@ class ImageConversionRestControllerHappyPathTest {
 			.as("Check the response's id is greater than zero") //
 			.isGreaterThan(NumberUtils.LONG_ZERO);
 
-	assertThat(StringUtils.deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
+	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
 			.as("Check the number string") //
 			.containsIgnoringCase(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
     }
@@ -226,30 +226,30 @@ class ImageConversionRestControllerHappyPathTest {
 			.with(csrf());
 
 	// create one
-	final var result = mvc.perform(request) //
+	final var resultMultiple = mvc.perform(request) //
 			//
 			// when
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-			.andExpect(header().string("Location", notNullValue())) //
+			.andExpect(header().string(HEADER_PARAMETER_LOCATION, notNullValue())) //
 			.andReturn();
 
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConversionPostResponse[].class);
-	final var locationsArray = result.getResponse().getHeader("Location").split(";");
-	
+	final var response = mapper.readValue(resultMultiple.getResponse().getContentAsString(), ImageConversionPostResponse[].class);
+	final var locationsArray = resultMultiple.getResponse().getHeader(HEADER_PARAMETER_LOCATION).split(";");
+
 	for (final var location : locationsArray) {
 	    final var locationArray = location.split("/");
 	    final var id = Long.valueOf(locationArray[locationArray.length - 1]);
 
 	    // then
 	    assertThat(id) //
-	    	.as("Check the response's id is greater than zero") //
-	    	.isGreaterThan(NumberUtils.LONG_ZERO);
+			    .as("Check the response's id is greater than zero") //
+			    .isGreaterThan(NumberUtils.LONG_ZERO);
 	}
-	
+
 	assertThat(response) //
-		.as("Check the number string") //
-		.anyMatch(r -> containsIgnoreCase(deleteWhitespace(r.text().replaceAll("[^x0-9]", "")), TestConstants.IMAGE_PNG_CONVERSION_NUMBER));
+			.as("Check the number string") //
+			.anyMatch(responseElement -> containsIgnoreCase(deleteWhitespace(responseElement.text().replaceAll("[^x0-9]", "")), TestConstants.IMAGE_PNG_CONVERSION_NUMBER));
     }
 
     @Test
@@ -271,26 +271,26 @@ class ImageConversionRestControllerHappyPathTest {
 			.with(csrf());
 
 	// create one
-	final var result = mvc.perform(request) //
+	final var resultArea = mvc.perform(request) //
 			//
 			// when
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-			.andExpect(header().string("Location", notNullValue())) //
+			.andExpect(header().string(HEADER_PARAMETER_LOCATION, notNullValue())) //
 			.andReturn();
 
-	final var response = mapper.readValue(result.getResponse().getContentAsString(), ImageConversionPostResponse.class);
+	final var response = mapper.readValue(resultArea.getResponse().getContentAsString(), ImageConversionPostResponse.class);
 
-	final var locationArray = result.getResponse().getHeader("Location").split("/");
+	final var locationArray = resultArea.getResponse().getHeader(HEADER_PARAMETER_LOCATION).split("/");
 	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
 
 	// then
 	assertThat(id) //
-			.as("Check the response's id is greater than zero") //
+			.as("Check the response's are id is greater than zero") //
 			.isGreaterThan(NumberUtils.LONG_ZERO);
 
-	assertThat(StringUtils.deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
-			.as("Check the number string") //
+	assertThat(deleteWhitespace(response.text()).replaceAll("[^x0-9]", "")) //
+			.as("Check the bar code value") //
 			.isEqualTo(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
     }
 
@@ -317,14 +317,14 @@ class ImageConversionRestControllerHappyPathTest {
 			// when
 			.andDo(print()) //
 			.andExpect(status().isCreated()) //
-			.andExpect(header().string("Location", notNullValue())) //
+			.andExpect(header().string(HEADER_PARAMETER_LOCATION, notNullValue())) //
 			.andReturn();
 
-	final var locationArray = result.getResponse().getHeader("Location").split("/");
+	final var locationArray = result.getResponse().getHeader(HEADER_PARAMETER_LOCATION).split("/");
 	final var id = Long.valueOf(locationArray[locationArray.length - 1]);
 
 	final var request = get(REST_URL + ID_PARAM_VALUE, id) //
-			.accept(MediaType.APPLICATION_JSON) //
+			.accept(APPLICATION_JSON) //
 			.with(csrf());
 
 	// check if the conversion already exists
@@ -337,7 +337,7 @@ class ImageConversionRestControllerHappyPathTest {
 	// when
 	// delete the conversion
 	mvc.perform(delete(REST_URL + ID_PARAM_VALUE, id) //
-			.accept(MediaType.APPLICATION_JSON) //
+			.accept(APPLICATION_JSON) //
 			.with(csrf())) //
 			.andDo(print()) //
 			.andExpect(status().isNoContent()) //

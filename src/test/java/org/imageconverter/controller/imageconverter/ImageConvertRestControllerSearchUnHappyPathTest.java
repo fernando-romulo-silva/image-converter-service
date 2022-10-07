@@ -146,7 +146,7 @@ class ImageConvertRestControllerSearchUnHappyPathTest {
 	// given
 	final var id = "12356";
 
-	final var request = delete(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
+	final var request = delete(REST_URL + ID_PARAM_VALUE, id) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf());
 

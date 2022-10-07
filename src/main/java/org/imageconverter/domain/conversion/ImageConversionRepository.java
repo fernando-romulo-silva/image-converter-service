@@ -21,6 +21,6 @@ public interface ImageConversionRepository extends JpaRepository<ImageConversion
      * @param fileName The conversion file name
      * @return A {@link Optional} with {@link ImageConversion} or a empty {@link Optional}
      */
-    Optional<ImageConversion> findByFileName(final String fileName);
+    Optional<ImageConversion> findByFileName(String fileName);
 
 }

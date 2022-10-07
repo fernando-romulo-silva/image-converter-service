@@ -52,7 +52,7 @@ public class RestSecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(final HttpSecurity http) throws Exception { // NOPMD - Filter throw it
 
 	final var restUrl = "/rest/**";
 
