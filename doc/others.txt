@@ -1,30 +1,13 @@
-cd target
+TODO pagination return controller
+
+
+TODO modules
 
 java -Djarmode=layertools -jar image-converter-service-0.0.1-SNAPSHOT.jar extract
 
 jdeps --ignore-missing-deps -q --multi-release 17 --print-module-deps --class-path dependencies/BOOT-INF/lib/* image-converter-service-0.0.1-SNAPSHOT.jar > jre-deps.info
 
 jdeps --ignore-missing-deps -q --multi-release 17 --print-module-deps image-converter-service-0.0.1-SNAPSHOT.jar > jre-deps.info
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ribbon and Hystrix
-
-
-
-[//]: # (## Implantação em produção - Back end: Heroku %})
-
 
 
 jdeps \
@@ -37,3 +20,8 @@ jdeps \
     -quiet \
     ${TMP_DIR}/org ${TMP_DIR}/BOOT-INF/classes ${TMP_DIR}/BOOT-INF/lib/*.jar
 
+
+
+TODO deploy somewhere
+
+[//]: # (## Implantação em produção - Back end: Heroku %})
