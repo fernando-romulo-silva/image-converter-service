@@ -1,8 +1,12 @@
 package org.imageconverter.infra;
 
-import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 
-import javax.validation.ConstraintViolation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.validation.ConstraintViolationException;
 
 import org.imageconverter.infra.exception.ElementConflictException;
@@ -56,13 +60,22 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException ex, final WebRequest request) {
+	
+	final var subErrors = new ArrayList<Map<String, String>>();
+	
+	for (final var violation : ex.getConstraintViolations()) {
+	    final var errors = new HashMap<String, String>();
+	    
+	    errors.put("field", substringAfterLast(violation.getPropertyPath().toString(), "."));
+	    errors.put("value", violation.getInvalidValue().toString());
+	    errors.put("error", violation.getMessage());
+	    
+	    subErrors.add(errors);
+	}
+	
+	final var msg = "Constraint violation";
 
-	final var msg = ex.getConstraintViolations() //
-			.stream() //
-			.map(ConstraintViolation::getMessage) //
-			.collect(joining(", "));
-
-	return handleObjectException(msg, ex, request, HttpStatus.BAD_REQUEST);
+	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Throwable.class) // HttpMessageNotReadableException
@@ -70,6 +83,6 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
 
 	final var msg = "Unexpected error. Please, check the log with traceId and spanId for more detail";
 
-	return handleObjectException(msg, ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
+	return handleObjectException(msg, List.of(), ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -1,6 +1,7 @@
 package org.imageconverter.controller.imageconverter;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.TestConstants.HEIGHT;
 import static org.imageconverter.TestConstants.HEIGHT_VALUE;
 import static org.imageconverter.TestConstants.JSON_MESSAGE;
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.imageconverter.TestConstants;
 import org.imageconverter.controller.ImageConversionRestController;
@@ -285,7 +287,7 @@ class ImageConversionRestControllerUnHappyPathTest {
     @Test
     @Order(8)
     @DisplayName("convert the image with area with parameter Y invalid")
-    void tryToConvertAreaParameterInvalidYTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    void tryToConvertAreaParameterInvalidYTest() throws Exception { // NOPMD - SignatureDeclareThrowsException: (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var request = multipart(REST_URL_AREA) //
@@ -294,7 +296,7 @@ class ImageConversionRestControllerUnHappyPathTest {
 			.param(X_AXIS, X_AXIS_VALUE) //
 			.param(Y_AXIS, "-1") //
 			.param(WIDTH, WIDTH_VALUE) //
-			.param(HEIGHT, HEIGHT_VALUE) //
+			.param(HEIGHT, "-1") //
 			.with(csrf());
 
 	mvc.perform(request) //
@@ -304,7 +306,11 @@ class ImageConversionRestControllerUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isBadRequest()) //
-			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("The y point must be greater than zero"))) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Constraint violation"))) //
+			.andExpect(jsonPath("$.subErrors", containsInAnyOrder( //
+					Map.of("field", "height", "error", "The height must be greater than zero", "value", "-1"), //
+					Map.of("field", "yAxis", "error", "The y point must be greater than zero", "value", "-1"))) //
+			)			
 	;
     }
 

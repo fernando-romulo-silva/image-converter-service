@@ -1,6 +1,7 @@
 package org.imageconverter.controller.imagetype;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -12,6 +13,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Map;
 
 import org.imageconverter.TestConstants;
 import org.imageconverter.controller.ImageTypeRestController;
@@ -156,7 +159,10 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
 			//
 			// then
 			.andExpect(status().isBadRequest()) //
-			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("The 'name' cannot be empty"))) //
+			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Validation bean error"))) //
+			.andExpect(jsonPath("$.subErrors", containsInAnyOrder( //
+					Map.of("field", "name", "error", "The 'name' cannot be empty", "object", "createImageTypeRequest"))));
+
 	;
 
     }

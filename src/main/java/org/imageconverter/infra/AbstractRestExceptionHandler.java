@@ -1,7 +1,6 @@
 package org.imageconverter.infra;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getMessage;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
@@ -9,11 +8,14 @@ import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.apache.commons.text.StringEscapeUtils.escapeJava;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.imageconverter.infra.exception.BaseApplicationException;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +44,7 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 
 	final var msg = "MissingServletRequestParameterException: The parameter '" + ex.getParameterName() + "' is missing";
 
-	return handleObjectException(msg, ex, request, HttpStatus.BAD_REQUEST);
+	return handleObjectException(msg, List.of(), ex, request, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -59,18 +61,22 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-
-	final var errors = new HashMap<String, String>();
+	
+	final var subErrors = new ArrayList<Map<String, String>>();
 
 	ex.getBindingResult().getFieldErrors().forEach((error) -> {
-	    final var fieldName = error.getField();
-	    final var errorMessage = error.getDefaultMessage();
-	    errors.put(fieldName, errorMessage);
+	    final var errors = new HashMap<String, String>();
+
+	    errors.put("object", error.getObjectName());
+	    errors.put("field", error.getField());
+	    errors.put("error", error.getDefaultMessage());
+	    
+	    subErrors.add(errors);
 	});
 
-	final var msg = errors.values().stream().collect(joining(", "));
+	final var msg = "Validation bean error"; //errors.values().stream().collect(joining(", "));
 
-	return handleObjectException(msg, ex, request, HttpStatus.BAD_REQUEST);
+	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -81,7 +87,7 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 
 	final var msg = "Resource not found. Please check the /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config for more information";
 
-	return handleObjectException(msg, ex, request, status);
+	return handleObjectException(msg, List.of(), ex, request, status);
     }
 
     /**
@@ -96,7 +102,7 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 
 	final var msg = ex instanceof BaseApplicationException ? escapeJava(getMessage(ex)) : escapeJava(getRootCauseMessage(ex));
 
-	final var body = buildResponseBody(msg, status, ex, request);
+	final var body = buildResponseBody(msg, List.of(),  status, ex, request);
 
 	if (logger.isErrorEnabled()) {
 	    logger.error(msg, getRootCause(ex));
@@ -114,9 +120,9 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
      * @param status  The error status
      * @return A {@link ResponseEntity} object that's the response
      */
-    protected ResponseEntity<Object> handleObjectException(final String msg, final Throwable ex, final WebRequest request, final HttpStatus status) {
+    protected ResponseEntity<Object> handleObjectException(final String msg, final List<Map<String,String>> subErrors, final Throwable ex, final WebRequest request, final HttpStatus status) {
 
-	final var body = buildResponseBody(msg, status, ex, request);
+	final var body = buildResponseBody(msg, subErrors, status, ex, request);
 
 	if (logger.isErrorEnabled()) {
 	    logger.error(escapeJava(getRootCauseMessage(ex)), getRootCause(ex));
@@ -125,13 +131,18 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 	return new ResponseEntity<>(body, status);
     }
 
-    private Map<String, Object> buildResponseBody(final String errorMessage, final HttpStatus status, final Throwable ex, final WebRequest request) {
+    private Map<String, Object> buildResponseBody(final String message, final List<Map<String,String>> subErrors, final HttpStatus status, final Throwable ex, final WebRequest request) {
 	final var body = new LinkedHashMap<String, Object>();
 
 	body.put("timestamp", LocalDateTime.now().format(ISO_DATE_TIME));
 	body.put("status", status.value());
 	body.put("error", status.getReasonPhrase());
-	body.put("message", errorMessage);
+	body.put("message", message);
+	
+	if (CollectionUtils.isNotEmpty(subErrors)) {	    
+	    body.put("subErrors", subErrors);    
+	}
+	
 	body.put("traceId", MDC.get("traceId"));
 	body.put("spanId", MDC.get("spanId"));
 
