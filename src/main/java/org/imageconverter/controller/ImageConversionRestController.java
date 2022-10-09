@@ -238,8 +238,7 @@ public class ImageConversionRestController {
 	final var listRequest = new ArrayList<ImageConverterRequestInterface>();
 
 	for (final var file : files) {
-	    final var bytes = extractBytes(file);
-	    listRequest.add(new ImageConverterRequest(file.getOriginalFilename(), bytes, executionType));
+	    listRequest.add(new ImageConverterRequest(file.getOriginalFilename(), extractBytes(file), executionType));
 	}
 
 	final var result = imageConversionService.convert(listRequest);
