@@ -119,21 +119,21 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
-			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder("png", "jpg", createImageTypeRequest.extension()))) //
+			.andExpect(jsonPath("$.content").isArray()) //
+			.andExpect(jsonPath("$.content[*].extension").value(containsInAnyOrder("png", "jpg", createImageTypeRequest.extension()))) //
 	;
 
     }
 
     @Test
     @Order(3)
-    @DisplayName("get a image type by search")
+    @DisplayName("get a image type by filter")
     void findImageTypeByExtensionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var extension = "png"; // already on db, due to the db-data-test.sql
 
-	final var request = get(REST_URL + "/search") //
+	final var request = get(REST_URL) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param("filter", "extension:'" + extension + "'") //
 			.with(csrf());
@@ -146,8 +146,8 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
-			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].extension").value(containsInAnyOrder(extension))) //
+			.andExpect(jsonPath("$.content").isArray()) //
+			.andExpect(jsonPath("$.content[*].extension").value(containsInAnyOrder(extension))) //
 	;
 
     }

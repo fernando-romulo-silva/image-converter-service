@@ -27,15 +27,16 @@ import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.logging.Loggable;
-import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetAllOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetByIdOpenApi;
-import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetBySearchOpenApi;
+import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostAreaOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
 import org.springframework.context.annotation.Description;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -107,36 +108,25 @@ public class ImageConversionRestController {
     }
 
     /**
-     * Get all conversions done.
-     * 
-     * @return A {@link List} or a empty list
-     */
-    @ImageConverterRestGetAllOpenApi
-    //
-    @ResponseStatus(OK)
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public List<ImageConversionResponse> getAll() {
-
-	return imageConversionService.findAll();
-    }
-
-    /**
      * Get conversions by filter.
      * 
      * @param filter A object {@link Specification} that specific the filter the search
      * @param page   A object {@link Pageable} that page the result
      * @return A {@link List} or a empty list
      */
-    @ImageConverterRestGetBySearchOpenApi
+    @ImageConverterRestGetOpenApi
     //
     @ResponseStatus(OK)
-    @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
-    public List<ImageConversionResponse> getByFilter( //
-		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=fileName:'image.png'") //
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    public Page<ImageConversionResponse> getByFilter( //
+		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "?filter=fileName:'image.png'") //
 		    @Filter //
-		    final Specification<ImageConversion> filter, final Pageable page) {
+		    final Specification<ImageConversion> filter, // 
+		    //
+		    @PageableDefault(value = 10, page = 0) //
+		    final Pageable page) {
 
-	return imageConversionService.findBySpecification(filter);
+	return imageConversionService.findBySpecification(filter, page);
     }
 
     /**

@@ -21,6 +21,8 @@ import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -149,18 +151,21 @@ public class ImageTypeService {
      * Find image types by spring specification.
      * 
      * @param spec The query specification, a {@link Specification} object
+     * @param pageable The query page control, a {@link Pageable} object
      * @return A {@link ImageTypeResponse}'s list with result or a empty list
      * @exception ElementInvalidException if a specification is invalid
      */
     @Transactional(readOnly = true)
-    public List<ImageTypeResponse> findBySpecification(final Specification<ImageType> spec) {
+    public Page<ImageTypeResponse> findBySpecification(final Specification<ImageType> spec, final Pageable pageable) {
 
 	try {
 
-	    return repository.findAll(spec) //
-			    .stream() //
-			    .map(imageType -> new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName())) //
-			    .toList();
+	    return repository.findAll(spec, pageable) //
+			    .map(imageType -> new ImageTypeResponse( //
+					    imageType.getId(), //
+					    imageType.getExtension(), //
+					    imageType.getName() //
+			    ));
 
 	} catch (final InvalidDataAccessApiUsageException ex) {
 

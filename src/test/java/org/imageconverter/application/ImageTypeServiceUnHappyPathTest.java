@@ -29,6 +29,8 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -50,6 +52,8 @@ class ImageTypeServiceUnHappyPathTest {
 
     @Autowired
     private ImageTypeService imageTypeService;
+    
+    private final Pageable pageable = PageRequest.of(0, 10);
 
     @ParameterizedTest
     @NullSource
@@ -74,7 +78,7 @@ class ImageTypeServiceUnHappyPathTest {
 
 	assertThatThrownBy(() -> {
 
-	    imageTypeService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists));
+	    imageTypeService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists), pageable);
 
 	}).as(format("Check invalid Specification")) //
 			.isInstanceOf(ElementInvalidException.class);

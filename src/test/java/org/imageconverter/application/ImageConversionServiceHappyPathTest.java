@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -46,6 +48,8 @@ class ImageConversionServiceHappyPathTest {
     private final ImageConversionService imageConversionService;
 
     private final Resource imageFile;
+    
+    private final Pageable pageable = PageRequest.of(0, 10);
 
     ImageConversionServiceHappyPathTest( //
 		    @Autowired //
@@ -108,14 +112,14 @@ class ImageConversionServiceHappyPathTest {
 
 	// Specification<ImageConversion> equalsFileName = (rt, cq, cb) -> cb.equal(rt.get("fileName"), fileName);
 
-	final var responses1 = imageConversionService.findBySpecification(equalsFileName(fileName));
+	final var responses1 = imageConversionService.findBySpecification(equalsFileName(fileName), pageable);
 
-	assertThat(responses1) //
+	assertThat(responses1.getContent()) //
 			.as(format("Check if there's a response file name ''{0}'' on the result", fileName))//
 			.map(imageConverterResponse -> imageConverterResponse.fileName()) //
 			.containsAnyOf(fileName);
 
-	final var responses2 = imageConversionService.findBySpecification(null);
+	final var responses2 = imageConversionService.findBySpecification(null, pageable);
 
 	final var responseQty = 1;
 

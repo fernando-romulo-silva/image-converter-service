@@ -21,15 +21,17 @@ import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
-import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetAllOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestGet;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetByIdOpenApi;
-import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetBySearchOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestPostOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestPutOpenApi;
 import org.imageconverter.util.openapi.imagetype.UpdateImageTypeRequestBody;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.context.annotation.Description;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -99,36 +101,26 @@ public class ImageTypeRestController {
     }
 
     /**
-     * Get all image types.
+     * Get image types.
      * 
-     * @return A {@link List} or a empty list
-     */
-    @ImageTypeRestGetAllOpenApi
-    //
-    @ResponseStatus(OK)
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public List<ImageTypeResponse> getAll() {
-
-	return imageTypeService.findAll();
-    }
-
-    /**
-     * Get image types by filter.
-     * 
-     * @param filter A object {@link Specification} that specific the filter the search
+     * @param filter A object {@link Specification} that specific the filter the search, if you omit, bring all 
      * @param page   A object {@link Pageable} that page the result
      * @return A {@link List} or a empty list
      */
-//    @ImageTypeRestGetBySearchOpenApi
+    @PageableAsQueryParam
+    @ImageTypeRestGet
     //
     @ResponseStatus(OK)
-    @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
-    public List<ImageTypeResponse> getByFilter( //
-		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "/search?filter=extension:'png'") //
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    public Page<ImageTypeResponse> getByFilter( //
+		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "?filter=extension:'png'") //
 		    @Filter //
-		    final Specification<ImageType> filter, final Pageable page) {
+		    final Specification<ImageType> filter, //
+		    //
+		    @PageableDefault(value = 10, page = 0)
+		    final Pageable page) {
 
-	return imageTypeService.findBySpecification(filter);
+	return imageTypeService.findBySpecification(filter, page);
     }
 
     /**

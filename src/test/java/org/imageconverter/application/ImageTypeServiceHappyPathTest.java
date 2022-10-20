@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -39,6 +41,8 @@ class ImageTypeServiceHappyPathTest {
     private final ImageTypeService imageTypeService;
 
     private final CreateImageTypeRequest createImageTypeRequest;
+    
+    private final Pageable pageable = PageRequest.of(0, 10);
 
     ImageTypeServiceHappyPathTest(@Autowired final ImageTypeService imageTypeService) {
 	super();
@@ -94,7 +98,7 @@ class ImageTypeServiceHappyPathTest {
 	// already on db, due to the db-data-test.sql
 	final var extension = "png";
 
-	final var responses1 = imageTypeService.findBySpecification(equalsExtension(extension));
+	final var responses1 = imageTypeService.findBySpecification(equalsExtension(extension), pageable);
 
 	assertThat(responses1) //
 			.as(format("Check if response1 contains the extension  ''{0}''", extension)) //
@@ -103,7 +107,7 @@ class ImageTypeServiceHappyPathTest {
 
 	// -----------------------
 
-	final var responses2 = imageTypeService.findBySpecification(null);
+	final var responses2 = imageTypeService.findBySpecification(null, pageable);
 
 	assertThat(responses2) //
 			.as("Response2 contains two elements and its exensions are 'png' and 'jpg'") //

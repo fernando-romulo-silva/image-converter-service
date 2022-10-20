@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
  * @author Fernando Romulo da Silva
  */
 @Repository
-public interface ImageConversionRepository extends JpaRepository<ImageConversion, Long>, JpaSpecificationExecutor<ImageConversion> {
+public interface ImageConversionRepository extends JpaRepository<ImageConversion, Long>, JpaSpecificationExecutor<ImageConversion>, PagingAndSortingRepository<ImageConversion, Long> {
 
 //    @Query("select o from ImageConversion o where o.fileName = :fileName")
     /**

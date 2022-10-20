@@ -7,7 +7,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -96,7 +95,7 @@ class ImageConvertRestControllerSearchUnHappyPathTest {
 	// given
 	final var fileName = "some_file.png";
 
-	final var request = get(REST_URL + "/search") //
+	final var request = get(REST_URL) //
 			.param("filter", "fileName:'" + fileName + "'") //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf());
@@ -108,7 +107,9 @@ class ImageConvertRestControllerSearchUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isOk()) //
-			.andExpect(content().string("[]")) //
+			.andExpect(jsonPath("$").exists()) //
+			.andExpect(jsonPath("$.content").isArray()) //
+			.andExpect(jsonPath("$.content").isEmpty())
 	;
 
     }
@@ -121,7 +122,7 @@ class ImageConvertRestControllerSearchUnHappyPathTest {
 	// given
 	final var fileName = "some_file.png";
 
-	final var request = get(REST_URL + "/search") //
+	final var request = get(REST_URL) //
 			.param("filter", "fileName:'" + fileName + "' and fieldNotExist:'blablabla'") //
 			.accept(MediaType.APPLICATION_JSON) //
 			.with(csrf());

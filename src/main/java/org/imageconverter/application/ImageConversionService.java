@@ -16,10 +16,12 @@ import org.imageconverter.domain.conversion.ImageConversionRepository;
 import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -157,17 +159,16 @@ public class ImageConversionService {
      * 
      * @param spec The query specification, a {@link Specification} object
      * @return A {@link ImageConversionResponse}'s list with result or a empty list
+     * @param pageable The query page control, a {@link Pageable} object
      * @exception ElementInvalidException if a specification is invalid
      */
     @Transactional(readOnly = true)
-    public List<ImageConversionResponse> findBySpecification(final Specification<ImageConversion> spec) {
+    public Page<ImageConversionResponse> findBySpecification(final Specification<ImageConversion> spec, final Pageable page) {
 
 	try {
 
-	    return repository.findAll(spec) //
-			    .stream() //
-			    .map(icr -> new ImageConversionResponse(icr.getId(), icr.getFileName(), icr.getText())) //
-			    .toList();
+	    return repository.findAll(spec, page) //
+			    .map(icr -> new ImageConversionResponse(icr.getId(), icr.getFileName(), icr.getText())); //
 
 	} catch (final InvalidDataAccessApiUsageException ex) {
 

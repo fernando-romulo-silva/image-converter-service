@@ -140,8 +140,8 @@ class ImageConversionRestControllerHappyPathTest {
 			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
-			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].text").value(containsInAnyOrder(TestConstants.DB_CONVERSION_NUMBER))) //
+			.andExpect(jsonPath("$.content").isArray()) //
+			.andExpect(jsonPath("$.content[*].text").value(containsInAnyOrder(TestConstants.DB_CONVERSION_NUMBER))) //
 	;
     }
 
@@ -153,7 +153,7 @@ class ImageConversionRestControllerHappyPathTest {
 	// given
 	final var fileName = "image_test.jpg"; // already on db, due to the db-data-test.sql
 
-	final var request = get(REST_URL + "/search") //
+	final var request = get(REST_URL) //
 			.param("filter", "fileName:'" + fileName + "'") //
 			.accept(APPLICATION_JSON) //
 			.with(csrf());
@@ -166,8 +166,8 @@ class ImageConversionRestControllerHappyPathTest {
 			// then
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath("$").exists()) //
-			.andExpect(jsonPath("$").isArray()) //
-			.andExpect(jsonPath("$[*].file_name").value(containsInAnyOrder(fileName))) //
+			.andExpect(jsonPath("$.content").isArray()) //
+			.andExpect(jsonPath("$.content[*].file_name").value(containsInAnyOrder(fileName))) //
 	;
     }
 

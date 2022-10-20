@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -57,6 +59,8 @@ class ImageConversionServiceUnHappyPathTest {
     private final ImageConversionService imageConversionService;
 
     private final Resource imageFile;
+    
+    private final Pageable pageable = PageRequest.of(0, 10);
 
     ImageConversionServiceUnHappyPathTest( //
 		    @Autowired //
@@ -92,7 +96,7 @@ class ImageConversionServiceUnHappyPathTest {
 
 	assertThatThrownBy(() -> {
 
-	    imageConversionService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists));
+	    imageConversionService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists), pageable);
 
 	}).as(format("Check invalid Specification")) //
 			.isInstanceOf(ElementInvalidException.class);

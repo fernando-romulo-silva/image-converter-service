@@ -7,7 +7,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,11 +80,11 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
 
     @Test
     @Order(2)
-    @DisplayName("Search a image type that not exists by search")
+    @DisplayName("Search a image type that not exists by filter")
     void findImageTypeBySearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
-	final var request = get(REST_URL + "/search") //
+	final var request = get(REST_URL) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param("filter", "extension:'bmp'") //
 			.with(csrf());
@@ -97,18 +96,20 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
 			//
 			// then
 			.andExpect(status().isOk()) //
-			.andExpect(content().string("[]")) //
+			.andExpect(jsonPath("$").exists()) //
+			.andExpect(jsonPath("$.content").isArray()) //
+			.andExpect(jsonPath("$.content").isEmpty()) //
 	;
 
     }
 
     @Test
     @Order(3)
-    @DisplayName("Search a image type by invalid search")
+    @DisplayName("Search a image type by invalid filter")
     void findImageTypeBySearchInvalidSearchTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
-	final var request = get(REST_URL + "/search") //
+	final var request = get(REST_URL) //
 			.accept(MediaType.APPLICATION_JSON) //
 			.param("filter", "invalidField:'bmp'") //
 			.with(csrf());
