@@ -5,11 +5,12 @@
 
 ## Project status
 
-I use this project to learn new technologies related to microservices. In this case, the image convert. So it'll get new things all time.
+I use this project to learn new technologies related to spring boot web.
+So it'll get new things all time.
 
 # About
 
-A project that converts images with text into simple text using diverse technologies.  
+This a project that converts images with text into simple text using diverse technologies.  
 I used [tesseract](https://github.com/tesseract-ocr/tesseract) for it and exposes it as a web service using spring boot.
 
 # Model
