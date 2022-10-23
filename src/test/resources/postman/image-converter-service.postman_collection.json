@@ -364,7 +364,7 @@
 									"pm.test(\"Get all image types\", function (){",
 									"    pm.response.to.have.status(200);",
 									"",
-									"    pm.expect(pm.response.json().length).to.be.above(0);",
+									"    pm.expect(pm.response.json().content.length).to.be.above(0);",
 									"",
 									"    const token = pm.cookies.get('XSRF-TOKEN');",
 									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
@@ -407,9 +407,9 @@
 									"pm.test(\"Get image types by search\", function (){",
 									"    pm.response.to.have.status(200);",
 									"",
-									"    pm.expect(pm.response.json().length).to.be.above(0);",
+									"    pm.expect(pm.response.json().content.length).to.be.above(0);",
 									"",
-									"    pm.expect(pm.response.json()[0].name).to.be.eq(\"PNG\");",
+									"    pm.expect(pm.response.json().content[0].name).to.be.eq(\"PNG\");",
 									"",
 									"    const token = pm.cookies.get('XSRF-TOKEN');",
 									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
@@ -425,12 +425,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{IMAGE_TYPE_URL}}/search?filter=extension:'png'",
+							"raw": "{{IMAGE_TYPE_URL}}?filter=extension:'png'",
 							"host": [
 								"{{IMAGE_TYPE_URL}}"
-							],
-							"path": [
-								"search"
 							],
 							"query": [
 								{
@@ -688,7 +685,7 @@
 									"pm.test(\"Get all convertions\", function (){",
 									"    pm.response.to.have.status(200);",
 									"",
-									"    pm.expect(pm.response.json().length).to.be.eq(0);",
+									"    pm.expect(pm.response.json().content.length).to.be.eq(0);",
 									"",
 									"    const token = pm.cookies.get('XSRF-TOKEN');",
 									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
@@ -809,9 +806,9 @@
 									"pm.test(\"Get conversions by search\", function (){",
 									"    pm.response.to.have.status(200);",
 									"",
-									"    pm.expect(pm.response.json().length).to.be.above(0);",
+									"    pm.expect(pm.response.json().content.length).to.be.above(0);",
 									"",
-									"    pm.expect(pm.response.json()[0].file_name).to.be.eq(\"bill01.png\");",
+									"    pm.expect(pm.response.json().content[0].file_name).to.be.eq(\"bill01.png\");",
 									"",
 									"    const token = pm.cookies.get('XSRF-TOKEN');",
 									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
@@ -827,12 +824,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{IMAGE_CONVERSION_URL}}/search?filter=fileName:'bill01.png'",
+							"raw": "{{IMAGE_CONVERSION_URL}}?filter=fileName:'bill01.png'",
 							"host": [
 								"{{IMAGE_CONVERSION_URL}}"
-							],
-							"path": [
-								"search"
 							],
 							"query": [
 								{
@@ -1060,12 +1054,12 @@
 								{
 									"key": "files",
 									"type": "file",
-									"src": "src/test/resources/bill01.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
 								},
 								{
 									"key": "files",
 									"type": "file",
-									"src": "src/test/resources/bill02.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill02.png"
 								}
 							]
 						},
