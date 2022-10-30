@@ -1,10 +1,10 @@
 TODO Fix the Open API Swagger
 
-TODO pagination return controller
-
 TODO internationalization
 
 TODO modules
+
+TODO deploy somewhere
 
 java -Djarmode=layertools -jar image-converter-service-0.0.1-SNAPSHOT.jar extract
 
@@ -22,9 +22,5 @@ jdeps \
     --multi-release ${TARGET_VER} \
     -quiet \
     ${TMP_DIR}/org ${TMP_DIR}/BOOT-INF/classes ${TMP_DIR}/BOOT-INF/lib/*.jar
-
-
-
-TODO deploy somewhere
 
 [//]: # (## Implantação em produção - Back end: Heroku %})
