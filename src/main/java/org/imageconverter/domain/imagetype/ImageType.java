@@ -28,11 +28,11 @@ public class ImageType {
     private Long id;
 
     // PNG, BMP, JPEG, JPG ...
-    @NotEmpty(message = "The 'extension' cannot be empty")
+    @NotEmpty(message = "{imagetype.extension}")
     @Column(name = "IMT_EXTENSION", nullable = false, unique = true)
     private String extension;
 
-    @NotEmpty(message = "The 'name' cannot be empty")
+    @NotEmpty(message = "{imagetype.name}")
     @Column(name = "IMT_NAME", nullable = false)
     private String name;
 

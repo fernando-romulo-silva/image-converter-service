@@ -152,25 +152,25 @@ public class ImageConversion { // NOPMD - Provide accessors on private construct
 
     public static final class Builder {
 
-	@NotNull(message = "The 'fileType' cannot be null")
+	@NotNull(message = "{imageConversion.executionType}")
 	public ExecutionType executionType;
 
-	@NotEmpty(message = "The 'fileName' cannot be empty")
+	@NotEmpty(message = "{imageConversion.fileName}")
 	public String fileName;
 
-	@NotNull(message = "The 'fileContent' cannot be null")
+	@NotNull(message = "{imageConversion.fileContent}")
 	public byte[] fileContent;
 
-	@Min(value = 0, message = "The axis 'x' cannot be less than zero")
+	@Min(value = 0, message = "{imageConversion.xAxis}")
 	public Integer xAxis;
 
-	@Min(value = 0, message = "The axis 'y' cannot be less than zero")
+	@Min(value = 0, message = "{imageConversion.yAxis}")
 	public Integer yAxis;
 
-	@Min(value = 0, message = "The 'width' cannot be less than zero")
+	@Min(value = 0, message = "{imageConversion.width}")
 	public Integer width;
 
-	@Min(value = 0, message = "The 'height' cannot be less than zero")
+	@Min(value = 0, message = "{imageConversion.height}")
 	public Integer height;
 
 	// --------------------------------------------------------------------------

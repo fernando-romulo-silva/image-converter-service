@@ -1,6 +1,9 @@
-TODO Fix the Open API Swagger
-
 TODO internationalization
+
+https://ihorkosandiak.medium.com/spring-boot-rest-internationalization-9ab3fce2489
+
+
+TODO Fix the Open API Swagger
 
 TODO modules
 

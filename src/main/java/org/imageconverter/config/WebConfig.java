@@ -6,12 +6,15 @@ import static com.fasterxml.jackson.databind.MapperFeature.ALLOW_COERCION_OF_SCA
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
@@ -59,12 +62,12 @@ public class WebConfig implements WebMvcConfigurer {
 	registry.addResourceHandler("/swagger-ui/**")//
 			.addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/4.1.3/");
     }
-    
+
     @Bean
     Sampler defaultSampler() {
 	return Sampler.ALWAYS_SAMPLE;
     }
-    
+
     /**
      * Create a valid {@link JsonMapper} object configured.
      * 
@@ -85,6 +88,36 @@ public class WebConfig implements WebMvcConfigurer {
 			.build();
     }
 
+//    @Bean
+//    MessageSource messageSource() {
+//	final var messageSource = new ReloadableResourceBundleMessageSource();
+//	messageSource.setBasename("messages");
+//	messageSource.setDefaultEncoding("UTF-8");
+//	return messageSource;
+//    }
+    
+    @Bean
+    MessageSource messageSource() {
+	final var messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setUseCodeAsDefaultMessage(true);
+        return messageSource;
+    }    
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Bean
+    @Override
+    public LocalValidatorFactoryBean getValidator() {
+	final var bean = new LocalValidatorFactoryBean();
+	bean.setValidationMessageSource(messageSource());
+	return bean;
+    }
+
+   
     /**
      * Create a valid {@link CommonsMultipartResolver} object configured (max upload and default encoding).
      * 

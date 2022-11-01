@@ -104,6 +104,15 @@ spring:
 
     devtools.add-properties: false
 
+#============== Messages =============================================================================
+    messages:
+      always-use-message-format: true
+      encoding: UTF-8
+      fallback-to-system-locale: true
+      use-code-as-default-message: false # Recommended during development only.
+      
+      
+
 #============== Data Source ===========================================================================
     datasource:
         driver-class-name: ${DATABASE_DRIVER}

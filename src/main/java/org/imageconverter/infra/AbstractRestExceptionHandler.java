@@ -18,6 +18,7 @@ import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 import org.imageconverter.infra.exception.BaseApplicationException;
 import org.slf4j.MDC;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * @author Fernando Romulo da Silva
  */
 abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandler {
+    
+    
+    protected final MessageSource messageSource;
+    
+    protected AbstractRestExceptionHandler(final MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     /**
      * {@inheritDoc}
@@ -63,22 +71,25 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
 	
 	final var subErrors = new ArrayList<Map<String, String>>();
+	
+	final var locale = request.getLocale();
 
 	ex.getBindingResult().getFieldErrors().forEach((error) -> {
+	    
 	    final var errors = new HashMap<String, String>();
-
+	    
 	    errors.put("object", error.getObjectName());
 	    errors.put("field", error.getField());
-	    errors.put("error", error.getDefaultMessage());
+	    errors.put("error", messageSource.getMessage(error, locale));
 	    
 	    subErrors.add(errors);
 	});
 
-	final var msg = "Validation bean error"; //errors.values().stream().collect(joining(", "));
+	final var msg = "Validation bean error";
 
 	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);
     }
-
+    
     /**
      * {@inheritDoc}
      */

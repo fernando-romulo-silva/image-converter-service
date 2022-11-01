@@ -18,12 +18,12 @@ public record CreateImageTypeRequest( //
 		//
 		@Schema(name = "extension", description = "The image type's extension", required = true, example = "bmp") //
 		@JsonProperty(value = "extension", required = true) //
-		@NotEmpty(message = "The 'extension' cannot be empty") //
+		@NotEmpty(message = "{imagetype.extension}") //
 		String extension,
 		//
 		@Schema(name = "name", description = "The image type's name", required = true, example = "BitMap") //
 		@JsonProperty(value = "name", required = true) //
-		@NotEmpty(message = "The 'name' cannot be empty") //
+		@NotEmpty(message = "{imagetype.name}") //
 		String name, //
 		//
 		@Schema(name = "description", description = "A description about the image type", required = false, example = "Device independent bitmap") //

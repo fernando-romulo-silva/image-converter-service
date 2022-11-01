@@ -14,6 +14,7 @@ import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.infra.exception.ImageConvertServiceException;
 import org.imageconverter.infra.exception.ServiceUnavailableException;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,6 +28,10 @@ import org.springframework.web.context.request.WebRequest;
  */
 @ControllerAdvice
 public class RestExceptionHandler extends AbstractRestExceptionHandler {
+
+    protected RestExceptionHandler(final MessageSource messageSource) {
+	super(messageSource);
+    }
 
     @ExceptionHandler(ElementNotFoundException.class)
     ResponseEntity<Object> handleElementNotFoundException(final ElementNotFoundException ex, final WebRequest request) {
@@ -60,19 +65,19 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException ex, final WebRequest request) {
-	
+
 	final var subErrors = new ArrayList<Map<String, String>>();
-	
+
 	for (final var violation : ex.getConstraintViolations()) {
 	    final var errors = new HashMap<String, String>();
-	    
+
 	    errors.put("field", substringAfterLast(violation.getPropertyPath().toString(), "."));
 	    errors.put("value", violation.getInvalidValue().toString());
 	    errors.put("error", violation.getMessage());
-	    
+
 	    subErrors.add(errors);
 	}
-	
+
 	final var msg = "Constraint violation";
 
 	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);

@@ -48,3 +48,8 @@ spring:
                 show_sql: false
                 jdbc:
                     time_zone: GMT-3               
+                    
+#============== Messages =============================================================================
+    messages:
+      use-code-as-default-message: false # Recommended during development only               
+                    
