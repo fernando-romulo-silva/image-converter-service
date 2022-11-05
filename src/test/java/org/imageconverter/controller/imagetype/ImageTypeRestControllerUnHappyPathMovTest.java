@@ -159,7 +159,7 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
 			//
 			// then
 			.andExpect(status().isBadRequest()) //
-			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Validation bean error"))) //
+			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Validation error"))) //
 			.andExpect(jsonPath("$.subErrors", containsInAnyOrder( //
 					Map.of("field", "name", "error", "The 'name' cannot be empty", "object", "createImageTypeRequest"))));
 

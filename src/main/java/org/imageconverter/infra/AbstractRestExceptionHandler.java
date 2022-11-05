@@ -9,6 +9,7 @@ import static org.apache.commons.text.StringEscapeUtils.escapeJava;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,7 +37,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  */
 abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandler {
     
-    
     protected final MessageSource messageSource;
     
     protected AbstractRestExceptionHandler(final MessageSource messageSource) {
@@ -49,8 +49,11 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(final MissingServletRequestParameterException ex, final HttpHeaders headers, final HttpStatus status,
 		    final WebRequest request) {
-
-	final var msg = "MissingServletRequestParameterException: The parameter '" + ex.getParameterName() + "' is missing";
+	
+	final var locale = request.getLocale();
+	final Object[] params = { ex.getParameterName() };
+	
+	final var msg = messageSource.getMessage("exception.missingServletRequestParameter", params, locale);
 
 	return handleObjectException(msg, List.of(), ex, request, HttpStatus.BAD_REQUEST);
     }
@@ -85,7 +88,8 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 	    subErrors.add(errors);
 	});
 
-	final var msg = "Validation bean error";
+	
+	final var msg = messageSource.getMessage("exception.handleMethodArgumentNotValid", null, locale);
 
 	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);
     }
@@ -95,8 +99,9 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
      */
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(final NoHandlerFoundException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-
-	final var msg = "Resource not found. Please check the /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config for more information";
+	final var locale = request.getLocale();
+	
+	final var msg = messageSource.getMessage("exception.handleNoHandlerFound", null, locale);
 
 	return handleObjectException(msg, List.of(), ex, request, status);
     }
@@ -131,7 +136,7 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
      * @param status  The error status
      * @return A {@link ResponseEntity} object that's the response
      */
-    protected ResponseEntity<Object> handleObjectException(final String msg, final List<Map<String,String>> subErrors, final Throwable ex, final WebRequest request, final HttpStatus status) {
+    protected ResponseEntity<Object> handleObjectException(final String msg, final Collection<Map<String,String>> subErrors, final Throwable ex, final WebRequest request, final HttpStatus status) {
 
 	final var body = buildResponseBody(msg, subErrors, status, ex, request);
 
@@ -142,7 +147,7 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 	return new ResponseEntity<>(body, status);
     }
 
-    private Map<String, Object> buildResponseBody(final String message, final List<Map<String,String>> subErrors, final HttpStatus status, final Throwable ex, final WebRequest request) {
+    private Map<String, Object> buildResponseBody(final String message, final Collection<Map<String,String>> subErrors, final HttpStatus status, final Throwable ex, final WebRequest request) {
 	final var body = new LinkedHashMap<String, Object>();
 
 	body.put("timestamp", LocalDateTime.now().format(ISO_DATE_TIME));

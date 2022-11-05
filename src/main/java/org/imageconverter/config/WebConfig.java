@@ -110,6 +110,7 @@ public class WebConfig implements WebMvcConfigurer {
      * {@inheritDoc}
      */
     @Bean
+    @Primary
     @Override
     public LocalValidatorFactoryBean getValidator() {
 	final var bean = new LocalValidatorFactoryBean();

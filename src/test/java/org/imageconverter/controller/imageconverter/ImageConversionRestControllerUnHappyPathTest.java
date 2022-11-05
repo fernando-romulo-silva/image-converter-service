@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 
 import org.imageconverter.TestConstants;
@@ -279,7 +280,7 @@ class ImageConversionRestControllerUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isBadRequest()) //
-			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("MissingServletRequestParameterException: The parameter 'height' is missing"))) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("The parameter 'height' is missing"))) //
 	;
 
     }
@@ -308,8 +309,39 @@ class ImageConversionRestControllerUnHappyPathTest {
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Constraint violation"))) //
 			.andExpect(jsonPath("$.subErrors", containsInAnyOrder( //
-					Map.of("field", "height", "error", "The height must be greater than zero", "value", "-1"), //
-					Map.of("field", "yAxis", "error", "The y point must be greater than zero", "value", "-1"))) //
+					Map.of("field", "height", "error", "The 'height' cannot be less than zero", "value", "-1"), //
+					Map.of("field", "yAxis", "error", "The axis 'y' cannot be less than zero", "value", "-1"))) //
+			)			
+	;
+    }
+    
+    @Test
+    @Order(8)
+    @DisplayName("convert the image with area with parameter Y invalid")
+    void tryToConvertAreaParameterInvalidYTestPortuguese() throws Exception { // NOPMD - SignatureDeclareThrowsException: (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+
+	// given
+	final var request = multipart(REST_URL_AREA) //
+			.file(multipartBeachImageFile) //
+			.locale(new Locale("pt", "BR"))
+			.accept(MediaType.APPLICATION_JSON) //
+			.param(X_AXIS, X_AXIS_VALUE) //
+			.param(Y_AXIS, "-1") //
+			.param(WIDTH, WIDTH_VALUE) //
+			.param(HEIGHT, "-1") //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
+			.andDo(print()) //
+			//
+			// then
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Violação de restrição"))) //
+			.andExpect(jsonPath("$.subErrors", containsInAnyOrder( //
+					Map.of("field", "height", "error", "A 'altura' não pode ser menor que zero", "value", "-1"), //
+					Map.of("field", "yAxis", "error", "O eixo 'y' não pode ser menor que zero", "value", "-1"))) //
 			)			
 	;
     }

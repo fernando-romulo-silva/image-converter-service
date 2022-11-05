@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.validation.ConstraintViolationException;
 
+import org.apache.commons.lang3.RegExUtils;
 import org.imageconverter.infra.exception.ElementConflictException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
@@ -67,26 +68,32 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
     ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException ex, final WebRequest request) {
 
 	final var subErrors = new ArrayList<Map<String, String>>();
+	
+	final var locale = request.getLocale();
 
 	for (final var violation : ex.getConstraintViolations()) {
 	    final var errors = new HashMap<String, String>();
 
 	    errors.put("field", substringAfterLast(violation.getPropertyPath().toString(), "."));
 	    errors.put("value", violation.getInvalidValue().toString());
-	    errors.put("error", violation.getMessage());
+	    
+	    final var code = RegExUtils.replaceAll(violation.getMessage(), "[{}]", "");
+	    errors.put("error", messageSource.getMessage(code, null, locale)); //violation.getMessage());
 
 	    subErrors.add(errors);
 	}
 
-	final var msg = "Constraint violation";
+	final var msg = messageSource.getMessage("exception.handleConstraintViolation", null, locale);
 
 	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Throwable.class) // HttpMessageNotReadableException
     ResponseEntity<Object> handleUnknownException(final Throwable ex, final WebRequest request) {
-
-	final var msg = "Unexpected error. Please, check the log with traceId and spanId for more detail";
+	
+	final var locale = request.getLocale();
+	
+	final var msg = messageSource.getMessage("exception.handleUnknown", null, locale);
 
 	return handleObjectException(msg, List.of(), ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
