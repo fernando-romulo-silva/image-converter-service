@@ -196,7 +196,7 @@ public class ImageConversion { // NOPMD - Provide accessors on private construct
 	public Builder with(final ImageConverterRequestInterface request) {
 
 	    if (isNull(request)) {
-		throw new ConversionException("Empty request to convert!");
+		throw new ConversionException("{exception.converstionEmptyRequest}");
 	    }
 
 	    this.fileName = request.fileName();
@@ -219,7 +219,7 @@ public class ImageConversion { // NOPMD - Provide accessors on private construct
 	public ImageConversion build() {
 
 	    if (StringUtils.isBlank(fileName) || isNull(fileContent) || fileContent.length == 0L) {
-		throw new ConversionException("Empty file to convert!");
+		throw new ConversionException("{exception.converstionEmptyFile}");
 	    }
 
 	    final var tesseractService = getBeanFrom(TesseractService.class);

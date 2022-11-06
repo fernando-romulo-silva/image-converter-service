@@ -1,5 +1,12 @@
 package org.imageconverter.infra.exception;
 
+import static org.imageconverter.util.BeanUtil.getBeanFrom;
+
+import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+
 /**
  * Base applicaton exception.
  * 
@@ -15,7 +22,7 @@ public class BaseApplicationException extends RuntimeException {
      * @param msg The detail message
      */
     public BaseApplicationException(final String msg) {
-	super(msg);
+	super(getFinalMessage(msg));
     }
 
     /**
@@ -26,5 +33,18 @@ public class BaseApplicationException extends RuntimeException {
      */
     public BaseApplicationException(final String msg, final Throwable ex) {
 	super(msg, ex);
+    }
+
+    private static String getFinalMessage(final String msg) {
+
+	if (StringUtils.containsNone(msg, '{', '}')) {
+	    return msg;
+	}
+
+	final var code = RegExUtils.replaceAll(msg, "[{}]", "");
+	final var messageSource = getBeanFrom(MessageSource.class);
+	final var locale = LocaleContextHolder.getLocale();
+
+	return messageSource.getMessage(code, null, locale);
     }
 }

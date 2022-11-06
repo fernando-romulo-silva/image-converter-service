@@ -316,7 +316,7 @@ class ImageConversionRestControllerUnHappyPathTest {
     }
     
     @Test
-    @Order(8)
+    @Order(9)
     @DisplayName("convert the image with area with parameter Y invalid")
     void tryToConvertAreaParameterInvalidYTestPortuguese() throws Exception { // NOPMD - SignatureDeclareThrowsException: (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 

@@ -18,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import net.sourceforge.tess4j.ITesseract;
@@ -78,6 +80,13 @@ class ImageConversionConfigTest {
 
 	when(applicationContext.getBean(TesseractService.class)) //
 			.thenReturn(new TesseractService());
+
+	final var messageSource = new ResourceBundleMessageSource();
+	messageSource.setBasename("messages");
+	messageSource.setDefaultEncoding("UTF-8");
+
+	when(applicationContext.getBean(MessageSource.class)) //
+			.thenReturn(messageSource);
     }
 
 }
