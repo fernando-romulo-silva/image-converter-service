@@ -1,6 +1,5 @@
 package org.imageconverter.domain.conversion;
 
-import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 
 import java.awt.Rectangle;
@@ -58,13 +57,15 @@ public class TesseractService {
 
 	} catch (final IOException ex) {
 
-	    final var msg = format("Image {0} has IO error: ''{1}''.", fileName, getRootCauseMessage(ex));
-	    throw new ConversionException(msg, ex);
+	    final Object[] params = { fileName, getRootCauseMessage(ex) };
+
+	    throw new ConversionException("{exception.conversionExceptionIO}", ex, params);
 
 	} catch (final TesseractException | Error ex) {
 
-	    final var msg = format("Image {0} has Tessarct error: ''{1}''.", fileName, getRootCauseMessage(ex));
-	    throw new TesseractConversionException(msg, ex);
+	    final Object[] params = { fileName, getRootCauseMessage(ex) };
+
+	    throw new TesseractConversionException("{exception.conversionExceptionIO}", ex, params);
 
 //	} catch (final Exception ex) {
 //
@@ -105,13 +106,15 @@ public class TesseractService {
 
 	} catch (final IOException ex) {
 
-	    final var msg = format("Image {0} has IO error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", fileName, getRootCauseMessage(ex), xAxis, yAxis, width, height);
-	    throw new ConversionException(msg, ex);
+	    final Object[] params = { fileName, getRootCauseMessage(ex), xAxis, yAxis, width, height };
+
+	    throw new ConversionException("{exception.conversionAreaExceptionIO}", ex, params);
 
 	} catch (final TesseractException | Error ex) {
 
-	    final var msg = format("Image {0} has Tessarct error: ''{1}'', X {2}, Y {3}, Width {4} and Heigh {5}.", fileName, getRootCauseMessage(ex), xAxis, yAxis, width, height);
-	    throw new TesseractConversionException(msg, ex);
+	    final Object[] params = { fileName, getRootCauseMessage(ex), xAxis, yAxis, width, height };
+
+	    throw new TesseractConversionException("{exception.conversionAreaTesseractError}", ex, params);
 
 //	} catch (final Exception ex) {
 //

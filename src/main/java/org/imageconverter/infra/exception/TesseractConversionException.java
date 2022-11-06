@@ -12,19 +12,21 @@ public class TesseractConversionException extends ServiceUnavailableException {
     /**
      * Constructs a new execption with the specified detail message.
      * 
-     * @param msg The detail message
+     * @param msg    The detail message
+     * @param params The parameters used on message
      */
-    public TesseractConversionException(final String message) {
-	super(message);
+    public TesseractConversionException(final String message, final Object... params) {
+	super(message, params);
     }
 
     /**
      * Constructs a new exception with the specified detail message and cause.
      * 
-     * @param msg The detail message
-     * @param ex  The cause
+     * @param msg    The detail message
+     * @param ex     The cause
+     * @param params The parameters used on message
      */
-    public TesseractConversionException(final String message, final Throwable cause) {
-	super(message, cause);
+    public TesseractConversionException(final String message, final Throwable cause, final Object... params) {
+	super(message, cause, params);
     }
 }

@@ -12,19 +12,21 @@ public class ServiceUnavailableException extends BaseApplicationException {
     /**
      * Constructs a new ServiceUnavailableException exception with the specified detail message.
      * 
-     * @param msg The detail message
+     * @param msg    The detail message
+     * @param params The parameters used on message
      */
-    public ServiceUnavailableException(final String message) {
+    public ServiceUnavailableException(final String message, final Object... params) {
 	super(message);
     }
 
     /**
      * Constructs a new runtime exception with the specified detail message and cause.
      * 
-     * @param msg The detail message
-     * @param ex  The cause
+     * @param msg    The detail message
+     * @param ex     The cause
+     * @param params The parameters used on message
      */
-    public ServiceUnavailableException(final String message, final Throwable cause) {
+    public ServiceUnavailableException(final String message, final Throwable cause, final Object... params) {
 	super(message, cause);
     }
 }

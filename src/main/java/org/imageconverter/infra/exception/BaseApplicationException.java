@@ -19,23 +19,25 @@ public class BaseApplicationException extends RuntimeException {
     /**
      * Constructs a new BaseApplicationException exception with the specified detail message.
      * 
-     * @param msg The detail message
+     * @param msg    The detail message
+     * @param params The parameters used on message
      */
-    public BaseApplicationException(final String msg) {
-	super(getFinalMessage(msg));
+    public BaseApplicationException(final String msg, final Object... params) {
+	super(getFinalMessage(msg, params));
     }
 
     /**
      * Constructs a new runtime exception with the specified detail message and cause.
      * 
-     * @param msg The detail message
-     * @param ex  The cause
+     * @param msg    The detail message
+     * @param ex     The cause
+     * @param params The parameters used on message
      */
-    public BaseApplicationException(final String msg, final Throwable ex) {
-	super(msg, ex);
+    public BaseApplicationException(final String msg, final Throwable ex, final Object... params) {
+	super(getFinalMessage(msg, params), ex);
     }
 
-    private static String getFinalMessage(final String msg) {
+    private static String getFinalMessage(final String msg, final Object... params) {
 
 	if (StringUtils.containsNone(msg, '{', '}')) {
 	    return msg;
@@ -45,6 +47,6 @@ public class BaseApplicationException extends RuntimeException {
 	final var messageSource = getBeanFrom(MessageSource.class);
 	final var locale = LocaleContextHolder.getLocale();
 
-	return messageSource.getMessage(code, null, locale);
+	return messageSource.getMessage(code, params, locale);
     }
 }

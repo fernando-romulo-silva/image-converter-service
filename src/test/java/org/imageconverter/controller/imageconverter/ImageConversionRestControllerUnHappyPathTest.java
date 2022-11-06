@@ -231,6 +231,34 @@ class ImageConversionRestControllerUnHappyPathTest {
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Image corruptedImage.png has IO error: 'IIOException: Image width <= 0!'"))) //
 	;
     }
+    
+    @Test
+    @Order(5)
+    @DisplayName("Convert a corrupted image with area, em portuguese")
+    @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
+    void tryToConvertCorruptedImageAreaTestPortuguese() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+
+	// given
+	final var request = multipart(REST_URL_AREA) //
+			.file(multipartCorruptedImageFile) //
+			.locale(new Locale("pt", "BR"))
+			.accept(MediaType.APPLICATION_JSON) //
+			.param(X_AXIS, X_AXIS_VALUE) //
+			.param(Y_AXIS, Y_AXIS_VALUE) //
+			.param(WIDTH, WIDTH_VALUE) //
+			.param(HEIGHT, HEIGHT_VALUE) //
+			.with(csrf());
+
+	mvc.perform(request) //
+			//
+			// when
+			.andDo(print()) //
+			//
+			// then
+			.andExpect(status().isBadRequest()) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("A imagem corruptedImage.png tem erro de E/S: 'IIOException: Image width <= 0!'"))) //
+	;
+    }
 
     @Test
     @Order(6)

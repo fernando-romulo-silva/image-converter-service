@@ -12,19 +12,21 @@ public class ConversionException extends ElementInvalidException {
     /**
      * Constructs a new ConversionException exception with the specified detail message.
      * 
-     * @param msg The detail message
+     * @param msg    The detail message
+     * @param params The parameters used on message
      */
-    public ConversionException(final String message) {
-	super(message);
+    public ConversionException(final String message, final Object... params) {
+	super(message, params);
     }
 
     /**
      * Constructs a new runtime exception with the specified detail message and cause.
      * 
-     * @param msg The detail message
-     * @param ex  The cause
+     * @param msg    The detail message
+     * @param ex     The cause
+     * @param params The parameters used on message
      */
-    public ConversionException(final String message, final Throwable cause) {
-	super(message, cause);
+    public ConversionException(final String message, final Throwable cause, final Object... params) {
+	super(message, cause, params);
     }
 }
