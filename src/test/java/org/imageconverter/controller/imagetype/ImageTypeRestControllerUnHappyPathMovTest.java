@@ -93,7 +93,8 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
 			//
 			// then
 			.andExpect(status().isConflict()) // ImageType with extension 'BMP' already exists
-			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("ImageType with extension '" + createImageTypeRequest.extension() + "' already exists"))) //
+			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("The ImageType with field(s) extension '" + createImageTypeRequest.extension() + "' already exists"))) //
+											     
 	;
 
     }

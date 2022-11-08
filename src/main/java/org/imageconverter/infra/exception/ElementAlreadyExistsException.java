@@ -1,5 +1,7 @@
 package org.imageconverter.infra.exception;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 /**
  * Element already exists exception.
  * 
@@ -11,7 +13,6 @@ public class ElementAlreadyExistsException extends ElementConflictException {
 
     /**
      * Constructs a new ElementAlreadyExistsException exception and create detail message regard of parameters. </br>
-     * The exception detail msg will be: cls.getSimpleName() + " with id '" + id + "' already exists". </br>
      * For instance for Person object with id 10: </br>
      * "Person with id '10' already exists"
      * 
@@ -19,8 +20,8 @@ public class ElementAlreadyExistsException extends ElementConflictException {
      * @param cls Class element
      * @param id  Object id that repeated
      */
-    public <T> ElementAlreadyExistsException(final Class<T> cls, final Long id) {
-	super(cls.getSimpleName() + " with id '" + id + "' already exists");
+    public <T> ElementAlreadyExistsException(final Class<T> cls, final Object id) {
+	super("{exception.elementIdAlreadyExists}", cls.getSimpleName(), id); //
     }
 
     /**
@@ -33,7 +34,7 @@ public class ElementAlreadyExistsException extends ElementConflictException {
      * @param cls Class element
      * @param msg The specific message
      */
-    public <T> ElementAlreadyExistsException(final Class<T> cls, final String msg) {
-	super(cls.getSimpleName() + " with " + msg + " already exists");
+    public <T> ElementAlreadyExistsException(final Class<T> cls, final Object[] params) {
+	super("{exception.elementFieldsAlreadyExists}", ArrayUtils.addAll(new Object[] { cls.getSimpleName() }, params));
     }
 }

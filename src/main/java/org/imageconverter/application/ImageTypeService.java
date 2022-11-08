@@ -1,6 +1,5 @@
 package org.imageconverter.application;
 
-import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 
@@ -61,7 +60,9 @@ public class ImageTypeService {
 	final var imageTypeOptional = repository.findByExtension(request.extension());
 
 	if (imageTypeOptional.isPresent()) {
-	    throw new ElementAlreadyExistsException(ImageType.class, "extension '" + request.extension() + "'");
+	    final Object [] params = { "extension '" + request.extension() + "'" };
+	    
+	    throw new ElementAlreadyExistsException(ImageType.class, params);
 	}
 
 	final var imageType = new ImageType(request.extension(), request.name(), request.description());
@@ -113,7 +114,7 @@ public class ImageTypeService {
 
 	} catch (final DataIntegrityViolationException ex) {
 
-	    throw new ElementConflictException(format("You cannot delete the image type ''{0}'' because it is already used", id.toString()), ex);
+	    throw new ElementConflictException("{exception.imageTypeDeleteDataIntegrityViolation}", ex, id.toString());
 	}
     }
 
@@ -150,7 +151,7 @@ public class ImageTypeService {
     /**
      * Find image types by spring specification.
      * 
-     * @param spec The query specification, a {@link Specification} object
+     * @param spec     The query specification, a {@link Specification} object
      * @param pageable The query page control, a {@link Pageable} object
      * @return A {@link ImageTypeResponse}'s list with result or a empty list
      * @exception ElementInvalidException if a specification is invalid
@@ -171,11 +172,9 @@ public class ImageTypeService {
 
 	    final var msgException = getRootCauseMessage(ex);
 
-	    final var invalidAttribute = substringBetween(msgException, "[", "]");
+	    final Object[] params = { substringBetween(msgException, "[", "]") };
 
-	    final var msg = format("Unable to locate Attribute with the the given name ''{0}'' on ImageType", invalidAttribute);
-
-	    throw new ElementInvalidException(msg, ex);
+	    throw new ElementInvalidException("{exception.imageTypeInvalidDataSpecification}", ex, params);
 	}
     }
 }

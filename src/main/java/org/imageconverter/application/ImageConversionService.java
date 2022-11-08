@@ -65,7 +65,11 @@ public class ImageConversionService {
 	final var fileName = imageConversionNew.getFileName();
 
 	repository.findByFileName(fileName).ifPresent(imageConversionResult -> {
-	    throw new ElementAlreadyExistsException(ImageConversion.class, "fileName '" + fileName + "' and with id '" + imageConversionResult.getId() + "'");
+
+	    throw new ElementAlreadyExistsException( //
+			    ImageConversion.class, //
+			    new Object[] { format("fileName ''{0}''", fileName) } //
+	    );
 	});
 
 	final var imageConversion = repository.save(imageConversionNew);
@@ -92,7 +96,11 @@ public class ImageConversionService {
 			    .build();
 
 	    repository.findByFileName(imageConversionNew.getFileName()).ifPresent(imageConversionResult -> {
-		throw new ElementAlreadyExistsException(ImageConversion.class, "fileName '" + imageConversionResult.getFileName() + "' and with id '" + imageConversionResult.getId() + "'");
+
+		throw new ElementAlreadyExistsException( //
+				ImageConversion.class, //
+				new Object[] { format("fileName '{0}', id '{1}'", imageConversionResult.getFileName(), imageConversionResult.getId()) } //
+		);
 	    });
 
 	    imageList.add(imageConversionNew);

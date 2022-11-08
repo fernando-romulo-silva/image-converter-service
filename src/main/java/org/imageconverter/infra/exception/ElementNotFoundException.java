@@ -11,9 +11,8 @@ public class ElementNotFoundException extends BaseApplicationException {
 
     /**
      * Constructs a new ElementNotFoundException exception and create detail message regard of parameters. </br>
-     * The exception detail msg will be: cls.getSimpleName() + " with id '" + id + "'  not found". </br>
      * For instance for Person object with id 10: </br>
-     * "Person with id '10'  not found"
+     * "Person with id '10' not found"
      * 
      * @param <T> The class type
      * @param cls Class element
@@ -25,7 +24,6 @@ public class ElementNotFoundException extends BaseApplicationException {
 
     /**
      * Constructs a new ElementNotFoundException exception and create detail message regard of parameters. </br>
-     * The exception detail msg will be: cls.getSimpleName() + " with " + msg + " already exists". </br>
      * For instance for Person object and msg equals to "id '10' and name 'Fernando'": </br>
      * "Person with id '10' and name 'Fernando' not found"
      * 

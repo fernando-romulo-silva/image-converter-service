@@ -152,7 +152,8 @@ class ImageConversionRestControllerUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isConflict()) //
-			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ElementAlreadyExistsException: ImageConversion with fileName 'bill01.png'"))) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("ElementAlreadyExistsException: The ImageConversion with field(s) fileName 'bill01.png' already exists"))) //
+			                                                        
 	;
     }
 
@@ -201,7 +202,8 @@ class ImageConversionRestControllerUnHappyPathTest {
 			//
 			// then
 			.andExpect(status().isServiceUnavailable()) //
-			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Image emptyImage.png has Tessarct error: 'IllegalArgumentException: image == null!'"))) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Image emptyImage.png has IO error: 'IllegalArgumentException: image == null!'"))) //
+			                                                        
 	;
     }
 
