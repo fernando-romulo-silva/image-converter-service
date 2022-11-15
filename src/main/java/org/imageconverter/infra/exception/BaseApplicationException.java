@@ -42,7 +42,7 @@ public class BaseApplicationException extends RuntimeException {
 	if (StringUtils.containsNone(msg, '{', '}')) {
 	    return msg;
 	}
-
+	
 	final var code = RegExUtils.replaceAll(msg, "[{}]", "");
 	final var messageSource = getBeanFrom(MessageSource.class);
 	final var locale = LocaleContextHolder.getLocale();

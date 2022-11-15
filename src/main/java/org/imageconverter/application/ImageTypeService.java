@@ -14,6 +14,7 @@ import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementConflictException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementWithIdNotFoundException;
 import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
@@ -84,7 +85,7 @@ public class ImageTypeService {
     public ImageTypeResponse updateImageType(@NotNull final Long id, @NotNull @Valid final UpdateImageTypeRequest request) {
 
 	final var imageType = repository.findById(id) //
-			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, id));
+			.orElseThrow(() -> new ElementWithIdNotFoundException(ImageType.class, id));
 
 	imageType.update(request.extension(), request.name(), request.description());
 
@@ -104,7 +105,7 @@ public class ImageTypeService {
     public void deleteImageType(@NotNull final Long id) {
 
 	final var imageType = repository.findById(id) //
-			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, id));
+			.orElseThrow(() -> new ElementWithIdNotFoundException(ImageType.class, id));
 
 	try {
 
@@ -129,7 +130,7 @@ public class ImageTypeService {
     public ImageTypeResponse findById(@NotNull final Long id) {
 
 	final var imageType = repository.findById(id) //
-			.orElseThrow(() -> new ElementNotFoundException(ImageType.class, id));
+			.orElseThrow(() -> new ElementWithIdNotFoundException(ImageType.class, id));
 
 	return new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName());
     }
@@ -174,7 +175,7 @@ public class ImageTypeService {
 
 	    final Object[] params = { substringBetween(msgException, "[", "]") };
 
-	    throw new ElementInvalidException("{exception.imageTypeInvalidDataSpecification}", ex, params);
+	    throw new ElementInvalidException("{exception.ElementInvalidDataSpecification}", ex, params);
 	}
     }
 }

@@ -11,19 +11,6 @@ public class ElementNotFoundException extends BaseApplicationException {
 
     /**
      * Constructs a new ElementNotFoundException exception and create detail message regard of parameters. </br>
-     * For instance for Person object with id 10: </br>
-     * "Person with id '10' not found"
-     * 
-     * @param <T> The class type
-     * @param cls Class element
-     * @param id  Object id that repeated
-     */
-    public <T> ElementNotFoundException(final Class<T> cls, final Long id) {
-	super(cls.getSimpleName() + " with id '" + id + "' not found");
-    }
-
-    /**
-     * Constructs a new ElementNotFoundException exception and create detail message regard of parameters. </br>
      * For instance for Person object and msg equals to "id '10' and name 'Fernando'": </br>
      * "Person with id '10' and name 'Fernando' not found"
      * 
@@ -32,6 +19,16 @@ public class ElementNotFoundException extends BaseApplicationException {
      * @param msg The specific message
      */
     public <T> ElementNotFoundException(final Class<T> cls, final String msg) {
-	super(cls.getSimpleName() + " with " + msg + " not found");
+	super("{exception.elementNotFound}", new Object[] { cls.getSimpleName(), msg });
+    }
+
+    /**
+     * Constructs a new BaseApplicationException exception with the specified detail message.
+     * 
+     * @param msg    The detail message
+     * @param params The parameters used on message
+     */
+    protected ElementNotFoundException(final String msg, final Object... params) {
+	super(msg, params);
     }
 }

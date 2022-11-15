@@ -52,7 +52,6 @@ public class ImageConversion { // NOPMD - Provide accessors on private construct
     @Column(name = "IMGC_SIZE")
     private Long fileSize;
 
-    @NotNull
     @Column(name = "IMGC_TYPE")
     private ExecutionType type;
 

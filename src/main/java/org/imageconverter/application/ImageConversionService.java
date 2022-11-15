@@ -16,6 +16,7 @@ import org.imageconverter.domain.conversion.ImageConversionRepository;
 import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementWithIdNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
 import org.imageconverter.util.logging.Loggable;
@@ -125,7 +126,7 @@ public class ImageConversionService {
     public void deleteImageConversion(@NotNull final Long id) {
 
 	final var imageConversion = repository.findById(id) //
-			.orElseThrow(() -> new ElementNotFoundException(ImageConversion.class, id));
+			.orElseThrow(() -> new ElementWithIdNotFoundException(ImageConversion.class, id));
 
 	repository.delete(imageConversion);
 
@@ -157,7 +158,7 @@ public class ImageConversionService {
     public ImageConversionResponse findById(@NotNull final Long id) {
 
 	final var imageConversion = repository.findById(id) //
-			.orElseThrow(() -> new ElementNotFoundException(ImageConversion.class, id));
+			.orElseThrow(() -> new ElementWithIdNotFoundException(ImageConversion.class, id));
 
 	return new ImageConversionResponse(imageConversion.getId(), imageConversion.getFileName(), imageConversion.getText());
     }
@@ -182,11 +183,9 @@ public class ImageConversionService {
 
 	    final var msgException = getRootCauseMessage(ex);
 
-	    final var invalidAttribute = substringBetween(msgException, "[", "]");
+	    final Object[] params = { substringBetween(msgException, "[", "]"), ImageConversion.class.getSimpleName() };
 
-	    final var msg = format("Unable to locate Attribute with the the given name ''{0}'' on ImageConversion", invalidAttribute);
-
-	    throw new ElementInvalidException(msg, ex);
+	    throw new ElementInvalidException("{exception.ElementInvalidDataSpecification}", ex, params);
 	}
     }
 }
