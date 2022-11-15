@@ -32,6 +32,7 @@ import org.imageconverter.util.openapi.imageconverter.ImageConverterRestGetOpenA
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostAreaOpenApi;
 import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -114,6 +115,7 @@ public class ImageConversionRestController {
      * @param page   A object {@link Pageable} that page the result
      * @return A {@link List} or a empty list
      */
+    @PageableAsQueryParam
     @ImageConverterRestGetOpenApi
     //
     @ResponseStatus(OK)
