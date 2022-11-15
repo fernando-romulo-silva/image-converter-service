@@ -121,7 +121,7 @@ class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestController
 			//
 			// then
 			.andExpect(status().isBadRequest()) //
-			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Unable to locate Attribute with the the given 'invalidField' on ImageType"))) //
+			.andExpect(jsonPath(TestConstants.JSON_MESSAGE).value(containsString("Unable to locate Attribute with the the given name 'invalidField' on ImageType"))) //
 	;
 
     }

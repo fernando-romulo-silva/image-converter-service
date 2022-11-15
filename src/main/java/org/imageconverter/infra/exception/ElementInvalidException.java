@@ -29,8 +29,4 @@ public class ElementInvalidException extends BaseApplicationException {
     public ElementInvalidException(final String msg, final Throwable ex, final Object... params) {
 	super(msg, ex, params);
     }
-
-//    public <T> ElementInvalidException(final Class<T> clazz, final String msg) {
-//	super(clazz.getSimpleName() + " is invalid: " + msg);
-//    }
 }

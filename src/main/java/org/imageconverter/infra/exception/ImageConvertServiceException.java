@@ -16,7 +16,7 @@ public class ImageConvertServiceException extends BaseApplicationException {
      * @param params The parameters used on message
      */
     public ImageConvertServiceException(final String message, final Object... params) {
-	super(message);
+	super(message, params);
     }
 
     /**
@@ -27,6 +27,6 @@ public class ImageConvertServiceException extends BaseApplicationException {
      * @param params The parameters used on message
      */
     public ImageConvertServiceException(final String message, final Throwable cause, final Object... params) {
-	super(message, cause);
+	super(message, params, cause);
     }
 }

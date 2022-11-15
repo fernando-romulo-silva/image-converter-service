@@ -61,8 +61,8 @@ public class ImageTypeService {
 	final var imageTypeOptional = repository.findByExtension(request.extension());
 
 	if (imageTypeOptional.isPresent()) {
-	    final Object [] params = { "extension '" + request.extension() + "'" };
-	    
+	    final Object[] params = { "extension '" + request.extension() + "'" };
+
 	    throw new ElementAlreadyExistsException(ImageType.class, params);
 	}
 
@@ -173,7 +173,7 @@ public class ImageTypeService {
 
 	    final var msgException = getRootCauseMessage(ex);
 
-	    final Object[] params = { substringBetween(msgException, "[", "]") };
+	    final Object[] params = { substringBetween(msgException, "[", "]"), ImageType.class.getSimpleName() };
 
 	    throw new ElementInvalidException("{exception.ElementInvalidDataSpecification}", ex, params);
 	}
