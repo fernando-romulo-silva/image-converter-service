@@ -12,6 +12,7 @@ import org.imageconverter.util.openapi.OpenApiResponseError500;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
@@ -26,7 +27,46 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @ApiResponse( //
 		responseCode = "200", //
 		description = "Image types found or a empty array if didn't find anything", //
-		content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ImageTypeResponse.class))) //
+		content = @Content( //
+				mediaType = "application/json", //
+				array = @ArraySchema(schema = @Schema(implementation = ImageTypeResponse.class)), //
+				examples = @ExampleObject(value = """
+						{
+						    "content": [
+						        {
+						            "id": 1,
+						            "extension": "png",
+						            "name": "PNG"
+						        }
+						    ],
+						    "pageable": {
+						        "sort": {
+						            "empty": true,
+						            "sorted": false,
+						            "unsorted": true
+						        },
+						        "offset": 0,
+						        "pageNumber": 0,
+						        "pageSize": 10,
+						        "paged": true,
+						        "unpaged": false
+						    },
+						    "totalPages": 1,
+						    "totalElements": 1,
+						    "last": true,
+						    "size": 10,
+						    "number": 0,
+						    "sort": {
+						        "empty": true,
+						        "sorted": false,
+						        "unsorted": true
+						    },
+						    "first": true,
+						    "numberOfElements": 1,
+						    "empty": false
+						} """) //
+
+		) //
 )
 //
 @OpenApiResponseError500

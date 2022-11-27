@@ -2,11 +2,12 @@ package org.imageconverter.config;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,13 +29,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -60,13 +56,13 @@ public class DefaultOpenApiConfiguration {
 	return new OpenAPI() //
 			.info(new Info() //
 					.title(appName) //
-					.version(appVersion) //
+					.version(appVersion + " " + appVendor) //
 					.description(appDesciption) //
 					.contact(new Contact().name("Fernando Romulo da Silva")).termsOfService("http://swagger.io/terms/") //
 					.license(new License().name("Apache 2.0").url("http://springdoc.org")) //
 			);
     }
-    
+
 //    @Bean
 //    public GroupedOpenApi internalGroupedOpenApi(OpenApiCustomiser apiFromResourceCustomizer) {
 //        return GroupedOpenApi.builder()
@@ -79,31 +75,7 @@ public class DefaultOpenApiConfiguration {
     @Bean
     OpenApiCustomiser defaultOpenApiCustomiser() {
 	return openApiCustomiser -> {
-	    
-	    // openapi spring boot programmatically example
-            final var mySchema = new ObjectSchema();
-            mySchema.name("MySchema");
-            mySchema.addExample(
-        		    """
-{
-  "timestamp": "2021-07-19T15:25:32.389836763",
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "Unexpected error. Please, check the log with traceId and spanId for more detail",
-  "traceId": "3d4144eeb01e3682",
-  "spanId": "3d4144eeb01e3682"
-}        		    				
-        		    				
-        		    				"""
-        		    );
 
-            final var schemas = openApiCustomiser.getComponents().getSchemas();
-            schemas.put(mySchema.getName() , mySchema);
-	    
-	    
-            
-            
-	    
 	    openApiCustomiser.getPaths().values().forEach(valuePath -> {
 
 		final var getOperation = valuePath.getGet();
@@ -136,54 +108,83 @@ public class DefaultOpenApiConfiguration {
 		    createResponse(optionOperation, RequestMethod.OPTIONS);
 		}
 	    });
+
+	    // openapi spring boot programmatically example
+	    final var mySchema = new ObjectSchema();
+	    mySchema.name("MySchema");
+	    mySchema.addExample("""
+	    		{
+	    		  "timestamp": "2021-07-19T15:25:32.389836763",
+	    		  "status": 500,
+	    		  "error": "Internal Server Error",
+	    		  "message": "Unexpected error. Please, check the log with traceId and spanId for more detail",
+	    		  "traceId": "3d4144eeb01e3682",
+	    		  "spanId": "3d4144eeb01e3682"
+	    		}""");
+
+	    final var schemas = openApiCustomiser.getComponents().getSchemas();
+	    schemas.put(mySchema.getName(), mySchema);
 	};
     }
 
     private void createResponse(final Operation operation, final RequestMethod requestMethod) {
 	final var apiResponses = operation.getResponses();
 
-	final var httpStatusArray = List.of(INTERNAL_SERVER_ERROR, UNAUTHORIZED, FORBIDDEN);
+	final var ex500 = """
+			{
+			    "timestamp": "2021-07-19T15:25:32.389836763",
+			    "status": 500,
+			    "error": "Internal Server Error",
+			    "message": "Unexpected error. Please, check the log with traceId and spanId for more detail",
+			    "traceId": "3d4144eeb01e3682",
+			    "spanId": "3d4144eeb01e3682"
+			}""";
 
-	for (final var httpStatus : httpStatusArray) {
+	final var ex401 = """
+			        {
+			    "timestamp": 1669564355551,
+			    "status": 401,
+			    "error": "Unauthorized",
+			    "message": "Unauthorized",
+			    "path": "/rest/images/type/2"
+			}""";
+
+	final var ex403 = """
+			{
+			    "timestamp": 1669563774179,
+			    "status": 403,
+			    "error": "Forbidden",
+			    "message": "Forbidden",
+			    "path": "/rest/images/type"
+			}""";
+
+	final var httpStatusMap = Map.of( //
+			INTERNAL_SERVER_ERROR, ex500, //
+			UNAUTHORIZED, ex401, //
+			FORBIDDEN, ex403 //
+	);
+
+	for (final var httpStatusEntrySet : httpStatusMap.entrySet()) {
+
+	    final var httpStatus = httpStatusEntrySet.getKey();
+	    final var httpStatusExample = httpStatusEntrySet.getValue();
 
 	    apiResponses.computeIfAbsent( //
 			    String.valueOf(httpStatus.value()), //
-			    s -> new ApiResponse() //
-					    .description(httpStatus.getReasonPhrase()) //
-					    .content(new Content().addMediaType("ffff", new MediaType())
+			    s -> {
+				final var mediaType = new MediaType();
+				mediaType.setExample(httpStatusExample);
 
-					    ));
+				final var content = new Content();
+				content.addMediaType(APPLICATION_JSON_VALUE, mediaType);
+
+				return new ApiResponse() //
+						.description(httpStatus.getReasonPhrase()) //
+						.content(content);
+			    });
 	}
-
-//	// http 500: Internal Server Error ---------------------------------------------------------------
-//	apiResponses.computeIfAbsent( //
-//			String.valueOf(INTERNAL_SERVER_ERROR.value()), //
-//			s -> new ApiResponse() //
-//					.description(INTERNAL_SERVER_ERROR.getReasonPhrase()) //
-//					.content(new Content()
-//
-//					));
-//
-//	// http 401: Unauthorized ------------------------------------------------------------------------
-//	apiResponses.computeIfAbsent( //
-//			String.valueOf(UNAUTHORIZED.value()), //
-//			s -> new ApiResponse() //
-//					.description(UNAUTHORIZED.getReasonPhrase()) //
-//					.content(new Content()
-//
-//					));
-//
-//	// http 403: FORBIDDEN ------------------------------------------------------------------------
-//	apiResponses.computeIfAbsent( //
-//			String.valueOf(FORBIDDEN.value()), //
-//			s -> new ApiResponse() //
-//					.description(FORBIDDEN.getReasonPhrase()) //
-//					.content(new Content()
-//
-//					));
-
     }
-    
+
 //    private PathItem addExamples(PathItem pathItem) {
 //	    if(pathItem.getPost() !=null)  {
 //	        //Note you can also Do this to APIResponses to insert info from a file into examples in say, a 200 response.
@@ -203,7 +204,7 @@ public class DefaultOpenApiConfiguration {
 //	    }
 //	    return pathItem;
 //	}
-    
+
     @Bean
     OperationCustomizer operationCustomizer() {
 	return (operation, handleMethod) -> {
@@ -215,59 +216,58 @@ public class DefaultOpenApiConfiguration {
 	    final var method = handleMethod.getMethod();
 
 	    final var classEntity = getClassRequestMapping(method);
-	    
+
 	    final var listAnnotationTypes = Stream.of(method.getAnnotations()) //
 			    .map(a -> a.annotationType()) //
 			    .toList();
-	    
-	    if (listAnnotationTypes.contains(GetMapping.class)) { 
-		
+
+	    if (listAnnotationTypes.contains(GetMapping.class)) {
+
 		final var methodEntity = getMethodRequestMapping(method, GetMapping.class);
-		
-		operation.description("Get "+ classEntity + methodEntity);
+
+		operation.description("Get " + classEntity + methodEntity);
 		operation.operationId("getItem");
 		operation.summary("Get items bla bla");
 		operation.addExtension("x-operationWeight", "200");
-		
+
 		return operation;
 	    }
-	    
-	    if (listAnnotationTypes.contains(PostMapping.class)) { 
-		
+
+	    if (listAnnotationTypes.contains(PostMapping.class)) {
+
 		final var methodEntity = getMethodRequestMapping(method, GetMapping.class);
-		
-		operation.description("Create "+ classEntity + methodEntity);
+
+		operation.description("Create " + classEntity + methodEntity);
 		operation.operationId("createItem");
 		operation.summary("Create items bla bla");
 		operation.addExtension("x-operationWeight", "300");
-		
+
 		return operation;
 	    }
-	    
-	    if (listAnnotationTypes.contains(PutMapping.class)) { 
-		
+
+	    if (listAnnotationTypes.contains(PutMapping.class)) {
+
 		final var methodEntity = getMethodRequestMapping(method, PutMapping.class);
-		
-		operation.description("Update "+ classEntity + methodEntity);
+
+		operation.description("Update " + classEntity + methodEntity);
 		operation.operationId("updateItem");
 		operation.summary("Update items bla bla");
 		operation.addExtension("x-operationWeight", "400");
-		
+
 		return operation;
 	    }
-	    
-	    if (listAnnotationTypes.contains(DeleteMapping.class)) { 
-		
+
+	    if (listAnnotationTypes.contains(DeleteMapping.class)) {
+
 		final var methodEntity = getMethodRequestMapping(method, PutMapping.class);
-		
-		operation.description("Delete "+ classEntity + methodEntity);
+
+		operation.description("Delete " + classEntity + methodEntity);
 		operation.operationId("deleteItem");
 		operation.summary("Delete items bla bla");
 		operation.addExtension("x-operationWeight", "500");
-		
+
 		return operation;
 	    }
-	    
 
 	    return operation;
 	};

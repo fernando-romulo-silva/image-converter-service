@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
+import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.openapi.OpenApiResponseError500;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,11 +18,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 //
-@Operation(summary = "Get a ImageConversion by id", description = "This method try to find a imageConversion by id")
+@Operation(summary = "Get a image yyype by id", description = "This method try to find a image type by id")
 @ApiResponse( //
 		responseCode = "200", //
-		description = "Image conversion found", //
-		content = @Content(mediaType = "application/json", schema = @Schema(implementation = ImageConversionResponse.class)) //
+		description = "Image type found", //
+		content = @Content(mediaType = "application/json", schema = @Schema(implementation = ImageTypeResponse.class)) //
 )
 //
 @OpenApiResponseError404

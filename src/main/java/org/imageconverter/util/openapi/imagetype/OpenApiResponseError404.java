@@ -16,11 +16,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 //
 @ApiResponse(//
 		responseCode = "404", //
-		description = "Not found", //
+		description = "Image Type with not found", //
 		content = @Content(//
 				mediaType = "application/json", //
 				examples = @ExampleObject(//
-						description = "Image Type not found", //
+						description = "Image Type with id one not found", //
 						value = """
 								{
 								    "timestamp": "2021-12-05T20:18:41.80433145",
