@@ -36,7 +36,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
-import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 
 @Configuration
@@ -110,20 +109,20 @@ public class DefaultOpenApiConfiguration {
 	    });
 
 	    // openapi spring boot programmatically example
-	    final var mySchema = new ObjectSchema();
-	    mySchema.name("MySchema");
-	    mySchema.addExample("""
-	    		{
-	    		  "timestamp": "2021-07-19T15:25:32.389836763",
-	    		  "status": 500,
-	    		  "error": "Internal Server Error",
-	    		  "message": "Unexpected error. Please, check the log with traceId and spanId for more detail",
-	    		  "traceId": "3d4144eeb01e3682",
-	    		  "spanId": "3d4144eeb01e3682"
-	    		}""");
-
-	    final var schemas = openApiCustomiser.getComponents().getSchemas();
-	    schemas.put(mySchema.getName(), mySchema);
+//	    final var mySchema = new ObjectSchema();
+//	    mySchema.name("MySchema");
+//	    mySchema.addExample("""
+//	    		{
+//	    		  "timestamp": "2021-07-19T15:25:32.389836763",
+//	    		  "status": 500,
+//	    		  "error": "Internal Server Error",
+//	    		  "message": "Unexpected error. Please, check the log with traceId and spanId for more detail",
+//	    		  "traceId": "3d4144eeb01e3682",
+//	    		  "spanId": "3d4144eeb01e3682"
+//	    		}""");
+//
+//	    final var schemas = openApiCustomiser.getComponents().getSchemas();
+//	    schemas.put(mySchema.getName(), mySchema);
 	};
     }
 
@@ -177,7 +176,7 @@ public class DefaultOpenApiConfiguration {
 
 				final var content = new Content();
 				content.addMediaType(APPLICATION_JSON_VALUE, mediaType);
-
+				
 				return new ApiResponse() //
 						.description(httpStatus.getReasonPhrase()) //
 						.content(content);
