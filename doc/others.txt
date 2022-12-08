@@ -1,13 +1,20 @@
-TODO internationalization
-
-https://ihorkosandiak.medium.com/spring-boot-rest-internationalization-9ab3fce2489
-
-
 TODO Fix the Open API Swagger
+
+TODO test containers
 
 TODO modules
 
 TODO deploy somewhere
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+
 
 java -Djarmode=layertools -jar image-converter-service-0.0.1-SNAPSHOT.jar extract
 
