@@ -30,6 +30,11 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class RestExceptionHandler extends AbstractRestExceptionHandler {
 
+    /**
+     * Default constructor.
+     * 
+     * @param messageSource Object used to translate messages
+     */
     protected RestExceptionHandler(final MessageSource messageSource) {
 	super(messageSource);
     }
@@ -68,7 +73,7 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
     ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException ex, final WebRequest request) {
 
 	final var subErrors = new ArrayList<Map<String, String>>();
-	
+
 	final var locale = request.getLocale();
 
 	for (final var violation : ex.getConstraintViolations()) {
@@ -76,9 +81,9 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
 
 	    errors.put("field", substringAfterLast(violation.getPropertyPath().toString(), "."));
 	    errors.put("value", violation.getInvalidValue().toString());
-	    
+
 	    final var code = RegExUtils.replaceAll(violation.getMessage(), "[{}]", "");
-	    errors.put("error", messageSource.getMessage(code, null, locale)); //violation.getMessage());
+	    errors.put("error", messageSource.getMessage(code, null, locale)); // violation.getMessage());
 
 	    subErrors.add(errors);
 	}
@@ -90,9 +95,9 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
 
     @ExceptionHandler(Throwable.class) // HttpMessageNotReadableException
     ResponseEntity<Object> handleUnknownException(final Throwable ex, final WebRequest request) {
-	
+
 	final var locale = request.getLocale();
-	
+
 	final var msg = messageSource.getMessage("exception.handleUnknown", null, locale);
 
 	return handleObjectException(msg, List.of(), ex, request, HttpStatus.INTERNAL_SERVER_ERROR);

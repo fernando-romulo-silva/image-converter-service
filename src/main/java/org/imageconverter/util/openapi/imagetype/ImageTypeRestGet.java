@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 		content = @Content( //
 				mediaType = "application/json", //
 				array = @ArraySchema(schema = @Schema(implementation = ImageTypeResponse.class)), //
-				examples = @ExampleObject(value = """
+				examples = @ExampleObject("""
 						{
 						    "content": [
 						        {

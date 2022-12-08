@@ -64,6 +64,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @TestInstance(Lifecycle.PER_CLASS)
 class ImageConversionRestControllerUnHappyPathTest {
 
+    private static final String VALUE_TEXT = "value";
+
+    private static final String ERROR_TEXT = "error";
+
+    private static final String FIELD_TEXT = "field";
+
     private final MockMvc mvc;
 
     private final MockMultipartFile multipartBeachImageFile;
@@ -339,8 +345,8 @@ class ImageConversionRestControllerUnHappyPathTest {
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Constraint violation"))) //
 			.andExpect(jsonPath("$.subErrors", containsInAnyOrder( //
-					Map.of("field", "height", "error", "The 'height' cannot be less than zero", "value", "-1"), //
-					Map.of("field", "yAxis", "error", "The axis 'y' cannot be less than zero", "value", "-1"))) //
+					Map.of(FIELD_TEXT, "height", ERROR_TEXT, "The 'height' cannot be less than zero", VALUE_TEXT, "-1"), //
+					Map.of(FIELD_TEXT, "yAxis", ERROR_TEXT, "The axis 'y' cannot be less than zero", VALUE_TEXT, "-1"))) //
 			)			
 	;
     }
@@ -370,8 +376,8 @@ class ImageConversionRestControllerUnHappyPathTest {
 			.andExpect(status().isBadRequest()) //
 			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("Violação de restrição"))) //
 			.andExpect(jsonPath("$.subErrors", containsInAnyOrder( //
-					Map.of("field", "height", "error", "A 'altura' não pode ser menor que zero", "value", "-1"), //
-					Map.of("field", "yAxis", "error", "O eixo 'y' não pode ser menor que zero", "value", "-1"))) //
+					Map.of(FIELD_TEXT, "height", ERROR_TEXT, "A 'altura' não pode ser menor que zero", VALUE_TEXT, "-1"), //
+					Map.of(FIELD_TEXT, "yAxis", ERROR_TEXT, "O eixo 'y' não pode ser menor que zero", VALUE_TEXT, "-1"))) //
 			)			
 	;
     }

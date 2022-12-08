@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UrlPathHelper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -75,7 +76,7 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Bean
     @Primary
-    JsonMapper objectMapper() {
+    ObjectMapper objectMapper() {
 	final var module = new JavaTimeModule();
 	module.addSerializer(new LocalDateSerializer(DateTimeFormatter.ISO_DATE));
 	module.addSerializer(new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
@@ -85,7 +86,7 @@ public class WebConfig implements WebMvcConfigurer {
 			.configure(ALLOW_COERCION_OF_SCALARS, false) //
 			.serializationInclusion(NON_NULL) //
 			.addModule(module) //
-			.build();
+			.build(); //
     }
 
 //    @Bean

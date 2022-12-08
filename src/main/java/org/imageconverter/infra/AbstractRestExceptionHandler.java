@@ -36,11 +36,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * @author Fernando Romulo da Silva
  */
 abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
     protected final MessageSource messageSource;
-    
+
+    /**
+     * Default constructor.
+     * 
+     * @param messageSource Object used to translate messages
+     */
     protected AbstractRestExceptionHandler(final MessageSource messageSource) {
-        this.messageSource = messageSource;
+	super();
+	this.messageSource = messageSource;
     }
 
     /**
@@ -49,10 +55,10 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(final MissingServletRequestParameterException ex, final HttpHeaders headers, final HttpStatus status,
 		    final WebRequest request) {
-	
+
 	final var locale = request.getLocale();
 	final Object[] params = { ex.getParameterName() };
-	
+
 	final var msg = messageSource.getMessage("exception.missingServletRequestParameter", params, locale);
 
 	return handleObjectException(msg, List.of(), ex, request, HttpStatus.BAD_REQUEST);
@@ -72,35 +78,34 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-	
+
 	final var subErrors = new ArrayList<Map<String, String>>();
-	
+
 	final var locale = request.getLocale();
 
 	ex.getBindingResult().getFieldErrors().forEach((error) -> {
-	    
+
 	    final var errors = new HashMap<String, String>();
-	    
+
 	    errors.put("object", error.getObjectName());
 	    errors.put("field", error.getField());
 	    errors.put("error", messageSource.getMessage(error, locale));
-	    
+
 	    subErrors.add(errors);
 	});
 
-	
 	final var msg = messageSource.getMessage("exception.handleMethodArgumentNotValid", null, locale);
 
 	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(final NoHandlerFoundException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
 	final var locale = request.getLocale();
-	
+
 	final var msg = messageSource.getMessage("exception.handleNoHandlerFound", null, locale);
 
 	return handleObjectException(msg, List.of(), ex, request, status);
@@ -118,7 +123,7 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 
 	final var msg = ex instanceof BaseApplicationException ? escapeJava(getMessage(ex)) : escapeJava(getRootCauseMessage(ex));
 
-	final var body = buildResponseBody(msg, List.of(),  status, ex, request);
+	final var body = buildResponseBody(msg, List.of(), status, ex, request);
 
 	if (logger.isErrorEnabled()) {
 	    logger.error(msg, getRootCause(ex));
@@ -136,7 +141,7 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
      * @param status  The error status
      * @return A {@link ResponseEntity} object that's the response
      */
-    protected ResponseEntity<Object> handleObjectException(final String msg, final Collection<Map<String,String>> subErrors, final Throwable ex, final WebRequest request, final HttpStatus status) {
+    protected ResponseEntity<Object> handleObjectException(final String msg, final Collection<Map<String, String>> subErrors, final Throwable ex, final WebRequest request, final HttpStatus status) {
 
 	final var body = buildResponseBody(msg, subErrors, status, ex, request);
 
@@ -147,18 +152,18 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 	return new ResponseEntity<>(body, status);
     }
 
-    private Map<String, Object> buildResponseBody(final String message, final Collection<Map<String,String>> subErrors, final HttpStatus status, final Throwable ex, final WebRequest request) {
+    private Map<String, Object> buildResponseBody(final String message, final Collection<Map<String, String>> subErrors, final HttpStatus status, final Throwable ex, final WebRequest request) {
 	final var body = new LinkedHashMap<String, Object>();
 
 	body.put("timestamp", LocalDateTime.now().format(ISO_DATE_TIME));
 	body.put("status", status.value());
 	body.put("error", status.getReasonPhrase());
 	body.put("message", message);
-	
-	if (CollectionUtils.isNotEmpty(subErrors)) {	    
-	    body.put("subErrors", subErrors);    
+
+	if (CollectionUtils.isNotEmpty(subErrors)) {
+	    body.put("subErrors", subErrors);
 	}
-	
+
 	body.put("traceId", MDC.get("traceId"));
 	body.put("spanId", MDC.get("spanId"));
 
