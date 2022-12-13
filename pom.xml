@@ -31,12 +31,6 @@
 	<dependencyManagement>
 		<dependencies>
 		
-		<dependency>
-      <groupId>com.github.spotbugs</groupId>
-      <artifactId>spotbugs</artifactId>
-      <version>4.7.3</version>
-    </dependency>
-		
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -323,6 +317,18 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<parallel>${surefire.parallel}</parallel>
+					<threadCount>${surefire.threadCount}</threadCount>
+					<forkCount>${surefire.forkCount}</forkCount>
+					<perCoreThreadCount>${surefire.perCoreThreadCount}</perCoreThreadCount>
+					<reuseForks>${surefire.reuseForks}</reuseForks>
+				</configuration>
+			</plugin>			
 
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -390,6 +396,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
+				<configuration>
+					<parallel>${surefire.parallel}</parallel>
+					<threadCount>${surefire.threadCount}</threadCount>
+					<forkCount>${surefire.forkCount}</forkCount>
+					<perCoreThreadCount>${surefire.perCoreThreadCount}</perCoreThreadCount>
+					<reuseForks>${surefire.reuseForks}</reuseForks>
+					<groups>${surefire.groups}</groups>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -407,7 +421,7 @@
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
 				<configuration>
-					<excludeFilterFile>default-extensions/spotbugs/spotbugs-excludes.xml</excludeFilterFile>
+					<excludeFilterFile>src/main/resources/spotbugs/spotbugs-excludes.xml</excludeFilterFile>
 				</configuration>
 			</plugin>
 

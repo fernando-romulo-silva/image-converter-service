@@ -93,5 +93,8 @@ ENTRYPOINT [\
                "org.springframework.boot.loader.JarLauncher"\
 ]
 
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
+# HEALTHCHECK CMD curl --fail http://localhost/health || exit 1
+
 EXPOSE 8080
 EXPOSE 9010

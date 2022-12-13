@@ -144,7 +144,8 @@ public class ImageConversion { // NOPMD - Provide accessors on private construct
 			.append(", fileType=").append(fileType) //
 			.append(", fileSize=").append(fileSize) //
 			.append(", created=").append(created) //
-			.append(", type=").append(type).append(']');
+			.append(", type=").append(type) //
+			.append(']');
 
 	return sbToString.toString();
     }

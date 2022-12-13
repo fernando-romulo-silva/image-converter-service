@@ -54,7 +54,7 @@ public class ImageServiceApplication { // NOPMD - UseUtilityClass: It's not a ut
      * @param args the application arguments
      */
     public static void main(final String[] args) {
-
+	
 	run(ImageServiceApplication.class, args);
     }
 }

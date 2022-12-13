@@ -100,7 +100,7 @@ public class ImageConversionService {
 
 		throw new ElementAlreadyExistsException( //
 				ImageConversion.class, //
-				new Object[] { format("fileName '{0}', id '{1}'", imageConversionResult.getFileName(), imageConversionResult.getId()) } //
+				createParams(imageConversionResult) //
 		);
 	    });
 
@@ -114,6 +114,10 @@ public class ImageConversionService {
 			.map(img -> new ImageConversionResponse(img.getId(), img.getFileName(), img.getText())) //
 			.toList();
 
+    }
+
+    private Object[] createParams(final ImageConversion imageConversionResult) {
+	return new Object[] { format("fileName '{0}', id '{1}'", imageConversionResult.getFileName(), imageConversionResult.getId()) };
     }
 
     /**

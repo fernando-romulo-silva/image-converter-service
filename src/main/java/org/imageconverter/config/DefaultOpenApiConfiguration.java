@@ -38,6 +38,10 @@ import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 
+/**
+ * @author Fernando Romulo da Silva
+ *
+ */
 @Configuration
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class DefaultOpenApiConfiguration {
@@ -131,7 +135,7 @@ public class DefaultOpenApiConfiguration {
 
 	final var ex500 = """
 			{
-			    "timestamp": "2021-07-19T15:25:32.389836763",
+			    "timestamp": "1669564355551",
 			    "status": 500,
 			    "error": "Internal Server Error",
 			    "message": "Unexpected error. Please, check the log with traceId and spanId for more detail",
@@ -140,7 +144,7 @@ public class DefaultOpenApiConfiguration {
 			}""";
 
 	final var ex401 = """
-			        {
+			{
 			    "timestamp": 1669564355551,
 			    "status": 401,
 			    "error": "Unauthorized",
@@ -317,5 +321,4 @@ public class DefaultOpenApiConfiguration {
 
 	return StringUtils.EMPTY;
     }
-
 }
