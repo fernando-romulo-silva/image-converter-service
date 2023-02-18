@@ -19,6 +19,7 @@ import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
 import org.imageconverter.util.logging.Loggable;
+import org.springframework.boot.logging.LogLevel;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
@@ -33,11 +34,11 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Romulo da Silva
  */
 @Service
-@Loggable
+@Loggable(value = LogLevel.INFO)
 public class ImageTypeService {
 
     private final ImageTypeRespository repository;
-
+    
     /**
      * Default constructor.
      * 

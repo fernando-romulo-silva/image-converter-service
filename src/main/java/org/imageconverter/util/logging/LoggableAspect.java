@@ -1,16 +1,30 @@
 package org.imageconverter.util.logging;
 
+import static java.lang.Long.MAX_VALUE;
 import static java.lang.String.format;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.containsAny;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+import static org.springframework.boot.logging.LogLevel.DEBUG;
+import static org.springframework.boot.logging.LogLevel.ERROR;
+import static org.springframework.boot.logging.LogLevel.FATAL;
+import static org.springframework.boot.logging.LogLevel.INFO;
+import static org.springframework.boot.logging.LogLevel.OFF;
+import static org.springframework.boot.logging.LogLevel.TRACE;
 import static org.springframework.boot.logging.LogLevel.WARN;
 
+import java.lang.reflect.Field;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.StringJoiner;
 
+import org.apache.commons.lang3.Range;
 import org.apache.commons.text.StringEscapeUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -21,6 +35,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.logging.LogLevel;
+import org.springframework.security.util.FieldUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -63,8 +78,10 @@ public class LoggableAspect {
 	final var method = methodSignature.getMethod();
 
 	final var declaringClass = method.getDeclaringClass();
+	
+	final var target = point.getTarget();
 
-	final var logger = LoggerFactory.getLogger(declaringClass);
+	final var logger = getLogger(declaringClass, target);
 
 	final var annotation = ofNullable(method.getAnnotation(Loggable.class)) //
 			.orElse(declaringClass.getAnnotation(Loggable.class));
@@ -155,14 +172,74 @@ public class LoggableAspect {
 
     private void executeLog(final Logger logger, final LogLevel level, final String message) {
 	
+	if (OFF.equals(level)) {
+	    return;
+	}
+	
 	final var finalMsg = StringEscapeUtils.escapeJava(message);
 	
 	switch (level) { // NOPMD - SwitchStmtsShouldHaveDefault: Actually we have a 'default'
-		case DEBUG -> logger.debug(finalMsg);
 		case TRACE -> logger.trace(finalMsg);
+		case DEBUG -> logger.debug(finalMsg);
+		case INFO -> logger.info(finalMsg);
 		case WARN -> logger.warn(finalMsg);
 		case ERROR, FATAL -> logger.error(finalMsg);
-		default -> logger.info(finalMsg);
+		default -> logger.debug(finalMsg);
 	}
+    }
+    
+    private Logger getLogger(final Class<?> clazz, final Object object) {
+	
+	try {
+	    
+	    final var fields = clazz.getDeclaredFields();
+			    
+	    final var fieldOptional = Arrays.stream(fields)
+			    .map(Field::getName)
+			    .filter(field -> containsAny(field, "logger", "LOGGER"))
+			    .findFirst();
+	    
+	    if (fieldOptional.isEmpty()) {
+		return LoggerFactory.getLogger(clazz);
+	    }
+	    
+	    return (Logger) FieldUtils.getFieldValue(object, fieldOptional.get());
+	    
+	} catch (final Exception ex) {
+	    return LoggerFactory.getLogger(clazz);
+	}
+    }
+    
+    public LogLevel getLevel(final Instant start, final Instant end) {
+	
+	final var unit = ChronoUnit.MILLIS;
+	final var duration = unit.between(start, end);
+	
+	final var offRange = Range.between(0L, 500L);
+	final var traceRange = Range.between(501L, 1000L);
+	final var debugRange = Range.between(1001L, 2000L);
+	final var infoRange = Range.between(2001L, 3000L);
+	final var warnRange = Range.between(3001L, 10000L);
+	final var errorRange = Range.between(10001L, MAX_VALUE);
+	
+	final var ranges = List.of(
+		new SimpleEntry<>(offRange, OFF),
+		new SimpleEntry<>(traceRange, TRACE),
+		new SimpleEntry<>(debugRange, DEBUG),
+		new SimpleEntry<>(infoRange, INFO),
+		new SimpleEntry<>(warnRange, WARN),
+		new SimpleEntry<>(errorRange, ERROR)
+	);
+	
+	for (final var rangeEntry: ranges) {
+	    
+	    final var range = rangeEntry.getKey();
+	    
+	    if (range.contains(duration)) {
+		return rangeEntry.getValue();
+	    }
+	}
+	
+	return FATAL;
     }
 }

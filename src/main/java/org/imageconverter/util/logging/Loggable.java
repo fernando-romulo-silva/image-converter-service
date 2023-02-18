@@ -16,7 +16,7 @@ import org.springframework.boot.logging.LogLevel;
 @Documented
 public @interface Loggable {
 
-  LogLevel value() default LogLevel.INFO;
+  LogLevel value() default LogLevel.DEBUG;
 
   ChronoUnit unit() default ChronoUnit.MILLIS;
 
