@@ -1,30 +1,20 @@
 package org.imageconverter.util.logging;
 
-import static java.lang.Long.MAX_VALUE;
 import static java.lang.String.format;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.containsAny;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
-import static org.springframework.boot.logging.LogLevel.DEBUG;
-import static org.springframework.boot.logging.LogLevel.ERROR;
-import static org.springframework.boot.logging.LogLevel.FATAL;
-import static org.springframework.boot.logging.LogLevel.INFO;
 import static org.springframework.boot.logging.LogLevel.OFF;
-import static org.springframework.boot.logging.LogLevel.TRACE;
-import static org.springframework.boot.logging.LogLevel.WARN;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.StringJoiner;
 
-import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -35,7 +25,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.logging.LogLevel;
-import org.springframework.security.util.FieldUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -87,6 +76,8 @@ public class LoggableAspect {
 			.orElse(declaringClass.getAnnotation(Loggable.class));
 
 	final var level = annotation.value();
+	final var errorLevel = annotation.errorValue();
+	
 	final var unit = annotation.unit();
 	final var showArgs = annotation.showArgs();
 	final var showResult = annotation.showResult();
@@ -96,7 +87,7 @@ public class LoggableAspect {
 	final var methodArgs = point.getArgs();
 	final var methodParams = codeSignature.getParameterNames();
 
-	executeLog(logger, level, entry(methodName, showArgs, methodParams, methodArgs));
+	executeLog(logger, level, entryMessage(methodName, showArgs, methodParams, methodArgs));
 
 	final var start = Instant.now();
 
@@ -111,7 +102,7 @@ public class LoggableAspect {
 
 	    final var duration = format("%s %s", unit.between(start, end), lowerCaseUnit);
 
-	    executeLog(logger, level, exit(methodName, duration, response, showResult, showExecutionTime));
+	    executeLog(logger, level, exitMessage(methodName, duration, response, showResult, showExecutionTime));
 
 	    return response;
 
@@ -121,14 +112,14 @@ public class LoggableAspect {
 
 	    final var duration = format("%s %s", unit.between(start, end), lowerCaseUnit);
 
-	    executeLog(logger, WARN, error(methodName, duration, ex, showExecutionTime));
+	    executeLog(logger, errorLevel, errorMessage(methodName, duration, ex, showExecutionTime));
 
 	    throw ex;
 	}
 
     }
 
-    private String entry(final String methodName, final boolean showArgs, final String[] params, final Object... args) {
+    private String entryMessage(final String methodName, final boolean showArgs, final String[] params, final Object... args) {
 	final var message = new StringJoiner(" ").add("Started").add(methodName).add("method");
 
 	if (showArgs && nonNull(params) && nonNull(args) && params.length == args.length) {
@@ -145,7 +136,7 @@ public class LoggableAspect {
 	return message.toString();
     }
 
-    private String exit(final String methodName, final String duration, final Object result, final boolean showResult, final boolean showExecutionTime) {
+    private String exitMessage(final String methodName, final String duration, final Object result, final boolean showResult, final boolean showExecutionTime) {
 	final var message = new StringJoiner(" ").add("Finished").add(methodName).add("method");
 
 	if (showExecutionTime) {
@@ -159,7 +150,7 @@ public class LoggableAspect {
 	return message.toString();
     }
 
-    private String error(final String methodName, final String duration, final Throwable ex, final boolean showExecutionTime) {
+    private String errorMessage(final String methodName, final String duration, final Throwable ex, final boolean showExecutionTime) {
 
 	final var message = new StringJoiner(" ").add("Finished").add(methodName).add("method").add("with").add("error").add(getRootCauseMessage(ex));
 
@@ -196,50 +187,17 @@ public class LoggableAspect {
 			    
 	    final var fieldOptional = Arrays.stream(fields)
 			    .map(Field::getName)
-			    .filter(field -> containsAny(field, "logger", "LOGGER"))
+			    .filter(field -> containsAny(field, "logger", "LOGGER", "log", "LOG"))
 			    .findFirst();
 	    
 	    if (fieldOptional.isEmpty()) {
 		return LoggerFactory.getLogger(clazz);
 	    }
 	    
-	    return (Logger) FieldUtils.getFieldValue(object, fieldOptional.get());
+	    return (Logger) FieldUtils.readDeclaredField(object, fieldOptional.get(), true);
 	    
-	} catch (final Exception ex) {
+	} catch (final IllegalAccessException | SecurityException ex) {
 	    return LoggerFactory.getLogger(clazz);
 	}
-    }
-    
-    public LogLevel getLevel(final Instant start, final Instant end) {
-	
-	final var unit = ChronoUnit.MILLIS;
-	final var duration = unit.between(start, end);
-	
-	final var offRange = Range.between(0L, 500L);
-	final var traceRange = Range.between(501L, 1000L);
-	final var debugRange = Range.between(1001L, 2000L);
-	final var infoRange = Range.between(2001L, 3000L);
-	final var warnRange = Range.between(3001L, 10000L);
-	final var errorRange = Range.between(10001L, MAX_VALUE);
-	
-	final var ranges = List.of(
-		new SimpleEntry<>(offRange, OFF),
-		new SimpleEntry<>(traceRange, TRACE),
-		new SimpleEntry<>(debugRange, DEBUG),
-		new SimpleEntry<>(infoRange, INFO),
-		new SimpleEntry<>(warnRange, WARN),
-		new SimpleEntry<>(errorRange, ERROR)
-	);
-	
-	for (final var rangeEntry: ranges) {
-	    
-	    final var range = rangeEntry.getKey();
-	    
-	    if (range.contains(duration)) {
-		return rangeEntry.getValue();
-	    }
-	}
-	
-	return FATAL;
     }
 }

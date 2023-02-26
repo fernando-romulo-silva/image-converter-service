@@ -10,7 +10,13 @@ COPY ${JAR_FILE} application.jar
 
 ADD src/main/tesseract/eng.tar.xz tesseract/tessdata/eng.tar.xz
 
-RUN java -Djarmode=layertools -jar application.jar extract
+# RUN java -Djarmode=layertools -jar application.jar extract
+RUN [\
+	"java",\ 
+	"-Djarmode=layertools",\ 
+	"-jar application.jar",\ 
+	"extract"
+]
 
 # only when your application has modularization
 # find JDK dependencies dynamically from jar
@@ -61,7 +67,14 @@ COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
 # install tesseract
-RUN apk add --update --no-cache tesseract-ocr dumb-init
+# RUN apk add --update --no-cache tesseract-ocr dumb-init
+RUN [
+	"apk add",\
+    "--update",\
+    "--no-cache",\
+    "tesseract-ocr",\
+    "dumb-init"       
+]
 
 # create usergroup 'javauser'      
 RUN addgroup --system javauser \
@@ -73,24 +86,24 @@ USER javauser
 
 # execute the application
 ENTRYPOINT [\
-              "dumb-init",\
-               "java",\
-               # Preview Features
-               # "--enable-preview",\ 
-			   # Profiling
-               # "-Dcom.sun.management.jmxremote.port=9010",\ 
-               # "-Dcom.sun.management.jmxremote.ssl=false",\ 
-               # "-Dcom.sun.management.jmxremote.authenticate=false",\
-               # "-Dcom.sun.management.jmxremote.local.only=false",\
-               # Spring  
-               "-Dspring.profiles.active=local",\
-               # VM
-			   "-XX:+UseContainerSupport",\ 
-			   "-XX:InitialRAMPercentage=40.0",\ 
-			   "-XX:MinRAMPercentage=20.0",\ 
-			   "-XX:MaxRAMPercentage=80.0",\
-			   # Exec
-               "org.springframework.boot.loader.JarLauncher"\
+    "dumb-init",\
+    "java",\
+    # Preview Features
+    # "--enable-preview",\ 
+	# Profiling
+    # "-Dcom.sun.management.jmxremote.port=9010",\ 
+    # "-Dcom.sun.management.jmxremote.ssl=false",\ 
+    # "-Dcom.sun.management.jmxremote.authenticate=false",\
+    # "-Dcom.sun.management.jmxremote.local.only=false",\
+    # Spring  
+    "-Dspring.profiles.active=local",\
+    # VM
+	"-XX:+UseContainerSupport",\ 
+	"-XX:InitialRAMPercentage=40.0",\ 
+	"-XX:MinRAMPercentage=20.0",\ 
+	"-XX:MaxRAMPercentage=80.0",\
+	# Exec
+    "org.springframework.boot.loader.JarLauncher"\
 ]
 
 # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]

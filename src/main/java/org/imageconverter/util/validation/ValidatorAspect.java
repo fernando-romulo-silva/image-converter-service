@@ -44,7 +44,7 @@ public class ValidatorAspect {
 	final var theValidator = validatorFactory.getValidator().forExecutables();
 	final var theViolations = theValidator.validateReturnValue(point.getTarget(), theSignature.getMethod(), theReturnValue);
 
-	if (theViolations.size() > 0) {
+	if (!theViolations.isEmpty()) {
 	    throw new ConstraintViolationException(theViolations);
 	}
 
@@ -65,7 +65,7 @@ public class ValidatorAspect {
 	final var theValidator = validatorFactory.getValidator().forExecutables();
 	final var theViolations = theValidator.validateParameters(point.getTarget(), theSignature.getMethod(), point.getArgs());
 
-	if (theViolations.size() > 0) {
+	if (!theViolations.isEmpty()) {
 	    throw new ConstraintViolationException(theViolations);
 	}
 
