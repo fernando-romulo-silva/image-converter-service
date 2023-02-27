@@ -1,6 +1,7 @@
 package org.imageconverter.util.performance;
 
 import static java.lang.Long.MAX_VALUE;
+import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.range;
@@ -14,7 +15,6 @@ import static org.springframework.boot.logging.LogLevel.WARN;
 
 import java.lang.reflect.Parameter;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.stream.Stream;
@@ -59,6 +59,7 @@ public class PerformanceMonitor implements MethodInterceptor {
 			.collect(joining(","));
 			
 	final var start = Instant.now();
+	
 	try {
 	  
 	    return invocation.proceed();
@@ -67,13 +68,11 @@ public class PerformanceMonitor implements MethodInterceptor {
 
 	    final var end = Instant.now();
 
-	    final var unit = ChronoUnit.MILLIS;
-
-	    final var duration = unit.between(start, end);
+	    final var duration = MILLIS.between(start, end);
 
 	    final var logLevel = getLevel(duration);
 
-	    final var message = "Performance duration '{}' class '{}', method '{}' parameters '[{}]'";
+	    final var message = "Performance: duration '{}' milliseconds, class '{}', method '{}' with parameters '[{}]'";
 
 	    final Object[] params = { duration, clazz, methodName, parameters };
 
@@ -82,6 +81,7 @@ public class PerformanceMonitor implements MethodInterceptor {
     }
     
     private void executeLog(final LogLevel level, final String message, final Object... arguments) {
+	
 	if (OFF.equals(level)) {
 	    return;
 	}
