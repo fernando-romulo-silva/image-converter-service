@@ -3,7 +3,6 @@ package org.imageconverter.util.performance;
 import static java.lang.Long.MAX_VALUE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.range;
 import static org.springframework.boot.logging.LogLevel.DEBUG;
 import static org.springframework.boot.logging.LogLevel.ERROR;
@@ -17,6 +16,7 @@ import java.lang.reflect.Parameter;
 import java.time.Instant;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -38,12 +38,13 @@ public class PerformanceMonitor implements MethodInterceptor {
 	
 	final var method = invocation.getMethod();
 	
-	final var clazz = method.getDeclaringClass();
+	final var clazz = invocation.getThis().getClass();
+	final var declaredClazz = method.getDeclaringClass();
 	
 	final var methodName = method.getName();
 	
 	final var methodArgs = Stream.of(invocation.getArguments())
-				.map(Object::toString)
+				.map(p -> Objects.isNull(p) ? "null" : p.toString())
 				.toList();
 	
 	final var methodArgsType = Stream.of(method.getParameters())
@@ -53,9 +54,7 @@ public class PerformanceMonitor implements MethodInterceptor {
 	
 	final var parameters = range(0, methodArgs.size())
 			.boxed()
-			.collect(toMap(methodArgsType::get, methodArgs::get))
-			.entrySet().stream()
-			.map(entry -> entry.getKey() + ":" + entry.getValue())
+			.map(i -> methodArgsType.get(i) + ":" + methodArgs.get(i))
 			.collect(joining(","));
 			
 	final var start = Instant.now();
@@ -69,12 +68,14 @@ public class PerformanceMonitor implements MethodInterceptor {
 	    final var end = Instant.now();
 
 	    final var duration = MILLIS.between(start, end);
+	    
+	    final var clazzString = Objects.equals(clazz, declaredClazz) ? clazz.getName() : declaredClazz.getSimpleName() + ":" + clazz.getName();
 
 	    final var logLevel = getLevel(duration);
 
-	    final var message = "Performance: duration '{}' milliseconds, class '{}', method '{}' with parameters '[{}]'";
+	    final var message = "Performance: duration [{}] milliseconds, class [{}], method [{}] with parameters [{}]";
 
-	    final Object[] params = { duration, clazz, methodName, parameters };
+	    final Object[] params = { duration, clazzString, methodName, parameters };
 
 	    executeLog(logLevel, message, params);
 	}
