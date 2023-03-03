@@ -2,6 +2,7 @@ package org.imageconverter.util.performance;
 
 import static java.lang.Long.MAX_VALUE;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 import static org.springframework.boot.logging.LogLevel.DEBUG;
@@ -44,7 +45,7 @@ public class PerformanceMonitor implements MethodInterceptor {
 	final var methodName = method.getName();
 	
 	final var methodArgs = Stream.of(invocation.getArguments())
-				.map(p -> Objects.isNull(p) ? "null" : p.toString())
+				.map(p -> isNull(p) ? "null" : p.toString())
 				.toList();
 	
 	final var methodArgsType = Stream.of(method.getParameters())
