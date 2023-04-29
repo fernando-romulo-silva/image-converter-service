@@ -7,14 +7,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 /**
  * Image type's repository
  * 
  * @author Fernando Romulo da Silva
  */
-@Repository
 public interface ImageTypeRespository extends JpaRepository<ImageType, Long>, JpaSpecificationExecutor<ImageType>, PagingAndSortingRepository<ImageType, Long> {
 
     /**

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.lang3.RegExUtils;
+import org.imageconverter.infra.exception.CsvFileGenerationException;
 import org.imageconverter.infra.exception.ElementConflictException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
@@ -67,6 +68,12 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
     ResponseEntity<Object> handleImageConvertException(final ImageConvertServiceException ex, final WebRequest request) {
 
 	return handleObjectException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    @ExceptionHandler(CsvFileGenerationException.class)
+    ResponseEntity<Object> handleCsvFileGenerationException(final CsvFileGenerationException ex, final WebRequest request) {
+
+	return handleObjectException(ex, request, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

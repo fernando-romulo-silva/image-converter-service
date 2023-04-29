@@ -1,9 +1,15 @@
 package org.imageconverter.application;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.text.MessageFormat.format;
+import static org.apache.commons.csv.QuoteMode.NONE;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +17,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.imageconverter.domain.conversion.ImageConversion;
 import org.imageconverter.domain.conversion.ImageConversionRepository;
+import org.imageconverter.infra.exception.CsvFileGenerationException;
 import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
@@ -35,6 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Loggable
 public class ImageConversionService {
+    
+    protected static final String [] HEADER_FILE = { "id", "file-name", "result" };
 
     private final ImageConversionRepository repository;
 
@@ -190,6 +201,59 @@ public class ImageConversionService {
 	    final Object[] params = { substringBetween(msgException, "[", "]"), ImageConversion.class.getSimpleName() };
 
 	    throw new ElementInvalidException("{exception.ElementInvalidDataSpecification}", ex, params);
+	}
+    }
+
+    /**
+     * Create a CSV file based on the result filtered by the spec
+     * 
+     * @param spec A {@link Specification} object, the query filter
+     * @return An array of bytes (file in memory) 
+     */
+    @Transactional(readOnly = true)
+    public byte[] findBySpecificationToCsv(final Specification<ImageConversion> spec) {
+
+	final var pageable = Pageable.ofSize(1000);
+
+	// TODO replace Page to Slice when it support Specification
+	var page = repository.findAll(spec, pageable);
+
+	if (page.isEmpty()) {
+	    throw new CsvFileGenerationException("{exception.csvEmpyResult}", spec);
+	}
+
+	final var csvFormat = CSVFormat.Builder.create() //
+			.setHeader(HEADER_FILE) //
+			.setAllowMissingColumnNames(true) //
+			.setNullString(EMPTY) //
+			.setQuoteMode(NONE) //
+			.setDelimiter(';') //
+			.setEscape(' ') //
+			.build();
+
+	try (final var byteArrayOutputStream = new ByteArrayOutputStream(); //
+			final var outStreamWriter = new OutputStreamWriter(byteArrayOutputStream, UTF_8); //
+			final var csvPrinter = new CSVPrinter(outStreamWriter, csvFormat);) {
+
+	    do {
+
+		var imageConversionList = page.getContent();
+
+		for (final var imageConversion : imageConversionList) {
+		    csvPrinter.printRecord(imageConversion.getId().toString(), imageConversion.getFileName(), imageConversion.getText());
+		}
+
+		csvPrinter.flush();
+
+		page = repository.findAll(spec, page.nextOrLastPageable());
+		imageConversionList = page.getContent();
+
+	    } while (page.hasNext());
+
+	    return byteArrayOutputStream.toByteArray();
+
+	} catch (final IOException ex) {
+	    throw new CsvFileGenerationException("{exception.csvUnexpectedError}", ex);
 	}
     }
 }

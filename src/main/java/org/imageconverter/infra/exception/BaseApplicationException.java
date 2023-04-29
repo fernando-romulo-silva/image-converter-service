@@ -12,7 +12,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
  * 
  * @author Fernando Romulo da Silva
  */
-public class BaseApplicationException extends RuntimeException {
+public abstract class BaseApplicationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,7 @@ public class BaseApplicationException extends RuntimeException {
      * @param msg    The detail message
      * @param params The parameters used on message
      */
-    public BaseApplicationException(final String msg, final Object... params) {
+    protected BaseApplicationException(final String msg, final Object... params) {
 	super(getFinalMessage(msg, params));
     }
 
@@ -33,7 +33,7 @@ public class BaseApplicationException extends RuntimeException {
      * @param ex     The cause
      * @param params The parameters used on message
      */
-    public BaseApplicationException(final String msg, final Throwable ex, final Object... params) {
+    protected BaseApplicationException(final String msg, final Throwable ex, final Object... params) {
 	super(getFinalMessage(msg, params), ex);
     }
 

@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.imageconverter.application.ImageConversionService.HEADER_FILE;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
 
 import java.io.IOException;
@@ -192,12 +193,33 @@ class ImageConversionServiceHappyPathTest {
 	// ----------------------------------------------------------
 
 	// then
-	assertThatThrownBy(() -> {
-
-	    imageConversionService.findById(createResponse.id());
-
-	}) //
+	assertThatThrownBy(() -> imageConversionService.findById(createResponse.id())) //
 			.as(format("Check the ImageConversion id ''{0}'' was deleted", createResponse.id()))//
 			.isInstanceOfAny(ElementNotFoundException.class);
     }
+    
+    @Test
+    @Order(7)
+    @DisplayName("Test image conversion csv file")
+    void createImageConversionCsvFileTest() {
+
+	// already on db, due to the db-data-test.sql
+	final var id = 1000L;
+	
+	// given
+	final var headerString = String.join(";", HEADER_FILE);
+	final var conversion = imageConversionService.findById(id);
+	
+	// when
+	final var bytes = imageConversionService.findBySpecificationToCsv(null);
+	
+	// then
+	assertThat(new String(bytes))
+		.as("Check if the file contains the header") //
+		.contains(headerString) //
+		.as("Check if the contains the conversion 1000")
+		.contains(conversion.id().toString(), conversion.fileName(), conversion.text());
+	
+    }
+    
 }

@@ -1,13 +1,16 @@
 package org.imageconverter.controller;
 
 import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +19,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.domain.conversion.ExecutionType;
 import org.imageconverter.domain.conversion.ImageConversion;
-import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConversionPostResponse;
 import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
@@ -34,10 +35,13 @@ import org.imageconverter.util.openapi.imageconverter.ImageConverterRestPostOpen
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.context.annotation.Description;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -257,6 +261,25 @@ public class ImageConversionRestController {
 
 	imageConversionService.deleteImageConversion(id);
     }
+    
+    
+    @ResponseStatus(OK)
+    @GetMapping(value = "/export", produces = "txt/csv")
+    public ResponseEntity<InputStreamResource> downloadImageConversionCsv( //		    
+		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "?filter=fileName:'image.png'") //
+		    @Filter //
+		    final Specification<ImageConversion> filter ) {
+	
+	final var bytes = imageConversionService.findBySpecificationToCsv(filter);
+	
+	final var body = new InputStreamResource(new ByteArrayInputStream(bytes));
+	
+	return ResponseEntity.ok()
+			.header(CONTENT_DISPOSITION, "attachment; filename=convertions.csv")
+			.contentType(MediaType.parseMediaType("txt/csv"))
+			.body(body);
+    }
+    
 
     private byte[] extractBytes(final MultipartFile file) {
 	byte[] bytes;
@@ -269,7 +292,7 @@ public class ImageConversionRestController {
     }
 
     private ExecutionType extractExecutionType(final HttpServletRequest request) {
-	final var executionTypeHeader = Optional.ofNullable(request.getHeader("Execution-Type")).orElse(StringUtils.EMPTY);
+	final var executionTypeHeader = Optional.ofNullable(request.getHeader("Execution-Type")).orElse(EMPTY);
 
 	return ExecutionType.from(executionTypeHeader);
     }
