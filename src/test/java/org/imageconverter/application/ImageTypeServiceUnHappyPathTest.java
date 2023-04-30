@@ -76,12 +76,9 @@ class ImageTypeServiceUnHappyPathTest {
 	final var specFieldOneNotExists = (Specification<ImageType>) (root, query, builder) -> builder.equal(root.get("fieldOneNotExists"), "blabla");
 	final var specFieldTwoNotExists = (Specification<ImageType>) (root, query, builder) -> builder.equal(root.get("fieldTwoNotExists"), "blabla");
 
-	assertThatThrownBy(() -> {
-
-	    imageTypeService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists), pageable);
-
-	}).as(format("Check invalid Specification")) //
-			.isInstanceOf(ElementInvalidException.class);
+	assertThatThrownBy(() -> imageTypeService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists), pageable))
+		.as(format("Check invalid Specification")) //
+		.isInstanceOf(ElementInvalidException.class);
     }
 
     Stream<Arguments> createImageTypeInvalidData() throws IOException {
@@ -101,12 +98,9 @@ class ImageTypeServiceUnHappyPathTest {
     @DisplayName("Try to create a invalid image type")
     void createImageTypeInvalidTest(final CreateImageTypeRequest request) {
 
-	assertThatThrownBy(() -> {
-
-	    imageTypeService.createImageType(request);
-
-	}).as(format("Check invalid request ''{0}''", request)) //
-			.isInstanceOfAny(ConstraintViolationException.class);
+	assertThatThrownBy(() -> imageTypeService.createImageType(request))
+		.as(format("Check invalid request ''{0}''", request)) //
+		.isInstanceOfAny(ConstraintViolationException.class);
 
     }
 
@@ -122,12 +116,9 @@ class ImageTypeServiceUnHappyPathTest {
 	imageTypeService.createImageType(createImageTypeRequest);
 
 	//
-	assertThatThrownBy(() -> {
-
-	    imageTypeService.createImageType(createImageTypeRequestAgain);
-
-	}).as(format("Check if throw an exception on same request ''{0}''", createImageTypeRequest)) //
-			.isInstanceOfAny(ElementAlreadyExistsException.class);
+	assertThatThrownBy(() -> imageTypeService.createImageType(createImageTypeRequestAgain))
+		.as(format("Check if throw an exception on same request ''{0}''", createImageTypeRequest)) //
+		.isInstanceOfAny(ElementAlreadyExistsException.class);
     }
 
     Stream<Arguments> updateImageTypeDoesNotExistData() throws IOException {
@@ -147,12 +138,9 @@ class ImageTypeServiceUnHappyPathTest {
     @DisplayName("Try to update a image type that doesn't exist")
     void updateImageTypeDoesNotExistTest(final Long id, final UpdateImageTypeRequest request) {
 
-	assertThatThrownBy(() -> {
-
-	    imageTypeService.updateImageType(id, request);
-
-	}).as(format("Check if throw a exception on invalid request ''{0}''", request)) //
-			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+	assertThatThrownBy(() -> imageTypeService.updateImageType(id, request))
+		.as(format("Check if throw a exception on invalid request ''{0}''", request)) //
+		.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
     }
 
     @ParameterizedTest
@@ -162,12 +150,9 @@ class ImageTypeServiceUnHappyPathTest {
     @DisplayName("Try to delete a image type that doesn't exist")
     void deleteImageTypeDoesNotExistTest(final Long id) {
 
-	assertThatThrownBy(() -> {
-
-	    imageTypeService.deleteImageType(id);
-
-	}).as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
-			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+	assertThatThrownBy(() -> imageTypeService.deleteImageType(id))
+		.as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
+		.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
     }
 
     @Test
@@ -177,12 +162,9 @@ class ImageTypeServiceUnHappyPathTest {
 
 	final var id = 1001L; // already exists and has a conversion image relation
 
-	assertThatThrownBy(() -> {
-
-	    imageTypeService.deleteImageType(id);
-
-	}).as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
-			.isInstanceOfAny(ElementConflictException.class);
+	assertThatThrownBy(() -> imageTypeService.deleteImageType(id))
+		.as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
+		.isInstanceOfAny(ElementConflictException.class);
     }
 
 }

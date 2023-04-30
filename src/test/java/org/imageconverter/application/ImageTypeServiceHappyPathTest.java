@@ -173,11 +173,7 @@ class ImageTypeServiceHappyPathTest {
 
 	// ----------------------------------------------------------
 
-	assertThatThrownBy(() -> {
-
-	    imageTypeService.findById(createResponse.id()); //
-
-	}) //
+	assertThatThrownBy(() -> imageTypeService.findById(createResponse.id()))  //
 			.as(format("Check the imageType with id ''{0}'' was deleted", createResponse.id()))//
 			.isInstanceOfAny(ElementNotFoundException.class);
     }

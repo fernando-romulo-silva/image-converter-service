@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.imageconverter.TestConstants.HEIGHT;
 import static org.imageconverter.TestConstants.HEIGHT_VALUE;
+import static org.imageconverter.TestConstants.ID_PARAM_VALUE;
 import static org.imageconverter.TestConstants.JSON_MESSAGE;
 import static org.imageconverter.TestConstants.WIDTH;
 import static org.imageconverter.TestConstants.WIDTH_VALUE;
@@ -13,13 +14,17 @@ import static org.imageconverter.TestConstants.Y_AXIS;
 import static org.imageconverter.TestConstants.Y_AXIS_VALUE;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL_AREA;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.Map;
 
@@ -380,6 +385,37 @@ class ImageConversionRestControllerUnHappyPathTest {
 					Map.of(FIELD_TEXT, "yAxis", ERROR_TEXT, "O eixo 'y' não pode ser menor que zero", VALUE_TEXT, "-1"))) //
 			)			
 	;
+    }
+    
+    @Test
+    @Order(10)
+    @DisplayName("Create an empty CSV file download test")
+    void createEmptyCsvFileTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+
+	// given
+	final var id = "1000"; // already on db, due to the db-data-test.sql
+	
+	mvc.perform(delete(REST_URL + ID_PARAM_VALUE, id) //
+			.accept(APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isNoContent()) //
+	;	
+	
+	final var contentType = new MediaType("txt", "csv", Charset.forName("UTF-8"));
+
+	// when
+	mvc.perform(get(REST_URL + "/export") //
+			.accept(contentType, APPLICATION_JSON) // 
+			.with(csrf())) //
+			.andDo(print()) //
+			//
+			// then
+			.andExpect(status().isNotFound()) //
+			.andExpect(jsonPath(JSON_MESSAGE).value(containsString("CsvFileNoDataException: No results to filter null"))) //
+			.andReturn();
+	;
+
     }
 
 }

@@ -16,6 +16,7 @@ import javax.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.domain.conversion.ImageConversion;
 import org.imageconverter.infra.exception.ConversionException;
+import org.imageconverter.infra.exception.CsvFileNoDataException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imageconverter.ImageConverterRequest;
@@ -59,7 +60,7 @@ class ImageConversionServiceUnHappyPathTest {
     private final ImageConversionService imageConversionService;
 
     private final Resource imageFile;
-    
+
     private final Pageable pageable = PageRequest.of(0, 10);
 
     ImageConversionServiceUnHappyPathTest( //
@@ -94,12 +95,9 @@ class ImageConversionServiceUnHappyPathTest {
 	final var specFieldOneNotExists = (Specification<ImageConversion>) (root, query, builder) -> builder.equal(root.get("fieldOneNotExists"), "blabla");
 	final var specFieldTwoNotExists = (Specification<ImageConversion>) (root, query, builder) -> builder.equal(root.get("fieldTwoNotExists"), "blabla");
 
-	assertThatThrownBy(() -> {
-
-	    imageConversionService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists), pageable);
-
-	}).as(format("Check invalid Specification")) //
-			.isInstanceOf(ElementInvalidException.class);
+	assertThatThrownBy(() -> imageConversionService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists), pageable))
+		.as(format("Check invalid Specification")) //
+		.isInstanceOf(ElementInvalidException.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------
@@ -126,12 +124,9 @@ class ImageConversionServiceUnHappyPathTest {
     @DisplayName("convert the image with invalid parameters")
     void convertInvalidParameterTest(final ImageConverterRequest request) throws IOException {
 
-	assertThatThrownBy(() -> {
-
-	    imageConversionService.convert(request);
-
-	}).as(format("Check invalid request ''{0}''", request)) //
-			.isInstanceOfAny(ConversionException.class, ConstraintViolationException.class);
+	assertThatThrownBy(() -> imageConversionService.convert(request))
+		.as(format("Check invalid request ''{0}''", request)) //
+		.isInstanceOfAny(ConversionException.class, ConstraintViolationException.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------
@@ -166,15 +161,12 @@ class ImageConversionServiceUnHappyPathTest {
     @DisplayName("convert the image with area")
     void convertAreaInvalidParameterTest(final ImageConverterRequestArea request) {
 
-	assertThatThrownBy(() -> {
-
-	    imageConversionService.convert(request);
-
-	}).as(format("Check invalid request area ''{0}''", request)) //
-			.isInstanceOfAny(ConversionException.class, ConstraintViolationException.class);
+	assertThatThrownBy(() -> imageConversionService.convert(request))
+		.as(format("Check invalid request area ''{0}''", request)) //
+		.isInstanceOfAny(ConversionException.class, ConstraintViolationException.class);
 
     }
-    
+
     @ParameterizedTest
     @NullSource
     @ValueSource(longs = 1L) // id '1' don't exist
@@ -182,11 +174,27 @@ class ImageConversionServiceUnHappyPathTest {
     @DisplayName("Try to delete a image type that doesn't exist")
     void deleteImageConversionDoesNotExistTest(final Long id) {
 
-	assertThatThrownBy(() -> {
+	assertThatThrownBy(() -> imageConversionService.deleteImageConversion(id))
+		.as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
+		.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+    }
+    
+    @Test
+    @Order(8)
+    @DisplayName("Test a creation image conversion csv file empty")
+    void createImageConversionCsvFileEmptyTest() {
 
-	    imageConversionService.deleteImageConversion(id);
-
-	}).as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
-			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+	// already on db, due to the db-data-test.sql
+	final var id = 1000L;
+	
+	// given
+	imageConversionService.deleteImageConversion(id);
+	
+	// when
+	assertThatThrownBy(() ->  imageConversionService.findBySpecificationToCsv(null))
+		.as(format("Check if throw a exception on file generety empty file")) //
+		// then
+		.isInstanceOfAny(CsvFileNoDataException.class);
+	
     }
 }

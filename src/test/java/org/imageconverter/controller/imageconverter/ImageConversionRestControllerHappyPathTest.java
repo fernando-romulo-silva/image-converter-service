@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.imageconverter.TestConstants.FILTER_PARAM_ID;
 import static org.imageconverter.TestConstants.ID_PARAM_VALUE;
+import static org.imageconverter.application.ImageConversionService.HEADER_FILE;
 import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -17,9 +18,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.nio.charset.Charset;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imageconverter.TestConstants;
@@ -37,6 +41,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -297,7 +302,7 @@ class ImageConversionRestControllerHappyPathTest {
     @Test
     @Order(6)
     @DisplayName("Delete a new conversion")
-    void deleteImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    void deleteImageConversionTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// given
 	final var multipartFile = new MockMultipartFile("file", bill01ImageFile.getFilename(), MULTIPART_FORM_DATA_VALUE, bill01ImageFile.getInputStream());
@@ -353,6 +358,43 @@ class ImageConversionRestControllerHappyPathTest {
 			// then
 			.andExpect(status().isNotFound()) //
 	;
+
+    }
+    
+    @Test
+    @Order(7)
+    @DisplayName("Create a CSV file download test")
+    void createCsvFileTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+
+	// given
+	final var id = "1000"; // already on db, due to the db-data-test.sql
+	final var contentType = new MediaType("txt", "csv", Charset.forName("UTF-8"));
+
+	final var headerString = String.join(";", HEADER_FILE);
+
+	// when
+	final var result = mvc.perform(get(REST_URL + "/export") //
+			.accept(contentType, APPLICATION_JSON) // 
+			.with(csrf())) //
+			//
+			// when
+			.andDo(print()) //
+			//
+			// then
+			.andExpect(status().isOk()) //
+			.andExpect(content().contentType(contentType))
+			.andReturn();
+	;
+	
+	// then
+	final var content = result.getResponse().getContentAsString();
+	
+	// then
+	assertThat(content)
+		.as("Check if the file contains the header") //
+		.contains(headerString) //
+		.as("Check if the contains the conversion 1000")
+		.contains(id);
 
     }
 }

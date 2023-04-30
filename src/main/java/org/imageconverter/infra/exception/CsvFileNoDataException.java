@@ -1,11 +1,11 @@
 package org.imageconverter.infra.exception;
 
 /**
- * Unexpected error on create CSV file.
+ * No data on CSV file.
  * 
  * @author Fernando Romulo da Silva
  */
-public class CsvFileGenerationException extends BaseApplicationException {
+public class CsvFileNoDataException extends CsvFileGenerationException {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,7 +15,7 @@ public class CsvFileGenerationException extends BaseApplicationException {
      * @param msg    The detail message
      * @param params The parameters used on message
      */
-    public CsvFileGenerationException(final String msg, final Object... params) {
+    public CsvFileNoDataException(final String msg, final Object... params) {
 	super(msg, params);
     }
 
@@ -26,7 +26,7 @@ public class CsvFileGenerationException extends BaseApplicationException {
      * @param ex     The cause
      * @param params The parameters used on message
      */
-    public CsvFileGenerationException(final String msg, final Throwable ex, final Object... params) {
+    public CsvFileNoDataException(final String msg, final Throwable ex, final Object... params) {
 	super(msg, ex, params);
     }
 }

@@ -221,5 +221,4 @@ class ImageConversionServiceHappyPathTest {
 		.contains(conversion.id().toString(), conversion.fileName(), conversion.text());
 	
     }
-    
 }

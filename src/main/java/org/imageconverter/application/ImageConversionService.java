@@ -22,6 +22,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.imageconverter.domain.conversion.ImageConversion;
 import org.imageconverter.domain.conversion.ImageConversionRepository;
 import org.imageconverter.infra.exception.CsvFileGenerationException;
+import org.imageconverter.infra.exception.CsvFileNoDataException;
 import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
@@ -45,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Loggable
 public class ImageConversionService {
     
-    protected static final String [] HEADER_FILE = { "id", "file-name", "result" };
+    public static final String [] HEADER_FILE = { "id", "file-name", "result" };
 
     private final ImageConversionRepository repository;
 
@@ -219,7 +220,7 @@ public class ImageConversionService {
 	var page = repository.findAll(spec, pageable);
 
 	if (page.isEmpty()) {
-	    throw new CsvFileGenerationException("{exception.csvEmpyResult}", spec);
+	    throw new CsvFileNoDataException("{exception.csvEmpyResult}", spec);
 	}
 
 	final var csvFormat = CSVFormat.Builder.create() //
