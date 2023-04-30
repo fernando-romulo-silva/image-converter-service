@@ -10,13 +10,7 @@ COPY ${JAR_FILE} application.jar
 
 ADD src/main/tesseract/eng.tar.xz tesseract/tessdata/eng.tar.xz
 
-# RUN java -Djarmode=layertools -jar application.jar extract
-RUN [\
-	"java",\ 
-	"-Djarmode=layertools",\ 
-	"-jar application.jar",\ 
-	"extract"
-]
+RUN ["java", "-Djarmode=layertools", "-jar", "application.jar", "extract"]
 
 # only when your application has modularization
 # find JDK dependencies dynamically from jar
@@ -67,13 +61,13 @@ COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
 # install tesseract
-# RUN apk add --update --no-cache tesseract-ocr dumb-init
-RUN [
-	"apk add",\
+RUN [\
+	"apk",\ 
+	"add",\
     "--update",\
     "--no-cache",\
     "tesseract-ocr",\
-    "dumb-init"       
+    "dumb-init"\      
 ]
 
 # create usergroup 'javauser'      
