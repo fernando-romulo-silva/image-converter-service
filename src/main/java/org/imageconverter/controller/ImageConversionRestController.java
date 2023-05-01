@@ -263,6 +263,12 @@ public class ImageConversionRestController {
     }
     
     
+    /**
+     * Create a CSV file using filter.
+     * 
+     * @param filter A object {@link Specification} that specific the filter the search
+     * @return A Csv file
+     */
     @ResponseStatus(OK)
     @GetMapping(value = "/export", produces = "txt/csv")
     public ResponseEntity<InputStreamResource> downloadImageConversionCsv( //		    
