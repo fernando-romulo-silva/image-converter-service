@@ -77,7 +77,7 @@ docker build --file src/main/docker/Dockerfile --tag image-service-converter .
 To run the project:
 
 ```bash 
-docker run --publish 8080:8080 --detach --name image-converter-service-1 --env-file src/main/docker/Local.env image-service-converter
+docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/Local.env image-service-converter
 ```
 
 ## Using Java Local
