@@ -66,7 +66,7 @@ RUN [\
 	"add",\
     "--update",\
     "--no-cache",\
-    "tesseract-ocr",\
+    "tesseract-ocr=4.1.3-r0",\
     "dumb-init"\      
 ]
 
