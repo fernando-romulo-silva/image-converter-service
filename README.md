@@ -71,13 +71,13 @@ Then build the image:
 ```bash 
 export DOCKER_BUILDKIT=1
 
-docker build --file src/main/docker/Dockerfile --tag image-service-converter-iso .
+docker build --file src/main/docker/Dockerfile --tag image-service-converter .
 ```
 
 To run the project:
 
 ```bash 
-docker run --publish 8080:8080 --detach --name image-converter-service-1 --env-file src/main/docker/Dockerfile.env image-converter-service-iso
+docker run --publish 8080:8080 --detach --name image-converter-service-1 --env-file src/main/docker/Local.env image-service-converter
 ```
 
 ## Using Java Local

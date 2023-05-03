@@ -70,10 +70,10 @@ RUN [\
     "dumb-init"\      
 ]
 
-# create usergroup 'javauser'      
-RUN addgroup --system javauser \
-      && adduser -S -s /bin/false -G javauser javauser \
-      && chown -R javauser:javauser /application
+# create usergroup 'javauser' and 'javauser' user     
+RUN [ "addgroup", "--system", "javauser" ]
+RUN [ "adduser", "-S", "-s", "/bin/false", "-G", "javauser", "javauser" ]
+RUN [ "chown", "-R", "javauser:javauser", "/application" ]
 
 # user the user 'javauser'
 USER javauser
