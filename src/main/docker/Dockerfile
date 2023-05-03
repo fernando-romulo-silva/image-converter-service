@@ -82,13 +82,13 @@ USER javauser
 ENTRYPOINT [\
     "dumb-init",\
     "java",\
-    # Preview Features
-    # "--enable-preview",\ 
 	# Profiling
     # "-Dcom.sun.management.jmxremote.port=9010",\ 
     # "-Dcom.sun.management.jmxremote.ssl=false",\ 
     # "-Dcom.sun.management.jmxremote.authenticate=false",\
     # "-Dcom.sun.management.jmxremote.local.only=false",\
+    # Debug
+    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000",\
     # Spring  
     "-Dspring.profiles.active=local",\
     # VM
@@ -103,5 +103,6 @@ ENTRYPOINT [\
 # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
 # HEALTHCHECK CMD curl --fail http://localhost/health || exit 1
 
+EXPOSE 8000
 EXPOSE 8080
 EXPOSE 9010

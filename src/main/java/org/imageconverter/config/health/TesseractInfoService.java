@@ -1,6 +1,5 @@
 package org.imageconverter.config.health;
 
-import static org.apache.commons.collections.MapUtils.unmodifiableMap;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 
 import java.io.IOException;
@@ -9,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.collections4.MapUtils;
 import org.imageconverter.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -166,10 +166,9 @@ public class TesseractInfoService {
 	    this.tesseractDetails = tesseractDetails;
 	}
 
-	@SuppressWarnings("unchecked")
 	@JsonAnyGetter
 	public Map<String, Object> getTesseractDetails() {
-	    return unmodifiableMap(tesseractDetails);
+	    return MapUtils.unmodifiableMap(tesseractDetails);
 	}
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.imageconverter.infra.exception.BaseApplicationException;
 import org.slf4j.MDC;
 import org.springframework.context.MessageSource;
