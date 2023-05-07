@@ -39,9 +39,10 @@ public class TesseractService {
      */
     public String convert(final String fileName, final byte[] fileBytes) {
 
-	final var tesseractTess4j = BeanUtil.getBeanProviderFrom(ITesseract.class).getIfAvailable();
+	final var tesseractBeanProvider = BeanUtil.getBeanProviderFrom(ITesseract.class);
+	final var tesseract = tesseractBeanProvider.getObject();
 
-	if (Objects.isNull(tesseractTess4j)) {
+	if (Objects.isNull(tesseract)) {
 	    throw new TesseractNotSetException();
 	}
 
@@ -49,7 +50,7 @@ public class TesseractService {
 
 	    final var bufferedImage = ImageIO.read(new ByteArrayInputStream(fileBytes));
 
-	    return tesseractTess4j.doOCR(bufferedImage);
+	    return tesseract.doOCR(bufferedImage);
 
 	} catch (final IllegalArgumentException ex) {
 

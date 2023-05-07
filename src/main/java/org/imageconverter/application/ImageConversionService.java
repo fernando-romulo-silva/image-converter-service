@@ -216,7 +216,7 @@ public class ImageConversionService {
 
 	final var pageable = Pageable.ofSize(1000);
 
-	// TODO replace Page to Slice when it support Specification
+	// TODO replace Page to Slice when it supports Specification
 	var page = repository.findAll(spec, pageable);
 
 	if (page.isEmpty()) {

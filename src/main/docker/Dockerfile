@@ -1,59 +1,18 @@
 
-# only when your application has modularization
-#FROM openjdk:17-alpine as builder
-
-FROM eclipse-temurin:17.0.1_12-jre-alpine as builder
+FROM eclipse-temurin:17.0.7_7-jre-alpine as builder
 WORKDIR /application
 
 ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} application.jar
-
-ADD src/main/tesseract/eng.tar.xz tesseract/tessdata/eng.tar.xz
+ADD ${JAR_FILE} application.jar
 
 RUN ["java", "-Djarmode=layertools", "-jar", "application.jar", "extract"]
 
-# only when your application has modularization
-# find JDK dependencies dynamically from jar
-# RUN jdeps \
-#       # dont worry about missing modules
-# 	  --ignore-missing-deps \
-#       # suppress any warnings printed to console
-#       -q \
-#       # java release version targeting
-#       --multi-release 17 \
-#       # output the dependencies at end of run
-#       --print-module-deps \
-#       # specify the the dependencies for the jar
-#       --class-path dependencies/BOOT-INF/lib/* \
-#       # pipe the result of running jdeps on the app jar to file
-#       application.jar > jre-deps.info
-
-# new jre
-# RUN $JAVA_HOME/bin/jlink --verbose \
-#        --compress 2 \
-#        --strip-java-debug-attributes \
-#        --no-header-files \
-#        --no-man-pages \
-#        --output jre \
-#        --add-modules $(cat jre-deps.info)
-
 #=================================================================================
 
-# take a smaller runtime image for the final output
-# only when your application has modularization
-# FROM alpine:3.15.0
-
-FROM eclipse-temurin:17.0.1_12-jre-alpine
+FROM eclipse-temurin:17.0.7_7-jre-alpine
 WORKDIR /application
 
-# copy the custom JRE produced from jlink
-# only when your application has modularization
-# ENV JAVA_HOME=/opt/java/openjdk
-# ENV PATH "${JAVA_HOME}/bin:${PATH}"
-# COPY --from=builder application/jre/ $JAVA_HOME
-
 # copy the application
-COPY --from=builder application/tesseract/tessdata/ ./tesseract/tessdata/
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader ./
 COPY --from=builder application/internal-dependencies ./
@@ -66,7 +25,7 @@ RUN [\
 	"add",\
     "--update",\
     "--no-cache",\
-    "tesseract-ocr=4.1.3-r0",\
+    "tesseract-ocr",\
     "dumb-init"\      
 ]
 
@@ -99,6 +58,16 @@ ENTRYPOINT [\
 	# Exec
     "org.springframework.boot.loader.JarLauncher"\
 ]
+
+
+# https://medium.com/@chamilad/lets-make-your-docker-image-better-than-90-of-existing-ones-8b1e5de950d
+ARG BUILD_DATE
+LABEL org.label-schema.build-date=$BUILD_DATE
+
+LABEL "com.example.vendor"="ACME Incorporated"
+LABEL com.example.label-with-value="foo"
+LABEL maintainer="team-fernando<team-fernando@gmail.com>"
+LABEL version="1.0.0"
 
 # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
 # HEALTHCHECK CMD curl --fail http://localhost/health || exit 1

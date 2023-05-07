@@ -1,30 +1,27 @@
 
-# only when your application has modularization
-FROM eclipse-temurin:17.0.1_12-jre-alpine as builder
+FROM eclipse-temurin:17.0.7_7-jre-alpine as builder
 WORKDIR /application
 
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
 
-ADD src/main/tesseract/eng.tar.xz tesseract/tessdata/eng.tar.xz
+RUN ["java", "-Djarmode=layertools", "-jar", "application.jar", "extract"]
 
-RUN java -Djarmode=layertools -jar application.jar extract
-
-# only when your application has modularization
-# find JDK dependencies dynamically from jar
-RUN jdeps \
-       # dont worry about missing modules
- 	  --ignore-missing-deps \
-       # suppress any warnings printed to console
-       -q \
-       # java release version targeting
-       --multi-release 17 \
-       # output the dependencies at end of run
-       --print-module-deps \
-       # specify the the dependencies for the jar
-       --class-path dependencies/BOOT-INF/lib/* \
-       # pipe the result of running jdeps on the app jar to file
-       application.jar > jre-deps.info
+RUN ["jdeps",\
+     # dont worry about missing modules
+ 	 "--ignore-missing-deps",\
+     # suppress any warnings printed to console
+     "-q",\
+     # java release version targeting
+     "--multi-release 17",\
+     # output the dependencies at end of run
+     "--print-module-deps",\
+     # specify the the dependencies for the jar
+     "--class-path",\ 
+     "dependencies/BOOT-INF/lib/*",\
+     # pipe the result of running jdeps on the app jar to file
+     "application.jar > jre-deps.info"\
+]     
 
 # new jre
 RUN $JAVA_HOME/bin/jlink --verbose \
@@ -49,7 +46,6 @@ ENV PATH "${JAVA_HOME}/bin:${PATH}"
 COPY --from=builder application/jre/ $JAVA_HOME
 
 # copy the application
-COPY --from=builder application/tesseract/tessdata/ ./tesseract/tessdata/
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader ./
 COPY --from=builder application/internal-dependencies ./
@@ -57,37 +53,48 @@ COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
 # install tesseract
-RUN apk add --update --no-cache tesseract-ocr dumb-init
+RUN [\
+	"apk",\ 
+	"add",\
+    "--update",\
+    "--no-cache",\
+    "tesseract-ocr",\
+    "dumb-init"\      
+]
 
-# create usergroup 'javauser'      
-RUN addgroup --system javauser \
-      && adduser -S -s /bin/false -G javauser javauser \
-      && chown -R javauser:javauser /application
+# create usergroup 'javauser' and 'javauser' user     
+RUN [ "addgroup", "--system", "javauser" ]
+RUN [ "adduser", "-S", "-s", "/bin/false", "-G", "javauser", "javauser" ]
+RUN [ "chown", "-R", "javauser:javauser", "/application" ]
 
 # user the user 'javauser'
 USER javauser
 
 # execute the application
 ENTRYPOINT [\
-              "dumb-init",\
-               "java",\
-               # Preview Features
-               # "--enable-preview",\ 
-			   # Profiling
-               # "-Dcom.sun.management.jmxremote.port=9010",\ 
-               # "-Dcom.sun.management.jmxremote.ssl=false",\ 
-               # "-Dcom.sun.management.jmxremote.authenticate=false",\
-               # "-Dcom.sun.management.jmxremote.local.only=false",\
-               # Spring  
-               "-Dspring.profiles.active=local",\
-               # VM
-			   "-XX:+UseContainerSupport",\ 
-			   "-XX:InitialRAMPercentage=40.0",\ 
-			   "-XX:MinRAMPercentage=20.0",\ 
-			   "-XX:MaxRAMPercentage=80.0",\
-			   # Exec
-               "org.springframework.boot.loader.JarLauncher"\
+    "dumb-init",\
+    "java",\
+	# Profiling
+    # "-Dcom.sun.management.jmxremote.port=9010",\ 
+    # "-Dcom.sun.management.jmxremote.ssl=false",\ 
+    # "-Dcom.sun.management.jmxremote.authenticate=false",\
+    # "-Dcom.sun.management.jmxremote.local.only=false",\
+    # Debug
+    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000",\
+    # Spring  
+    "-Dspring.profiles.active=local",\
+    # VM
+	"-XX:+UseContainerSupport",\ 
+	"-XX:InitialRAMPercentage=40.0",\ 
+	"-XX:MinRAMPercentage=20.0",\ 
+	"-XX:MaxRAMPercentage=80.0",\
+	# Exec
+    "org.springframework.boot.loader.JarLauncher"\
 ]
 
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
+# HEALTHCHECK CMD curl --fail http://localhost/health || exit 1
+
+EXPOSE 8000
 EXPOSE 8080
 EXPOSE 9010

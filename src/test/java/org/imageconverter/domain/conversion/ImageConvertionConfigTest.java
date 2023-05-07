@@ -77,6 +77,9 @@ class ImageConversionConfigTest {
 
 	when(objectProvider.getIfAvailable()) //
 			.thenReturn(tesseractTess4j);
+	
+	when(objectProvider.getObject()) //
+		.thenReturn(tesseractTess4j);
 
 	when(applicationContext.getBean(TesseractService.class)) //
 			.thenReturn(new TesseractService());

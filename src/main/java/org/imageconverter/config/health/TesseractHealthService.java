@@ -1,7 +1,10 @@
 package org.imageconverter.config.health;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Objects;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -61,7 +64,8 @@ public class TesseractHealthService implements HealthIndicator {
      */
     private String checkTesseract() {
 
-	final var tesseract = BeanUtil.getBeanProviderFrom(ITesseract.class).getIfAvailable();
+	final var tesseractBeanProvider = BeanUtil.getBeanProviderFrom(ITesseract.class);
+	final var tesseract = tesseractBeanProvider.getObject();
 
 	String result;
 
@@ -73,7 +77,9 @@ public class TesseractHealthService implements HealthIndicator {
 
 	    try {
 
-		final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");
+		final var bufferedImage = ImageIO.read(new ByteArrayInputStream(imageFile.getInputStream().readAllBytes()));
+		
+		final var numberOne = tesseract.doOCR(bufferedImage).replaceAll("\\D+", "");
 
 		if (StringUtils.equalsIgnoreCase(numberOne, "033")) {
 		    result = StringUtils.EMPTY;

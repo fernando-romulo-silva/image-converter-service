@@ -239,7 +239,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n \"tesseractFolder\": \"/home/fernando/Development/tools/tesseract/tessdata/\"\n}",
+							"raw": "{\n \"tesseractFolder\": \"/usr/share/tesseract-ocr/4.00/tessdata/\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

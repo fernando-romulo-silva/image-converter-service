@@ -2,11 +2,14 @@ package org.imageconverter.config.health;
 
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.collections4.MapUtils;
 import org.imageconverter.util.BeanUtil;
@@ -141,8 +144,10 @@ public class TesseractInfoService {
 	} else {
 
 	    try {
+		
+		final var bufferedImage = ImageIO.read(new ByteArrayInputStream(imageFile.getInputStream().readAllBytes()));
 
-		final var numberOne = tesseract.doOCR(imageFile.getFile()).replaceAll("\\D+", "");
+		final var numberOne = tesseract.doOCR(bufferedImage).replaceAll("\\D+", "");
 
 		if (equalsIgnoreCase(numberOne, "033")) {
 		    result = true;

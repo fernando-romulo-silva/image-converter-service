@@ -10,7 +10,7 @@ application:
 #============== Tesseract ============================================================================
 tesseract:
     language: ${TESSERACT_LANG:eng}
-    folder: ${TESSERACT_FOLDER:/home/fernando/Development/tools/tesseract/tessdata/}
+    folder: ${TESSERACT_FOLDER:/usr/share/tesseract-ocr/4.00/tessdata/}
     dpi : ${TESSERACT_DPI:90}
 
 #============== Server ================================================================================

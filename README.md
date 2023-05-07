@@ -77,7 +77,7 @@ docker build --file src/main/docker/Dockerfile --tag image-service-converter .
 To run the project:
 
 ```bash 
-docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/Local.env image-service-converter
+docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/AlpineVersion.env image-service-converter
 ```
 
 ## Using Java Local
@@ -108,14 +108,18 @@ ant -version
 tesseract --version
 ```
 
-Tesseract needs a dictionary and the application use the English dictionary called 'eng.traineddata.'
+5) Newman
 
-The dictionary can be found in /src/main/tesseract on this project.
+```bash
+newman --version
+```
+Tesseract needs a dictionary and the application use the English dictionary called 'eng.traineddata.'
+For Ubuntu Ubuntu 22.04.2 LTS and tesseract 4, the default dictionary is installed on /usr/share/tesseract-ocr/4.00/tessdata/
 
 You have to define at least the dictionary folder on environment variable (TESSERACT_FOLDER) or edit application-local.yml file:
 
 ```bash
-export TESSERACT_FOLDER=/home/YourUser/tools/tessdata/
+export TESSERACT_FOLDER=/usr/share/tesseract-ocr/4.00/tessdata/
 ```
 
 Then execute:
