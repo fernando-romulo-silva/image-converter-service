@@ -24,23 +24,24 @@ RUN ["jdeps",\
 ]     
 
 # new jre
-RUN $JAVA_HOME/bin/jlink --verbose \
-        --compress 2 \
-        --strip-java-debug-attributes \
-        --no-header-files \
-        --no-man-pages \
-        --output jre \
-        --add-modules $(cat jre-deps.info)
+RUN ["$JAVA_HOME/bin/jlink",\
+        "--verbose",\
+        "--compress 2",\
+        "--strip-java-debug-attributes",\
+        "--no-header-files",\
+        "--no-man-pages",\
+        "--output jre",\
+        "--add-modules",\
+        "$(cat jre-deps.info)"\
+]
 
 #=================================================================================
 
 # take a smaller runtime image for the final output
-# only when your application has modularization
 FROM alpine:3.15.0
 WORKDIR /application
 
 # copy the custom JRE produced from jlink
-# only when your application has modularization
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
 COPY --from=builder application/jre/ $JAVA_HOME
@@ -52,6 +53,11 @@ COPY --from=builder application/internal-dependencies ./
 COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
+# create usergroup 'javauser' and 'javauser' user     
+RUN addgroup --system javauser\
+      && adduser -S -s  /bin/false -G javauser javauser \
+      && chown -R javauser:javauser /application
+
 # install tesseract
 RUN [\
 	"apk",\ 
@@ -61,11 +67,6 @@ RUN [\
     "tesseract-ocr",\
     "dumb-init"\      
 ]
-
-# create usergroup 'javauser' and 'javauser' user     
-RUN [ "addgroup", "--system", "javauser" ]
-RUN [ "adduser", "-S", "-s", "/bin/false", "-G", "javauser", "javauser" ]
-RUN [ "chown", "-R", "javauser:javauser", "/application" ]
 
 # user the user 'javauser'
 USER javauser

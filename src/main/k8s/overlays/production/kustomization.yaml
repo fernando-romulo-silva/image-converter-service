@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: kustomization
+
+bases:
+- ../base
+
+images:
+- name: IMAGE
+  newName: gcr.io/myProject1/general/production
+  newTag: latest
+
+configMapGenerator:
+  - name: image-convert-service-configmap # ${PROJECT_NAME}-configmap
+    namespace: general # ${PROJECT_NAMESPACE}
+    literals:
+      - DATABASE_DRIVER=org.postgresql.Driver
+      - DATABASE_URL=jdbc:postgresql://image-convert-db:5452/image-convert
+      - DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      - TESSERACT_FOLDER=/application/tesseract/tessdata
+      - TESSERACT_LANG=eng

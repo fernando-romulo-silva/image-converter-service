@@ -3,7 +3,7 @@ FROM eclipse-temurin:17.0.7_7-jre-alpine as builder
 WORKDIR /application
 
 ARG JAR_FILE=target/*.jar
-ADD ${JAR_FILE} application.jar
+COPY ${JAR_FILE} application.jar
 
 RUN ["java", "-Djarmode=layertools", "-jar", "application.jar", "extract"]
 
@@ -19,6 +19,11 @@ COPY --from=builder application/internal-dependencies ./
 COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
+# create usergroup 'javauser' and 'javauser' user     
+RUN addgroup --system javauser\
+      && adduser -S -s  /bin/false -G javauser javauser \
+      && chown -R javauser:javauser /application
+
 # install tesseract
 RUN [\
 	"apk",\ 
@@ -28,11 +33,6 @@ RUN [\
     "tesseract-ocr",\
     "dumb-init"\      
 ]
-
-# create usergroup 'javauser' and 'javauser' user     
-RUN [ "addgroup", "--system", "javauser" ]
-RUN [ "adduser", "-S", "-s", "/bin/false", "-G", "javauser", "javauser" ]
-RUN [ "chown", "-R", "javauser:javauser", "/application" ]
 
 # user the user 'javauser'
 USER javauser
@@ -59,18 +59,21 @@ ENTRYPOINT [\
     "org.springframework.boot.loader.JarLauncher"\
 ]
 
-
 # https://medium.com/@chamilad/lets-make-your-docker-image-better-than-90-of-existing-ones-8b1e5de950d
-ARG BUILD_DATE
-LABEL org.label-schema.build-date=$BUILD_DATE
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+# https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/
+# https://github.com/label-schema/label-schema.org/issues/7
 
-LABEL "com.example.vendor"="ACME Incorporated"
-LABEL com.example.label-with-value="foo"
-LABEL maintainer="team-fernando<team-fernando@gmail.com>"
-LABEL version="1.0.0"
+ARG BUILD_DATE
+LABEL org.image-converter-service.build-date=$BUILD_DATE \
+     	"org.image-converter-service.vendor"="Nandao Software" \
+        com.example.label-with-value="foo" \
+        maintainer="team-fernando<team-fernando@gmail.com>" \
+        version="1.0.0"
 
 # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
-# HEALTHCHECK CMD curl --fail http://localhost/health || exit 1
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl --fail http://localhost/health || exit 1
+HEALTHCHECK --start-period=1s CMD curl --fail https://localhost:8080/health2 | exit 1 
 
 EXPOSE 8000
 EXPOSE 8080

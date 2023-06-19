@@ -69,15 +69,13 @@ docker version
 Then build the image:
 
 ```bash 
-export DOCKER_BUILDKIT=1
-
-docker build --file src/main/docker/Dockerfile --tag image-service-converter .
+docker build --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --file src/main/docker/Dockerfile --tag image-converter-service .
 ```
 
 To run the project:
 
 ```bash 
-docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/AlpineVersion.env image-service-converter
+docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/AlpineVersion.env image-converter-service
 ```
 
 ## Using Java Local
