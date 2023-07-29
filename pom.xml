@@ -38,7 +38,7 @@
 	<distributionManagement>
 	  <site>
     	<id>github</id>
-    	<url>scm:git:ssh:git@github.com:fernando-romulo-silva/image-converter-service.git</url>
+    	<url>scm:git:git@github.com:fernando-romulo-silva/image-converter-service.git</url>
   	  </site>
 	</distributionManagement>
 
