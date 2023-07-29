@@ -12,6 +12,7 @@ So it'll get new things all time.
 
 This a project that converts images with text into simple text using diverse technologies.  
 I used [tesseract](https://github.com/tesseract-ocr/tesseract) for it and exposes it as a web service using spring boot.
+For more information plese check the [project development site](https://fernando-romulo-silva.github.io/image-converter-service/)
 
 # Model
 
