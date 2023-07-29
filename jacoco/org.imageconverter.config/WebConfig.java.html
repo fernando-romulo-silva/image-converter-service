@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.config</a> &gt; <span class="el_source">WebConfig.java</span></div><h1>WebConfig.java</h1><pre class="source lang-java linenums">package org.imageconverter.config;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.fasterxml.jackson.databind.MapperFeature.ALLOW_COERCION_OF_SCALARS;
+
+import java.time.format.DateTimeFormatter;
+
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.util.UrlPathHelper;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+
+import brave.sampler.Sampler;
+
+/**
+ * Web configuration bean.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+@Configuration
+@EnableWebSecurity
+@EnableWebMvc
+@EnableAspectJAutoProxy
+@EnableConfigurationProperties
+@EnableTransactionManagement
+<span class="fc" id="L45">public class WebConfig implements WebMvcConfigurer {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void configurePathMatch(final PathMatchConfigurer configurer) {
+
+<span class="fc" id="L53">	final var urlPathHelper = new UrlPathHelper();</span>
+<span class="fc" id="L54">	urlPathHelper.setRemoveSemicolonContent(false);</span>
+<span class="fc" id="L55">	configurer.setUrlPathHelper(urlPathHelper);</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+<span class="fc" id="L63">	registry.addResourceHandler(&quot;/swagger-ui/**&quot;)//</span>
+<span class="fc" id="L64">			.addResourceLocations(&quot;classpath:/META-INF/resources/webjars/swagger-ui/4.1.3/&quot;);</span>
+<span class="fc" id="L65">    }</span>
+
+    @Bean
+    Sampler defaultSampler() {
+<span class="fc" id="L69">	return Sampler.ALWAYS_SAMPLE;</span>
+    }
+
+    /**
+     * Create a valid {@link JsonMapper} object configured.
+     * 
+     * @return A {@link JsonMapper} object
+     */
+    @Bean
+    @Primary
+    ObjectMapper objectMapper() {
+<span class="fc" id="L80">	final var module = new JavaTimeModule();</span>
+<span class="fc" id="L81">	module.addSerializer(new LocalDateSerializer(DateTimeFormatter.ISO_DATE));</span>
+<span class="fc" id="L82">	module.addSerializer(new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));</span>
+<span class="fc" id="L83">	module.addSerializer(new LocalTimeSerializer(DateTimeFormatter.ISO_TIME));</span>
+
+<span class="fc" id="L85">	return JsonMapper.builder() //</span>
+<span class="fc" id="L86">			.configure(ALLOW_COERCION_OF_SCALARS, false) //</span>
+<span class="fc" id="L87">			.serializationInclusion(NON_NULL) //</span>
+<span class="fc" id="L88">			.addModule(module) //</span>
+<span class="fc" id="L89">			.build(); //</span>
+    }
+
+//    @Bean
+//    MessageSource messageSource() {
+//	final var messageSource = new ReloadableResourceBundleMessageSource();
+//	messageSource.setBasename(&quot;messages&quot;);
+//	messageSource.setDefaultEncoding(&quot;UTF-8&quot;);
+//	return messageSource;
+//    }
+    
+    @Bean
+    MessageSource messageSource() {
+<span class="fc" id="L102">	final var messageSource = new ResourceBundleMessageSource();</span>
+<span class="fc" id="L103">        messageSource.setBasename(&quot;messages&quot;);</span>
+<span class="fc" id="L104">        messageSource.setDefaultEncoding(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L105">        messageSource.setUseCodeAsDefaultMessage(true);</span>
+<span class="fc" id="L106">        return messageSource;</span>
+    }    
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Bean
+    @Primary
+    @Override
+    public LocalValidatorFactoryBean getValidator() {
+<span class="fc" id="L117">	final var bean = new LocalValidatorFactoryBean();</span>
+<span class="fc" id="L118">	bean.setValidationMessageSource(messageSource());</span>
+<span class="fc" id="L119">	return bean;</span>
+    }
+
+   
+    /**
+     * Create a valid {@link CommonsMultipartResolver} object configured (max upload and default encoding).
+     * 
+     * @return A {@link CommonsMultipartResolver} object
+     */
+    @Bean
+    CommonsMultipartResolver multipartResolver() {
+<span class="fc" id="L130">	final var resolver = new CommonsMultipartResolver();</span>
+<span class="fc" id="L131">	resolver.setDefaultEncoding(&quot;utf-8&quot;);</span>
+//        resolver.setMaxInMemorySize();
+//        resolver.setMaxUploadSize(ofMegabytes(20));
+<span class="fc" id="L134">	return resolver;</span>
+    }
+
+//    @Bean
+//    public InternalResourceViewResolver viewResolver() {
+//	InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+//	viewResolver.setViewClass(JstlView.class);
+//	viewResolver.setPrefix(&quot;/WEB-INF/views/&quot;);
+//	viewResolver.setSuffix(&quot;.jsp&quot;);
+//	return viewResolver;
+//    }
+//
+//
+//    @Override
+//    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+//	registry.addResourceHandler(&quot;/resources/**&quot;).addResourceLocations(&quot;/resources/&quot;);
+//    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

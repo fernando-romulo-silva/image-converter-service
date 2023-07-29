@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateImageTypeRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.util.controllers.imagetype</a> &gt; <span class="el_source">UpdateImageTypeRequest.java</span></div><h1>UpdateImageTypeRequest.java</h1><pre class="source lang-java linenums">package org.imageconverter.util.controllers.imagetype;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+/**
+ * Structure to update image type.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+<span class="fc" id="L15">@Schema(name = &quot;UpdateImageTypeRequest&quot;, description = &quot;Resquest structure to update Image Type&quot;)</span>
+@JsonIgnoreProperties(ignoreUnknown = false)
+@JsonInclude(Include.NON_NULL)
+<span class="fc" id="L18">public record UpdateImageTypeRequest( //</span>
+
+		@Schema(name = &quot;extension&quot;, required = false, example = &quot;bmp&quot;) //
+		@JsonProperty(value = &quot;extension&quot;, required = false) //
+		String extension,
+
+		@Schema(name = &quot;name&quot;, required = false, example = &quot;BitMap&quot;) //
+		@JsonProperty(value = &quot;name&quot;, required = false) //
+		String name, //
+
+		@Schema(name = &quot;description&quot;, required = false, example = &quot;Device independent bitmap&quot;) //
+		@JsonProperty(value = &quot;description&quot;, required = false) //
+		String description) {
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractRestExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.infra</a> &gt; <span class="el_source">AbstractRestExceptionHandler.java</span></div><h1>AbstractRestExceptionHandler.java</h1><pre class="source lang-java linenums">package org.imageconverter.infra;
+
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getMessage;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
+import static org.apache.commons.text.StringEscapeUtils.escapeJava;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.imageconverter.infra.exception.BaseApplicationException;
+import org.slf4j.MDC;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+/**
+ * Defaults handlers methods
+ * 
+ * @author Fernando Romulo da Silva
+ */
+abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    protected final MessageSource messageSource;
+
+    /**
+     * Default constructor.
+     * 
+     * @param messageSource Object used to translate messages
+     */
+    protected AbstractRestExceptionHandler(final MessageSource messageSource) {
+<span class="fc" id="L48">	super();</span>
+<span class="fc" id="L49">	this.messageSource = messageSource;</span>
+<span class="fc" id="L50">    }</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected ResponseEntity&lt;Object&gt; handleMissingServletRequestParameter(final MissingServletRequestParameterException ex, final HttpHeaders headers, final HttpStatus status,
+		    final WebRequest request) {
+
+<span class="fc" id="L59">	final var locale = request.getLocale();</span>
+<span class="fc" id="L60">	final Object[] params = { ex.getParameterName() };</span>
+
+<span class="fc" id="L62">	final var msg = messageSource.getMessage(&quot;exception.missingServletRequestParameter&quot;, params, locale);</span>
+
+<span class="fc" id="L64">	return handleObjectException(msg, List.of(), ex, request, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected ResponseEntity&lt;Object&gt; handleHttpMessageNotReadable(final HttpMessageNotReadableException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+
+<span class="fc" id="L73">	return handleObjectException(ex, request, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected ResponseEntity&lt;Object&gt; handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+
+<span class="fc" id="L82">	final var subErrors = new ArrayList&lt;Map&lt;String, String&gt;&gt;();</span>
+
+<span class="fc" id="L84">	final var locale = request.getLocale();</span>
+
+<span class="fc" id="L86">	ex.getBindingResult().getFieldErrors().forEach((error) -&gt; {</span>
+
+<span class="fc" id="L88">	    final var errors = new HashMap&lt;String, String&gt;();</span>
+
+<span class="fc" id="L90">	    errors.put(&quot;object&quot;, error.getObjectName());</span>
+<span class="fc" id="L91">	    errors.put(&quot;field&quot;, error.getField());</span>
+<span class="fc" id="L92">	    errors.put(&quot;error&quot;, messageSource.getMessage(error, locale));</span>
+
+<span class="fc" id="L94">	    subErrors.add(errors);</span>
+<span class="fc" id="L95">	});</span>
+
+<span class="fc" id="L97">	final var msg = messageSource.getMessage(&quot;exception.handleMethodArgumentNotValid&quot;, null, locale);</span>
+
+<span class="fc" id="L99">	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected ResponseEntity&lt;Object&gt; handleNoHandlerFoundException(final NoHandlerFoundException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+<span class="fc" id="L107">	final var locale = request.getLocale();</span>
+
+<span class="fc" id="L109">	final var msg = messageSource.getMessage(&quot;exception.handleNoHandlerFound&quot;, null, locale);</span>
+
+<span class="fc" id="L111">	return handleObjectException(msg, List.of(), ex, request, status);</span>
+    }
+
+    /**
+     * Handle exceptions, especially {@link BaseApplicationException} and its descendents and use the exception's message.
+     * 
+     * @param ex      The exception
+     * @param request Request object, to create response body.
+     * @param status  The error status
+     * @return A {@link ResponseEntity} object that's the response
+     */
+    protected ResponseEntity&lt;Object&gt; handleObjectException(final Throwable ex, final WebRequest request, final HttpStatus status) {
+
+<span class="fc bfc" id="L124" title="All 2 branches covered.">	final var msg = ex instanceof BaseApplicationException ? escapeJava(getMessage(ex)) : escapeJava(getRootCauseMessage(ex));</span>
+
+<span class="fc" id="L126">	final var body = buildResponseBody(msg, List.of(), status, ex, request);</span>
+
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">	if (logger.isErrorEnabled()) {</span>
+<span class="fc" id="L129">	    logger.error(msg, getRootCause(ex));</span>
+	}
+
+<span class="fc" id="L132">	return new ResponseEntity&lt;&gt;(body, status);</span>
+    }
+
+    /**
+     * Handle exceptions using the message on response.
+     * 
+     * @param msg     The message that it'll be used
+     * @param ex      The exception
+     * @param request Request object, to create response body.
+     * @param status  The error status
+     * @return A {@link ResponseEntity} object that's the response
+     */
+    protected ResponseEntity&lt;Object&gt; handleObjectException(final String msg, final Collection&lt;Map&lt;String, String&gt;&gt; subErrors, final Throwable ex, final WebRequest request, final HttpStatus status) {
+
+<span class="fc" id="L146">	final var body = buildResponseBody(msg, subErrors, status, ex, request);</span>
+
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">	if (logger.isErrorEnabled()) {</span>
+<span class="fc" id="L149">	    logger.error(escapeJava(getRootCauseMessage(ex)), getRootCause(ex));</span>
+	}
+
+<span class="fc" id="L152">	return new ResponseEntity&lt;&gt;(body, status);</span>
+    }
+
+    private Map&lt;String, Object&gt; buildResponseBody(final String message, final Collection&lt;Map&lt;String, String&gt;&gt; subErrors, final HttpStatus status, final Throwable ex, final WebRequest request) {
+<span class="fc" id="L156">	final var body = new LinkedHashMap&lt;String, Object&gt;();</span>
+
+<span class="fc" id="L158">	body.put(&quot;timestamp&quot;, LocalDateTime.now().format(ISO_DATE_TIME));</span>
+<span class="fc" id="L159">	body.put(&quot;status&quot;, status.value());</span>
+<span class="fc" id="L160">	body.put(&quot;error&quot;, status.getReasonPhrase());</span>
+<span class="fc" id="L161">	body.put(&quot;message&quot;, message);</span>
+
+<span class="fc bfc" id="L163" title="All 2 branches covered.">	if (CollectionUtils.isNotEmpty(subErrors)) {</span>
+<span class="fc" id="L164">	    body.put(&quot;subErrors&quot;, subErrors);</span>
+	}
+
+<span class="fc" id="L167">	body.put(&quot;traceId&quot;, MDC.get(&quot;traceId&quot;));</span>
+<span class="fc" id="L168">	body.put(&quot;spanId&quot;, MDC.get(&quot;spanId&quot;));</span>
+
+<span class="fc bfc" id="L170" title="All 2 branches covered.">	if (isTraceOn(request)) {</span>
+<span class="fc" id="L171">	    body.put(&quot;stackTrace&quot;, getStackTrace(ex));</span>
+	}
+
+<span class="fc" id="L174">	return body;</span>
+    }
+
+    private boolean isTraceOn(final WebRequest request) {
+
+<span class="fc" id="L179">	final var value = request.getParameterValues(&quot;trace&quot;);</span>
+
+<span class="pc bpc" id="L181" title="1 of 4 branches missed.">	return Objects.nonNull(value) //</span>
+			&amp;&amp; value.length &gt; 0 //
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">			&amp;&amp; &quot;true&quot;.contentEquals(value[0]);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

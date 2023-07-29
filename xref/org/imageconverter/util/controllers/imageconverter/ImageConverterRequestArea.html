@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>ImageConverterRequestArea xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../apidocs/org/imageconverter/util/controllers/imageconverter/ImageConverterRequestArea.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> org.imageconverter.util.controllers.imageconverter;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> javax.validation.constraints.Min;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> javax.validation.constraints.NotEmpty;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> javax.validation.constraints.NotNull;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> org.imageconverter.domain.conversion.ExecutionType;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> io.swagger.v3.oas.annotations.media.Schema;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * Structure with area (x, y, width and height) to execute the image conversion.</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * @author Fernando Romulo da Silva</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  @Schema(name = <span class="jxr_string">"ImageConverterRequestArea"</span>, description = <span class="jxr_string">"Resquest structure to convert Image with specific area"</span>)
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">public</strong> record ImageConverterRequestArea( <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  		
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  		@Schema(name = <span class="jxr_string">"fileName"</span>, description = <span class="jxr_string">"The uploaded image file name"</span>, required = <strong class="jxr_keyword">true</strong>, example = <span class="jxr_string">"image.bmp"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  		@NotEmpty(message = <span class="jxr_string">"{imageConversion.fileName}"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  		String fileName, <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  		<em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  		@Schema(name = <span class="jxr_string">"fileContent"</span>, description = <span class="jxr_string">"The uploaded image file bytes"</span>, required = <strong class="jxr_keyword">true</strong>, example = <span class="jxr_string">"image.bmp"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  		@NotNull(message = <span class="jxr_string">"{imageConversion.fileContent}"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  		byte[] fileContent, <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  		<em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  		@Schema(name = <span class="jxr_string">"executionType"</span>, description = <span class="jxr_string">"Execution's type"</span>, required = <strong class="jxr_keyword">true</strong>, implementation = ExecutionType.<strong class="jxr_keyword">class</strong>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  		@NotNull(message = <span class="jxr_string">"{imageConversion.executionType}"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  		ExecutionType executionType, <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  		<em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  		@Schema(name = <span class="jxr_string">"xAxis"</span>, description = <span class="jxr_string">"The x axis image point"</span>, required = false, example = <span class="jxr_string">"145"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  		@Min(value = 0, message = <span class="jxr_string">"{imageConversion.xAxis}"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  		Integer xAxis, <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  		<em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  		@Schema(name = <span class="jxr_string">"yAxis"</span>, description = <span class="jxr_string">"The y axis image point"</span>, required = false, example = <span class="jxr_string">"123"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  		@Min(value = 0, message = <span class="jxr_string">"{imageConversion.yAxis}"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  		Integer yAxis, <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  		<em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  		@Schema(name = <span class="jxr_string">"width"</span>, description = <span class="jxr_string">"The width area"</span>, required = false, example = <span class="jxr_string">"123"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  		@Min(value = 0, message = <span class="jxr_string">"{imageConversion.width}"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  		Integer width, <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  		<em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  		@Schema(name = <span class="jxr_string">"height"</span>, description = <span class="jxr_string">"The height area"</span>, required = false, example = <span class="jxr_string">"343"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  		@Min(value = 0, message = <span class="jxr_string">"{imageConversion.height}"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  		Integer height) <strong class="jxr_keyword">implements</strong> <a name="ImageConverterRequestInterface" href="../../../../../org/imageconverter/util/controllers/imageconverter/ImageConverterRequestInterface.html#ImageConverterRequestInterface">ImageConverterRequestInterface</a> {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2023. All rights reserved.</div>
+</body>
+</html>

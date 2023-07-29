@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PerformanceMonitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.util.performance</a> &gt; <span class="el_source">PerformanceMonitor.java</span></div><h1>PerformanceMonitor.java</h1><pre class="source lang-java linenums">package org.imageconverter.util.performance;
+
+import static java.lang.Long.MAX_VALUE;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.IntStream.range;
+import static org.apache.commons.lang3.StringUtils.LF;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
+import static org.springframework.boot.logging.LogLevel.DEBUG;
+import static org.springframework.boot.logging.LogLevel.ERROR;
+import static org.springframework.boot.logging.LogLevel.FATAL;
+import static org.springframework.boot.logging.LogLevel.INFO;
+import static org.springframework.boot.logging.LogLevel.OFF;
+import static org.springframework.boot.logging.LogLevel.TRACE;
+import static org.springframework.boot.logging.LogLevel.WARN;
+
+import java.lang.StackWalker.StackFrame;
+import java.lang.reflect.Parameter;
+import java.time.Instant;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.logging.LogLevel;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L39">public class PerformanceMonitor implements MethodInterceptor {</span>
+
+<span class="fc" id="L41">    private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceMonitor.class);</span>
+
+    @Value(&quot;${spring.application.name:undefined}&quot;)
+    private String applicationName;
+
+    @Override
+    public Object invoke(final MethodInvocation invocation) throws Throwable {
+
+<span class="fc" id="L49">	final var start = Instant.now();</span>
+
+	try {
+
+<span class="fc" id="L53">	    return invocation.proceed();</span>
+
+	} finally {
+
+<span class="fc" id="L57">	    final var end = Instant.now();</span>
+
+<span class="fc" id="L59">	    final var duration = MILLIS.between(start, end);</span>
+
+<span class="fc" id="L61">	    final var logLevel = getLevel(duration);</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">	    if (isLogging(logLevel)) {</span>
+
+<span class="fc" id="L65">		final var message = &quot;Performance duration [{}] milliseconds, project [{}], threadId [{}], class [{}], method [{}] with parameters [{}], returnType [{}], caller [{}], stackTrace {}&quot;;</span>
+
+<span class="fc" id="L67">		final var threadId = Thread.currentThread().getId();</span>
+
+<span class="fc" id="L69">		final var method = invocation.getMethod();</span>
+
+<span class="fc" id="L71">		final var clazz = invocation.getThis().getClass();</span>
+<span class="fc" id="L72">		final var declaredClazz = method.getDeclaringClass();</span>
+
+<span class="fc" id="L74">		final var methodName = method.getName();</span>
+
+<span class="fc" id="L76">		final var methodArgs = Stream.of(invocation.getArguments()) //</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">				.map(p -&gt; isNull(p) ? &quot;null&quot; : p.toString()) //</span>
+<span class="fc" id="L78">				.toList();</span>
+
+<span class="fc" id="L80">		final var methodArgsType = Stream.of(method.getParameters()) //</span>
+<span class="fc" id="L81">				.map(Parameter::getType) //</span>
+<span class="fc" id="L82">				.map(Class::getSimpleName) //</span>
+<span class="fc" id="L83">				.toList();</span>
+
+<span class="fc" id="L85">		final var parameters = range(0, methodArgs.size()) //</span>
+<span class="fc" id="L86">				.boxed() //</span>
+<span class="fc" id="L87">				.map(i -&gt; methodArgsType.get(i) + &quot;:&quot; + methodArgs.get(i)).collect(joining(&quot;,&quot;));</span>
+
+<span class="fc" id="L89">		final var methodReturnType = method.getReturnType();</span>
+		
+<span class="fc" id="L91">		final var callerAndStack = findCallerAndStack();</span>
+
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">		final var clazzString = Objects.equals(clazz, declaredClazz) // </span>
+<span class="fc" id="L94">				? clazz.getName() // </span>
+<span class="pc" id="L95">				: declaredClazz.getSimpleName() + &quot;:&quot; + clazz.getName();</span>
+
+<span class="fc" id="L97">		final Object[] params = { duration, applicationName, threadId, clazzString, methodName, parameters, methodReturnType, callerAndStack.getKey(), LF.concat(callerAndStack.getValue()) };</span>
+
+<span class="fc" id="L99">		executeLog(logLevel, message, params);</span>
+	    }
+	}
+    }
+
+    private AbstractMap.SimpleEntry&lt;String, String&gt; findCallerAndStack() {
+
+<span class="fc" id="L106">	final var stackList = StackWalker.getInstance() //</span>
+<span class="fc" id="L107">			.walk(this::walkThroughStack) //</span>
+<span class="fc" id="L108">			.stream() //</span>
+<span class="fc" id="L109">			.filter(this::filterNonMatter) //</span>
+<span class="fc" id="L110">			.map(trace -&gt; substringBefore(trace.getClassName(), &quot;$$EnhancerBySpringCGLIB&quot;) + &quot;.&quot; + trace.getMethodName() + &quot;:&quot; + trace.getLineNumber()) //</span>
+<span class="fc" id="L111">			.toList();</span>
+
+<span class="fc" id="L113">	final var stackListNoTrap = stackList.stream() //</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		   .filter(s -&gt; !StringUtils.containsAnyIgnoreCase(s, &quot;.filter.&quot;)) //</span>
+<span class="fc" id="L115">		   .toList();</span>
+	
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">	final var caller = stackListNoTrap.isEmpty() //</span>
+<span class="nc" id="L118">			? this.getClass().getSimpleName() // </span>
+<span class="fc" id="L119">			: stackListNoTrap.get(stackListNoTrap.size() - 1);</span>
+	
+<span class="fc" id="L121">	final var stackTrace = stackList.stream().collect(joining(LF));</span>
+
+<span class="fc" id="L123">	return new AbstractMap.SimpleEntry&lt;&gt;(caller, stackTrace);</span>
+    }
+
+    private boolean filterNonMatter(final StackFrame stackFrame) {
+<span class="fc bfc" id="L127" title="All 2 branches covered.">	return !StringUtils.containsAnyIgnoreCase(stackFrame.getClassName(), this.getClass().getSimpleName()) //</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">			&amp;&amp; !StringUtils.containsAnyIgnoreCase(stackFrame.getClassName(), &quot;$$FastClassBySpringCGLIB&quot;);</span>
+    }
+
+    private List&lt;StackFrame&gt; walkThroughStack(final Stream&lt;StackFrame&gt; stackFrameStream) {
+<span class="fc" id="L132">	return stackFrameStream //</span>
+<span class="fc" id="L133">			.filter(frame -&gt; frame.getClassName().contains(&quot;org.imageconverter&quot;)) //</span>
+<span class="fc" id="L134">			.toList();</span>
+    }
+
+    private void executeLog(final LogLevel level, final String message, final Object... arguments) {
+
+<span class="fc" id="L139">	final var finalMsg = StringEscapeUtils.escapeJava(message);</span>
+
+<span class="pc bpc" id="L141" title="4 of 6 branches missed.">	switch (level) {</span>
+<span class="nc" id="L142">	case TRACE -&gt; LOGGER.trace(finalMsg, arguments);</span>
+<span class="nc" id="L143">	case DEBUG -&gt; LOGGER.debug(finalMsg, arguments);</span>
+<span class="fc" id="L144">	case INFO -&gt; LOGGER.info(finalMsg, arguments);</span>
+<span class="fc" id="L145">	case WARN -&gt; LOGGER.warn(finalMsg, arguments);</span>
+<span class="nc" id="L146">	case ERROR, FATAL -&gt; LOGGER.error(finalMsg, arguments);</span>
+<span class="nc" id="L147">	default -&gt; LOGGER.debug(finalMsg, arguments);</span>
+	}
+<span class="fc" id="L149">    }</span>
+
+    private LogLevel getLevel(final long duration) {
+
+<span class="fc" id="L153">	final var offRange = Range.between(0L, 500L);</span>
+<span class="fc" id="L154">	final var traceRange = Range.between(501L, 1000L);</span>
+<span class="fc" id="L155">	final var debugRange = Range.between(1001L, 2000L);</span>
+<span class="fc" id="L156">	final var infoRange = Range.between(2001L, 3000L);</span>
+<span class="fc" id="L157">	final var warnRange = Range.between(3001L, 10000L);</span>
+<span class="fc" id="L158">	final var errorRange = Range.between(10001L, MAX_VALUE);</span>
+
+<span class="fc" id="L160">	final var ranges = List.of( //</span>
+			new SimpleEntry&lt;&gt;(offRange, OFF), //
+			new SimpleEntry&lt;&gt;(traceRange, TRACE), //
+			new SimpleEntry&lt;&gt;(debugRange, DEBUG), //
+			new SimpleEntry&lt;&gt;(infoRange, INFO), //
+			new SimpleEntry&lt;&gt;(warnRange, WARN), //
+			new SimpleEntry&lt;&gt;(errorRange, ERROR) //
+	);
+
+<span class="fc" id="L169">	return ranges.stream() //</span>
+<span class="fc" id="L170">			.filter(entry -&gt; entry.getKey().contains(duration)) //</span>
+<span class="fc" id="L171">			.map(SimpleEntry::getValue) //</span>
+<span class="fc" id="L172">			.findFirst() //</span>
+<span class="fc" id="L173">			.orElse(FATAL);</span>
+    }
+
+    public String createExpression(final Class&lt;?&gt; clazz, final Class&lt;?&gt;... parentClazzes) {
+
+<span class="fc" id="L178">	final var pointCut = new StringBuilder();</span>
+
+<span class="fc" id="L180">	pointCut.append(&quot;execution ( public * &quot;).append(clazz.getName()).append(&quot;.*(..))&quot;);</span>
+
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">	for (final var parentClazz : parentClazzes) {</span>
+<span class="nc" id="L183">	    pointCut.append(&quot; || (&quot;).append(&quot;execution ( public * &quot;).append(parentClazz.getName()).append(&quot;.*(..))&quot;).append(&quot; &amp;&amp; target (&quot;).append(clazz.getName()).append(&quot;)&quot;).append(&quot;)&quot;);</span>
+	}
+
+<span class="fc" id="L186">	return pointCut.toString();</span>
+    }
+
+    private boolean isLogging(final LogLevel logLevel) {
+
+<span class="fc bfc" id="L191" title="All 2 branches covered.">	if (logLevel == OFF) {</span>
+<span class="fc" id="L192">	    return false;</span>
+	}
+
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">	if (logLevel == FATAL) {</span>
+<span class="nc" id="L196">	    return true;</span>
+	}
+
+<span class="pc bpc" id="L199" title="3 of 6 branches missed.">	return (logLevel == TRACE &amp;&amp; LOGGER.isTraceEnabled()) //</span>
+<span class="pc bpc" id="L200" title="1 of 4 branches missed.">			|| (logLevel == DEBUG &amp;&amp; LOGGER.isDebugEnabled()) //</span>
+<span class="pc bpc" id="L201" title="1 of 4 branches missed.">			|| (logLevel == INFO &amp;&amp; LOGGER.isInfoEnabled()) //</span>
+<span class="pc bpc" id="L202" title="2 of 4 branches missed.">			|| (logLevel == WARN &amp;&amp; LOGGER.isWarnEnabled()) //</span>
+<span class="pc bnc" id="L203" title="All 2 branches missed.">			|| (logLevel == ERROR &amp;&amp; LOGGER.isErrorEnabled());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

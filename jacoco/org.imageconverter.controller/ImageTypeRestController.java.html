@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageTypeRestController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.controller</a> &gt; <span class="el_source">ImageTypeRestController.java</span></div><h1>ImageTypeRestController.java</h1><pre class="source lang-java linenums">package org.imageconverter.controller;
+
+import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
+import org.imageconverter.application.ImageTypeService;
+import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.infra.exception.ElementNotFoundException;
+import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
+import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
+import org.imageconverter.util.logging.Loggable;
+import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestGet;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetByIdOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestPostOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestPutOpenApi;
+import org.imageconverter.util.openapi.imagetype.UpdateImageTypeRequestBody;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.context.annotation.Description;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.turkraft.springfilter.boot.Filter;
+
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+/**
+ * Image type CRUD.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+@SecurityRequirement(name = &quot;BASIC&quot;)
+@Tag( //
+		name = &quot;Image Type&quot;, //
+		description = &quot;&quot;&quot;
+				Image Type API - Rest CRUD for image type :) .
+				If something went wrong, please put 'trace=true' (for all Http methods) at the end of the request to receive the stackStrace.
+				Ex: http://127.0.0.1:8080/rest/images/type?trace=true
+				     &quot;&quot;&quot; //
+)
+//
+@Loggable
+@RestController
+@Description(&quot;Controller for image type API&quot;)
+@RequestMapping(REST_URL)
+public class ImageTypeRestController {
+
+    private final ImageTypeService imageTypeService;
+
+    /**
+     * Default constructor.
+     * 
+     * @param imageConversionService The image type service
+     */
+    ImageTypeRestController(final ImageTypeService imageTypeService) {
+<span class="fc" id="L80">	super();</span>
+<span class="fc" id="L81">	this.imageTypeService = imageTypeService;</span>
+<span class="fc" id="L82">    }</span>
+
+    /**
+     * Get a image type by id.
+     * 
+     * @param id The image type's id
+     * @return A {@link ImageTypeResponse} object
+     * @exception ElementNotFoundException if a element with id not found
+     */
+    @ImageTypeRestGetByIdOpenApi
+    //
+    @ResponseStatus(OK)
+    @GetMapping(value = &quot;/{id:[\\d]*}&quot;, produces = APPLICATION_JSON_VALUE)
+    public ImageTypeResponse getById( //
+		    @Parameter(description = &quot;The image type id's&quot;, example = &quot;1000&quot;) //
+		    @PathVariable(name = &quot;id&quot;, required = true) //
+		    final Long id) {
+
+<span class="fc" id="L100">	return imageTypeService.findById(id);</span>
+    }
+
+    /**
+     * Get image types.
+     * 
+     * @param filter A object {@link Specification} that specific the filter the search, if you omit, bring all 
+     * @param page   A object {@link Pageable} that page the result
+     * @return A {@link List} or a empty list
+     */
+    @PageableAsQueryParam
+    @ImageTypeRestGet
+    //
+    @ResponseStatus(OK)
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    public Page&lt;ImageTypeResponse&gt; getByFilter( //
+		    @Parameter(name = &quot;filter&quot;, description = &quot;Search's filter&quot;, required = true, example = &quot;?filter=extension:'png'&quot;) //
+		    @Filter //
+		    final Specification&lt;ImageType&gt; filter, //
+		    //
+		    @PageableDefault(value = 10, page = 0)
+		    final Pageable page) {
+
+<span class="fc" id="L123">	return imageTypeService.findBySpecification(filter, page);</span>
+    }
+
+    /**
+     * Create a image type.
+     * 
+     * @param request A {@link CreateImageTypeRequest} object. It works as a structure to create a {@link org.imageconverter.domain.imagetype.ImageType}
+     * @return A string with image type's id
+     */
+    @ImageTypeRestPostOpenApi
+    //
+    @ResponseStatus(CREATED)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
+    public void create(//
+		    //
+		    @CreateImageTypeRequestBody //
+		    @Valid //
+		    @RequestBody //
+		    final CreateImageTypeRequest request,
+		    //
+		    final HttpServletResponse response) {
+
+<span class="fc" id="L145">	final var result = imageTypeService.createImageType(request);</span>
+	
+<span class="fc" id="L147">	response.addHeader(&quot;Location&quot;, REST_URL + &quot;/&quot; + result.id());</span>
+<span class="fc" id="L148">    }</span>
+
+    /**
+     * Update a image type.
+     * 
+     * @param request A {@link UpdateImageTypeRequest} object. It works as a structure to update a {@link org.imageconverter.domain.imagetype.ImageType}
+     */
+    @ImageTypeRestPutOpenApi
+    //
+    @ResponseStatus(NO_CONTENT)
+    @PutMapping(value = &quot;/{id:[\\d]*}&quot;, consumes = APPLICATION_JSON_VALUE)
+    public void update( //
+		    //
+		    @Parameter(description = &quot;The image type id's&quot;, example = &quot;1000&quot;) //
+		    @PathVariable(name = &quot;id&quot;, required = true) //
+		    final Long id, //
+
+		    @UpdateImageTypeRequestBody //
+		    @Valid //
+		    @RequestBody //
+		    final UpdateImageTypeRequest request) {
+
+<span class="fc" id="L170">	imageTypeService.updateImageType(id, request);</span>
+<span class="fc" id="L171">    }</span>
+
+    /**
+     * Delete a image type.
+     * 
+     * @param id The image type's id
+     */
+    @ImageTypeRestDeleteOpenApi
+    //
+    @ResponseStatus(NO_CONTENT)
+    @DeleteMapping(&quot;/{id:[\\d]*}&quot;)
+    public void delete( //
+		    //
+		    @Parameter(description = &quot;The image type id's&quot;, example = &quot;1000&quot;) //
+		    @PathVariable(name = &quot;id&quot;, required = true) //
+		    final Long id) {
+
+<span class="fc" id="L188">	imageTypeService.deleteImageType(id);</span>
+<span class="fc" id="L189">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

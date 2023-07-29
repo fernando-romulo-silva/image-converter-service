@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultOpenApiConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.config</a> &gt; <span class="el_source">DefaultOpenApiConfiguration.java</span></div><h1>DefaultOpenApiConfiguration.java</h1><pre class="source lang-java linenums">package org.imageconverter.config;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OperationCustomizer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.responses.ApiResponse;
+
+/**
+ * @author Fernando Romulo da Silva
+ *
+ */
+@Configuration
+@EnableHypermediaSupport(type = HypermediaType.HAL)
+<span class="fc" id="L47">public class DefaultOpenApiConfiguration {</span>
+
+    @Value(&quot;${spring.application.name:Please set the project's name ('spring.application.name')}&quot;)
+    private String appName;
+
+    @Value(&quot;${spring.application.description:Please set the project's name ('spring.application.description')}&quot;)
+    private String appDesciption;
+
+    public OpenAPI openAPI() {
+<span class="nc" id="L56">	final var appVersion = getClass().getPackage().getImplementationVersion();</span>
+<span class="nc" id="L57">	final var appVendor = getClass().getPackage().getSpecificationVendor();</span>
+
+<span class="nc" id="L59">	return new OpenAPI() //</span>
+<span class="nc" id="L60">			.info(new Info() //</span>
+<span class="nc" id="L61">					.title(appName) //</span>
+<span class="nc" id="L62">					.version(appVersion + &quot; &quot; + appVendor) //</span>
+<span class="nc" id="L63">					.description(appDesciption) //</span>
+<span class="nc" id="L64">					.contact(new Contact().name(&quot;Fernando Romulo da Silva&quot;)).termsOfService(&quot;http://swagger.io/terms/&quot;) //</span>
+<span class="nc" id="L65">					.license(new License().name(&quot;Apache 2.0&quot;).url(&quot;http://springdoc.org&quot;)) //</span>
+			);
+    }
+
+//    @Bean
+//    public GroupedOpenApi internalGroupedOpenApi(OpenApiCustomiser apiFromResourceCustomizer) {
+//        return GroupedOpenApi.builder()
+//                .setGroup(&quot;testGroup&quot;)
+//                .pathsToMatch(&quot;/nothingreally&quot;)
+//                .addOpenApiCustomiser(apiFromResourceCustomizer)
+//                .build();
+//    }
+
+    @Bean
+    OpenApiCustomiser defaultOpenApiCustomiser() {
+<span class="fc" id="L80">	return openApiCustomiser -&gt; {</span>
+
+<span class="nc" id="L82">	    openApiCustomiser.getPaths().values().forEach(valuePath -&gt; {</span>
+
+<span class="nc" id="L84">		final var getOperation = valuePath.getGet();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">		if (Objects.nonNull(getOperation)) {</span>
+<span class="nc" id="L86">		    createResponse(getOperation, RequestMethod.GET);</span>
+		}
+
+<span class="nc" id="L89">		final var postOperation = valuePath.getPost();</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">		if (Objects.nonNull(postOperation)) {</span>
+<span class="nc" id="L91">		    createResponse(postOperation, RequestMethod.POST);</span>
+		}
+
+<span class="nc" id="L94">		final var putOperation = valuePath.getPut();</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		if (Objects.nonNull(putOperation)) {</span>
+<span class="nc" id="L96">		    createResponse(putOperation, RequestMethod.PUT);</span>
+		}
+
+<span class="nc" id="L99">		final var deleteOperation = valuePath.getDelete();</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">		if (Objects.nonNull(deleteOperation)) {</span>
+<span class="nc" id="L101">		    createResponse(deleteOperation, RequestMethod.DELETE);</span>
+		}
+
+<span class="nc" id="L104">		final var headOperation = valuePath.getHead();</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (Objects.nonNull(headOperation)) {</span>
+<span class="nc" id="L106">		    createResponse(headOperation, RequestMethod.HEAD);</span>
+		}
+
+<span class="nc" id="L109">		final var optionOperation = valuePath.getOptions();</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">		if (Objects.nonNull(optionOperation)) {</span>
+<span class="nc" id="L111">		    createResponse(optionOperation, RequestMethod.OPTIONS);</span>
+		}
+<span class="nc" id="L113">	    });</span>
+
+	    // openapi spring boot programmatically example
+//	    final var mySchema = new ObjectSchema();
+//	    mySchema.name(&quot;MySchema&quot;);
+//	    mySchema.addExample(&quot;&quot;&quot;
+//	    		{
+//	    		  &quot;timestamp&quot;: &quot;2021-07-19T15:25:32.389836763&quot;,
+//	    		  &quot;status&quot;: 500,
+//	    		  &quot;error&quot;: &quot;Internal Server Error&quot;,
+//	    		  &quot;message&quot;: &quot;Unexpected error. Please, check the log with traceId and spanId for more detail&quot;,
+//	    		  &quot;traceId&quot;: &quot;3d4144eeb01e3682&quot;,
+//	    		  &quot;spanId&quot;: &quot;3d4144eeb01e3682&quot;
+//	    		}&quot;&quot;&quot;);
+//
+//	    final var schemas = openApiCustomiser.getComponents().getSchemas();
+//	    schemas.put(mySchema.getName(), mySchema);
+<span class="nc" id="L130">	};</span>
+    }
+
+    private void createResponse(final Operation operation, final RequestMethod requestMethod) {
+<span class="nc" id="L134">	final var apiResponses = operation.getResponses();</span>
+
+<span class="nc" id="L136">	final var ex500 = &quot;&quot;&quot;</span>
+			{
+			    &quot;timestamp&quot;: &quot;1669564355551&quot;,
+			    &quot;status&quot;: 500,
+			    &quot;error&quot;: &quot;Internal Server Error&quot;,
+			    &quot;message&quot;: &quot;Unexpected error. Please, check the log with traceId and spanId for more detail&quot;,
+			    &quot;traceId&quot;: &quot;3d4144eeb01e3682&quot;,
+			    &quot;spanId&quot;: &quot;3d4144eeb01e3682&quot;
+			}&quot;&quot;&quot;;
+
+<span class="nc" id="L146">	final var ex401 = &quot;&quot;&quot;</span>
+			{
+			    &quot;timestamp&quot;: 1669564355551,
+			    &quot;status&quot;: 401,
+			    &quot;error&quot;: &quot;Unauthorized&quot;,
+			    &quot;message&quot;: &quot;Unauthorized&quot;,
+			    &quot;path&quot;: &quot;/rest/images/type/2&quot;
+			}&quot;&quot;&quot;;
+
+<span class="nc" id="L155">	final var ex403 = &quot;&quot;&quot;</span>
+			{
+			    &quot;timestamp&quot;: 1669563774179,
+			    &quot;status&quot;: 403,
+			    &quot;error&quot;: &quot;Forbidden&quot;,
+			    &quot;message&quot;: &quot;Forbidden&quot;,
+			    &quot;path&quot;: &quot;/rest/images/type&quot;
+			}&quot;&quot;&quot;;
+
+<span class="nc" id="L164">	final var httpStatusMap = Map.of( //</span>
+			INTERNAL_SERVER_ERROR, ex500, //
+			UNAUTHORIZED, ex401, //
+			FORBIDDEN, ex403 //
+	);
+
+<span class="nc bnc" id="L170" title="All 2 branches missed.">	for (final var httpStatusEntrySet : httpStatusMap.entrySet()) {</span>
+
+<span class="nc" id="L172">	    final var httpStatus = httpStatusEntrySet.getKey();</span>
+<span class="nc" id="L173">	    final var httpStatusExample = httpStatusEntrySet.getValue();</span>
+
+<span class="nc" id="L175">	    apiResponses.computeIfAbsent( //</span>
+<span class="nc" id="L176">			    String.valueOf(httpStatus.value()), //</span>
+			    s -&gt; {
+<span class="nc" id="L178">				final var mediaType = new MediaType();</span>
+<span class="nc" id="L179">				mediaType.setExample(httpStatusExample);</span>
+
+<span class="nc" id="L181">				final var content = new Content();</span>
+<span class="nc" id="L182">				content.addMediaType(APPLICATION_JSON_VALUE, mediaType);</span>
+				
+<span class="nc" id="L184">				return new ApiResponse() //</span>
+<span class="nc" id="L185">						.description(httpStatus.getReasonPhrase()) //</span>
+<span class="nc" id="L186">						.content(content);</span>
+			    });
+<span class="nc" id="L188">	}</span>
+<span class="nc" id="L189">    }</span>
+
+//    private PathItem addExamples(PathItem pathItem) {
+//	    if(pathItem.getPost() !=null)  {
+//	        //Note you can also Do this to APIResponses to insert info from a file into examples in say, a 200 response.
+//	            pathItem.getPost().getRequestBody().getContent().values().stream()
+//	                    .forEach(c -&gt;{
+//	                        String fileName = c.getExample().toString().replaceFirst(&quot;@&quot;,&quot;&quot;);
+//	                        ObjectNode node = null;
+//	                        try {
+//	                            //load file from where you want. also don't insert is as a string, it wont format properly
+//	                            node = (ObjectNode) new ObjectMapper().readTree(methodToReadInFileToString(fileName)); 
+//	                        } catch (JsonProcessingException e) {
+//	                            throw new RuntimeException(e);
+//	                        }
+//	                        c.setExample(node);
+//	                    }
+//	            );
+//	    }
+//	    return pathItem;
+//	}
+
+    @Bean
+    OperationCustomizer operationCustomizer() {
+<span class="fc" id="L213">	return (operation, handleMethod) -&gt; {</span>
+
+<span class="nc bnc" id="L215" title="All 4 branches missed.">	    if (StringUtils.isNotBlank(operation.getDescription()) || StringUtils.isNotBlank(operation.getSummary())) {</span>
+<span class="nc" id="L216">		return operation;</span>
+	    }
+
+<span class="nc" id="L219">	    final var method = handleMethod.getMethod();</span>
+
+<span class="nc" id="L221">	    final var classEntity = getClassRequestMapping(method);</span>
+
+<span class="nc" id="L223">	    final var listAnnotationTypes = Stream.of(method.getAnnotations()) //</span>
+<span class="nc" id="L224">			    .map(a -&gt; a.annotationType()) //</span>
+<span class="nc" id="L225">			    .toList();</span>
+
+<span class="nc bnc" id="L227" title="All 2 branches missed.">	    if (listAnnotationTypes.contains(GetMapping.class)) {</span>
+
+<span class="nc" id="L229">		final var methodEntity = getMethodRequestMapping(method, GetMapping.class);</span>
+
+<span class="nc" id="L231">		operation.description(&quot;Get &quot; + classEntity + methodEntity);</span>
+<span class="nc" id="L232">		operation.operationId(&quot;getItem&quot;);</span>
+<span class="nc" id="L233">		operation.summary(&quot;Get items bla bla&quot;);</span>
+<span class="nc" id="L234">		operation.addExtension(&quot;x-operationWeight&quot;, &quot;200&quot;);</span>
+
+<span class="nc" id="L236">		return operation;</span>
+	    }
+
+<span class="nc bnc" id="L239" title="All 2 branches missed.">	    if (listAnnotationTypes.contains(PostMapping.class)) {</span>
+
+<span class="nc" id="L241">		final var methodEntity = getMethodRequestMapping(method, GetMapping.class);</span>
+
+<span class="nc" id="L243">		operation.description(&quot;Create &quot; + classEntity + methodEntity);</span>
+<span class="nc" id="L244">		operation.operationId(&quot;createItem&quot;);</span>
+<span class="nc" id="L245">		operation.summary(&quot;Create items bla bla&quot;);</span>
+<span class="nc" id="L246">		operation.addExtension(&quot;x-operationWeight&quot;, &quot;300&quot;);</span>
+
+<span class="nc" id="L248">		return operation;</span>
+	    }
+
+<span class="nc bnc" id="L251" title="All 2 branches missed.">	    if (listAnnotationTypes.contains(PutMapping.class)) {</span>
+
+<span class="nc" id="L253">		final var methodEntity = getMethodRequestMapping(method, PutMapping.class);</span>
+
+<span class="nc" id="L255">		operation.description(&quot;Update &quot; + classEntity + methodEntity);</span>
+<span class="nc" id="L256">		operation.operationId(&quot;updateItem&quot;);</span>
+<span class="nc" id="L257">		operation.summary(&quot;Update items bla bla&quot;);</span>
+<span class="nc" id="L258">		operation.addExtension(&quot;x-operationWeight&quot;, &quot;400&quot;);</span>
+
+<span class="nc" id="L260">		return operation;</span>
+	    }
+
+<span class="nc bnc" id="L263" title="All 2 branches missed.">	    if (listAnnotationTypes.contains(DeleteMapping.class)) {</span>
+
+<span class="nc" id="L265">		final var methodEntity = getMethodRequestMapping(method, PutMapping.class);</span>
+
+<span class="nc" id="L267">		operation.description(&quot;Delete &quot; + classEntity + methodEntity);</span>
+<span class="nc" id="L268">		operation.operationId(&quot;deleteItem&quot;);</span>
+<span class="nc" id="L269">		operation.summary(&quot;Delete items bla bla&quot;);</span>
+<span class="nc" id="L270">		operation.addExtension(&quot;x-operationWeight&quot;, &quot;500&quot;);</span>
+
+<span class="nc" id="L272">		return operation;</span>
+	    }
+
+<span class="nc" id="L275">	    return operation;</span>
+	};
+    }
+
+    private String getClassRequestMapping(final Method method) {
+
+<span class="nc" id="L281">	final var requestMappingAnnotationClass = Stream.of(method.getDeclaringClass().getAnnotations()) //</span>
+<span class="nc" id="L282">			.filter(p -&gt; Objects.equals(p.annotationType(), RequestMapping.class)) //</span>
+<span class="nc" id="L283">			.findFirst() //</span>
+<span class="nc" id="L284">			.orElse(null);</span>
+
+<span class="nc bnc" id="L286" title="All 2 branches missed.">	if (Objects.nonNull(requestMappingAnnotationClass)) {</span>
+
+<span class="nc" id="L288">	    final var values = (String[]) AnnotationUtils.getValue(requestMappingAnnotationClass, &quot;value&quot;);</span>
+
+<span class="nc bnc" id="L290" title="All 2 branches missed.">	    if (!ArrayUtils.isEmpty(values)) {</span>
+
+<span class="nc" id="L292">		return Stream.of(StringUtils.split(values[0], &quot;/&quot;)) //</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">				.filter(s -&gt; !StringUtils.containsAny(s, &quot;{}&quot;)) //</span>
+<span class="nc" id="L294">				.collect(Collectors.joining(&quot;'s&quot;));</span>
+	    }
+	}
+
+<span class="nc" id="L298">	return StringUtils.EMPTY;</span>
+    }
+
+    private String getMethodRequestMapping(final Method method, final Class&lt;? extends Annotation&gt; clazz) {
+
+<span class="nc" id="L303">	final var requestMappingAnnotationClass = Stream.of(method.getDeclaringClass().getAnnotations()) //</span>
+<span class="nc" id="L304">			.filter(p -&gt; Objects.equals(p.annotationType(), clazz)) //</span>
+<span class="nc" id="L305">			.findFirst() //</span>
+<span class="nc" id="L306">			.orElse(null);</span>
+
+<span class="nc bnc" id="L308" title="All 2 branches missed.">	if (Objects.nonNull(requestMappingAnnotationClass)) {</span>
+
+<span class="nc" id="L310">	    final var values = (String[]) AnnotationUtils.getValue(requestMappingAnnotationClass, &quot;value&quot;);</span>
+
+<span class="nc bnc" id="L312" title="All 2 branches missed.">	    if (!ArrayUtils.isEmpty(values)) {</span>
+
+<span class="nc" id="L314">		return Stream.of(StringUtils.split(values[0], &quot;/&quot;)) //</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">				.filter(s -&gt; !StringUtils.containsAny(s, &quot;{}&quot;)) //</span>
+<span class="nc" id="L316">				.reduce((first, second) -&gt; second) //</span>
+<span class="nc" id="L317">				.map(m -&gt; &quot;'s &quot; + m) //</span>
+<span class="nc" id="L318">				.orElse(StringUtils.EMPTY);</span>
+	    }
+	}
+
+<span class="nc" id="L322">	return StringUtils.EMPTY;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

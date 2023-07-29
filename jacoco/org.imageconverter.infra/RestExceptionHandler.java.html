@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.infra</a> &gt; <span class="el_source">RestExceptionHandler.java</span></div><h1>RestExceptionHandler.java</h1><pre class="source lang-java linenums">package org.imageconverter.infra;
+
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.ConstraintViolationException;
+
+import org.apache.commons.lang3.RegExUtils;
+import org.imageconverter.infra.exception.BaseApplicationException;
+import org.imageconverter.infra.exception.CsvFileGenerationException;
+import org.imageconverter.infra.exception.CsvFileNoDataException;
+import org.imageconverter.infra.exception.ElementConflictException;
+import org.imageconverter.infra.exception.ElementInvalidException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
+import org.imageconverter.infra.exception.ImageConvertServiceException;
+import org.imageconverter.infra.exception.ServiceUnavailableException;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+
+/**
+ * This class handle exceptions and create response properly.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+@ControllerAdvice
+public class RestExceptionHandler extends AbstractRestExceptionHandler {
+
+    /**
+     * Default constructor.
+     * 
+     * @param messageSource Object used to translate messages
+     */
+    protected RestExceptionHandler(final MessageSource messageSource) {
+<span class="fc" id="L42">	super(messageSource);</span>
+<span class="fc" id="L43">    }</span>
+
+    @ExceptionHandler(ElementNotFoundException.class)
+    ResponseEntity&lt;Object&gt; handleElementNotFoundException(final ElementNotFoundException ex, final WebRequest request) {
+
+<span class="fc" id="L48">	return handleObjectException(ex, request, HttpStatus.NOT_FOUND);</span>
+    }
+
+    @ExceptionHandler(ElementConflictException.class)
+    ResponseEntity&lt;Object&gt; handleElementElementConflictException(final ElementConflictException ex, final WebRequest request) {
+
+<span class="fc" id="L54">	return handleObjectException(ex, request, HttpStatus.CONFLICT);</span>
+    }
+
+    @ExceptionHandler(ElementInvalidException.class)
+    ResponseEntity&lt;Object&gt; handleElementInvalidException(final ElementInvalidException ex, final WebRequest request) {
+
+<span class="fc" id="L60">	return handleObjectException(ex, request, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    ResponseEntity&lt;Object&gt; handleServiceUnavailableException(final ServiceUnavailableException ex, final WebRequest request) {
+
+<span class="fc" id="L66">	return handleObjectException(ex, request, HttpStatus.SERVICE_UNAVAILABLE);</span>
+    }
+
+    @ExceptionHandler(ImageConvertServiceException.class)
+    ResponseEntity&lt;Object&gt; handleImageConvertException(final ImageConvertServiceException ex, final WebRequest request) {
+
+<span class="fc" id="L72">	return handleObjectException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+    
+    @ExceptionHandler(CsvFileGenerationException.class)
+    ResponseEntity&lt;Object&gt; handleCsvFileGenerationException(final CsvFileGenerationException ex, final WebRequest request) {
+
+<span class="nc" id="L78">	return handleObjectException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+    
+    @ExceptionHandler(CsvFileNoDataException.class)
+    ResponseEntity&lt;Object&gt; handleCsvFileNoDataException(final CsvFileNoDataException ex, final WebRequest request) {
+<span class="fc" id="L83">	return handleObjectException(ex, request, HttpStatus.NOT_FOUND);</span>
+    }
+    
+    
+    @ExceptionHandler(BaseApplicationException.class)
+    ResponseEntity&lt;Object&gt; handleBaseApplicationException(final BaseApplicationException ex, final WebRequest request) {
+<span class="nc" id="L89">	return handleObjectException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    ResponseEntity&lt;Object&gt; handleConstraintViolationException(final ConstraintViolationException ex, final WebRequest request) {
+
+<span class="fc" id="L95">	final var subErrors = new ArrayList&lt;Map&lt;String, String&gt;&gt;();</span>
+
+<span class="fc" id="L97">	final var locale = request.getLocale();</span>
+
+<span class="fc bfc" id="L99" title="All 2 branches covered.">	for (final var violation : ex.getConstraintViolations()) {</span>
+<span class="fc" id="L100">	    final var errors = new HashMap&lt;String, String&gt;();</span>
+
+<span class="fc" id="L102">	    errors.put(&quot;field&quot;, substringAfterLast(violation.getPropertyPath().toString(), &quot;.&quot;));</span>
+<span class="fc" id="L103">	    errors.put(&quot;value&quot;, violation.getInvalidValue().toString());</span>
+
+<span class="fc" id="L105">	    final var code = RegExUtils.replaceAll(violation.getMessage(), &quot;[{}]&quot;, &quot;&quot;);</span>
+<span class="fc" id="L106">	    errors.put(&quot;error&quot;, messageSource.getMessage(code, null, locale)); // violation.getMessage());</span>
+
+<span class="fc" id="L108">	    subErrors.add(errors);</span>
+<span class="fc" id="L109">	}</span>
+
+<span class="fc" id="L111">	final var msg = messageSource.getMessage(&quot;exception.handleConstraintViolation&quot;, null, locale);</span>
+
+<span class="fc" id="L113">	return handleObjectException(msg, subErrors, ex, request, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(Throwable.class) // HttpMessageNotReadableException
+    ResponseEntity&lt;Object&gt; handleUnknownException(final Throwable ex, final WebRequest request) {
+
+<span class="nc" id="L119">	final var locale = request.getLocale();</span>
+
+<span class="nc" id="L121">	final var msg = messageSource.getMessage(&quot;exception.handleUnknown&quot;, null, locale);</span>
+
+<span class="nc" id="L123">	return handleObjectException(msg, List.of(), ex, request, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

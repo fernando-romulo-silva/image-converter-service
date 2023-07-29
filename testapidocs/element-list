@@ -1,0 +1,7 @@
+org.imageconverter
+org.imageconverter.application
+org.imageconverter.controller.actuator
+org.imageconverter.controller.imageconverter
+org.imageconverter.controller.imagetype
+org.imageconverter.domain.conversion
+org.imageconverter.domain.imagetype

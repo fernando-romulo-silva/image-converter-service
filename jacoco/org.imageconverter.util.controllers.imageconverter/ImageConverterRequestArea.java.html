@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageConverterRequestArea.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.util.controllers.imageconverter</a> &gt; <span class="el_source">ImageConverterRequestArea.java</span></div><h1>ImageConverterRequestArea.java</h1><pre class="source lang-java linenums">package org.imageconverter.util.controllers.imageconverter;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.imageconverter.domain.conversion.ExecutionType;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+/**
+ * Structure with area (x, y, width and height) to execute the image conversion.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+<span class="fc" id="L16">@Schema(name = &quot;ImageConverterRequestArea&quot;, description = &quot;Resquest structure to convert Image with specific area&quot;)</span>
+<span class="fc" id="L17">public record ImageConverterRequestArea( //</span>
+		
+		@Schema(name = &quot;fileName&quot;, description = &quot;The uploaded image file name&quot;, required = true, example = &quot;image.bmp&quot;) //
+		@NotEmpty(message = &quot;{imageConversion.fileName}&quot;) //
+		String fileName, //
+		//
+		@Schema(name = &quot;fileContent&quot;, description = &quot;The uploaded image file bytes&quot;, required = true, example = &quot;image.bmp&quot;) //
+		@NotNull(message = &quot;{imageConversion.fileContent}&quot;) //
+		byte[] fileContent, //
+		//
+		@Schema(name = &quot;executionType&quot;, description = &quot;Execution's type&quot;, required = true, implementation = ExecutionType.class) //
+		@NotNull(message = &quot;{imageConversion.executionType}&quot;) //
+		ExecutionType executionType, //
+		//
+		@Schema(name = &quot;xAxis&quot;, description = &quot;The x axis image point&quot;, required = false, example = &quot;145&quot;) //
+		@Min(value = 0, message = &quot;{imageConversion.xAxis}&quot;) //
+		Integer xAxis, //
+		//
+		@Schema(name = &quot;yAxis&quot;, description = &quot;The y axis image point&quot;, required = false, example = &quot;123&quot;) //
+		@Min(value = 0, message = &quot;{imageConversion.yAxis}&quot;) //
+		Integer yAxis, //
+		//
+		@Schema(name = &quot;width&quot;, description = &quot;The width area&quot;, required = false, example = &quot;123&quot;) //
+		@Min(value = 0, message = &quot;{imageConversion.width}&quot;) //
+		Integer width, //
+		//
+		@Schema(name = &quot;height&quot;, description = &quot;The height area&quot;, required = false, example = &quot;343&quot;) //
+		@Min(value = 0, message = &quot;{imageConversion.height}&quot;) //
+		Integer height) implements ImageConverterRequestInterface {
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

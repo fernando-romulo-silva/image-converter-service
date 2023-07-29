@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>TesseractHealthUnHappyTest xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../testapidocs/org/imageconverter/controller/actuator/TesseractHealthUnHappyTest.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> org.imageconverter.controller.actuator;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.assertj.core.api.Assertions.assertThat;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.imageconverter.TestConstants.HTTP_127_0_0_1;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.http.HttpMethod.GET;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.http.HttpStatus.NO_CONTENT;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.io.UnsupportedEncodingException;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.imageconverter.config.health.TesseractInfoService;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.DisplayName;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.MethodOrderer;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Order;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Tag;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.TestInstance;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.TestMethodOrder;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.context.SpringBootTest;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpEntity;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.context.ActiveProfiles;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.context.jdbc.Sql;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.context.jdbc.SqlConfig;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.client.HttpServerErrorException.ServiceUnavailable;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.client.RestTemplate;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * Test the {@link TesseractInfoService} actuator controller on unhappy path</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * @author Fernando Romulo da Silva</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @ActiveProfiles(<span class="jxr_string">"test"</span>)
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  @Sql(scripts = <span class="jxr_string">"classpath:db/db-data-test.sql"</span>, config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  @Tag(<span class="jxr_string">"acceptance"</span>)
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  @DisplayName(<span class="jxr_string">"Test the tesseract Health, unhappy path :( "</span>)
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  @TestMethodOrder(MethodOrderer.OrderAnnotation.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  @TestInstance(PER_CLASS)
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">class</strong> <a name="TesseractHealthUnHappyTest" href="../../../../org/imageconverter/controller/actuator/TesseractHealthUnHappyTest.html#TesseractHealthUnHappyTest">TesseractHealthUnHappyTest</a> <strong class="jxr_keyword">extends</strong> <a name="BaseTesseractHealthTest" href="../../../../org/imageconverter/controller/actuator/BaseTesseractHealthTest.html#BaseTesseractHealthTest">BaseTesseractHealthTest</a> {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      @Test
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      @Order(1)
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      @DisplayName(<span class="jxr_string">"get actuator health invalid status"</span>)
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">void</strong> findActuatorHealthInvalidTest() <strong class="jxr_keyword">throws</strong> UnsupportedEncodingException {
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  	<em class="jxr_comment">// given</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> restTemplate = <strong class="jxr_keyword">new</strong> RestTemplate();
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> json = <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  			{
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  			  <span class="jxr_string">"tesseractFolder"</span>: <span class="jxr_string">"/blabla"</span>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  			}<span class="jxr_string">""</span><span class="jxr_string">";
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> requestEntityUpdateTesseract = <strong class="jxr_keyword">new</strong> HttpEntity&lt;String&gt;(json, csrfHeaders());
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> responseUpdateTesseract = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + <span class="jxr_string">"/actuator/tesseract"</span>, requestEntityUpdateTesseract, String.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  	
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  	assertThat(responseUpdateTesseract.getStatusCode()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  			.as(<span class="jxr_string">"Updating the tesseract's configs to wrong values"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  			.isEqualTo(NO_CONTENT);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> requestEntity = <strong class="jxr_keyword">new</strong> HttpEntity&lt;&gt;(csrfHeaders());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  	<strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  	    <em class="jxr_comment">// when</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  	    restTemplate.exchange(HTTP_127_0_0_1 + managementPort + <span class="jxr_string">"/actuator/health"</span>, GET, requestEntity, String.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  	} <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ServiceUnavailable ex) {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  	    <em class="jxr_comment">// then</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  	    assertThat(ex.getResponseBodyAsString()).as(<span class="jxr_string">"Check if tesseract is out"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  			    .contains(<span class="jxr_string">"\&quot;status\&quot;:\&quot;DOWN\&quot;"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  			    .contains(<span class="jxr_string">"\&quot;tesseract\&quot;:{\&quot;status\&quot;:\&quot;DOWN\&quot;"</span>);
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  	}
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      }
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      @Test
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      @Order(2)
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      @DisplayName(<span class="jxr_string">"get actuator tesseract fail status"</span>)
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">void</strong> findActuatorTesseractInvalidTest() <strong class="jxr_keyword">throws</strong> UnsupportedEncodingException {
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  	<em class="jxr_comment">// given</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> restTemplate = <strong class="jxr_keyword">new</strong> RestTemplate();
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> json = <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  			{
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  			  <span class="jxr_string">"tesseractFolder"</span>: <span class="jxr_string">"/blabla"</span>,
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  			  <span class="jxr_string">"tesseractLanguage"</span>: <span class="jxr_string">"pt"</span>,
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  			  <span class="jxr_string">"tesseractDpi"</span>: <span class="jxr_string">"90"</span>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  			}<span class="jxr_string">""</span><span class="jxr_string">";
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> requestEntityUpdateTesseract = <strong class="jxr_keyword">new</strong> HttpEntity&lt;String&gt;(json, csrfHeaders());
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> responseUpdateTesseract = restTemplate.postForEntity(HTTP_127_0_0_1 + managementPort + <span class="jxr_string">"/actuator/tesseract"</span>, requestEntityUpdateTesseract, String.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  	assertThat(responseUpdateTesseract.getStatusCode()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  			.as(<span class="jxr_string">"Updating the tesseract's configs to wrong values"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> 			.isEqualTo(NO_CONTENT);
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> 
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> 	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> requestEntity = <strong class="jxr_keyword">new</strong> HttpEntity&lt;&gt;(csrfHeaders());
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> 	
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 	<em class="jxr_comment">// when</em>
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 	<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">var</strong> response = restTemplate.exchange(HTTP_127_0_0_1 + managementPort + <span class="jxr_string">"/actuator/tesseract"</span>, GET, requestEntity, String.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L106" href="#L106">106</a> 
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> 	<em class="jxr_comment">// then</em>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> 	assertThat(response.getBody()).as(<span class="jxr_string">"Check the wrong tesseract values"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a> 			.contains(<span class="jxr_string">"\&quot;tesseractInit\&quot;:\&quot;FAIL\&quot;"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> 			.contains(<span class="jxr_string">"\&quot;tesseractVersion\&quot;:\&quot;4.11\&quot;"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> 			.contains(<span class="jxr_string">"\&quot;tesseractLanguage\&quot;:\&quot;pt\&quot;"</span>) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> 			.contains(<span class="jxr_string">"\&quot;tesseractDpi\&quot;:\&quot;90\&quot;"</span>);
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>     }
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> 
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2023. All rights reserved.</div>
+</body>
+</html>

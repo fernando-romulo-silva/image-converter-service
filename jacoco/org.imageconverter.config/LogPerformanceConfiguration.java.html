@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LogPerformanceConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.config</a> &gt; <span class="el_source">LogPerformanceConfiguration.java</span></div><h1>LogPerformanceConfiguration.java</h1><pre class="source lang-java linenums">package org.imageconverter.config;
+
+import org.imageconverter.application.ImageConversionService;
+import org.imageconverter.util.performance.PerformanceMonitor;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+<span class="fc" id="L12">public class LogPerformanceConfiguration {</span>
+
+    @Bean
+    public Advisor performanceMonitorAdvisor(final PerformanceMonitor performanceMonitor) {
+
+<span class="fc" id="L17">	final var pointCut = new AspectJExpressionPointcut();</span>
+
+<span class="fc" id="L19">	final var expression = new StringBuilder() //</span>
+<span class="fc" id="L20">			.append(performanceMonitor.createExpression(ImageConversionService.class)) //</span>
+<span class="fc" id="L21">			.toString();</span>
+
+<span class="fc" id="L23">	pointCut.setExpression(expression);</span>
+
+<span class="fc" id="L25">	return new DefaultPointcutAdvisor(pointCut, performanceMonitor);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.domain.imagetype</a> &gt; <span class="el_source">ImageType.java</span></div><h1>ImageType.java</h1><pre class="source lang-java linenums">package org.imageconverter.domain.imagetype;
+
+import static javax.persistence.GenerationType.IDENTITY;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+import static org.imageconverter.util.BeanUtil.getBeanFrom;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import javax.validation.constraints.NotEmpty;
+
+@Entity
+@Table(name = &quot;IMAGE_TYPE&quot;, uniqueConstraints = @UniqueConstraint(columnNames = &quot;IMT_EXTENSION&quot;, name = &quot;UK_IMT_EXTENSION&quot;))
+public class ImageType {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = &quot;IMT_ID&quot;, nullable = false)
+    private Long id;
+
+    // PNG, BMP, JPEG, JPG ...
+    @NotEmpty(message = &quot;{imagetype.extension}&quot;)
+    @Column(name = &quot;IMT_EXTENSION&quot;, nullable = false, unique = true)
+    private String extension;
+
+    @NotEmpty(message = &quot;{imagetype.name}&quot;)
+    @Column(name = &quot;IMT_NAME&quot;, nullable = false)
+    private String name;
+
+    @Column(name = &quot;IMT_DESC&quot;, nullable = true)
+    private String description;
+
+    @Column(name = &quot;IMT_CREATED&quot;, nullable = false)
+    private LocalDateTime created;
+
+    @Column(name = &quot;IMT_UPDATED&quot;, nullable = true)
+    private LocalDateTime updated;
+
+    ImageType() {
+<span class="fc" id="L49">	super();</span>
+<span class="fc" id="L50">    }</span>
+
+    public ImageType( //
+		    final String extension, //
+		    final String name, //
+		    final String description) {
+<span class="fc" id="L56">	super();</span>
+<span class="fc" id="L57">	this.extension = extension;</span>
+<span class="fc" id="L58">	this.name = name;</span>
+<span class="fc" id="L59">	this.description = description;</span>
+<span class="fc" id="L60">	this.created = LocalDateTime.now();</span>
+
+<span class="fc" id="L62">	final var validator = getBeanFrom(Validator.class);</span>
+
+<span class="fc" id="L64">	final var violations = validator.validate(this);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">	if (!violations.isEmpty()) {</span>
+<span class="fc" id="L66">	    throw new ConstraintViolationException(violations);</span>
+	}
+<span class="fc" id="L68">    }</span>
+
+    public void update(final String extension, final String name, final String description) {
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">	if (isNoneBlank(extension)) {</span>
+<span class="fc" id="L73">	    this.extension = extension;</span>
+	}
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">	if (isNoneBlank(name)) {</span>
+<span class="fc" id="L77">	    this.name = name;</span>
+	}
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">	if (isNoneBlank(description)) {</span>
+<span class="fc" id="L81">	    this.description = description;</span>
+	}
+
+<span class="fc" id="L84">	this.updated = LocalDateTime.now();</span>
+<span class="fc" id="L85">    }</span>
+
+    public Long getId() {
+<span class="fc" id="L88">	return id;</span>
+    }
+
+    public String getExtension() {
+<span class="fc" id="L92">	return extension;</span>
+    }
+
+    public String getName() {
+<span class="fc" id="L96">	return name;</span>
+    }
+
+    public Optional&lt;String&gt; getDescription() {
+<span class="fc" id="L100">	return Optional.ofNullable(description);</span>
+    }
+
+    public LocalDateTime getCreated() {
+<span class="fc" id="L104">	return LocalDateTime.from(created);</span>
+    }
+
+    public Optional&lt;LocalDateTime&gt; getUpdated() {
+<span class="fc" id="L108">	return Optional.ofNullable(updated);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L113">	return Objects.hash(this.id);</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+
+	final boolean result;
+
+<span class="fc bfc" id="L121" title="All 2 branches covered.">	if (this == obj) {</span>
+<span class="fc" id="L122">	    result = true;</span>
+	    
+<span class="fc bfc" id="L124" title="All 2 branches covered.">	} else if (obj instanceof ImageType other) {</span>
+<span class="fc" id="L125">	    result = Objects.equals(this.id, other.id);</span>
+	    
+	} else {
+<span class="fc" id="L128">	    result = false;</span>
+	}
+
+<span class="fc" id="L131">	return result;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L136">	final var builder = new StringBuilder(34);</span>
+<span class="fc" id="L137">	builder.append(&quot;ImageType [id=&quot;).append(id) //</span>
+<span class="fc" id="L138">			.append(&quot;, extension=&quot;).append(extension) //</span>
+<span class="fc" id="L139">			.append(&quot;, name=&quot;).append(name) //</span>
+<span class="fc" id="L140">			.append(']');</span>
+<span class="fc" id="L141">	return builder.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageConversion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.domain.conversion</a> &gt; <span class="el_source">ImageConversion.java</span></div><h1>ImageConversion.java</h1><pre class="source lang-java linenums">package org.imageconverter.domain.conversion;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static javax.persistence.GenerationType.IDENTITY;
+import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.imageconverter.util.BeanUtil.getBeanFrom;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.function.Consumer;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.Validator;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.StringUtils;
+import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.domain.imagetype.ImageTypeRespository;
+import org.imageconverter.infra.exception.ConversionException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
+
+@Entity
+@Table(name = &quot;IMAGE_CONVERSION&quot;)
+public class ImageConversion { // NOPMD - Provide accessors on private constructor
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = &quot;IMGC_ID&quot;)
+    private Long id;
+
+    @Column(name = &quot;IMGC_NAME&quot;)
+    private String fileName;
+
+    @ManyToOne
+    @JoinColumn(name = &quot;IMT_ID&quot;, foreignKey = @ForeignKey(name = &quot;FK_IMT_IMGC&quot;))
+    private ImageType fileType;
+
+    @Column(name = &quot;IMGC_SIZE&quot;)
+    private Long fileSize;
+
+    @Column(name = &quot;IMGC_TYPE&quot;)
+    private ExecutionType type;
+
+    @Column(name = &quot;IMGC_TEXT&quot;)
+    private String text;
+
+    @Column(name = &quot;IMGC_AREA&quot;)
+    private Boolean area;
+
+    @Column(name = &quot;IMGC_CREATED&quot;)
+    private LocalDateTime created;
+
+    ImageConversion() {
+<span class="fc" id="L68">	super();</span>
+<span class="fc" id="L69">    }</span>
+
+    private ImageConversion(@Valid final Builder builder) {
+<span class="fc" id="L72">	super();</span>
+<span class="fc" id="L73">	this.fileName = builder.fileName;</span>
+<span class="fc" id="L74">	this.fileType = builder.fileType;</span>
+<span class="fc" id="L75">	this.fileSize = builder.fileSize;</span>
+<span class="fc" id="L76">	this.type = builder.executionType;</span>
+<span class="fc" id="L77">	this.text = builder.text;</span>
+<span class="fc" id="L78">	this.area = builder.area;</span>
+
+<span class="fc" id="L80">	this.created = LocalDateTime.now();</span>
+<span class="fc" id="L81">    }</span>
+
+    public Long getId() {
+<span class="fc" id="L84">	return id;</span>
+    }
+
+    public String getFileName() {
+<span class="fc" id="L88">	return fileName;</span>
+    }
+
+    public ImageType getFileType() {
+<span class="fc" id="L92">	return fileType;</span>
+    }
+
+    public Long getFileSize() {
+<span class="nc" id="L96">	return fileSize;</span>
+    }
+
+    public LocalDateTime getCreated() {
+<span class="nc" id="L100">	return created;</span>
+    }
+
+    public ExecutionType getType() {
+<span class="fc" id="L104">	return type;</span>
+    }
+
+    public String getText() {
+<span class="fc" id="L108">	return text;</span>
+    }
+
+    public Boolean getArea() {
+<span class="fc" id="L112">	return area;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L117">	return Objects.hash(id);</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+
+	final boolean result;
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">	if (this == obj) {</span>
+<span class="fc" id="L126">	    result = true;</span>
+
+<span class="fc bfc" id="L128" title="All 2 branches covered.">	} else if (obj instanceof ImageConversion other) {</span>
+<span class="fc" id="L129">	    result = Objects.equals(id, other.id);</span>
+
+	} else {
+<span class="fc" id="L132">	    result = false;</span>
+	}
+
+<span class="fc" id="L135">	return result;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L140">	final var sbToString = new StringBuilder(76);</span>
+
+<span class="fc" id="L142">	sbToString.append(&quot;ImageConversion [id=&quot;).append(id) //</span>
+<span class="fc" id="L143">			.append(&quot;, fileName=&quot;).append(fileName) //</span>
+<span class="fc" id="L144">			.append(&quot;, fileType=&quot;).append(fileType) //</span>
+<span class="fc" id="L145">			.append(&quot;, fileSize=&quot;).append(fileSize) //</span>
+<span class="fc" id="L146">			.append(&quot;, created=&quot;).append(created) //</span>
+<span class="fc" id="L147">			.append(&quot;, type=&quot;).append(type) //</span>
+<span class="fc" id="L148">			.append(']');</span>
+
+<span class="fc" id="L150">	return sbToString.toString();</span>
+    }
+
+<span class="fc" id="L153">    public static final class Builder {</span>
+
+	@NotNull(message = &quot;{imageConversion.executionType}&quot;)
+	public ExecutionType executionType;
+
+	@NotEmpty(message = &quot;{imageConversion.fileName}&quot;)
+	public String fileName;
+
+	@NotNull(message = &quot;{imageConversion.fileContent}&quot;)
+	public byte[] fileContent;
+
+	@Min(value = 0, message = &quot;{imageConversion.xAxis}&quot;)
+	public Integer xAxis;
+
+	@Min(value = 0, message = &quot;{imageConversion.yAxis}&quot;)
+	public Integer yAxis;
+
+	@Min(value = 0, message = &quot;{imageConversion.width}&quot;)
+	public Integer width;
+
+	@Min(value = 0, message = &quot;{imageConversion.height}&quot;)
+	public Integer height;
+
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	@NotNull(message = &quot;The 'fileType' cannot be null&quot;)
+	private ImageType fileType;
+
+	@Min(value = 0, message = &quot;The 'fileSize' cannot be less than zero&quot;)
+	@NotNull(message = &quot;The 'fileSize' can't be null&quot;)
+	private Long fileSize;
+
+	@NotEmpty(message = &quot;The 'text' cannot be empty&quot;)
+	private String text;
+
+	private Boolean area;
+
+	public Builder with(final Consumer&lt;Builder&gt; function) {
+<span class="fc" id="L191">	    function.accept(this);</span>
+
+<span class="fc" id="L193">	    return this;</span>
+	}
+
+	public Builder with(final ImageConverterRequestInterface request) {
+
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">	    if (isNull(request)) {</span>
+<span class="nc" id="L199">		throw new ConversionException(&quot;{exception.converstionEmptyRequest}&quot;);</span>
+	    }
+
+<span class="fc" id="L202">	    this.fileName = request.fileName();</span>
+<span class="fc" id="L203">	    this.fileContent = request.fileContent();</span>
+<span class="fc" id="L204">	    this.executionType = request.executionType();</span>
+
+<span class="fc bfc" id="L206" title="All 2 branches covered.">	    if (request instanceof ImageConverterRequestArea image //</span>
+<span class="pc bpc" id="L207" title="2 of 4 branches missed.">			    &amp;&amp; nonNull(image.xAxis()) &amp;&amp; nonNull(image.yAxis()) //</span>
+<span class="pc bpc" id="L208" title="2 of 4 branches missed.">			    &amp;&amp; nonNull(image.width()) &amp;&amp; nonNull(image.height())) {</span>
+
+<span class="fc" id="L210">		this.xAxis = image.xAxis();</span>
+<span class="fc" id="L211">		this.yAxis = image.yAxis();</span>
+<span class="fc" id="L212">		this.width = image.width();</span>
+<span class="fc" id="L213">		this.height = image.height();</span>
+	    }
+
+<span class="fc" id="L216">	    return this;</span>
+	}
+
+	public ImageConversion build() {
+
+<span class="fc bfc" id="L221" title="All 6 branches covered.">	    if (StringUtils.isBlank(fileName) || isNull(fileContent) || fileContent.length == 0L) {</span>
+<span class="fc" id="L222">		throw new ConversionException(&quot;{exception.converstionEmptyFile}&quot;);</span>
+	    }
+
+<span class="fc" id="L225">	    final var tesseractService = getBeanFrom(TesseractService.class);</span>
+
+<span class="fc" id="L227">	    final var imageTypeRepository = getBeanFrom(ImageTypeRespository.class);</span>
+
+<span class="fc" id="L229">	    final var validator = getBeanFrom(Validator.class);</span>
+
+<span class="fc" id="L231">	    final var extensionTxt = getExtension(fileName);</span>
+
+<span class="fc" id="L233">	    this.fileType = imageTypeRepository.findByExtension(extensionTxt) //</span>
+<span class="fc" id="L234">			    .orElseThrow(() -&gt; new ElementNotFoundException(ImageType.class, &quot;extension &quot; + extensionTxt));</span>
+
+<span class="fc" id="L236">	    this.fileSize = fileContent.length / 1024L;</span>
+
+<span class="fc bfc" id="L238" title="All 2 branches covered.">	    if (checkParams()) {</span>
+<span class="fc" id="L239">		this.text = tesseractService.convert(fileName, fileContent, xAxis, yAxis, width, height);</span>
+<span class="fc" id="L240">		this.area = true;</span>
+	    } else {
+<span class="fc" id="L242">		this.text = tesseractService.convert(fileName, fileContent);</span>
+<span class="fc" id="L243">		this.area = false;</span>
+	    }
+
+<span class="fc" id="L246">	    final var violations = validator.validate(this);</span>
+
+<span class="fc bfc" id="L248" title="All 2 branches covered.">	    if (!violations.isEmpty()) {</span>
+<span class="fc" id="L249">		throw new ConstraintViolationException(violations);</span>
+	    }
+
+<span class="fc" id="L252">	    return new ImageConversion(this);</span>
+	}
+
+	private boolean checkParams() {
+<span class="pc bpc" id="L256" title="3 of 8 branches missed.">	    return nonNull(xAxis) &amp;&amp; nonNull(yAxis) &amp;&amp; nonNull(width) &amp;&amp; nonNull(height);</span>
+	}
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

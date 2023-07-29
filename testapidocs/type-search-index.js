@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.imageconverter.controller.actuator","l":"BaseTesseractHealthTest"},{"p":"org.imageconverter","l":"TestConstants"}];updateSearchResults();

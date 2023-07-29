@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageTypeService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.application</a> &gt; <span class="el_source">ImageTypeService.java</span></div><h1>ImageTypeService.java</h1><pre class="source lang-java linenums">package org.imageconverter.application;
+
+import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.domain.imagetype.ImageTypeRespository;
+import org.imageconverter.infra.exception.ElementAlreadyExistsException;
+import org.imageconverter.infra.exception.ElementConflictException;
+import org.imageconverter.infra.exception.ElementInvalidException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementWithIdNotFoundException;
+import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
+import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
+import org.imageconverter.util.logging.Loggable;
+import org.springframework.boot.logging.LogLevel;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Application service that manages (CRUD) image types.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+@Service
+@Loggable(value = LogLevel.INFO)
+public class ImageTypeService {
+
+    private final ImageTypeRespository repository;
+    
+    /**
+     * Default constructor.
+     * 
+     * @param newRepository imageType repository
+     */
+    ImageTypeService(final ImageTypeRespository newRepository) {
+<span class="fc" id="L48">	super();</span>
+<span class="fc" id="L49">	this.repository = newRepository;</span>
+<span class="fc" id="L50">    }</span>
+
+    /**
+     * Create a image type.
+     * 
+     * @param request A image type ({@link CreateImageTypeRequest}) request to create
+     * @return A {@link ImageTypeResponse} with the conversion
+     * @exception ElementAlreadyExistsException if image type (file extension) has already exists
+     */
+    @Transactional
+    public ImageTypeResponse createImageType(@NotNull @Valid final CreateImageTypeRequest request) {
+
+<span class="fc" id="L62">	final var imageTypeOptional = repository.findByExtension(request.extension());</span>
+
+<span class="fc bfc" id="L64" title="All 2 branches covered.">	if (imageTypeOptional.isPresent()) {</span>
+<span class="fc" id="L65">	    final Object[] params = { &quot;extension '&quot; + request.extension() + &quot;'&quot; };</span>
+
+<span class="fc" id="L67">	    throw new ElementAlreadyExistsException(ImageType.class, params);</span>
+	}
+
+<span class="fc" id="L70">	final var imageType = new ImageType(request.extension(), request.name(), request.description());</span>
+
+<span class="fc" id="L72">	final var imageConversion = repository.save(imageType);</span>
+
+<span class="fc" id="L74">	return new ImageTypeResponse(imageType.getId(), imageConversion.getExtension(), imageType.getName());</span>
+    }
+
+    /**
+     * Update a image type.
+     * 
+     * @param id      The image type's id
+     * @param request A image type ({@link UpdateImageTypeRequest}) requested to update
+     * @return A {@link ImageTypeResponse} with the update's result
+     * @exception ElementNotFoundException if image type (file extension) doesn't exists
+     */
+    @Transactional
+    public ImageTypeResponse updateImageType(@NotNull final Long id, @NotNull @Valid final UpdateImageTypeRequest request) {
+
+<span class="fc" id="L88">	final var imageType = repository.findById(id) //</span>
+<span class="fc" id="L89">			.orElseThrow(() -&gt; new ElementWithIdNotFoundException(ImageType.class, id));</span>
+
+<span class="fc" id="L91">	imageType.update(request.extension(), request.name(), request.description());</span>
+
+<span class="fc" id="L93">	final var imageTypeNew = repository.save(imageType);</span>
+
+<span class="fc" id="L95">	return new ImageTypeResponse(imageTypeNew.getId(), imageTypeNew.getExtension(), imageTypeNew.getName());</span>
+    }
+
+    /**
+     * Delete a image type.
+     * 
+     * @param id The image type's id
+     * @exception ElementNotFoundException if image type (file extension) doesn't exists
+     * @exception ElementConflictException if amage type already been used on image conversion
+     */
+    @Transactional
+    public void deleteImageType(@NotNull final Long id) {
+
+<span class="fc" id="L108">	final var imageType = repository.findById(id) //</span>
+<span class="fc" id="L109">			.orElseThrow(() -&gt; new ElementWithIdNotFoundException(ImageType.class, id));</span>
+
+	try {
+
+<span class="fc" id="L113">	    repository.delete(imageType);</span>
+
+<span class="fc" id="L115">	    repository.flush();</span>
+
+<span class="fc" id="L117">	} catch (final DataIntegrityViolationException ex) {</span>
+
+<span class="fc" id="L119">	    throw new ElementConflictException(&quot;{exception.imageTypeDeleteDataIntegrityViolation}&quot;, ex, id.toString());</span>
+<span class="fc" id="L120">	}</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * Find a image type by id.
+     * 
+     * @param id The image type's id
+     * @return A {@link ImageTypeResponse} object
+     * @exception ElementNotFoundException if a element with id not found
+     */
+    @Transactional(readOnly = true)
+    public ImageTypeResponse findById(@NotNull final Long id) {
+
+<span class="fc" id="L133">	final var imageType = repository.findById(id) //</span>
+<span class="fc" id="L134">			.orElseThrow(() -&gt; new ElementWithIdNotFoundException(ImageType.class, id));</span>
+
+<span class="fc" id="L136">	return new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName());</span>
+    }
+
+    /**
+     * Find all stored image types or a empty list.
+     * 
+     * @return A list of {@link ImageTypeResponse} or a empty list
+     */
+    @Transactional(readOnly = true)
+    public List&lt;ImageTypeResponse&gt; findAll() {
+
+<span class="fc" id="L147">	return repository.findAll() //</span>
+<span class="fc" id="L148">			.stream() //</span>
+<span class="fc" id="L149">			.map(imageType -&gt; new ImageTypeResponse(imageType.getId(), imageType.getExtension(), imageType.getName())) //</span>
+<span class="fc" id="L150">			.toList();</span>
+    }
+
+    /**
+     * Find image types by spring specification.
+     * 
+     * @param spec     The query specification, a {@link Specification} object
+     * @param pageable The query page control, a {@link Pageable} object
+     * @return A {@link ImageTypeResponse}'s list with result or a empty list
+     * @exception ElementInvalidException if a specification is invalid
+     */
+    @Transactional(readOnly = true)
+    public Page&lt;ImageTypeResponse&gt; findBySpecification(final Specification&lt;ImageType&gt; spec, final Pageable pageable) {
+
+	try {
+
+<span class="fc" id="L166">	    return repository.findAll(spec, pageable) //</span>
+<span class="fc" id="L167">			    .map(imageType -&gt; new ImageTypeResponse( //</span>
+<span class="fc" id="L168">					    imageType.getId(), //</span>
+<span class="fc" id="L169">					    imageType.getExtension(), //</span>
+<span class="fc" id="L170">					    imageType.getName() //</span>
+			    ));
+
+<span class="fc" id="L173">	} catch (final InvalidDataAccessApiUsageException ex) {</span>
+
+<span class="fc" id="L175">	    final var msgException = getRootCauseMessage(ex);</span>
+
+<span class="fc" id="L177">	    final Object[] params = { substringBetween(msgException, &quot;[&quot;, &quot;]&quot;), ImageType.class.getSimpleName() };</span>
+
+<span class="fc" id="L179">	    throw new ElementInvalidException(&quot;{exception.ElementInvalidDataSpecification}&quot;, ex, params);</span>
+	}
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

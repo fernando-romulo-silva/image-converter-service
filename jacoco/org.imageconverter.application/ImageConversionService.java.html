@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageConversionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.application</a> &gt; <span class="el_source">ImageConversionService.java</span></div><h1>ImageConversionService.java</h1><pre class="source lang-java linenums">package org.imageconverter.application;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.text.MessageFormat.format;
+import static org.apache.commons.csv.QuoteMode.NONE;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.imageconverter.domain.conversion.ImageConversion;
+import org.imageconverter.domain.conversion.ImageConversionRepository;
+import org.imageconverter.infra.exception.CsvFileGenerationException;
+import org.imageconverter.infra.exception.CsvFileNoDataException;
+import org.imageconverter.infra.exception.ElementAlreadyExistsException;
+import org.imageconverter.infra.exception.ElementInvalidException;
+import org.imageconverter.infra.exception.ElementNotFoundException;
+import org.imageconverter.infra.exception.ElementWithIdNotFoundException;
+import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
+import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
+import org.imageconverter.util.logging.Loggable;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Application service that execute conversion.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+@Service
+@Loggable
+public class ImageConversionService {
+    
+<span class="fc" id="L49">    public static final String [] HEADER_FILE = { &quot;id&quot;, &quot;file-name&quot;, &quot;result&quot; };</span>
+
+    private final ImageConversionRepository repository;
+
+    /**
+     * Default constructor.
+     * 
+     * @param newRepository ImageCoversion repository
+     */
+    ImageConversionService(final ImageConversionRepository newRepository) {
+<span class="fc" id="L59">	super();</span>
+<span class="fc" id="L60">	this.repository = newRepository;</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Convert an image on text.
+     * 
+     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea})
+     *                that it'll be convert
+     * @return A {@link ImageConversionResponse} with the conversion
+     * @exception ElementAlreadyExistsException if image (file name) has already converted
+     */
+    @Transactional
+    public ImageConversionResponse convert(@NotNull @Valid final ImageConverterRequestInterface request) {
+
+<span class="fc" id="L74">	final var imageConversionNew = new ImageConversion.Builder() //</span>
+<span class="fc" id="L75">			.with(request) //</span>
+<span class="fc" id="L76">			.build();</span>
+
+<span class="fc" id="L78">	final var fileName = imageConversionNew.getFileName();</span>
+
+<span class="fc" id="L80">	repository.findByFileName(fileName).ifPresent(imageConversionResult -&gt; {</span>
+
+<span class="fc" id="L82">	    throw new ElementAlreadyExistsException( //</span>
+			    ImageConversion.class, //
+<span class="fc" id="L84">			    new Object[] { format(&quot;fileName ''{0}''&quot;, fileName) } //</span>
+	    );
+	});
+
+<span class="fc" id="L88">	final var imageConversion = repository.save(imageConversionNew);</span>
+
+<span class="fc" id="L90">	return new ImageConversionResponse(imageConversion.getId(), imageConversion.getFileName(), imageConversion.getText());</span>
+    }
+
+    /**
+     * Convert a list of image on text.
+     * 
+     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea})
+     *                that it'll be convert
+     * @return A {@link ImageConversionResponse} with the conversion
+     * @exception ElementAlreadyExistsException if image (file name) has already converted
+     */
+    @Transactional
+    public List&lt;ImageConversionResponse&gt; convert(@NotNull @NotEmpty @Valid final List&lt;ImageConverterRequestInterface&gt; requests) {
+
+<span class="fc" id="L104">	final var imageList = new ArrayList&lt;ImageConversion&gt;();</span>
+
+<span class="fc bfc" id="L106" title="All 2 branches covered.">	for (final var request : requests) {</span>
+<span class="fc" id="L107">	    final var imageConversionNew = new ImageConversion.Builder() // NOPMD - AvoidInstantiatingObjectsInLoop: It's necessary to create a new object for each element</span>
+<span class="fc" id="L108">			    .with(request) //</span>
+<span class="fc" id="L109">			    .build();</span>
+
+<span class="fc" id="L111">	    repository.findByFileName(imageConversionNew.getFileName()).ifPresent(imageConversionResult -&gt; {</span>
+
+<span class="nc" id="L113">		throw new ElementAlreadyExistsException( //</span>
+				ImageConversion.class, //
+<span class="nc" id="L115">				createParams(imageConversionResult) //</span>
+		);
+	    });
+
+<span class="fc" id="L119">	    imageList.add(imageConversionNew);</span>
+<span class="fc" id="L120">	}</span>
+
+<span class="fc" id="L122">	final var imagesConversion = repository.saveAll(imageList);</span>
+
+<span class="fc" id="L124">	return imagesConversion //</span>
+<span class="fc" id="L125">			.stream() //</span>
+<span class="fc" id="L126">			.map(img -&gt; new ImageConversionResponse(img.getId(), img.getFileName(), img.getText())) //</span>
+<span class="fc" id="L127">			.toList();</span>
+
+    }
+
+    private Object[] createParams(final ImageConversion imageConversionResult) {
+<span class="nc" id="L132">	return new Object[] { format(&quot;fileName '{0}', id '{1}'&quot;, imageConversionResult.getFileName(), imageConversionResult.getId()) };</span>
+    }
+
+    /**
+     * Delete a conversion image.
+     * 
+     * @param id The image type's id
+     * @exception ElementNotFoundException if conversion (id) doesn't exists
+     */
+    @Transactional
+    public void deleteImageConversion(@NotNull final Long id) {
+
+<span class="fc" id="L144">	final var imageConversion = repository.findById(id) //</span>
+<span class="fc" id="L145">			.orElseThrow(() -&gt; new ElementWithIdNotFoundException(ImageConversion.class, id));</span>
+
+<span class="fc" id="L147">	repository.delete(imageConversion);</span>
+
+<span class="fc" id="L149">	repository.flush();</span>
+<span class="fc" id="L150">    }</span>
+
+    /**
+     * Find all stored conversions or a empty list.
+     * 
+     * @return A list of {@link ImageConversionResponse} or a empty list
+     */
+    @Transactional(readOnly = true)
+    public List&lt;ImageConversionResponse&gt; findAll() {
+
+<span class="fc" id="L160">	return repository.findAll() //</span>
+<span class="fc" id="L161">			.stream() //</span>
+<span class="fc" id="L162">			.map(icr -&gt; new ImageConversionResponse(icr.getId(), icr.getFileName(), icr.getText())) //</span>
+<span class="fc" id="L163">			.toList(); //</span>
+    }
+
+    /**
+     * Find a stored conversion by id.
+     * 
+     * @param id The image conversion's id
+     * @return A {@link ImageConversionResponse} object
+     * @exception ElementNotFoundException if a element with id not found
+     */
+    @Transactional(readOnly = true)
+    public ImageConversionResponse findById(@NotNull final Long id) {
+
+<span class="fc" id="L176">	final var imageConversion = repository.findById(id) //</span>
+<span class="fc" id="L177">			.orElseThrow(() -&gt; new ElementWithIdNotFoundException(ImageConversion.class, id));</span>
+
+<span class="fc" id="L179">	return new ImageConversionResponse(imageConversion.getId(), imageConversion.getFileName(), imageConversion.getText());</span>
+    }
+
+    /**
+     * Find image conversions by spring specification
+     * 
+     * @param spec The query specification, a {@link Specification} object
+     * @return A {@link ImageConversionResponse}'s list with result or a empty list
+     * @param pageable The query page control, a {@link Pageable} object
+     * @exception ElementInvalidException if a specification is invalid
+     */
+    @Transactional(readOnly = true)
+    public Page&lt;ImageConversionResponse&gt; findBySpecification(final Specification&lt;ImageConversion&gt; spec, final Pageable page) {
+
+	try {
+
+<span class="fc" id="L195">	    return repository.findAll(spec, page) //</span>
+<span class="fc" id="L196">			    .map(icr -&gt; new ImageConversionResponse(icr.getId(), icr.getFileName(), icr.getText())); //</span>
+
+<span class="fc" id="L198">	} catch (final InvalidDataAccessApiUsageException ex) {</span>
+
+<span class="fc" id="L200">	    final var msgException = getRootCauseMessage(ex);</span>
+
+<span class="fc" id="L202">	    final Object[] params = { substringBetween(msgException, &quot;[&quot;, &quot;]&quot;), ImageConversion.class.getSimpleName() };</span>
+
+<span class="fc" id="L204">	    throw new ElementInvalidException(&quot;{exception.ElementInvalidDataSpecification}&quot;, ex, params);</span>
+	}
+    }
+
+    /**
+     * Create a CSV file based on the result filtered by the spec
+     * 
+     * @param spec A {@link Specification} object, the query filter
+     * @return An array of bytes (file in memory) 
+     */
+    @Transactional(readOnly = true)
+    public byte[] findBySpecificationToCsv(final Specification&lt;ImageConversion&gt; spec) {
+
+<span class="fc" id="L217">	final var pageable = Pageable.ofSize(1000);</span>
+
+	// TODO replace Page to Slice when it supports Specification
+<span class="fc" id="L220">	var page = repository.findAll(spec, pageable);</span>
+
+<span class="fc bfc" id="L222" title="All 2 branches covered.">	if (page.isEmpty()) {</span>
+<span class="fc" id="L223">	    throw new CsvFileNoDataException(&quot;{exception.csvEmpyResult}&quot;, spec);</span>
+	}
+
+<span class="fc" id="L226">	final var csvFormat = CSVFormat.Builder.create() //</span>
+<span class="fc" id="L227">			.setHeader(HEADER_FILE) //</span>
+<span class="fc" id="L228">			.setAllowMissingColumnNames(true) //</span>
+<span class="fc" id="L229">			.setNullString(EMPTY) //</span>
+<span class="fc" id="L230">			.setQuoteMode(NONE) //</span>
+<span class="fc" id="L231">			.setDelimiter(';') //</span>
+<span class="fc" id="L232">			.setEscape(' ') //</span>
+<span class="fc" id="L233">			.build();</span>
+
+<span class="fc" id="L235">	try (final var byteArrayOutputStream = new ByteArrayOutputStream(); //</span>
+<span class="fc" id="L236">			final var outStreamWriter = new OutputStreamWriter(byteArrayOutputStream, UTF_8); //</span>
+<span class="fc" id="L237">			final var csvPrinter = new CSVPrinter(outStreamWriter, csvFormat);) {</span>
+
+	    do {
+
+<span class="fc" id="L241">		var imageConversionList = page.getContent();</span>
+
+<span class="fc bfc" id="L243" title="All 2 branches covered.">		for (final var imageConversion : imageConversionList) {</span>
+<span class="fc" id="L244">		    csvPrinter.printRecord(imageConversion.getId().toString(), imageConversion.getFileName(), imageConversion.getText());</span>
+<span class="fc" id="L245">		}</span>
+
+<span class="fc" id="L247">		csvPrinter.flush();</span>
+
+<span class="fc" id="L249">		page = repository.findAll(spec, page.nextOrLastPageable());</span>
+<span class="fc" id="L250">		imageConversionList = page.getContent();</span>
+
+<span class="pc bpc" id="L252" title="1 of 2 branches missed.">	    } while (page.hasNext());</span>
+
+<span class="fc" id="L254">	    return byteArrayOutputStream.toByteArray();</span>
+
+<span class="nc" id="L256">	} catch (final IOException ex) {</span>
+<span class="nc" id="L257">	    throw new CsvFileGenerationException(&quot;{exception.csvUnexpectedError}&quot;, ex);</span>
+	}
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

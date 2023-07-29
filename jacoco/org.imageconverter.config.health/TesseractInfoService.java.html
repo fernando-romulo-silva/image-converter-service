@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TesseractInfoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.config.health</a> &gt; <span class="el_source">TesseractInfoService.java</span></div><h1>TesseractInfoService.java</h1><pre class="source lang-java linenums">package org.imageconverter.config.health;
+
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.collections4.MapUtils;
+import org.imageconverter.util.BeanUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
+import org.springframework.cloud.endpoint.RefreshEndpoint;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.io.Resource;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.TesseractException;
+
+/**
+ * Component to show informations about tesseract configs.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+@Component
+@Endpoint(id = &quot;tesseract&quot;)
+// @Endpoint, @JmxEndpoint, and @WebEndpoint
+public class TesseractInfoService {
+
+    private final Resource imageFile;
+
+    private final RefreshEndpoint refreshEndpoint;
+
+    /**
+     * Default constructor.
+     * 
+     * @param newImageFile       Image to check if the tesseract works
+     * @param newRefreshEndpoint Represh point to update infos
+     */
+    TesseractInfoService( //
+		    @Value(&quot;classpath:check-image.png&quot;) //
+		    final Resource newImageFile, //
+		    //
+		    @Autowired //
+		    final RefreshEndpoint newRefreshEndpoint) {
+<span class="fc" id="L60">	super();</span>
+<span class="fc" id="L61">	this.imageFile = newImageFile;</span>
+<span class="fc" id="L62">	this.refreshEndpoint = newRefreshEndpoint;</span>
+<span class="fc" id="L63">    }</span>
+
+    /**
+     * Read data about tesseract configs.
+     * 
+     * @return A {@link TesseractDetailsData} with the data
+     */
+    @ReadOperation
+    public TesseractDetailsData read() {
+
+<span class="fc" id="L73">	final var details = new LinkedHashMap&lt;String, Object&gt;();</span>
+
+<span class="fc" id="L75">	details.put(&quot;tesseractVersion&quot;, &quot;4.11&quot;);</span>
+<span class="fc" id="L76">	details.put(&quot;tesseractFolder&quot;, BeanUtil.getPropertyValue(&quot;tesseract.folder&quot;));</span>
+<span class="fc" id="L77">	details.put(&quot;tesseractLanguage&quot;, BeanUtil.getPropertyValue(&quot;tesseract.language&quot;));</span>
+<span class="fc" id="L78">	details.put(&quot;tesseractDpi&quot;, BeanUtil.getPropertyValue(&quot;tesseract.dpi&quot;));</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">	if (checkTesseract()) {</span>
+<span class="fc" id="L81">	    details.put(&quot;tesseractInit&quot;, &quot;SUCCESSFUL&quot;);</span>
+	} else {
+<span class="fc" id="L83">	    details.put(&quot;tesseractInit&quot;, &quot;FAIL&quot;);</span>
+	}
+
+<span class="fc" id="L86">	return new TesseractDetailsData(details);</span>
+    }
+
+//    @ReadOperation
+//    public String health(@Selector String name) {
+//	return &quot;custom-end-point&quot;;
+//    }
+
+    /**
+     * Update values from request http, JMX, etc.
+     * 
+     * @param tesseractFolder   The tesseract intalled dictionary
+     * @param tesseractLanguage The tesseract language
+     * @param tesseractDpi      The resolution quality
+     */
+    @WriteOperation
+    public void writeOperation(@Nullable final String tesseractFolder, @Nullable final String tesseractLanguage, @Nullable final String tesseractDpi) {
+<span class="fc" id="L103">	final var env = (ConfigurableEnvironment) BeanUtil.getEnvironment();</span>
+
+<span class="fc" id="L105">	final var propertySources = env.getPropertySources();</span>
+<span class="fc" id="L106">	final var map = new HashMap&lt;String, Object&gt;();</span>
+
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">	if (Objects.nonNull(tesseractFolder)) {</span>
+<span class="fc" id="L109">	    map.put(&quot;tesseract.folder&quot;, tesseractFolder);</span>
+	}
+
+<span class="fc bfc" id="L112" title="All 2 branches covered.">	if (Objects.nonNull(tesseractLanguage)) {</span>
+<span class="fc" id="L113">	    map.put(&quot;tesseract.language&quot;, tesseractLanguage);</span>
+	}
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">	if (Objects.nonNull(tesseractDpi)) {</span>
+<span class="fc" id="L117">	    map.put(&quot;tesseract.dpi&quot;, tesseractDpi);</span>
+	}
+
+<span class="fc" id="L120">	propertySources.addFirst(new MapPropertySource(&quot;newmap&quot;, map));</span>
+
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">	if (!map.isEmpty()) {</span>
+<span class="fc" id="L123">	    refreshEndpoint.refresh();</span>
+	}
+
+<span class="fc" id="L126">    }</span>
+
+//    @DeleteOperation
+//    public void deleteOperation(@Selector final String name) {
+//	// delete operation
+//    }
+
+    private boolean checkTesseract() {
+
+<span class="fc" id="L135">	final var tesseractBeanProvider = BeanUtil.getBeanProviderFrom(ITesseract.class);</span>
+<span class="fc" id="L136">	final var tesseract = tesseractBeanProvider.getObject();</span>
+
+<span class="fc" id="L138">	boolean result = false;</span>
+
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">	if (Objects.isNull(tesseract)) {</span>
+
+<span class="nc" id="L142">	    result = false;</span>
+
+	} else {
+
+	    try {
+		
+<span class="fc" id="L148">		final var bufferedImage = ImageIO.read(new ByteArrayInputStream(imageFile.getInputStream().readAllBytes()));</span>
+
+<span class="fc" id="L150">		final var numberOne = tesseract.doOCR(bufferedImage).replaceAll(&quot;\\D+&quot;, &quot;&quot;);</span>
+
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">		if (equalsIgnoreCase(numberOne, &quot;033&quot;)) {</span>
+<span class="fc" id="L153">		    result = true;</span>
+		}
+
+<span class="fc" id="L156">	    } catch (final TesseractException | IOException | IllegalArgumentException ex) {</span>
+<span class="fc" id="L157">		result = false;</span>
+<span class="fc" id="L158">	    }</span>
+	}
+
+<span class="fc" id="L161">	return result;</span>
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class TesseractDetailsData {
+
+	private final Map&lt;String, Object&gt; tesseractDetails;
+
+	TesseractDetailsData(final Map&lt;String, Object&gt; tesseractDetails) {
+<span class="fc" id="L170">	    super();</span>
+<span class="fc" id="L171">	    this.tesseractDetails = tesseractDetails;</span>
+<span class="fc" id="L172">	}</span>
+
+	@JsonAnyGetter
+	public Map&lt;String, Object&gt; getTesseractDetails() {
+<span class="fc" id="L176">	    return MapUtils.unmodifiableMap(tesseractDetails);</span>
+	}
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExecutionType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">image-converter-service</a> &gt; <a href="index.source.html" class="el_package">org.imageconverter.domain.conversion</a> &gt; <span class="el_source">ExecutionType.java</span></div><h1>ExecutionType.java</h1><pre class="source lang-java linenums">package org.imageconverter.domain.conversion;
+
+import static org.apache.commons.lang3.StringUtils.upperCase;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+/**
+ * Conversion execution's type.
+ * 
+ * @author Fernando Romulo da Silva
+ */
+<span class="fc" id="L12">@Schema(enumAsRef = true)</span>
+public enum ExecutionType {
+
+<span class="fc" id="L15">    UNKNOWN,</span>
+    
+<span class="fc" id="L17">    BATCH,</span>
+
+<span class="fc" id="L19">    WS,</span>
+
+<span class="fc" id="L21">    MS,</span>
+    
+<span class="fc" id="L23">    WEB,</span>
+    
+<span class="fc" id="L25">    DESKTOP;</span>
+    
+    /**
+     * Convert string to objects
+     * 
+     * @param string The string to 
+     * @return A object {@link ExecutionType} enum
+     */
+    public static ExecutionType from(final String string) {
+	   
+<span class="fc" id="L35">	final var stringTypeNew = upperCase(string);</span>
+	
+<span class="pc bpc" id="L37" title="3 of 6 branches missed.">	return switch (stringTypeNew) { //</span>
+<span class="fc" id="L38">	        case &quot;BATCH&quot; -&gt; BATCH; </span>
+<span class="nc" id="L39">	        case &quot;WS&quot; -&gt; WS; // Web Service</span>
+<span class="nc" id="L40">	        case &quot;MS&quot; -&gt; MS; // Messaging Service</span>
+<span class="fc" id="L41">	        case &quot;WEB&quot; -&gt; WEB; // Spring MVC</span>
+<span class="nc" id="L42">	        case &quot;DESKTOP&quot; -&gt; DESKTOP; // </span>
+<span class="fc" id="L43">	        default -&gt; UNKNOWN;</span>
+	};
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
