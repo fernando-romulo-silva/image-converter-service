@@ -41,7 +41,7 @@ public class ImageConfig {
 	    tesseract = new Tesseract();
 	    tesseract.setDatapath(BeanUtil.getPropertyValue("tesseract.folder"));
 	    tesseract.setLanguage(BeanUtil.getPropertyValue("tesseract.language"));
-	    tesseract.setTessVariable("user_defined_dpi", BeanUtil.getPropertyValue("tesseract.dpi"));
+	    tesseract.setVariable("user_defined_dpi", BeanUtil.getPropertyValue("tesseract.dpi"));
 	}
 
 	return tesseract;

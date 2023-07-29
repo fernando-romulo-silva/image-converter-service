@@ -25,5 +25,7 @@
     <root level="info">
         <appender-ref ref="Console" />
     </root>	
+    
+    <!-- https://examples.javacodegeeks.com/java-development/enterprise-java/logback/logback-ayncappender-example/ -->
 
 </configuration>

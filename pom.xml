@@ -27,6 +27,20 @@
 		<!-- <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location> -->
 
 	</properties>
+	
+	<scm>
+		<url>https://github.com/fernando-romulo-silva/image-converter-service</url>
+		<connection>scm:git:ssh://git@github.com:fernando-romulo-silva/image-converter-service.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:fernando-romulo-silva/image-converter-service.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	
+	<distributionManagement>
+	  <site>
+    	<id>github</id>
+    	<url>scm:git:ssh:git@github.com:fernando-romulo-silva/image-converter-service.git</url>
+  	  </site>
+	</distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>
@@ -351,6 +365,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
+			
+		    <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-scm-publish-plugin</artifactId>
+		        <configuration>
+		          <scmBranch>gh-pages</scmBranch>
+		        </configuration>
+		    </plugin>			
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
