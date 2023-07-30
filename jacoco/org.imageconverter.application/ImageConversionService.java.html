@@ -80,7 +80,7 @@ public class ImageConversionService {
 <span class="fc" id="L80">	repository.findByFileName(fileName).ifPresent(imageConversionResult -&gt; {</span>
 
 <span class="fc" id="L82">	    throw new ElementAlreadyExistsException( //</span>
-			    ImageConversion.class, //
+<span class="fc" id="L83">			    ImageConversion.class, //</span>
 <span class="fc" id="L84">			    new Object[] { format(&quot;fileName ''{0}''&quot;, fileName) } //</span>
 	    );
 	});
@@ -111,13 +111,13 @@ public class ImageConversionService {
 <span class="fc" id="L111">	    repository.findByFileName(imageConversionNew.getFileName()).ifPresent(imageConversionResult -&gt; {</span>
 
 <span class="nc" id="L113">		throw new ElementAlreadyExistsException( //</span>
-				ImageConversion.class, //
+<span class="nc" id="L114">				ImageConversion.class, //</span>
 <span class="nc" id="L115">				createParams(imageConversionResult) //</span>
 		);
 	    });
 
 <span class="fc" id="L119">	    imageList.add(imageConversionNew);</span>
-<span class="fc" id="L120">	}</span>
+	}
 
 <span class="fc" id="L122">	final var imagesConversion = repository.saveAll(imageList);</span>
 
@@ -242,7 +242,7 @@ public class ImageConversionService {
 
 <span class="fc bfc" id="L243" title="All 2 branches covered.">		for (final var imageConversion : imageConversionList) {</span>
 <span class="fc" id="L244">		    csvPrinter.printRecord(imageConversion.getId().toString(), imageConversion.getFileName(), imageConversion.getText());</span>
-<span class="fc" id="L245">		}</span>
+		}
 
 <span class="fc" id="L247">		csvPrinter.flush();</span>
 

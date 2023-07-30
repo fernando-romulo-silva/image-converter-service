@@ -128,7 +128,7 @@ public class ImageConversion { // NOPMD - Provide accessors on private construct
 <span class="fc bfc" id="L128" title="All 2 branches covered.">	} else if (obj instanceof ImageConversion other) {</span>
 <span class="fc" id="L129">	    result = Objects.equals(id, other.id);</span>
 
-	} else {
+<span class="fc" id="L131">	} else {</span>
 <span class="fc" id="L132">	    result = false;</span>
 	}
 
@@ -238,7 +238,7 @@ public class ImageConversion { // NOPMD - Provide accessors on private construct
 <span class="fc bfc" id="L238" title="All 2 branches covered.">	    if (checkParams()) {</span>
 <span class="fc" id="L239">		this.text = tesseractService.convert(fileName, fileContent, xAxis, yAxis, width, height);</span>
 <span class="fc" id="L240">		this.area = true;</span>
-	    } else {
+<span class="fc" id="L241">	    } else {</span>
 <span class="fc" id="L242">		this.text = tesseractService.convert(fileName, fileContent);</span>
 <span class="fc" id="L243">		this.area = false;</span>
 	    }

@@ -79,7 +79,7 @@ public class TesseractInfoService {
 
 <span class="fc bfc" id="L80" title="All 2 branches covered.">	if (checkTesseract()) {</span>
 <span class="fc" id="L81">	    details.put(&quot;tesseractInit&quot;, &quot;SUCCESSFUL&quot;);</span>
-	} else {
+<span class="fc" id="L82">	} else {</span>
 <span class="fc" id="L83">	    details.put(&quot;tesseractInit&quot;, &quot;FAIL&quot;);</span>
 	}
 
@@ -141,7 +141,7 @@ public class TesseractInfoService {
 
 <span class="nc" id="L142">	    result = false;</span>
 
-	} else {
+<span class="nc" id="L144">	} else {</span>
 
 	    try {
 		
@@ -155,7 +155,7 @@ public class TesseractInfoService {
 
 <span class="fc" id="L156">	    } catch (final TesseractException | IOException | IllegalArgumentException ex) {</span>
 <span class="fc" id="L157">		result = false;</span>
-<span class="fc" id="L158">	    }</span>
+	    }
 	}
 
 <span class="fc" id="L161">	return result;</span>

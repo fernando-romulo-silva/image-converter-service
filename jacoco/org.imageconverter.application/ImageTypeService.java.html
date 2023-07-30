@@ -117,7 +117,7 @@ public class ImageTypeService {
 <span class="fc" id="L117">	} catch (final DataIntegrityViolationException ex) {</span>
 
 <span class="fc" id="L119">	    throw new ElementConflictException(&quot;{exception.imageTypeDeleteDataIntegrityViolation}&quot;, ex, id.toString());</span>
-<span class="fc" id="L120">	}</span>
+	}
 <span class="fc" id="L121">    }</span>
 
     /**
@@ -168,7 +168,7 @@ public class ImageTypeService {
 <span class="fc" id="L168">					    imageType.getId(), //</span>
 <span class="fc" id="L169">					    imageType.getExtension(), //</span>
 <span class="fc" id="L170">					    imageType.getName() //</span>
-			    ));
+<span class="fc" id="L171">			    ));</span>
 
 <span class="fc" id="L173">	} catch (final InvalidDataAccessApiUsageException ex) {</span>
 

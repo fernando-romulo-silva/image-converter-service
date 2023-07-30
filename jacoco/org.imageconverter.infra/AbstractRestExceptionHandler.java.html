@@ -178,8 +178,8 @@ abstract class AbstractRestExceptionHandler extends ResponseEntityExceptionHandl
 
 <span class="fc" id="L179">	final var value = request.getParameterValues(&quot;trace&quot;);</span>
 
-<span class="pc bpc" id="L181" title="1 of 4 branches missed.">	return Objects.nonNull(value) //</span>
-			&amp;&amp; value.length &gt; 0 //
+<span class="fc bfc" id="L181" title="All 2 branches covered.">	return Objects.nonNull(value) //</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">			&amp;&amp; value.length &gt; 0 //</span>
 <span class="pc bpc" id="L183" title="1 of 2 branches missed.">			&amp;&amp; &quot;true&quot;.contentEquals(value[0]);</span>
     }
 

@@ -9,11 +9,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Fernando Romulo da Silva
  */
-<span class="fc" id="L12">@Schema(name = &quot;ImageConverterPostResponse&quot;, description = &quot;Response to convert image&quot;)</span>
+@Schema(name = &quot;ImageConverterPostResponse&quot;, description = &quot;Response to convert image&quot;)
 <span class="fc" id="L13">public record ImageConversionPostResponse( //</span>
 		
 		@Schema(name = &quot;txt&quot;, required = true, example = &quot;2343 3455&quot;) //
 		@JsonProperty(value = &quot;text&quot;, required = true) //
-		String text) {
+<span class="fc" id="L17">		String text) {</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

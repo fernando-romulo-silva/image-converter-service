@@ -9,19 +9,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Fernando Romulo da Silva
  */
-<span class="fc" id="L12">@Schema(name = &quot;ImageCon&quot; + &quot;verterResponse&quot;, description = &quot;Response to convert image&quot;)</span>
+@Schema(name = &quot;ImageCon&quot; + &quot;verterResponse&quot;, description = &quot;Response to convert image&quot;)
 <span class="fc" id="L13">public record ImageConversionResponse( //</span>
 		//
 		@Schema(name = &quot;id&quot;, required = true, example = &quot;1&quot;) //
 		@JsonProperty(value = &quot;id&quot;, required = true) //
-		Long id,
+<span class="fc" id="L17">		Long id,</span>
 		//
 		@Schema(name = &quot;file_name&quot;, required = true, example = &quot;image.bmp&quot;) //
 		@JsonProperty(value = &quot;file_name&quot;, required = true) //
-		String fileName,
+<span class="fc" id="L21">		String fileName,</span>
 		//
 		@Schema(name = &quot;txt&quot;, required = true, example = &quot;2343 3455&quot;) //
 		@JsonProperty(value = &quot;text&quot;, required = true) //
-		String text) {
+<span class="fc" id="L25">		String text) {</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

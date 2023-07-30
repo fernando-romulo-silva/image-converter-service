@@ -13,36 +13,36 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Fernando Romulo da Silva
  */
-<span class="fc" id="L16">@Schema(name = &quot;ImageConverterRequestArea&quot;, description = &quot;Resquest structure to convert Image with specific area&quot;)</span>
+@Schema(name = &quot;ImageConverterRequestArea&quot;, description = &quot;Resquest structure to convert Image with specific area&quot;)
 <span class="fc" id="L17">public record ImageConverterRequestArea( //</span>
 		
 		@Schema(name = &quot;fileName&quot;, description = &quot;The uploaded image file name&quot;, required = true, example = &quot;image.bmp&quot;) //
 		@NotEmpty(message = &quot;{imageConversion.fileName}&quot;) //
-		String fileName, //
+<span class="fc" id="L21">		String fileName, //</span>
 		//
 		@Schema(name = &quot;fileContent&quot;, description = &quot;The uploaded image file bytes&quot;, required = true, example = &quot;image.bmp&quot;) //
 		@NotNull(message = &quot;{imageConversion.fileContent}&quot;) //
-		byte[] fileContent, //
+<span class="fc" id="L25">		byte[] fileContent, //</span>
 		//
 		@Schema(name = &quot;executionType&quot;, description = &quot;Execution's type&quot;, required = true, implementation = ExecutionType.class) //
 		@NotNull(message = &quot;{imageConversion.executionType}&quot;) //
-		ExecutionType executionType, //
+<span class="fc" id="L29">		ExecutionType executionType, //</span>
 		//
 		@Schema(name = &quot;xAxis&quot;, description = &quot;The x axis image point&quot;, required = false, example = &quot;145&quot;) //
 		@Min(value = 0, message = &quot;{imageConversion.xAxis}&quot;) //
-		Integer xAxis, //
+<span class="fc" id="L33">		Integer xAxis, //</span>
 		//
 		@Schema(name = &quot;yAxis&quot;, description = &quot;The y axis image point&quot;, required = false, example = &quot;123&quot;) //
 		@Min(value = 0, message = &quot;{imageConversion.yAxis}&quot;) //
-		Integer yAxis, //
+<span class="fc" id="L37">		Integer yAxis, //</span>
 		//
 		@Schema(name = &quot;width&quot;, description = &quot;The width area&quot;, required = false, example = &quot;123&quot;) //
 		@Min(value = 0, message = &quot;{imageConversion.width}&quot;) //
-		Integer width, //
+<span class="fc" id="L41">		Integer width, //</span>
 		//
 		@Schema(name = &quot;height&quot;, description = &quot;The height area&quot;, required = false, example = &quot;343&quot;) //
 		@Min(value = 0, message = &quot;{imageConversion.height}&quot;) //
-		Integer height) implements ImageConverterRequestInterface {
+<span class="fc" id="L45">		Integer height) implements ImageConverterRequestInterface {</span>
     
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -291,9 +291,9 @@ public class ImageConversionRestController {
 	byte[] bytes;
 	try {
 <span class="fc" id="L293">	    bytes = file.getBytes();</span>
-<span class="nc" id="L294">	} catch (final IOException e) {</span>
+<span class="pc" id="L294">	} catch (final IOException e) {</span>
 <span class="nc" id="L295">	    bytes = new byte[0];</span>
-<span class="fc" id="L296">	}</span>
+	}
 <span class="fc" id="L297">	return bytes;</span>
     }
 

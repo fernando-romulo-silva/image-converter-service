@@ -26,10 +26,10 @@ import org.springframework.security.web.firewall.HttpFirewall;
 public class RestSecurityConfig {
 
 <span class="fc" id="L28">    private final String[] swaggerUiURL = { //</span>
-	    &quot;/v3/api-docs/**&quot;, //
-	    &quot;/swagger-ui/**&quot;, //
-	    &quot;/swagger-ui.html&quot;, //
-	    &quot;/webjars/**&quot; //
+<span class="fc" id="L29">	    &quot;/v3/api-docs/**&quot;, //</span>
+<span class="fc" id="L30">	    &quot;/swagger-ui/**&quot;, //</span>
+<span class="fc" id="L31">	    &quot;/swagger-ui.html&quot;, //</span>
+<span class="fc" id="L32">	    &quot;/webjars/**&quot; //</span>
     };
 
     private final RestAuthenticationSuccessHandler authenticationSuccessHandler;
@@ -38,12 +38,12 @@ public class RestSecurityConfig {
 
     private final CsrfTokenRepository csrfTokenRepository;
 
-    RestSecurityConfig( //
+<span class="fc" id="L41">    RestSecurityConfig( //</span>
 		    final RestAuthenticationSuccessHandler authenticationSuccessHandler, //
 		    final HttpFirewall allowUrlEncodedSlashHttpFirewall, //
 //		    final CsrfTokenRepository httpSessionCsrfTokenRepository
 		    final CsrfTokenRepository cookieCsrfTokenRepository
-<span class="fc" id="L46">		    ) {</span>
+		    ) {
 	//
 <span class="fc" id="L48">	this.authenticationSuccessHandler = authenticationSuccessHandler;</span>
 <span class="fc" id="L49">	this.allowUrlEncodedSlashHttpFirewall = allowUrlEncodedSlashHttpFirewall;</span>

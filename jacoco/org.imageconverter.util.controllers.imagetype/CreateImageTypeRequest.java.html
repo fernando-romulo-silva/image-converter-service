@@ -12,22 +12,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Fernando Romulo da Silva
  */
-<span class="fc" id="L15">@JsonIgnoreProperties(ignoreUnknown = false)</span>
+@JsonIgnoreProperties(ignoreUnknown = false)
 @Schema(name = &quot;ImageTypeRequest&quot;, description = &quot;Resquest structure to create Image Type&quot;)
 <span class="fc" id="L17">public record CreateImageTypeRequest( //</span>
 		//
 		@Schema(name = &quot;extension&quot;, description = &quot;The image type's extension&quot;, required = true, example = &quot;bmp&quot;) //
 		@JsonProperty(value = &quot;extension&quot;, required = true) //
 		@NotEmpty(message = &quot;{imagetype.extension}&quot;) //
-		String extension,
+<span class="fc" id="L22">		String extension,</span>
 		//
 		@Schema(name = &quot;name&quot;, description = &quot;The image type's name&quot;, required = true, example = &quot;BitMap&quot;) //
 		@JsonProperty(value = &quot;name&quot;, required = true) //
 		@NotEmpty(message = &quot;{imagetype.name}&quot;) //
-		String name, //
+<span class="fc" id="L27">		String name, //</span>
 		//
 		@Schema(name = &quot;description&quot;, description = &quot;A description about the image type&quot;, required = false, example = &quot;Device independent bitmap&quot;) //
 		@JsonProperty(value = &quot;description&quot;, required = false) //
-		String description) {
+<span class="fc" id="L31">		String description) {</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

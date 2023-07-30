@@ -12,21 +12,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Fernando Romulo da Silva
  */
-<span class="fc" id="L15">@Schema(name = &quot;UpdateImageTypeRequest&quot;, description = &quot;Resquest structure to update Image Type&quot;)</span>
+@Schema(name = &quot;UpdateImageTypeRequest&quot;, description = &quot;Resquest structure to update Image Type&quot;)
 @JsonIgnoreProperties(ignoreUnknown = false)
 @JsonInclude(Include.NON_NULL)
 <span class="fc" id="L18">public record UpdateImageTypeRequest( //</span>
 
 		@Schema(name = &quot;extension&quot;, required = false, example = &quot;bmp&quot;) //
 		@JsonProperty(value = &quot;extension&quot;, required = false) //
-		String extension,
+<span class="fc" id="L22">		String extension,</span>
 
 		@Schema(name = &quot;name&quot;, required = false, example = &quot;BitMap&quot;) //
 		@JsonProperty(value = &quot;name&quot;, required = false) //
-		String name, //
+<span class="fc" id="L26">		String name, //</span>
 
 		@Schema(name = &quot;description&quot;, required = false, example = &quot;Device independent bitmap&quot;) //
 		@JsonProperty(value = &quot;description&quot;, required = false) //
-		String description) {
+<span class="fc" id="L30">		String description) {</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

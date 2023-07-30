@@ -9,20 +9,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Fernando Romulo da Silva
  */
-<span class="fc" id="L12">@Schema(name = &quot;ImageTypeResponse&quot;, description = &quot;Response structure to find Image Type&quot;)</span>
+@Schema(name = &quot;ImageTypeResponse&quot;, description = &quot;Response structure to find Image Type&quot;)
 <span class="fc" id="L13">public record ImageTypeResponse( //</span>
 
 		@Schema(name = &quot;id&quot;, description = &quot;The image type identification&quot;,  required = true, example = &quot;3&quot;) //
 		@JsonProperty(value = &quot;id&quot;, required = true) //
-		Long id, //
+<span class="fc" id="L17">		Long id, //</span>
 
 		@Schema(name = &quot;extension&quot;, description = &quot;The image type extension&quot;, required = true, example = &quot;bmp&quot;) //
 		@JsonProperty(value = &quot;extension&quot;, required = true) //
-		String extension, //
+<span class="fc" id="L21">		String extension, //</span>
 
 		@Schema(name = &quot;name&quot;, description = &quot;The image type name&quot;, required = true, example = &quot;BitMap&quot;) //
 		@JsonProperty(value = &quot;name&quot;, required = true) //
-		String name) {
+<span class="fc" id="L25">		String name) {</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

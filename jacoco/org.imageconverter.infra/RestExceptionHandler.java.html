@@ -106,7 +106,7 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
 <span class="fc" id="L106">	    errors.put(&quot;error&quot;, messageSource.getMessage(code, null, locale)); // violation.getMessage());</span>
 
 <span class="fc" id="L108">	    subErrors.add(errors);</span>
-<span class="fc" id="L109">	}</span>
+	}
 
 <span class="fc" id="L111">	final var msg = messageSource.getMessage(&quot;exception.handleConstraintViolation&quot;, null, locale);</span>
 
