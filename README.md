@@ -14,7 +14,7 @@ This a project that converts images with text into simple text using diverse tec
 
 I used [tesseract](https://github.com/tesseract-ocr/tesseract) for it and exposes it as a web service using spring boot.
 
-For more information plese check the [project development site](https://fernando-romulo-silva.github.io/image-converter-service/)
+For more information plese check the [project development site](https://fernando-romulo-silva.github.io/image-converter-service/).
 
 # Model
 
@@ -29,18 +29,9 @@ It's very simple application, just a controller and a service:
 - Tesseract
 - Docker
 
-# Start
-
-To start, clone it:
-
-```bash
-git clone https://github.com/fernando-romulo-silva/image-converter-service
-```
-
 # How to Execute
 
 To execute, please folow these steps:
-
 
 ## Get parent's project
 
@@ -54,6 +45,22 @@ Please get this project and install it on your repository before continuing.
 This project use the [default-extensions](https://github.com/fernando-romulo-silva/default-extensions) to use plugins configurations (checkstyle-checks.xml, pmd-ruleset.xml, spotbugs-excludes.xml, etc).
 
 Please get this project and install it on your repository before continuing.
+
+## Clone it
+
+To start, clone it:
+
+```bash
+git clone https://github.com/fernando-romulo-silva/image-converter-service
+```
+
+## Go inside project's folder
+
+You have to be in the project's root directory:
+
+```bash
+cd image-converter-service
+```
 
 ## Build application
 
@@ -85,31 +92,31 @@ docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-convert
 
 Requirements: 
 
-1) Java 17
+Java 17
 
 ```bash
 java -version 
 ```
 
-2) Maven 3
+Maven 3
 
 ```bash
 mvn --version
 ```
 
-3) Ant 1.10 (optional)
+Ant 1.10 (optional)
 
 ```bash
 ant -version
 ```
 
-4) Tesseract >= 4
+Tesseract >= 4
  
 ```bash
 tesseract --version
 ```
 
-5) Newman
+Newman
 
 ```bash
 newman --version
