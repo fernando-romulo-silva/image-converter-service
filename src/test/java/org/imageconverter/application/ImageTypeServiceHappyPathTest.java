@@ -9,8 +9,7 @@ import java.util.List;
 
 import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.infra.exception.ElementNotFoundException;
-import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
-import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -40,14 +39,14 @@ class ImageTypeServiceHappyPathTest {
 
     private final ImageTypeService imageTypeService;
 
-    private final CreateImageTypeRequest createImageTypeRequest;
+    private final ImageTypeRequest createImageTypeRequest;
     
     private final Pageable pageable = PageRequest.of(0, 10);
 
     ImageTypeServiceHappyPathTest(@Autowired final ImageTypeService imageTypeService) {
 	super();
 	this.imageTypeService = imageTypeService;
-	this.createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+	this.createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
     }
 
     @Test
@@ -138,7 +137,7 @@ class ImageTypeServiceHappyPathTest {
 
 	final var createResponse = imageTypeService.createImageType(createImageTypeRequest);
 
-	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
+	final var newTypeRequest = new ImageTypeRequest(null, "BitmapNew", null);
 
 	final var updateResponse = imageTypeService.updateImageType(createResponse.id(), newTypeRequest);
 

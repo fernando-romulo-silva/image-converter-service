@@ -1,13 +1,16 @@
 package org.imageconverter.application;
 
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+import static org.imageconverter.util.controllers.jsonpatch.JsonPatchOperation.REPLACE;
 
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.infra.exception.ElementAlreadyExistsException;
@@ -15,9 +18,9 @@ import org.imageconverter.infra.exception.ElementConflictException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.infra.exception.ElementWithIdNotFoundException;
-import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
-import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.jsonpatch.JsonPatch;
 import org.imageconverter.util.logging.Loggable;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * Application service that manages (CRUD) image types.
@@ -52,12 +56,12 @@ public class ImageTypeService {
     /**
      * Create a image type.
      * 
-     * @param request A image type ({@link CreateImageTypeRequest}) request to create
+     * @param request A image type ({@link ImageTypeRequest}) request to create
      * @return A {@link ImageTypeResponse} with the conversion
      * @exception ElementAlreadyExistsException if image type (file extension) has already exists
      */
     @Transactional
-    public ImageTypeResponse createImageType(@NotNull @Valid final CreateImageTypeRequest request) {
+    public ImageTypeResponse createImageType(@NotNull @Valid final ImageTypeRequest request) {
 
 	final var imageTypeOptional = repository.findByExtension(request.extension());
 
@@ -73,17 +77,17 @@ public class ImageTypeService {
 
 	return new ImageTypeResponse(imageType.getId(), imageConversion.getExtension(), imageType.getName());
     }
-
+    
     /**
-     * Update a image type.
+     * Update a whole image type.
      * 
      * @param id      The image type's id
-     * @param request A image type ({@link UpdateImageTypeRequest}) requested to update
+     * @param request A image type ({@link ImageTypeRequest}) requested to update
      * @return A {@link ImageTypeResponse} with the update's result
      * @exception ElementNotFoundException if image type (file extension) doesn't exists
      */
     @Transactional
-    public ImageTypeResponse updateImageType(@NotNull final Long id, @NotNull @Valid final UpdateImageTypeRequest request) {
+    public ImageTypeResponse updateImageType(@NotNull final Long id, @NotNull @Valid final ImageTypeRequest request) {
 
 	final var imageType = repository.findById(id) //
 			.orElseThrow(() -> new ElementWithIdNotFoundException(ImageType.class, id));
@@ -94,6 +98,42 @@ public class ImageTypeService {
 
 	return new ImageTypeResponse(imageTypeNew.getId(), imageTypeNew.getExtension(), imageTypeNew.getName());
     }
+    
+    /**
+     * Partially update a image type.
+     * 
+     * @param id      The image type's id
+     * @param jsonPatchs A image type ({@link UpdateImageTypeRequest}) requested to update
+     * @return A {@link ImageTypeResponse} with the update's result
+     * @exception ElementNotFoundException if image type (file extension) doesn't exists
+     */
+    @Transactional
+    public ImageTypeResponse updateImageType(final Long id, final List<JsonPatch> jsonPatchs) {
+	
+	final var imageType = repository.findById(id) //
+			.orElseThrow(() -> new ElementWithIdNotFoundException(ImageType.class, id));
+	
+	final var imageTypePatched = applyPatchToJObject(jsonPatchs, imageType);
+	
+	final var imageTypeNew = repository.save(imageTypePatched);
+	
+	return new ImageTypeResponse(imageTypeNew.getId(), imageTypeNew.getExtension(), imageTypeNew.getName());
+    }
+    
+    private ImageType applyPatchToJObject(final List<JsonPatch> jsonPatchs, final ImageType targetObject) {
+
+	final var toReplace = jsonPatchs.stream() //
+			.filter(jsonPatch -> jsonPatch.op().equals(REPLACE)) //
+			.collect(toMap(JsonPatch::path, JsonPatch::value)); //
+
+	toReplace.forEach((key, value) -> {
+	    final var field = FieldUtils.getField(ImageType.class, key, true);
+	    ReflectionUtils.setField(field, targetObject, value);
+	});
+
+	return targetObject;
+    }    
+    
 
     /**
      * Delete a image type.

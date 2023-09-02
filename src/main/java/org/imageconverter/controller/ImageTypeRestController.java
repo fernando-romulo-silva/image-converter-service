@@ -14,10 +14,9 @@ import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
 import org.imageconverter.domain.imagetype.ImageType;
-import org.imageconverter.infra.exception.ElementNotFoundException;
-import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
-import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.jsonpatch.JsonPatch;
 import org.imageconverter.util.logging.Loggable;
 import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
@@ -34,6 +33,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -126,7 +126,7 @@ public class ImageTypeRestController {
     /**
      * Create a image type.
      * 
-     * @param request A {@link CreateImageTypeRequest} object. It works as a structure to create a {@link org.imageconverter.domain.imagetype.ImageType}
+     * @param request A {@link ImageTypeRequest} object. It works as a structure to create a {@link org.imageconverter.domain.imagetype.ImageType}
      * @return A string with image type's id
      */
     @ImageTypeRestPostOpenApi
@@ -138,7 +138,7 @@ public class ImageTypeRestController {
 		    @CreateImageTypeRequestBody //
 		    @Valid //
 		    @RequestBody //
-		    final CreateImageTypeRequest request,
+		    final ImageTypeRequest request,
 		    //
 		    final HttpServletResponse response) {
 
@@ -148,9 +148,11 @@ public class ImageTypeRestController {
     }
 
     /**
-     * Update a image type.
+     * Update a whole image type.
      * 
-     * @param request A {@link UpdateImageTypeRequest} object. It works as a structure to update a {@link org.imageconverter.domain.imagetype.ImageType}
+     * @param id      The image type's id
+     * 
+     * @param request A {@link ImageTypeRequest} object. It works as a structure to update a {@link org.imageconverter.domain.imagetype.ImageType}
      */
     @ImageTypeRestPutOpenApi
     //
@@ -165,10 +167,43 @@ public class ImageTypeRestController {
 		    @UpdateImageTypeRequestBody //
 		    @Valid //
 		    @RequestBody //
-		    final UpdateImageTypeRequest request) {
+		    final ImageTypeRequest request) {
 
 	imageTypeService.updateImageType(id, request);
     }
+
+    /**
+     * Update partially a image type.
+     * 
+     * @param id      The image type's id
+     * @param request A {@link JsonPatch} object to update the object
+     */
+    @ResponseStatus(NO_CONTENT)
+    @PatchMapping(path = "/{id}", consumes = "application/json")
+    public void update(		    
+		    @Parameter(description = "The image type id's", example = "1000") //
+    		    @PathVariable(name = "id", required = true) //
+		    final Long id, 
+		    
+		    @Parameter(description = "A json path structure", 
+		    	       example = """
+		     				 [
+		     				   { 
+		     				     "op":"replace",
+		     				     "path":"name",
+		     				     "value":"new name"
+		     				   },
+		     				   { 
+		     				     "op":"remove",
+		     				     "path":"name"
+		     				   }		     				   
+		     				 ]
+		     				""") //
+		    @RequestBody 
+		    final List<JsonPatch> jsonPatchs) {
+
+	imageTypeService.updateImageType(id, jsonPatchs);
+    }   
 
     /**
      * Delete a image type.

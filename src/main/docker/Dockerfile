@@ -1,5 +1,5 @@
-
-FROM eclipse-temurin:17.0.7_7-jre-alpine as builder
+ARG JAVA_VERSION=17.0.7_7-jre-alpine
+FROM eclipse-temurin:${JAVA_VERSION} as builder
 WORKDIR /application
 
 ARG JAR_FILE=target/*.jar
@@ -9,7 +9,7 @@ RUN ["java", "-Djarmode=layertools", "-jar", "application.jar", "extract"]
 
 #=================================================================================
 
-FROM eclipse-temurin:17.0.7_7-jre-alpine
+FROM eclipse-temurin:${JAVA_VERSION}
 WORKDIR /application
 
 # copy the application
@@ -64,7 +64,7 @@ ENTRYPOINT [\
 # https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/
 # https://github.com/label-schema/label-schema.org/issues/7
 
-ARG BUILD_DATE
+ARG BUILD_DATE=$now
 LABEL org.image-converter-service.build-date=$BUILD_DATE \
      	"org.image-converter-service.vendor"="Nandao Software" \
         com.example.label-with-value="foo" \
@@ -73,7 +73,7 @@ LABEL org.image-converter-service.build-date=$BUILD_DATE \
 
 # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
 # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl --fail http://localhost/health || exit 1
-HEALTHCHECK --start-period=1s CMD curl --fail https://localhost:8080/health2 | exit 1 
+HEALTHCHECK --start-period=1s CMD curl --fail https://localhost:8080/health | exit 1 
 
 EXPOSE 8000
 EXPOSE 8080

@@ -18,8 +18,7 @@ import java.util.Map;
 
 import org.imageconverter.TestConstants;
 import org.imageconverter.controller.ImageTypeRestController;
-import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
-import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -57,12 +56,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @TestInstance(PER_CLASS)
 class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerUnHappyPathBaseTest {
 
-    private final CreateImageTypeRequest createImageTypeRequest;
+    private final ImageTypeRequest createImageTypeRequest;
 
     @Autowired
     ImageTypeRestControllerUnHappyPathMovTest(final ObjectMapper mapper, final MockMvc mvc) {
 	super(mapper, mvc);
-	this.createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+	this.createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
     }
 
     @Test
@@ -177,7 +176,7 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
 	final var id = "12345";
 
 	// update values
-	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
+	final var newTypeRequest = new ImageTypeRequest(null, "BitmapNew", null);
 
 	final var request = put(REST_URL + TestConstants.ID_PARAM_VALUE, id) //
 			.content(asJsonString(newTypeRequest)) //

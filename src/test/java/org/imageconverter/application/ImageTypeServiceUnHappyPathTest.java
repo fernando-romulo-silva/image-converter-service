@@ -15,8 +15,7 @@ import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementConflictException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
-import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
-import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -83,11 +82,11 @@ class ImageTypeServiceUnHappyPathTest {
 
     Stream<Arguments> createImageTypeInvalidData() throws IOException {
 
-	final CreateImageTypeRequest nullCreateImageTypeRequest = null;
+	final ImageTypeRequest nullCreateImageTypeRequest = null;
 
 	return Stream.of( //
-			Arguments.of(new CreateImageTypeRequest(null, "BitMap", "Device independent bitmap")), //
-			Arguments.of(new CreateImageTypeRequest("BMP", null, "Device independent bitmap")), //
+			Arguments.of(new ImageTypeRequest(null, "BitMap", "Device independent bitmap")), //
+			Arguments.of(new ImageTypeRequest("BMP", null, "Device independent bitmap")), //
 			Arguments.of(nullCreateImageTypeRequest) //
 	);
     }
@@ -96,7 +95,7 @@ class ImageTypeServiceUnHappyPathTest {
     @MethodSource("createImageTypeInvalidData")
     @Order(3)
     @DisplayName("Try to create a invalid image type")
-    void createImageTypeInvalidTest(final CreateImageTypeRequest request) {
+    void createImageTypeInvalidTest(final ImageTypeRequest request) {
 
 	assertThatThrownBy(() -> imageTypeService.createImageType(request))
 		.as(format("Check invalid request ''{0}''", request)) //
@@ -109,9 +108,9 @@ class ImageTypeServiceUnHappyPathTest {
     @DisplayName("Create twice the same image type")
     void createSameImageTypeTest() {
 
-	final var createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+	final var createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
 
-	final var createImageTypeRequestAgain = new CreateImageTypeRequest("BMP", "Bla", "Bla bla bla bla");
+	final var createImageTypeRequestAgain = new ImageTypeRequest("BMP", "Bla", "Bla bla bla bla");
 
 	imageTypeService.createImageType(createImageTypeRequest);
 
@@ -123,11 +122,11 @@ class ImageTypeServiceUnHappyPathTest {
 
     Stream<Arguments> updateImageTypeDoesNotExistData() throws IOException {
 
-	final UpdateImageTypeRequest nullUpdateImageTypeRequest = null;
+	final ImageTypeRequest nullUpdateImageTypeRequest = null;
 
 	return Stream.of( //
-			Arguments.of(12_345L, new UpdateImageTypeRequest(null, "BitmapNew", null)), //
-			Arguments.of(null, new UpdateImageTypeRequest(null, "BitmapNew", null)), //
+			Arguments.of(12_345L, new ImageTypeRequest(null, "BitmapNew", null)), //
+			Arguments.of(null, new ImageTypeRequest(null, "BitmapNew", null)), //
 			Arguments.of(1000L, nullUpdateImageTypeRequest) //
 	);
     }
@@ -136,7 +135,7 @@ class ImageTypeServiceUnHappyPathTest {
     @MethodSource("updateImageTypeDoesNotExistData")
     @Order(5)
     @DisplayName("Try to update a image type that doesn't exist")
-    void updateImageTypeDoesNotExistTest(final Long id, final UpdateImageTypeRequest request) {
+    void updateImageTypeDoesNotExistTest(final Long id, final ImageTypeRequest request) {
 
 	assertThatThrownBy(() -> imageTypeService.updateImageType(id, request))
 		.as(format("Check if throw a exception on invalid request ''{0}''", request)) //

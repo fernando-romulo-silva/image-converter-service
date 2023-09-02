@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -16,8 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.apache.commons.lang3.StringUtils;
 import org.imageconverter.TestConstants;
 import org.imageconverter.controller.ImageTypeRestController;
-import org.imageconverter.util.controllers.imagetype.CreateImageTypeRequest;
-import org.imageconverter.util.controllers.imagetype.UpdateImageTypeRequest;
+import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -57,12 +57,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @TestInstance(Lifecycle.PER_CLASS)
 class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHappyPathBaseTest {
 
-    private final CreateImageTypeRequest createImageTypeRequest;
+    private final ImageTypeRequest createImageTypeRequest;
 
     @Autowired
     ImageTypeRestControllerHappyPathTest(final ObjectMapper mapper, final MockMvc mvc) {
 	super(mapper, mvc);
-	this.createImageTypeRequest = new CreateImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+	this.createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
     }
 
     @Test
@@ -188,8 +188,8 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 
     @Test
     @Order(5)
-    @DisplayName("Update a image type")
-    void updateImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+    @DisplayName("Update a partial image type")
+    void partialUpdateImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 
 	// create a new image type
 
@@ -209,7 +209,67 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 
 	// given
 	// create a new values
-	final var newTypeRequest = new UpdateImageTypeRequest(null, "BitmapNew", null);
+	final var newTypeRequest = """
+			[
+			    {
+			        "op": "replace",
+			        "path": "name",
+			        "value": "BitMapNew"
+			    }
+			]
+		""";
+
+	// update the image type
+	mvc.perform(patch(REST_URL + ID_PARAM_VALUE, createdId) //
+			.content(newTypeRequest) //
+			.contentType(MediaType.APPLICATION_JSON) //
+			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isNoContent()) //
+	;
+
+	final var request = get(REST_URL + ID_PARAM_VALUE, createdId) //
+			.accept(MediaType.APPLICATION_JSON) //
+			.with(csrf());
+
+	// check if it updtated
+	mvc.perform(request) //
+			//
+			// when
+			.andDo(print()) //
+			//
+			// then
+			.andExpect(status().isOk()) //
+			.andExpect(jsonPath(FILTER_PARAM_ID).value(createdId)) //
+			.andExpect(jsonPath("$.name").value("BitMapNew")) //
+	;
+    }
+    
+    @Test
+    @Order(6)
+    @DisplayName("Update a image type")
+    void wholeUpdateImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
+
+	// create a new image type
+
+	final var content = asJsonString(createImageTypeRequest);
+
+	final var createResult = mvc.perform(post(REST_URL) //
+			.content(content) //
+			.contentType(MediaType.APPLICATION_JSON) //
+			.accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON) //
+			.with(csrf())) //
+			.andDo(print()) //
+			.andExpect(status().isCreated()) //
+			.andReturn();
+
+	// what's id?
+	final var createdId = StringUtils.substringAfterLast(createResult.getResponse().getHeader("Location"), "/");
+
+	// given
+	// create a new values
+	final var newTypeRequest = new ImageTypeRequest("btmp", "BitmapNew", "newDescription");
 
 	// update the image type
 	mvc.perform(put(REST_URL + ID_PARAM_VALUE, createdId) //
@@ -235,11 +295,13 @@ class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHapp
 			.andExpect(status().isOk()) //
 			.andExpect(jsonPath(FILTER_PARAM_ID).value(createdId)) //
 			.andExpect(jsonPath("$.name").value(newTypeRequest.name())) //
+			.andExpect(jsonPath("$.extension").value(newTypeRequest.extension())) //
 	;
     }
+    
 
     @Test
-    @Order(6)
+    @Order(7)
     @DisplayName("Delete a new image type")
     void deleteImageTypeTest() throws Exception { // NOPMD - SignatureDeclareThrowsException (MockMvc throws Exception), JUnitTestsShouldIncludeAssert (MockMvc already do it)
 

@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @JsonIgnoreProperties(ignoreUnknown = false)
 @Schema(name = "ImageTypeRequest", description = "Resquest structure to create Image Type")
-public record CreateImageTypeRequest( //
+public record ImageTypeRequest( //
 		//
 		@Schema(name = "extension", description = "The image type's extension", required = true, example = "bmp") //
 		@JsonProperty(value = "extension", required = true) //
