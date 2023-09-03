@@ -262,7 +262,7 @@ class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerU
 			.andDo(print()) //
 			//
 			// then
-//			.andExpect(status().isNotFound()) //
+			.andExpect(status().isNotFound()) //
 			.andExpect(jsonPath(TestConstants.JSON_MESSAGE)
 					.value(containsString("Resource not found. Please check the /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config for more information"))) //
 	;
