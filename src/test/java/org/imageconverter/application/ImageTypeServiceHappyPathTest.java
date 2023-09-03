@@ -137,7 +137,7 @@ class ImageTypeServiceHappyPathTest {
 
 	final var createResponse = imageTypeService.createImageType(createImageTypeRequest);
 
-	final var newTypeRequest = new ImageTypeRequest(null, "BitmapNew", null);
+	final var newTypeRequest = new ImageTypeRequest("BMP", "BitmapNew", "Device independent bitmap");
 
 	final var updateResponse = imageTypeService.updateImageType(createResponse.id(), newTypeRequest);
 
