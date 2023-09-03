@@ -239,7 +239,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n \"tesseractFolder\": \"/usr/share/tesseract-ocr/4.00/tessdata/\"\n}",
+							"raw": "{\n \"tesseractFolder\": \"/usr/share/tessdata/\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -475,11 +475,17 @@
 								"key": "X-XSRF-TOKEN",
 								"value": "{{CSRF_TOKEN}}",
 								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "pt-BR",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"extension\": \"BMP\",\n    \"name\": \"BitMap\",\n    \"description\": \"Device independent bitmap\"\n}",
+							"raw": "{\n    \"extension\": \"BMP\",\n    \"name\": \"Bitmap Image file\",\n    \"description\": \"Device independent bitmap\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -531,7 +537,7 @@
 					"response": []
 				},
 				{
-					"name": "Update",
+					"name": "Whole Update",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -585,7 +591,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Check Update",
+					"name": "Get Check Put Update",
 					"event": [
 						{
 							"listen": "test",
@@ -597,6 +603,107 @@
 									"    const name = pm.response.json().name;",
 									"",
 									"    if (name != \"BitMapNew\") {",
+									"        pm.expect.fail(\"Not changed!\")",
+									"    } ",
+									"",
+									"    const token = pm.cookies.get('XSRF-TOKEN');",
+									"    // const token = pm.response.headers.get(\"XSRF-TOKEN\");",
+									"",
+									"    pm.environment.set(\"CSRF_TOKEN\", token);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}/{{imageTypeId}}",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							],
+							"path": [
+								"{{imageTypeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Update a image type\", function(){",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{CSRF_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"op\": \"replace\",\n        \"path\": \"name\",\n        \"value\": \"BitMapNewPatch\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{IMAGE_TYPE_URL}}/{{imageTypeId}}",
+							"host": [
+								"{{IMAGE_TYPE_URL}}"
+							],
+							"path": [
+								"{{imageTypeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Check Patch Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get a image type by id\", function (){",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    const name = pm.response.json().name;",
+									"",
+									"    if (name != \"BitMapNewPatch\") {",
 									"        pm.expect.fail(\"Not changed!\")",
 									"    } ",
 									"",
@@ -748,7 +855,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "src/test/resources/bill01.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
 								}
 							]
 						},
@@ -913,7 +1020,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "src/test/resources/bill01.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
 								}
 							]
 						},

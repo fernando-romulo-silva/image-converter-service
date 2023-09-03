@@ -70,6 +70,7 @@ mvn package -DskipTests
 
 ## Using Docker
 
+Recommended for non tessaract expert users.
 First check your docker version:
 
 ```bash
@@ -116,19 +117,10 @@ Tesseract >= 4
 tesseract --version
 ```
 
-Newman
+Newman (for tests)
 
 ```bash
 newman --version
-```
-Tesseract needs a dictionary and the application use the English dictionary called 'eng.traineddata.'
-
-For Ubuntu Ubuntu 22.04.2 LTS and tesseract 4, the default dictionary is installed on /usr/share/tesseract-ocr/4.00/tessdata/
-
-You have to define at least the dictionary folder on environment variable (TESSERACT_FOLDER) or edit application-local.yml file:
-
-```bash
-export TESSERACT_FOLDER=/usr/share/tesseract-ocr/4.00/tessdata/
 ```
 
 Then execute:
@@ -137,9 +129,22 @@ Then execute:
 mvn spring-boot:run -Dspring.profiles.active=local
 ```
 
+
 # Newman Tests
 
-For newman tests:
+Tesseract needs a dictionary and the application use the English dictionary called 'eng.traineddata.'
+
+For Ubuntu Ubuntu linux (22.04.2 LTS) and tesseract 4, the default dictionary is installed on /usr/share/tesseract-ocr/4.00/tessdata/
+
+For Alpine linux (3.15.0) and tesseract 4, the default dictionary is installed on /usr/share/tessdata/
+
+If you want to execute local tests, you have to define at least the dictionary folder on environment variable (TESSERACT_FOLDER) or edit application-local.yml file:
+
+```bash
+export TESSERACT_FOLDER=/usr/share/tesseract-ocr/4.00/tessdata/
+```
+
+Then execute:
 
 ```bash
 newman run src/test/resources/postman/image-converter-service.postman_collection.json -e src/test/resources/postman/image-converter-service-local.postman_environment.json

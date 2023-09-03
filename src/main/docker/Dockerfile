@@ -31,6 +31,7 @@ RUN [\
     "--update",\
     "--no-cache",\
     "tesseract-ocr",\
+    "tesseract-ocr-data-eng",\
     "dumb-init"\      
 ]
 

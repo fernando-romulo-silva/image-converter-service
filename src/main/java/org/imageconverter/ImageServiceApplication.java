@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 				version = "1.0.0", //
 				contact = @Contact( //
 						name = "Fernando Romulo da Silva", //
-						url = "https://github.com/fernando-romulo-silva/" //
+						url = "https://fernando-romulo-silva.github.io/personal-page/" //
 				), //
 				license = @License( //
 						name = "Apache 2.0", //

@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 import org.imageconverter.application.ImageTypeService;
 import org.imageconverter.domain.imagetype.ImageType;
+import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
 import org.imageconverter.util.controllers.jsonpatch.JsonPatch;
@@ -22,6 +23,7 @@ import org.imageconverter.util.openapi.imagetype.CreateImageTypeRequestBody;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestDeleteOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGet;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestGetByIdOpenApi;
+import org.imageconverter.util.openapi.imagetype.ImageTypeRestPatchOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestPostOpenApi;
 import org.imageconverter.util.openapi.imagetype.ImageTypeRestPutOpenApi;
 import org.imageconverter.util.openapi.imagetype.UpdateImageTypeRequestBody;
@@ -178,6 +180,8 @@ public class ImageTypeRestController {
      * @param id      The image type's id
      * @param request A {@link JsonPatch} object to update the object
      */
+    @ImageTypeRestPatchOpenApi
+    //
     @ResponseStatus(NO_CONTENT)
     @PatchMapping(path = "/{id}", consumes = "application/json")
     public void update(		    
