@@ -1,4 +1,6 @@
-ARG JAVA_VERSION=17.0.7_7-jre-alpine
+#=================================================================================
+
+ARG JAVA_VERSION=17.0.7_7-jre-alpine@sha256:dd8238c151293ae6a7c22898ef2f0df2af8a05786aef73ccd3248e73765969ed
 FROM eclipse-temurin:${JAVA_VERSION} as builder
 WORKDIR /application
 
@@ -10,6 +12,18 @@ RUN ["java", "-Djarmode=layertools", "-jar", "application.jar", "extract"]
 #=================================================================================
 
 FROM eclipse-temurin:${JAVA_VERSION}
+
+# install tesseract
+RUN [\
+	"apk",\ 
+	"add",\
+    "--update",\
+    "--no-cache",\
+    "tesseract-ocr",\
+    "tesseract-ocr-data-eng",\
+    "dumb-init"\      
+]
+
 WORKDIR /application
 
 # copy the application
@@ -23,17 +37,6 @@ COPY --from=builder application/application/ ./
 RUN addgroup --system javauser\
       && adduser -S -s  /bin/false -G javauser javauser \
       && chown -R javauser:javauser /application
-
-# install tesseract
-RUN [\
-	"apk",\ 
-	"add",\
-    "--update",\
-    "--no-cache",\
-    "tesseract-ocr",\
-    "tesseract-ocr-data-eng",\
-    "dumb-init"\      
-]
 
 # user the user 'javauser'
 USER javauser

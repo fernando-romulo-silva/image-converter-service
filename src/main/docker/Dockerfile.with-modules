@@ -1,5 +1,5 @@
-ARG JAVA_VERSION=17.0.7_7-jre-alpine
-ARG ALPINE_VERSION=3.15.0
+ARG JAVA_VERSION=17.0.7_7-jre-alpine@sha256:dd8238c151293ae6a7c22898ef2f0df2af8a05786aef73ccd3248e73765969ed
+ARG ALPINE_VERSION=3.15.0@sha256:36ca6d117c068378d5461b959d019eabe8877770f13e11e54a5ce9f3827a7e72
 
 FROM eclipse-temurin:${JAVA_VERSION} as builder
 WORKDIR /application
@@ -28,8 +28,10 @@ RUN ["jdeps",\
 # new jre
 RUN ["$JAVA_HOME/bin/jlink",\
         "--verbose",\
+        "--strip-debug",\
+        #"--strip-java-debug-attributes",\
+        #"--strip-native-debug-symbols",\ 
         "--compress 2",\
-        "--strip-java-debug-attributes",\
         "--no-header-files",\
         "--no-man-pages",\
         "--output jre",\
@@ -41,6 +43,18 @@ RUN ["$JAVA_HOME/bin/jlink",\
 
 # take a smaller runtime image for the final output
 FROM alpine:${ALPINE_VERSION}
+
+# install tesseract
+RUN [\
+	"apk",\ 
+	"add",\
+    "--update",\
+    "--no-cache",\
+    "tesseract-ocr",\
+    "tesseract-ocr-data-eng",\
+    "dumb-init"\      
+]
+
 WORKDIR /application
 
 # copy the custom JRE produced from jlink
@@ -59,17 +73,6 @@ COPY --from=builder application/application/ ./
 RUN addgroup --system javauser\
       && adduser -S -s  /bin/false -G javauser javauser \
       && chown -R javauser:javauser /application
-
-# install tesseract
-RUN [\
-	"apk",\ 
-	"add",\
-    "--update",\
-    "--no-cache",\
-    "tesseract-ocr",\
-    "tesseract-ocr-data-eng",\
-    "dumb-init"\      
-]
 
 # user the user 'javauser'
 USER javauser
