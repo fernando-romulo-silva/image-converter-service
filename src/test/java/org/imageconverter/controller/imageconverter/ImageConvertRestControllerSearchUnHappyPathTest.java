@@ -44,7 +44,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser(username = "user") // application-test.yml-application.user_login: user
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = ErrorMode.CONTINUE_ON_ERROR))
 //
-@Tag("acceptance")
+@Tag("functional")
 @DisplayName("Test the image conversion, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)

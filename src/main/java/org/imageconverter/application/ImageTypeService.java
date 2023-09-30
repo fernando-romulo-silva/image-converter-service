@@ -16,7 +16,6 @@ import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementConflictException;
 import org.imageconverter.infra.exception.ElementInvalidException;
-import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.infra.exception.ElementWithIdNotFoundException;
 import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
 import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;

@@ -51,7 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = ErrorMode.CONTINUE_ON_ERROR))
 @Sql(statements = TestConstants.SQL_DELETE_FROM_IMAGE_TYPE_WHERE_IMT_EXTENSION_BMP)
 //
-@Tag("acceptance")
+@Tag("functional")
 @DisplayName("Test the image type controller, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)

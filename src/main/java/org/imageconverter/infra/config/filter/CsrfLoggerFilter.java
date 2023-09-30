@@ -1,4 +1,4 @@
-package org.imageconverter.config.filter;
+package org.imageconverter.infra.config.filter;
 
 import java.io.IOException;
 import java.util.Objects;

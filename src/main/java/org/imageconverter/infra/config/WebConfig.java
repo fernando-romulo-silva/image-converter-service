@@ -1,4 +1,4 @@
-package org.imageconverter.config;
+package org.imageconverter.infra.config;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.fasterxml.jackson.databind.MapperFeature.ALLOW_COERCION_OF_SCALARS;

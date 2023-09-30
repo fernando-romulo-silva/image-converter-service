@@ -1,4 +1,4 @@
-package org.imageconverter.config;
+package org.imageconverter.infra.config;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

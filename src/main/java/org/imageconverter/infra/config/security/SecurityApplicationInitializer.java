@@ -1,4 +1,4 @@
-package org.imageconverter.config.security;
+package org.imageconverter.infra.config.security;
 
 import javax.servlet.ServletContext;
 

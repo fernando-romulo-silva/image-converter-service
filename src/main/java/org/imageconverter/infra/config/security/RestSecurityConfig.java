@@ -1,10 +1,10 @@
-package org.imageconverter.config.security;
+package org.imageconverter.infra.config.security;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
-import org.imageconverter.config.filter.CsrfLoggerFilter;
+import org.imageconverter.infra.config.filter.CsrfLoggerFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

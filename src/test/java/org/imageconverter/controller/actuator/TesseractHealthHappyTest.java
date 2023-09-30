@@ -9,7 +9,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE
 
 import java.io.UnsupportedEncodingException;
 
-import org.imageconverter.config.health.TesseractInfoService;
+import org.imageconverter.infra.config.health.TesseractInfoService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -38,7 +38,7 @@ import org.springframework.web.client.RestTemplate;
 )
 @Sql(scripts = "classpath:db/db-data-test.sql", config = @SqlConfig(errorMode = CONTINUE_ON_ERROR))
 //
-@Tag("acceptance")
+@Tag("functional")
 @DisplayName("Test the tesseract Health, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)

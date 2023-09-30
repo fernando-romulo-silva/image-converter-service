@@ -1,4 +1,4 @@
-package org.imageconverter.config;
+package org.imageconverter.infra.config;
 
 import org.imageconverter.application.ImageConversionService;
 import org.imageconverter.util.performance.PerformanceMonitor;

@@ -1,4 +1,4 @@
-package org.imageconverter.config;
+package org.imageconverter.infra.config;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;

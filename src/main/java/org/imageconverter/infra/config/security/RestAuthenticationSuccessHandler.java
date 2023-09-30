@@ -1,4 +1,4 @@
-package org.imageconverter.config.security;
+package org.imageconverter.infra.config.security;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;

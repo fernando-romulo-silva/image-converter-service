@@ -1,4 +1,4 @@
-package org.imageconverter.config.health;
+package org.imageconverter.infra.config.health;
 
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 
