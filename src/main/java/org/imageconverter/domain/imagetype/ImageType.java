@@ -2,7 +2,7 @@ package org.imageconverter.domain.imagetype;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
-import static org.imageconverter.util.BeanUtil.getBeanFrom;
+import static org.imageconverter.infra.util.BeanUtil.getBeanFrom;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

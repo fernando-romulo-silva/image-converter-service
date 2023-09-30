@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exception;
 
-import static org.imageconverter.util.BeanUtil.getPropertyValue;
+import static org.imageconverter.infra.util.BeanUtil.getPropertyValue;
 
 /**
  * Tesseract not properly configurated.

@@ -2,7 +2,7 @@ package org.imageconverter.controller.imagetype;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
+import static org.imageconverter.infra.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.imageconverter.TestConstants;
 import org.imageconverter.controller.ImageTypeRestController;
-import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
+import org.imageconverter.infra.util.controllers.imagetype.ImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

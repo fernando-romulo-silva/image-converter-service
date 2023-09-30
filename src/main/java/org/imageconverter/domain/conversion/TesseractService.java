@@ -12,8 +12,8 @@ import javax.imageio.ImageIO;
 import org.imageconverter.infra.exception.ConversionException;
 import org.imageconverter.infra.exception.TesseractConversionException;
 import org.imageconverter.infra.exception.TesseractNotSetException;
-import org.imageconverter.util.BeanUtil;
-import org.imageconverter.util.logging.Loggable;
+import org.imageconverter.infra.util.BeanUtil;
+import org.imageconverter.infra.util.logging.Loggable;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 

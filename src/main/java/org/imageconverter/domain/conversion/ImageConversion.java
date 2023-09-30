@@ -4,7 +4,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static javax.persistence.GenerationType.IDENTITY;
 import static org.apache.commons.io.FilenameUtils.getExtension;
-import static org.imageconverter.util.BeanUtil.getBeanFrom;
+import static org.imageconverter.infra.util.BeanUtil.getBeanFrom;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -30,8 +30,8 @@ import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.domain.imagetype.ImageTypeRespository;
 import org.imageconverter.infra.exception.ConversionException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
+import org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequestArea;
+import org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequestInterface;
 
 @Entity
 @Table(name = "IMAGE_CONVERSION")

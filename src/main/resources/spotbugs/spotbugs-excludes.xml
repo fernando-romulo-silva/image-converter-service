@@ -19,8 +19,8 @@
 	<!-- EI_EXPOSE_REP: Java 17 issue -->
 	<Match>
         <Or>
-        	<Class name="org.imageconverter.util.controllers.imageconverter.ImageConverterRequest"/>
-        	<Class name="org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea"/>
+        	<Class name="org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequest"/>
+        	<Class name="org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequestArea"/>
         </Or>
         <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
     </Match>    

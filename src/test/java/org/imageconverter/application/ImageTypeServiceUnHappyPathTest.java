@@ -15,7 +15,7 @@ import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementConflictException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
-import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
+import org.imageconverter.infra.util.controllers.imagetype.ImageTypeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;

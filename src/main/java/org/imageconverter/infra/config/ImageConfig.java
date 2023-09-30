@@ -3,7 +3,7 @@ package org.imageconverter.infra.config;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.imageconverter.util.BeanUtil;
+import org.imageconverter.infra.util.BeanUtil;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

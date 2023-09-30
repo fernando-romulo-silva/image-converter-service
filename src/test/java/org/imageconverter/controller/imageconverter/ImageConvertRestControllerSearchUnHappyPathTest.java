@@ -2,7 +2,7 @@ package org.imageconverter.controller.imageconverter;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.imageconverter.TestConstants.ID_PARAM_VALUE;
-import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
+import static org.imageconverter.infra.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

@@ -12,7 +12,7 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.collections4.MapUtils;
-import org.imageconverter.util.BeanUtil;
+import org.imageconverter.infra.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;

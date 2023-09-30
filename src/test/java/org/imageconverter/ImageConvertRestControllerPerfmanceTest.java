@@ -1,7 +1,7 @@
 package org.imageconverter;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.imageconverter.util.controllers.imagetype.ImageTypeConst.REST_URL;
+import static org.imageconverter.infra.util.controllers.imagetype.ImageTypeConst.REST_URL;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

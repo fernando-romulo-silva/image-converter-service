@@ -3,7 +3,7 @@ package org.imageconverter.domain.imagetype;
 import static java.text.MessageFormat.format;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.imageconverter.util.BeanUtil.defineContext;
+import static org.imageconverter.infra.util.BeanUtil.defineContext;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 

@@ -1,7 +1,7 @@
 package org.imageconverter.infra.config;
 
 import org.imageconverter.application.ImageConversionService;
-import org.imageconverter.util.performance.PerformanceMonitor;
+import org.imageconverter.infra.util.performance.PerformanceMonitor;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;

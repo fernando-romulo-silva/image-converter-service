@@ -8,7 +8,7 @@ import static nl.jqno.equalsverifier.Warning.NONFINAL_FIELDS;
 import static nl.jqno.equalsverifier.Warning.REFERENCE_EQUALITY;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.imageconverter.util.BeanUtil.defineContext;
+import static org.imageconverter.infra.util.BeanUtil.defineContext;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 

@@ -1,6 +1,6 @@
 package org.imageconverter.infra.exception;
 
-import static org.imageconverter.util.BeanUtil.getBeanFrom;
+import static org.imageconverter.infra.util.BeanUtil.getBeanFrom;
 
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;

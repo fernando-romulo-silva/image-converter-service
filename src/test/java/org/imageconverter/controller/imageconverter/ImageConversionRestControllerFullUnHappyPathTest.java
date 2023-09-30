@@ -3,7 +3,7 @@ package org.imageconverter.controller.imageconverter;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.imageconverter.TestConstants.HTTP_127_0_0_1;
-import static org.imageconverter.util.controllers.imageconverter.ImageConverterConst.REST_URL;
+import static org.imageconverter.infra.util.controllers.imageconverter.ImageConverterConst.REST_URL;
 import static org.springframework.http.ContentDisposition.builder;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpMethod.GET;

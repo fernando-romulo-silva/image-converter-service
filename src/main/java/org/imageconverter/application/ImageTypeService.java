@@ -3,7 +3,7 @@ package org.imageconverter.application;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
-import static org.imageconverter.util.controllers.jsonpatch.JsonPatchOperation.REPLACE;
+import static org.imageconverter.infra.util.controllers.jsonpatch.JsonPatchOperation.REPLACE;
 
 import java.util.List;
 
@@ -17,10 +17,10 @@ import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementConflictException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementWithIdNotFoundException;
-import org.imageconverter.util.controllers.imagetype.ImageTypeRequest;
-import org.imageconverter.util.controllers.imagetype.ImageTypeResponse;
-import org.imageconverter.util.controllers.jsonpatch.JsonPatch;
-import org.imageconverter.util.logging.Loggable;
+import org.imageconverter.infra.util.controllers.imagetype.ImageTypeRequest;
+import org.imageconverter.infra.util.controllers.imagetype.ImageTypeResponse;
+import org.imageconverter.infra.util.controllers.jsonpatch.JsonPatch;
+import org.imageconverter.infra.util.logging.Loggable;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;

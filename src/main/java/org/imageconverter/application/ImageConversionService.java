@@ -27,9 +27,9 @@ import org.imageconverter.infra.exception.ElementAlreadyExistsException;
 import org.imageconverter.infra.exception.ElementInvalidException;
 import org.imageconverter.infra.exception.ElementNotFoundException;
 import org.imageconverter.infra.exception.ElementWithIdNotFoundException;
-import org.imageconverter.util.controllers.imageconverter.ImageConversionResponse;
-import org.imageconverter.util.controllers.imageconverter.ImageConverterRequestInterface;
-import org.imageconverter.util.logging.Loggable;
+import org.imageconverter.infra.util.controllers.imageconverter.ImageConversionResponse;
+import org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequestInterface;
+import org.imageconverter.infra.util.logging.Loggable;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,7 +63,7 @@ public class ImageConversionService {
     /**
      * Convert an image on text.
      * 
-     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea})
+     * @param request A image ({@link org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequestArea})
      *                that it'll be convert
      * @return A {@link ImageConversionResponse} with the conversion
      * @exception ElementAlreadyExistsException if image (file name) has already converted
@@ -93,7 +93,7 @@ public class ImageConversionService {
     /**
      * Convert a list of image on text.
      * 
-     * @param request A image ({@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.util.controllers.imageconverter.ImageConverterRequestArea})
+     * @param request A image ({@link org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequest} or {@link org.imageconverter.infra.util.controllers.imageconverter.ImageConverterRequestArea})
      *                that it'll be convert
      * @return A {@link ImageConversionResponse} with the conversion
      * @exception ElementAlreadyExistsException if image (file name) has already converted
