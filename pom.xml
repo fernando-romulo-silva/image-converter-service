@@ -9,6 +9,29 @@
 		<artifactId>allset-java</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
+	
+	<name>Image Converte Service</name>
+  	
+  	<description>
+		An API to image's text recognition using spring boot framework and others.
+    </description>
+    
+    <inceptionYear>2015</inceptionYear>
+
+	<contributors>
+		<contributor>
+			<name>Fernando Romulo da Silva</name>
+		</contributor>
+	</contributors>
+
+	<prerequisites>
+		<maven>3.8.8</maven>
+	</prerequisites>
+
+	<issueManagement>
+		<system>GITHUB</system>
+		<url>https://github.com/fernando-romulo-silva/image-converter-service/blob/master/docs/STATUS.md</url>
+	</issueManagement>	
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
@@ -19,7 +42,8 @@
 
 		<springdoc-openapi.version>1.6.8</springdoc-openapi.version> 
 
-		<junit-platform.version>5.3.1</junit-platform.version>
+		<junit-platform.version>5.10.0</junit-platform.version>
+    
 
 		<!-- <checkstyle.config.location>checkstyle-checks.xml</checkstyle.config.location> -->
 		<!-- <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location> -->
@@ -39,9 +63,17 @@
     	<url>scm:git:git@github.com:fernando-romulo-silva/image-converter-service.git</url>
   	  </site>
 	</distributionManagement>
-
+	
 	<dependencyManagement>
 		<dependencies>
+			
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit-platform.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -136,7 +168,7 @@
 			<artifactId>springdoc-openapi-data-rest</artifactId>
 			<version>${springdoc-openapi.version}</version>
 		</dependency>
-		
+
 		<!-- 
 		<dependency>
 			<groupId>com.github.gavlyukovskiy</groupId>
@@ -198,25 +230,44 @@
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-collections4</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
 
 		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>		
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -284,7 +335,6 @@
 	</dependencies>
 
 	<build>
-
 		<extensions>
 			<!-- Plugin configs -->
 			<extension>
@@ -340,6 +390,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-surefire-plugin</artifactId>		    
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+			</plugin>			
 			
 			<plugin>
 				<groupId>org.jacoco</groupId>
