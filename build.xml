@@ -7,6 +7,6 @@
 		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-site.xml" />
 		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-check.xml" />
 		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-report.xml" />
-		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-scm.xml" />	
+		<javaresource classpath="ant-common-tasks.jar" name="targets/maven/maven-scm.xml" />
 	</import>
 </project>
