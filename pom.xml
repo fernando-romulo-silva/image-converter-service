@@ -347,13 +347,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<!--
 				<configuration>
 					<configLocation>default-extensions/checkstyle/checkstyle-checks.xml</configLocation>
 					<suppressionsLocation>default-extensions/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
-					<suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+					<suppressionsFileExpression>default-extensions/checkstyle/checkstyle-xpath-suppressions.xml</suppressionsFileExpression>
 				</configuration>
-				-->
 			</plugin>
 
 			<plugin>
@@ -444,7 +442,6 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
-						<!-- <ruleset>rulesets/java/quickstart.xml</ruleset> -->
 						<ruleset>default-extensions/pmd/java/pmd-ruleset.xml</ruleset>
 					</rulesets>
 				</configuration>
@@ -461,6 +458,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<configuration>
+					<configLocation>default-extensions/checkstyle/checkstyle-checks.xml</configLocation>
+					<suppressionsLocation>default-extensions/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+					<suppressionsFileExpression>default-extensions/checkstyle/checkstyle-xpath-suppressions.xml</suppressionsFileExpression>
+				</configuration>				
 			</plugin>
 
 			<plugin>
