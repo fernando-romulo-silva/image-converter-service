@@ -6,28 +6,67 @@
 # Project status
 
 I use this project to learn new technologies related to spring boot web.
-So it'll get new things all time.
+I change this project constantly improving and adding new plugins, click [here](docs/STATUS.md) to follow up.
 
 # About
 
-This a project that converts images with text into simple text using diverse technologies.
-
+This project converts images with text into simple text using diverse technologies.
 I used [tesseract](https://github.com/tesseract-ocr/tesseract) for it and exposes it as a web service using spring boot.
 
 For more information plese check the [project development site](https://fernando-romulo-silva.github.io/image-converter-service/).
-
-# Model
-
-It's very simple application, just a controller and a service:
-![Model](https://github.com/fernando-romulo-silva/image-converter-service/blob/master/doc/class-diagram.png)
 
 # Technologies
 
 - Java
 - Maven
-- Spring Frameworks (boot, data, security, etc)
+- Spring Frameworks (boot, data, security, Open API, etc.)
 - Tesseract
 - Docker
+
+# Requirements
+
+These are the requirements:
+
+- Git
+
+```bash
+# check the git version
+git --version
+```
+
+- Java version >= 17 
+
+```bash
+# check the Java version
+java --version
+```
+
+- Ant version >= 1.10 (optional)
+
+```bash
+# check the Ant version
+ant -version
+```
+- Maven version >= 3.8.8
+
+```bash
+# check the Maven version
+mvn --version
+```
+
+- Docker
+
+```bash
+# check the Docker version
+docker --version
+```
+
+- Newman (for tests)
+
+```bash
+# check the Newman version
+newman --version
+```
 
 # How to Execute
 
@@ -39,14 +78,13 @@ This project use the [allset-java](https://github.com/fernando-romulo-silva/alls
 
 Please get this project and install it on your repository before continuing.
 
-
 ## Get extension's project
 
 This project use the [default-extensions](https://github.com/fernando-romulo-silva/default-extensions) to use plugins configurations (checkstyle-checks.xml, pmd-ruleset.xml, spotbugs-excludes.xml, etc).
 
-Please get this project and install it on your repository before continuing.
+## To install
 
-## Clone it
+Please get this project and install it on your repository before continuing.
 
 To start, clone it:
 
@@ -54,30 +92,23 @@ To start, clone it:
 git clone https://github.com/fernando-romulo-silva/image-converter-service
 ```
 
-## Go inside project's folder
-
 You have to be in the project's root directory:
 
 ```bash
 cd image-converter-service
 ```
 
-## Build application
+Build the application:
 
 ```bash
 mvn package -DskipTests
 ```
 
-## Using Docker
+## To Execute
 
-Recommended for non tessaract expert users.
-First check your docker version:
+**Using Docker**
 
-```bash
-docker version
-```
-
-Then build the image:
+It is recommended to use this process because using docker you don't need to install and configure tesseract on your pc:
 
 ```bash 
 docker build --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --file src/main/docker/Dockerfile --tag image-converter-service .
@@ -89,38 +120,23 @@ To run the project:
 docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/AlpineVersion.env image-converter-service
 ```
 
-## Using Java Local
+**Using Java Local**
 
-Requirements: 
+Tesseract needs a dictionary and the application uses the English dictionary called 'eng.traineddata.'
+For example, Ubuntu Ubuntu Linux (22.04.2 LTS) and tesseract 4, the default dictionary is installed on /usr/share/tesseract-ocr/4.00/tessdata/ and Alpine linux (3.15.0) and tesseract 4, the default dictionary is installed on /usr/share/tessdata/
 
-Java 17
+You have to check where the dictionary was installed on your S.O.
 
-```bash
-java -version 
-```
-
-Maven 3
+First, define where the dictionary folder was installed:
 
 ```bash
-mvn --version
+export TESSERACT_FOLDER=/usr/share/tesseract-ocr/4.00/tessdata/
 ```
 
-Ant 1.10 (optional)
+Next check if tesseract is working:
 
-```bash
-ant -version
-```
-
-Tesseract >= 4
- 
 ```bash
 tesseract --version
-```
-
-Newman (for tests)
-
-```bash
-newman --version
 ```
 
 Then execute:
@@ -129,22 +145,10 @@ Then execute:
 mvn spring-boot:run -Dspring.profiles.active=local
 ```
 
+## Testing the application
 
-# Newman Tests
-
-Tesseract needs a dictionary and the application use the English dictionary called 'eng.traineddata.'
-
-For Ubuntu Ubuntu linux (22.04.2 LTS) and tesseract 4, the default dictionary is installed on /usr/share/tesseract-ocr/4.00/tessdata/
-
-For Alpine linux (3.15.0) and tesseract 4, the default dictionary is installed on /usr/share/tessdata/
-
-If you want to execute local tests, you have to define at least the dictionary folder on environment variable (TESSERACT_FOLDER) or edit application-local.yml file:
-
-```bash
-export TESSERACT_FOLDER=/usr/share/tesseract-ocr/4.00/tessdata/
-```
-
-Then execute:
+There is a Postman collection that you can use to test it, but you can use Newman.
+To do that, execute the following command inside the project folder to test:
 
 ```bash
 newman run src/test/resources/postman/image-converter-service.postman_collection.json -e src/test/resources/postman/image-converter-service-local.postman_environment.json
