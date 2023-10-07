@@ -17,6 +17,7 @@ For more information plese check the [project development site](https://fernando
 
 # Technologies
 
+- Git
 - Java
 - Maven
 - Spring Frameworks (boot, data, security, Open API, etc.)
