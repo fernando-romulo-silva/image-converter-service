@@ -1,7 +1,8 @@
 #=================================================================================
 
 ARG JAVA_VERSION=17.0.7_7-jre-alpine@sha256:dd8238c151293ae6a7c22898ef2f0df2af8a05786aef73ccd3248e73765969ed
-FROM eclipse-temurin:${JAVA_VERSION} as builder
+
+FROM eclipse-temurin:${JAVA_VERSION} AS builder
 WORKDIR /application
 
 ARG JAR_FILE=target/*.jar
@@ -79,6 +80,4 @@ LABEL org.image-converter-service.build-date=$BUILD_DATE \
 # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl --fail http://localhost/health || exit 1
 HEALTHCHECK --start-period=1s CMD curl --fail https://localhost:8080/health | exit 1 
 
-EXPOSE 8000
-EXPOSE 8080
-EXPOSE 9010
+EXPOSE 8080 8000 9010

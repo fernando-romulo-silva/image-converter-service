@@ -118,7 +118,7 @@ docker build --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --file src/
 To run the project:
 
 ```bash 
-docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/AlpineVersion.env image-converter-service
+docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/AlpineVersion.env --log-opt mode=non-blocking --log-opt max-buffer-size=16m image-converter-service
 ```
 
 **Using Java Local**

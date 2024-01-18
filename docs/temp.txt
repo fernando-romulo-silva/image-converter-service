@@ -1,4 +1,4 @@
-
+https://github.com/siddhivinayak-sk/k8s-projects/blob/main/kb-statefulset-sample-artifacts-master/single-mysql-pv.yaml
 
 java -Djarmode=layertools -jar image-converter-service-0.0.1-SNAPSHOT.jar extract
 

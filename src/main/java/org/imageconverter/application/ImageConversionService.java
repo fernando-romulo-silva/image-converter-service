@@ -129,7 +129,7 @@ public class ImageConversionService {
     }
 
     private Object[] createParams(final ImageConversion imageConversionResult) {
-	return new Object[] { format("fileName '{0}', id '{1}'", imageConversionResult.getFileName(), imageConversionResult.getId()) };
+	return new Object[] { format("fileName ''{0}'', id ''{1}''", imageConversionResult.getFileName(), imageConversionResult.getId()) };
     }
 
     /**
