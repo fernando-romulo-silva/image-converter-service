@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+Kind: NetworkPolicy
+metadata:
+  name: image-convert-service-svc #${PROJECT_NAME}-svc
+  namespace: general #${PROJECT_NAMESPACE}
+spec:
+  podSelector:
+    matchLabels:
+      tier: backend
+  policyTypes:
+  - Ingress      
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          tier: api
