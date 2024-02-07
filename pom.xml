@@ -28,7 +28,6 @@
 
 		<junit-platform.version>5.10.0</junit-platform.version>
     
-
 		<!-- <checkstyle.config.location>checkstyle-checks.xml</checkstyle.config.location> -->
 		<!-- <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location> -->
 
@@ -173,7 +172,6 @@
 			<version>5.7.0</version>
 		</dependency>
 
-		
 		<dependency>
 			<groupId>com.turkraft</groupId>
 			<artifactId>spring-filter</artifactId>
