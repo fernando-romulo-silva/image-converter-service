@@ -7,7 +7,8 @@ This is the project tasks controller
 - [ ] Fix the Open API automatic generator component
 - [ ] Update the spring boot version to 3.x.x
 - [ ] Use java modules together Spring and Docker
-- [ ] Change to MongoDB?
+- [ ] Change to MongoDB
+- [ ] Add SOAP controller
 
 ### In Progress
 
