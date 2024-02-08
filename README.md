@@ -12,6 +12,8 @@ I change this project constantly improving and adding new plugins, click [here](
 
 This project converts images with text into simple text using [tesseract](https://github.com/tesseract-ocr/tesseract) and exposes it as a web service using spring boot.
 
+![Screenshot](docs/project.png)
+
 Basically, the caller sends a request (post) with an image with text, and the project tries to find the text on this image, returns it as text, and stores the conversion on a database.
 
 Basic overall architecture:
