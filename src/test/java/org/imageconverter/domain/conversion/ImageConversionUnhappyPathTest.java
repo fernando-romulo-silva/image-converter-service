@@ -21,7 +21,6 @@ import org.imageconverter.domain.imagetype.ImageType;
 import org.imageconverter.infra.exception.ConversionException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +36,7 @@ import org.mockito.ArgumentMatchers;
 @Tag("unit")
 @DisplayName("Test the image type entity, Unhappy Path :(")
 @TestInstance(PER_CLASS)
-class ImageConversionUnHappyPathTest extends ImageConversionConfigTest {
+class ImageConversionUnhappyPathTest extends ImageConversionConfigTest {
 
     @BeforeAll
     void setUp() throws Exception {
@@ -78,7 +77,6 @@ class ImageConversionUnHappyPathTest extends ImageConversionConfigTest {
 
     @ParameterizedTest(name = "Pos {index} : fileName ''{0}'', type ''{2}'' ")
     @MethodSource("createInvalidImageConversionData")
-    @Order(1)
     @DisplayName("Test the imageConversion's creation with invalid values")
     void createInvalidImageConversionTest( //
 		    // given

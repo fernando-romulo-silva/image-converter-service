@@ -30,7 +30,7 @@ import org.springframework.context.ApplicationContext;
 @DisplayName("Test the image type entity, unhappy path :( ")
 @ExtendWith(MockitoExtension.class)
 @TestInstance(PER_CLASS)
-class ImageTypeUnHappyPathTest {
+class ImageTypeUnhappyPathTest {
 
     private static final String PORTABLE_NETWORK_GRAPHICS_TXT = "Portable Network Graphics";
    

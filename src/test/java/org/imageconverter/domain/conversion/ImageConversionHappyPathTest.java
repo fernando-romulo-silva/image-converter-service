@@ -30,10 +30,12 @@ import org.imageconverter.TestConstants;
 import org.imageconverter.domain.imagetype.ImageType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -51,6 +53,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 @Tag("unit")
 @DisplayName("Test the image type entity, happy Path :) ")
 @TestInstance(PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 class ImageConversionHappyPathTest extends ImageConversionConfigTest {
 
     @BeforeAll
