@@ -47,10 +47,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Test the image type controller, find methods, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-class ImageTypeRestControllerUnHappyPathFindTest extends ImageTypeRestControllerUnHappyPathBaseTest {
+class ImageTypeRestControllerUnhappyPathFindTest extends ImageTypeRestControllerUnhappyPathBaseTest {
 
     @Autowired
-    ImageTypeRestControllerUnHappyPathFindTest(final ObjectMapper mapper, final MockMvc mvc) {
+    ImageTypeRestControllerUnhappyPathFindTest(final ObjectMapper mapper, final MockMvc mvc) {
 	super(mapper, mvc);
     }
 

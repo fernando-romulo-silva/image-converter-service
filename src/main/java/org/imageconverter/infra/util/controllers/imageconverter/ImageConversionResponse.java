@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Fernando Romulo da Silva
  */
-@Schema(name = "ImageCon" + "verterResponse", description = "Response to convert image")
+@Schema(name = "ImageConverterResponse", description = "Response to convert image")
 public record ImageConversionResponse( //
 		//
 		@Schema(name = "id", required = true, example = "1") //

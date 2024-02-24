@@ -55,7 +55,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 @Tag("integration")
 @DisplayName("Integration Test for ImageConversionService, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestInstance(PER_CLASS)
-class ImageConversionServiceUnHappyPathTest {
+class ImageConversionServiceUnhappyPathTest {
 
     private final ImageConversionService imageConversionService;
 
@@ -63,7 +63,7 @@ class ImageConversionServiceUnHappyPathTest {
 
     private final Pageable pageable = PageRequest.of(0, 10);
 
-    ImageConversionServiceUnHappyPathTest( //
+    ImageConversionServiceUnhappyPathTest( //
 		    @Autowired //
 		    final ImageConversionService imageConversionService, //
 		    //

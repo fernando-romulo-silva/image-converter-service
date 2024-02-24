@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author Fernando Romulo da Silva
  */
-class ImageTypeRestControllerUnHappyPathBaseTest {
+class ImageTypeRestControllerUnhappyPathBaseTest {
 
     // JSqlParser
     // @Value("classpath:db/db-data-test.sql")
@@ -24,7 +24,7 @@ class ImageTypeRestControllerUnHappyPathBaseTest {
     
     protected final MockMvc mvc;
 
-    ImageTypeRestControllerUnHappyPathBaseTest(final ObjectMapper mapper, final MockMvc mvc) {
+    ImageTypeRestControllerUnhappyPathBaseTest(final ObjectMapper mapper, final MockMvc mvc) {
 	super();
 	this.mapper = mapper;
 	this.mvc = mvc;

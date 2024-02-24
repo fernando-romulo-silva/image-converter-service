@@ -67,7 +67,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("Test the image conversion, unhappy convert path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-class ImageConversionRestControllerUnHappyPathTest {
+class ImageConversionRestControllerUnhappyPathTest {
 
     private static final String VALUE_TEXT = "value";
 
@@ -85,7 +85,7 @@ class ImageConversionRestControllerUnHappyPathTest {
 
     private final MockMultipartFile multipartCorruptedImageFile;
 
-    ImageConversionRestControllerUnHappyPathTest( //
+    ImageConversionRestControllerUnhappyPathTest( //
 		    @Value("classpath:beach.jpeg") //
 		    final Resource beachImageFile, //
 		    //

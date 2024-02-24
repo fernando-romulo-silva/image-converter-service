@@ -48,7 +48,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("Test the image conversion, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-class ImageConvertRestControllerSearchUnHappyPathTest {
+class ImageConvertRestControllerSearchUnhappyPathTest {
 
     // JSqlParser
     // @Value("classpath:db/db-data-test.sql")
@@ -56,7 +56,7 @@ class ImageConvertRestControllerSearchUnHappyPathTest {
 
     private final MockMvc mvc;
 
-    ImageConvertRestControllerSearchUnHappyPathTest( //
+    ImageConvertRestControllerSearchUnhappyPathTest( //
 		    @Autowired //
 		    final MockMvc mvc) throws IOException {
 	super();

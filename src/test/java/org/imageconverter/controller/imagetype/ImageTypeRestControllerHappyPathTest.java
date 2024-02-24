@@ -55,7 +55,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Test the image type controller, happy path :D ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnHappyPathBaseTest {
+class ImageTypeRestControllerHappyPathTest extends ImageTypeRestControllerUnhappyPathBaseTest {
 
     private final ImageTypeRequest createImageTypeRequest;
 

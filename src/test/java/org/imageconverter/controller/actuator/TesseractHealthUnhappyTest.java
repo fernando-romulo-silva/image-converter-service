@@ -39,7 +39,7 @@ import org.springframework.web.client.RestTemplate;
 @DisplayName("Test the tesseract Health, unhappy path :( ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-class TesseractHealthUnHappyTest extends BaseTesseractHealthTest {
+class TesseractHealthUnhappyTest extends BaseTesseractHealthTest {
 
     @Test
     @Order(1)

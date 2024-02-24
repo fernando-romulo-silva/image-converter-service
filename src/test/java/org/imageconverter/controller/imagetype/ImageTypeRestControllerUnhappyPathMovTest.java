@@ -55,12 +55,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Test the image type controller, unhappy path :( 𝅘𝅥𝅮  Hello, darkness, my old friend ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(PER_CLASS)
-class ImageTypeRestControllerUnHappyPathMovTest extends ImageTypeRestControllerUnHappyPathBaseTest {
+class ImageTypeRestControllerUnhappyPathMovTest extends ImageTypeRestControllerUnhappyPathBaseTest {
 
     private final ImageTypeRequest createImageTypeRequest;
 
     @Autowired
-    ImageTypeRestControllerUnHappyPathMovTest(final ObjectMapper mapper, final MockMvc mvc) {
+    ImageTypeRestControllerUnhappyPathMovTest(final ObjectMapper mapper, final MockMvc mvc) {
 	super(mapper, mvc);
 	this.createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
     }
