@@ -89,10 +89,10 @@ class ImageConversionRestControllerHappyPathTest {
 		    @Autowired //
 		    final MockMvc mvc, //
 		    //
-		    @Value("classpath:bill01.png") //
+		    @Value("classpath:images/bill01.png") //
 		    final Resource bill01ImageFile,
 
-		    @Value("classpath:bill02.png") //
+		    @Value("classpath:images/bill02.png") //
 		    final Resource bill02ImageFile) {
 	super();
 	this.mapper = mapper;

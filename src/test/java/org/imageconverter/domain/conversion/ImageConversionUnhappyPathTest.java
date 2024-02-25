@@ -45,16 +45,16 @@ class ImageConversionUnhappyPathTest extends ImageConversionConfigTest {
 
 	final var imageType = Optional.of(new ImageType("png", "PNG", "Portable Network Graphics"));
 
-	when(imageTypeRespository.findByExtension("png")) //
+	when(imageTypeRespository.findByExtension("png"))
 			.thenReturn(imageType);
 
-	when(applicationContext.getBean(TesseractService.class)) //
+	when(applicationContext.getBean(TesseractService.class))
 			.thenReturn(new TesseractService());
 
-	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any())) //
+	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any()))
 			.thenReturn(null);
 
-	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any())) //
+	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any()))
 			.thenReturn(EMPTY);
     }
 
@@ -78,9 +78,9 @@ class ImageConversionUnhappyPathTest extends ImageConversionConfigTest {
     @ParameterizedTest(name = "Pos {index} : fileName ''{0}'', type ''{2}'' ")
     @MethodSource("createInvalidImageConversionData")
     @DisplayName("Test the imageConversion's creation with invalid values")
-    void createInvalidImageConversionTest( //
+    void createInvalidImageConversionTest(
 		    // given
-		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
+		    final String fileName, final byte[] fileContent, final ExecutionType executionType,
 		    final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 
 	final var area = Objects.nonNull(xAxis) ? "x " + xAxis + ", y " + yAxis + ", width " + width + ", height " + height : "";

@@ -51,7 +51,7 @@ class ImageConversionConfigTest {
 	final var validator = buildDefaultValidatorFactory().getValidator();
 
 	// ------------------------------------
-	final var file = new File("src/test/resources/" + TestConstants.FILE_NAME_IMAGE_PNG);
+	final var file = new File("src/test/resources/images/" + TestConstants.FILE_NAME_IMAGE_PNG);
 
 	final var image = ImageIO.read(file);
 	final var baos = new ByteArrayOutputStream();
@@ -66,29 +66,29 @@ class ImageConversionConfigTest {
 
 	BeanUtil.defineContext(applicationContext);
 
-	when(applicationContext.getBean(ImageTypeRespository.class)) //
+	when(applicationContext.getBean(ImageTypeRespository.class))
 			.thenReturn(imageTypeRespository);
 
-	when(applicationContext.getBean(Validator.class)) //
+	when(applicationContext.getBean(Validator.class))
 			.thenReturn(validator);
 
-	when(applicationContext.getBeanProvider(ITesseract.class)) //
+	when(applicationContext.getBeanProvider(ITesseract.class))
 			.thenReturn(objectProvider);
 
-	when(objectProvider.getIfAvailable()) //
+	when(objectProvider.getIfAvailable())
 			.thenReturn(tesseractTess4j);
 	
-	when(objectProvider.getObject()) //
+	when(objectProvider.getObject())
 		.thenReturn(tesseractTess4j);
 
-	when(applicationContext.getBean(TesseractService.class)) //
+	when(applicationContext.getBean(TesseractService.class))
 			.thenReturn(new TesseractService());
 
 	final var messageSource = new ResourceBundleMessageSource();
 	messageSource.setBasename("messages");
 	messageSource.setDefaultEncoding("UTF-8");
 
-	when(applicationContext.getBean(MessageSource.class)) //
+	when(applicationContext.getBean(MessageSource.class))
 			.thenReturn(messageSource);
     }
 

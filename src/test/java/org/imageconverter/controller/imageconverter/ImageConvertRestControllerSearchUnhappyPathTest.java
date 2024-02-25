@@ -56,9 +56,7 @@ class ImageConvertRestControllerSearchUnhappyPathTest {
 
     private final MockMvc mvc;
 
-    ImageConvertRestControllerSearchUnhappyPathTest( //
-		    @Autowired //
-		    final MockMvc mvc) throws IOException {
+    ImageConvertRestControllerSearchUnhappyPathTest(@Autowired MockMvc mvc) throws IOException {
 	super();
 	this.mvc = mvc;
     }

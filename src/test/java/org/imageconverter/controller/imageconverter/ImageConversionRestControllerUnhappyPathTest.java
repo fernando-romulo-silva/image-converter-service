@@ -86,16 +86,16 @@ class ImageConversionRestControllerUnhappyPathTest {
     private final MockMultipartFile multipartCorruptedImageFile;
 
     ImageConversionRestControllerUnhappyPathTest( //
-		    @Value("classpath:beach.jpeg") //
+		    @Value("classpath:images/beach.jpeg") //
 		    final Resource beachImageFile, //
 		    //
-		    @Value("classpath:bill01.png") //
+		    @Value("classpath:images/bill01.png") //
 		    final Resource billImageFile, //
 		    //
-		    @Value("classpath:corruptedImage.png") //
+		    @Value("classpath:images/corruptedImage.png") //
 		    final Resource corruptedImageFile, //
 		    //
-		    @Value("classpath:emptyImage.png") //
+		    @Value("classpath:images/emptyImage.png") //
 		    final Resource emptyImageFile, //
 		    //
 		    @Autowired //

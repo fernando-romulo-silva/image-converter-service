@@ -52,7 +52,7 @@ import org.springframework.web.client.RestTemplate;
 @TestInstance(Lifecycle.PER_CLASS)
 class ImageConversionRestControllerFullUnhappyPathTest extends BaseTesseractHealthTest {
 
-    @Value("classpath:bill01.png")
+    @Value("classpath:images/bill01.png")
     private Resource imageFile;
 
     @Test
