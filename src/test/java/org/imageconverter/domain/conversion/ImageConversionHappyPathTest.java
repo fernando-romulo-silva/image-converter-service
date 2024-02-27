@@ -7,8 +7,8 @@ import static nl.jqno.equalsverifier.Warning.REFERENCE_EQUALITY;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.imageconverter.domain.conversion.ExecutionType.WEB;
-import static org.imageconverter.domain.conversion.ExecutionType.WS;
+import static org.imageconverter.domain.conversion.ExecutionType.PAGE;
+import static org.imageconverter.domain.conversion.ExecutionType.REST;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 
@@ -106,8 +106,8 @@ class ImageConversionHappyPathTest extends ImageConversionConfigTest {
 	final var fileBytes = mockMultipartFile.getBytes();
 
 	return Stream.of( //
-			Arguments.of(fileName, fileBytes, WEB, false, null, null, null, null), //
-			Arguments.of(fileName, fileBytes, WS, true, 885, 1417, 1426, 57) //
+			Arguments.of(fileName, fileBytes, PAGE, false, null, null, null, null), //
+			Arguments.of(fileName, fileBytes, REST, true, 885, 1417, 1426, 57) //
 	);
     }
 

@@ -3,8 +3,8 @@ package org.imageconverter.domain.conversion;
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.imageconverter.domain.conversion.ExecutionType.WEB;
-import static org.imageconverter.domain.conversion.ExecutionType.WS;
+import static org.imageconverter.domain.conversion.ExecutionType.PAGE;
+import static org.imageconverter.domain.conversion.ExecutionType.REST;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 
@@ -64,14 +64,14 @@ class ImageConversionUnhappyPathTest extends ImageConversionConfigTest {
 	final var fileBytes = mockMultipartFile.getBytes();
 
 	return Stream.of( //
-			Arguments.of(null, fileBytes, WEB, null, null, null, null), //
-			Arguments.of(fileName, null, WEB, null, null, null, null), //
+			Arguments.of(null, fileBytes, PAGE, null, null, null, null), //
+			Arguments.of(fileName, null, PAGE, null, null, null, null), //
 			Arguments.of(fileName, fileBytes, null, null, null, null, null), //
-			Arguments.of(fileName, fileBytes, WS, -1, 1417, 1426, 57), //
-			Arguments.of(fileName, fileBytes, WS, 885, -1, 1426, 57), //
-			Arguments.of(fileName, fileBytes, WS, 885, 1417, -1, 57), //
-			Arguments.of(fileName, fileBytes, WS, 885, 1417, 1426, -1), //
-			Arguments.of(fileName, fileBytes, WS, 885, 1417, 1426, 57) //
+			Arguments.of(fileName, fileBytes, REST, -1, 1417, 1426, 57), //
+			Arguments.of(fileName, fileBytes, REST, 885, -1, 1426, 57), //
+			Arguments.of(fileName, fileBytes, REST, 885, 1417, -1, 57), //
+			Arguments.of(fileName, fileBytes, REST, 885, 1417, 1426, -1), //
+			Arguments.of(fileName, fileBytes, REST, 885, 1417, 1426, 57) //
 	);
     }
 

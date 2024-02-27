@@ -1,6 +1,6 @@
 package org.imageconverter.infra.util.jpaconverters;
 
-import static org.apache.commons.lang3.StringUtils.upperCase;
+import java.util.Objects;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -20,7 +20,7 @@ public class ExcutionTypeConverter implements AttributeConverter<ExecutionType, 
      */
     @Override
     public String convertToDatabaseColumn(final ExecutionType attribute) {
-	return upperCase(attribute.toString());
+	return Objects.nonNull(attribute) ? attribute.toString() : null; 
     }
 
     /**

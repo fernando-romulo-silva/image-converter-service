@@ -2,8 +2,8 @@ package org.imageconverter.application;
 
 import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.imageconverter.domain.conversion.ExecutionType.WEB;
-import static org.imageconverter.domain.conversion.ExecutionType.WS;
+import static org.imageconverter.domain.conversion.ExecutionType.PAGE;
+import static org.imageconverter.domain.conversion.ExecutionType.REST;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
@@ -67,7 +67,7 @@ class ImageConversionServiceUnhappyPathTest {
 		    @Autowired //
 		    final ImageConversionService imageConversionService, //
 		    //
-		    @Value("classpath:bill01.png") //
+		    @Value("classpath:images/bill01.png") //
 		    final Resource imageFile) {
 	super();
 	this.imageConversionService = imageConversionService;
@@ -111,8 +111,8 @@ class ImageConversionServiceUnhappyPathTest {
 	final var filename = multipartFile.getOriginalFilename();
 
 	return Stream.of( //
-			Arguments.of(new ImageConverterRequest(null, multipartFile.getBytes(), WEB)), //
-			Arguments.of(new ImageConverterRequest(filename, null, WEB)), //
+			Arguments.of(new ImageConverterRequest(null, multipartFile.getBytes(), PAGE)), //
+			Arguments.of(new ImageConverterRequest(filename, null, PAGE)), //
 			Arguments.of(new ImageConverterRequest(filename, multipartFile.getBytes(), null)), //
 			Arguments.of(nullImageConverterRequest) //
 	);
@@ -142,15 +142,15 @@ class ImageConversionServiceUnhappyPathTest {
 	final var fileBytes = multipartFile.getBytes();
 
 	return Stream.of( //
-			Arguments.of(new ImageConverterRequestArea(null, fileBytes, WS, 885, 1417, 1426, 57)), //
-			Arguments.of(new ImageConverterRequestArea(StringUtils.EMPTY, fileBytes, WS, 885, 1417, 1426, 57)), //
-			Arguments.of(new ImageConverterRequestArea(fileName, null, WEB, 885, 1417, 1426, 57)), //
-			Arguments.of(new ImageConverterRequestArea(fileName, new byte[0], WEB, 885, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(null, fileBytes, REST, 885, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(StringUtils.EMPTY, fileBytes, REST, 885, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, null, PAGE, 885, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, new byte[0], PAGE, 885, 1417, 1426, 57)), //
 			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, null, null, null, null, null)), //
-			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, WS, -1, 1417, 1426, 57)), //
-			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, WS, 885, -1, 1426, 57)), //
-			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, WS, 885, 1417, -1, 57)), //
-			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, WS, 885, 1417, 1426, -1)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, REST, -1, 1417, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, REST, 885, -1, 1426, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, REST, 885, 1417, -1, 57)), //
+			Arguments.of(new ImageConverterRequestArea(fileName, fileBytes, REST, 885, 1417, 1426, -1)), //
 			Arguments.of(nullImageConverterRequestArea) //
 	);
     }

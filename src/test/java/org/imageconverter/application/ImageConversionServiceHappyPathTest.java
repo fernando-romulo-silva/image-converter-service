@@ -56,7 +56,7 @@ class ImageConversionServiceHappyPathTest {
 		    @Autowired //
 		    final ImageConversionService imageConversionService, //
 		    //
-		    @Value("classpath:bill01.png") //
+		    @Value("classpath:images/bill01.png") //
 		    final Resource imageFile) {
 	super();
 	this.imageConversionService = imageConversionService;
@@ -140,7 +140,7 @@ class ImageConversionServiceHappyPathTest {
 
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
-	final var request = new ImageConverterRequest(multipartFile.getOriginalFilename(), multipartFile.getBytes(), ExecutionType.WS);
+	final var request = new ImageConverterRequest(multipartFile.getOriginalFilename(), multipartFile.getBytes(), ExecutionType.REST);
 
 	final var response = imageConversionService.convert(request);
 
@@ -181,7 +181,7 @@ class ImageConversionServiceHappyPathTest {
 	// given
 	final var multipartFile = new MockMultipartFile("file", imageFile.getFilename(), MediaType.MULTIPART_FORM_DATA_VALUE, imageFile.getInputStream());
 
-	final var request = new ImageConverterRequestArea(multipartFile.getOriginalFilename(), multipartFile.getBytes(), ExecutionType.WEB, 885, 1417, 1426, 57);
+	final var request = new ImageConverterRequestArea(multipartFile.getOriginalFilename(), multipartFile.getBytes(), ExecutionType.PAGE, 885, 1417, 1426, 57);
 
 	final var createResponse = imageConversionService.convert(request);
 
