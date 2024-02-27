@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(enumAsRef = true)
 public enum ExecutionType {
 
+    UNKNOWN,
+    
     BATCH,
 
     REST,
@@ -36,7 +38,7 @@ public enum ExecutionType {
             case MESSAGING -> "M"; // Messaging Service
             case PAGE -> "P"; // Spring MVC
             case DESKTOP -> "D"; // Swing? JavaFx? 	
-            default -> null;
+            default -> "U";
        };
     }
     
@@ -57,7 +59,7 @@ public enum ExecutionType {
 	        case "M" -> MESSAGING; // Messaging Service
 	        case "P" -> PAGE; // Spring MVC
 	        case "D" -> DESKTOP; // Swing? JavaFx? 
-	        default -> null; // UNKNOWN ??
+	        default -> UNKNOWN; // UNKNOWN ??
 	};
     }
 }

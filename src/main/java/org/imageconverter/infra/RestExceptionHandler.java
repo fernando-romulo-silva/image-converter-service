@@ -100,7 +100,7 @@ public class RestExceptionHandler extends AbstractRestExceptionHandler {
 	    final var errors = new HashMap<String, String>();
 
 	    errors.put("field", substringAfterLast(violation.getPropertyPath().toString(), "."));
-	    errors.put("value", violation.getInvalidValue().toString());
+	    errors.put("value", violation.getInvalidValue() == null ? "null" : violation.getInvalidValue().toString());
 
 	    final var code = RegExUtils.replaceAll(violation.getMessage(), "[{}]", "");
 	    errors.put("error", messageSource.getMessage(code, null, locale)); // violation.getMessage());
