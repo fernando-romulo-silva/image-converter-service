@@ -47,7 +47,7 @@ spring:
             ddl-auto: update
         properties:
             hibernate:
-                generated_statistics: false
-                show_sql: false
+                generated-statistics: false
+                show-sql: false
                 jdbc:
                     time_zone: GMT-3               

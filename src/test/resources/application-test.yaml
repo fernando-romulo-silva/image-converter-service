@@ -12,7 +12,6 @@ tesseract:
     language: eng
     folder : /home/fernando/Development/tools/tesseract/tessdata/
 
-  
 #============== Server ===============================================================================
 server:
     port: 18080
@@ -44,10 +43,10 @@ spring:
             ddl-auto: update
         properties:
             hibernate:
-                generated_statistics: false
-                show_sql: false
+                generated-statistics: false
+                show-sql: false
                 jdbc:
-                    time_zone: GMT-3               
+                    time-zone: GMT-3               
                     
 #============== Messages =============================================================================
     messages:

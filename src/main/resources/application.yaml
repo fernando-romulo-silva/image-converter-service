@@ -132,12 +132,12 @@ spring:
         properties:
             hibernate:
                 jdbc:
-                    time_zone: GMT-3
+                    time-zone: GMT-3
             cache:
                region:
-                     factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
-               use_query_cache: true
-               use_second_level_cache: true
+                     factory-class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+               use-query-cache: true
+               use-second-level-cache: true
             javax:
                 persistence:
                     retrieveMode:
