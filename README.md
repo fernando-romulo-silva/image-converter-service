@@ -8,6 +8,11 @@
 I use this project to learn new technologies related to spring boot web.
 I change this project constantly improving and adding new plugins, click [here](docs/STATUS.md) to follow up.
 
+# The Problem
+
+I needed to transform an image with a bill number code to a text in order to use it on other software.
+Yes, Google has/had a service for that, but you have to pay :(
+
 # About
 
 This project converts images with text into simple text using [tesseract](https://github.com/tesseract-ocr/tesseract) and exposes it as a web service using spring boot.
@@ -119,13 +124,24 @@ mvn package -DskipTests
 It is recommended to use this process because using docker you don't need to install and configure tesseract on your pc:
 
 ```bash 
-docker build --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --file src/main/docker/Dockerfile --tag image-converter-service .
+docker build --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \ 
+             --file src/main/docker/Dockerfile \
+             --tag image-converter-service .
 ```
 
 To run the project:
 
 ```bash 
-docker run --publish 8080:8080 --publish 8000:8000 --detach --name image-converter-service-1 --env-file src/main/docker/AlpineVersion.env --log-opt mode=non-blocking --log-opt max-buffer-size=16m image-converter-service
+docker run --publish 8080:8080 \
+           --publish 8000:8000 \
+           --detach \
+           --memory 512Mb \
+           --memory-reservation 256Mb \
+           --name image-converter-service-1 \
+           --env-file src/main/docker/AlpineVersion.env \
+           --log-opt mode=non-blocking \
+           --log-opt max-buffer-size=16m \
+           image-converter-service
 ```
 
 **Using Java Local**
@@ -159,7 +175,8 @@ There is a Postman collection that you can use to test it, but you can use Newma
 To do that, execute the following command inside the project folder to test:
 
 ```bash
-newman run src/test/resources/postman/image-converter-service.postman_collection.json -e src/test/resources/postman/image-converter-service-local.postman_environment.json
+newman run src/test/resources/postman/image-converter-service.postman_collection.json \
+          -e src/test/resources/postman/image-converter-service-local.postman_environment.json
 ```
 
 # API Documentation
