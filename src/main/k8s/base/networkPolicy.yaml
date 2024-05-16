@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 Kind: NetworkPolicy
 metadata:
-  name: image-convert-service-svc #${PROJECT_NAME}-svc
+  name: image-convert-service-np #${PROJECT_NAME}-np
   namespace: general #${PROJECT_NAMESPACE}
 spec:
   podSelector:
@@ -13,4 +13,4 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          tier: api
+          tier: frontend

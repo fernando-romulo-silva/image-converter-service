@@ -2,6 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metada:
   name: image-converter-service # ${PROJECT_NAME}
+  labels:
+    app: image-converter-service
+    tier: backend
+    environment: dev
   namespace: general # ${PROJECT_NAMESPACE}
 spec:
   replicas: 1
@@ -15,6 +19,7 @@ spec:
     metadata:
       labels:
         app: image-converter-service # ${PROJECT_NAME}
+        tier: backend    
         cmdbname: gke # ${CLOUD}
         commit: commit_branch # ${COMMIT_BRANCH}
         project: image-converter-service # ${PROJECT_NAME}

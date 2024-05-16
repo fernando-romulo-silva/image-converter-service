@@ -17,6 +17,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,6 +32,7 @@ import org.springframework.context.ApplicationContext;
 @DisplayName("Test the image type entity, unhappy path :( ")
 @ExtendWith(MockitoExtension.class)
 @TestInstance(PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 class ImageTypeUnhappyPathTest {
 
     private static final String PORTABLE_NETWORK_GRAPHICS_TXT = "Portable Network Graphics";

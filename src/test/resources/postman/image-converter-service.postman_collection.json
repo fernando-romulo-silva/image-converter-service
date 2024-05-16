@@ -855,7 +855,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/images/bill01.png"
 								}
 							]
 						},
@@ -1020,7 +1020,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/images/bill01.png"
 								}
 							]
 						},
@@ -1161,12 +1161,12 @@
 								{
 									"key": "files",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill01.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/images/bill01.png"
 								},
 								{
 									"key": "files",
 									"type": "file",
-									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/bill02.png"
+									"src": "/home/fernando/Development/workspaces/eclipse-workspace/image-converter-service/src/test/resources/images/bill02.png"
 								}
 							]
 						},

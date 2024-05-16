@@ -32,6 +32,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -54,6 +56,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 @DisplayName("Test the image type entity, happy Path :) ")
 @ExtendWith(MockitoExtension.class)
 @TestInstance(PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 class ImageTypeHappyPathTest {
 
     @Mock

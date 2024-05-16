@@ -19,9 +19,10 @@ RUN ["jdeps",\
      # output the dependencies at end of run
      "--print-module-deps",\
      # Performs a recursive analysis to identify dependencies at all levels
-     #"--recursive",\
+     "--recursive",\
      # specify the the dependencies for the jar
-     "--class-path",\
+     #"--class-path",\?
+     "--module-path",\
      "dependencies/BOOT-INF/lib/*",\
      # pipe the result of running jdeps on the app jar to file
      "application.jar > jre-deps.info"\
@@ -29,6 +30,8 @@ RUN ["jdeps",\
 
 # new jre
 RUN ["$JAVA_HOME/bin/jlink",\
+        "--module-path",\
+        "dependencies/BOOT-INF/lib",\
         "--add-modules",\
         "$(cat jre-deps.info)",\
         #"--verbose",\
