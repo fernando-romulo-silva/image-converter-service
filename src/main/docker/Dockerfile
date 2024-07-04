@@ -21,8 +21,7 @@ RUN [\
     "--update",\
     "--no-cache",\
     "tesseract-ocr",\
-    "tesseract-ocr-data-eng",\
-    "dumb-init"\      
+    "tesseract-ocr-data-eng"\
 ]
 
 WORKDIR /application
@@ -35,7 +34,7 @@ COPY --from=builder application/snapshot-dependencies ./
 COPY --from=builder application/application/ ./
 
 # create usergroup 'javauser' and 'javauser' user     
-RUN addgroup --system javauser\
+RUN addgroup --system javauser \
       && adduser -S -s  /bin/false -G javauser javauser \
       && chown -R javauser:javauser /application
 
@@ -44,7 +43,6 @@ USER javauser
 
 # execute the application
 ENTRYPOINT [\
-    "dumb-init",\
     "java",\
 	# Profiling
     # "-Dcom.sun.management.jmxremote.port=9010",\ 
