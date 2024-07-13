@@ -56,92 +56,97 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 @TestMethodOrder(OrderAnnotation.class)
 class ImageConversionHappyPathTest extends ImageConversionConfigTest {
 
-    @BeforeAll
-    void setUp() throws Exception {
-	setUpSuper();
+	@BeforeAll
+	void setUp() throws Exception {
+		setUpSuper();
 
-	when(applicationContext.getBean(TesseractService.class)) //
-			.thenReturn(new TesseractService());
-	
-	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any())) //
-			.thenReturn(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
+		when(applicationContext.getBean(TesseractService.class))
+				.thenReturn(new TesseractService());
 
-	when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any())) //
-			.thenReturn(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
+		when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any()))
+				.thenReturn(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
 
-	final var imageType = Optional.of(new ImageType("png", "PNG", "Portable Network Graphics"));
+		when(tesseractTess4j.doOCR(ArgumentMatchers.<BufferedImage>any(), ArgumentMatchers.<Rectangle>any()))
+				.thenReturn(TestConstants.IMAGE_PNG_CONVERSION_NUMBER);
 
-	when(imageTypeRespository.findByExtension("png")) //
-			.thenReturn(imageType);
-    }
+		final var imageType = Optional.of(new ImageType("png", "PNG", "Portable Network Graphics"));
 
-    @Test
-    @Order(1)
-    @DisplayName("Test the equals And HashCode Contract")
-    void tryEqualsAndHashCodeContractTest() { // NOPMD - JUnitTestsShouldIncludeAssert: EqualsVerifier already do it
+		when(imageTypeRespository.findByExtension("png"))
+				.thenReturn(imageType);
+	}
 
-	EqualsVerifier.forClass(ImageConversion.class) //
-			.suppress(NONFINAL_FIELDS, STRICT_INHERITANCE, REFERENCE_EQUALITY) //
-			.withIgnoredAnnotations(Entity.class, Id.class, Column.class, Table.class, GeneratedValue.class, ManyToOne.class, JoinColumn.class) //
-			.withOnlyTheseFields("id") //
-			.verify();
+	@Test
+	@Order(1)
+	@DisplayName("Test the equals And HashCode Contract")
+	void tryEqualsAndHashCodeContractTest() { // NOPMD - JUnitTestsShouldIncludeAssert: EqualsVerifier already do it
 
-    }
+		final var annotations = new Class[] {
+				Entity.class, Id.class, Column.class, Table.class, GeneratedValue.class, ManyToOne.class,
+				JoinColumn.class };
 
-    @Test
-    @Order(2)
-    @DisplayName("Test the toString method")
-    void tryToStringTest() { // NOPMD - JUnitTestsShouldIncludeAssert: ToStringVerifier already do it
+		EqualsVerifier.forClass(ImageConversion.class)
+				.suppress(NONFINAL_FIELDS, STRICT_INHERITANCE, REFERENCE_EQUALITY)
+				.withIgnoredAnnotations(annotations)
+				.withOnlyTheseFields("id")
+				.verify();
 
-	ToStringVerifier.forClass(ImageConversion.class) //
-			.withIgnoredFields("text", "created", "area") //
-			.withClassName(SIMPLE_NAME) //
-			.withFailOnExcludedFields(false) //
-			.verify();
-    }
+	}
 
-    Stream<Arguments> createValidImageConversionData() throws IOException {
+	@Test
+	@Order(2)
+	@DisplayName("Test the toString method")
+	void tryToStringTest() { // NOPMD - JUnitTestsShouldIncludeAssert: ToStringVerifier already do it
 
-	final var fileName = mockMultipartFile.getOriginalFilename();
-	final var fileBytes = mockMultipartFile.getBytes();
+		ToStringVerifier.forClass(ImageConversion.class) //
+				.withIgnoredFields("text", "created", "area") //
+				.withClassName(SIMPLE_NAME) //
+				.withFailOnExcludedFields(false) //
+				.verify();
+	}
 
-	return Stream.of( //
-			Arguments.of(fileName, fileBytes, PAGE, false, null, null, null, null), //
-			Arguments.of(fileName, fileBytes, REST, true, 885, 1417, 1426, 57) //
-	);
-    }
+	Stream<Arguments> createValidImageConversionData() throws IOException {
 
-    @ParameterizedTest(name = "Pos {index} : fileName ''{0}'', type ''{2}'' ")
-    @MethodSource("createValidImageConversionData")
-    @Order(3)
-    @DisplayName("Test the imageConversion's creation")
-    void createValidImageConversionTest( //
-		    // given
-		    final String fileName, final byte[] fileContent, final ExecutionType executionType, //
-		    final boolean area, final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
+		final var fileName = mockMultipartFile.getOriginalFilename();
+		final var fileBytes = mockMultipartFile.getBytes();
 
-	// when
-	final var imageConversionBuilder = new ImageConversion.Builder().with($ -> {
-	    $.fileName = fileName;
-	    $.fileContent = fileContent;
-	    $.executionType = executionType;
-	    $.xAxis = xAxis;
-	    $.yAxis = yAxis;
-	    $.width = width;
-	    $.height = height;
-	});
+		return Stream.of( //
+				Arguments.of(fileName, fileBytes, PAGE, false, null, null, null, null), //
+				Arguments.of(fileName, fileBytes, REST, true, 885, 1417, 1426, 57) //
+		);
+	}
 
-	final var imageConversion = imageConversionBuilder.build();
+	@ParameterizedTest(name = "Pos {index} : fileName ''{0}'', type ''{2}'' ")
+	@MethodSource("createValidImageConversionData")
+	@Order(3)
+	@DisplayName("Test the imageConversion's creation")
+	void createValidImageConversionTest( //
+			// given
+			final String fileName, final byte[] fileContent, final ExecutionType executionType, //
+			final boolean area, final Integer xAxis, final Integer yAxis, final Integer width, final Integer height) {
 
-	final var fileExtension = getExtension(fileName);
+		// when
+		final var imageConversionBuilder = new ImageConversion.Builder().with($ -> {
+			$.fileName = fileName;
+			$.fileContent = fileContent;
+			$.executionType = executionType;
+			$.xAxis = xAxis;
+			$.yAxis = yAxis;
+			$.width = width;
+			$.height = height;
+		});
 
-	// then
-	assertThat(imageConversion) //
-			.as(format("Check the fileName ''{0}'', executionType ''{1}'', area ''{2}'' and fileExtension ''{3}''", fileName, executionType, area, fileExtension)) //
-			.extracting("fileName", "type", "area") //
-			.containsExactly(fileName, executionType, area) //
-			.extracting(extension -> imageConversion.getFileType().getExtension()) //
-			.containsAnyOf(fileExtension);
+		final var imageConversion = imageConversionBuilder.build();
 
-    }
+		final var fileExtension = getExtension(fileName);
+
+		// then
+		assertThat(imageConversion) //
+				.as(format("Check the fileName ''{0}'', executionType ''{1}'', area ''{2}'' and fileExtension ''{3}''",
+						fileName, executionType, area, fileExtension)) //
+				.extracting("fileName", "type", "area") //
+				.containsExactly(fileName, executionType, area) //
+				.extracting(extension -> imageConversion.getFileType().getExtension()) //
+				.containsAnyOf(fileExtension);
+
+	}
 }
