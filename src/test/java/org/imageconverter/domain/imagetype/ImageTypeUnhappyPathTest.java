@@ -7,7 +7,6 @@ import static org.imageconverter.infra.util.BeanUtil.defineContext;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 import javax.validation.Validator;
@@ -35,49 +34,50 @@ import org.springframework.context.ApplicationContext;
 @TestMethodOrder(OrderAnnotation.class)
 class ImageTypeUnhappyPathTest {
 
-    private static final String PORTABLE_NETWORK_GRAPHICS_TXT = "Portable Network Graphics";
-   
-    @Mock
-    private ApplicationContext applicationContext;
+	private static final String PORTABLE_NETWORK_GRAPHICS_TXT = "Portable Network Graphics";
 
-    @BeforeAll
-    void setUp() {
-	final var validator = buildDefaultValidatorFactory().getValidator();
+	@Mock
+	private ApplicationContext applicationContext;
 
-	MockitoAnnotations.openMocks(this);
+	@BeforeAll
+	void setUp() {
+		final var validator = buildDefaultValidatorFactory().getValidator();
 
-	defineContext(applicationContext);
+		MockitoAnnotations.openMocks(this);
 
-	when(applicationContext.getBean(Validator.class)) //
-			.thenReturn(validator);
-    }
+		defineContext(applicationContext);
 
-    Stream<Arguments> createInvalidImageTypeData() throws IOException {
+		when(applicationContext.getBean(Validator.class)) //
+				.thenReturn(validator);
+	}
 
-	return Stream.of( //
-			Arguments.of(null, "PNG", PORTABLE_NETWORK_GRAPHICS_TXT), //
-			Arguments.of("", "PNG", PORTABLE_NETWORK_GRAPHICS_TXT), //
-			Arguments.of("png", null, PORTABLE_NETWORK_GRAPHICS_TXT), //
-			Arguments.of("png", "", PORTABLE_NETWORK_GRAPHICS_TXT)//
-	);
-    }
+	Stream<Arguments> createInvalidImageTypeData() {
 
-    @ParameterizedTest(name = "Pos {index} : name ''{0}'', extension ''{1}'', description ''{2}'' ")
-    @MethodSource("createInvalidImageTypeData")
-    @Order(1)
-    @DisplayName("Test the imageTypes creation with invalid values")
-    void createInvalidImageTypeTest(
-		    // given
-		    final String name, final String extension, final String description) {
+		return Stream.of( //
+				Arguments.of(null, "PNG", PORTABLE_NETWORK_GRAPHICS_TXT), //
+				Arguments.of("", "PNG", PORTABLE_NETWORK_GRAPHICS_TXT), //
+				Arguments.of("png", null, PORTABLE_NETWORK_GRAPHICS_TXT), //
+				Arguments.of("png", "", PORTABLE_NETWORK_GRAPHICS_TXT)//
+		);
+	}
 
-	// when
-	assertThatThrownBy(() -> {
+	@ParameterizedTest(name = "Pos {index} : name ''{0}'', extension ''{1}'', description ''{2}'' ")
+	@MethodSource("createInvalidImageTypeData")
+	@Order(1)
+	@DisplayName("Test the imageTypes creation with invalid values")
+	void createInvalidImageTypeTest(
+			// given
+			final String name, final String extension, final String description) {
 
-	    new ImageType(extension, name, description);
+		// when
+		assertThatThrownBy(() -> {
 
-	}) // then 
-	.as(format("Check the invalid extension ''{0}'', name ''{1}'' and description ''{2}'' ", extension, name, description)) //
-	.isInstanceOf(RuntimeException.class);
-    }
+			new ImageType(extension, name, description);
+
+		}) // then
+				.as(format("Check the invalid extension ''{0}'', name ''{1}'' and description ''{2}''", extension,
+						name, description)) //
+				.isInstanceOf(RuntimeException.class);
+	}
 
 }

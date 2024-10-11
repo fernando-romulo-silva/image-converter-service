@@ -37,143 +37,145 @@ import org.springframework.test.context.jdbc.SqlConfig;
 @DisplayName("Integration Test for ImageTypeService, happy path :D ")
 class ImageTypeServiceHappyPathTest {
 
-    private final ImageTypeService imageTypeService;
+	private final ImageTypeService imageTypeService;
 
-    private final ImageTypeRequest createImageTypeRequest;
-    
-    private final Pageable pageable = PageRequest.of(0, 10);
+	private final ImageTypeRequest createImageTypeRequest;
 
-    ImageTypeServiceHappyPathTest(@Autowired final ImageTypeService imageTypeService) {
-	super();
-	this.imageTypeService = imageTypeService;
-	this.createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
-    }
+	private final Pageable pageable = PageRequest.of(0, 10);
 
-    @Test
-    @Order(1)
-    @DisplayName("Get a image type by id")
-    void findImageTypeByIdTest() {
+	ImageTypeServiceHappyPathTest(@Autowired final ImageTypeService imageTypeService) {
+		super();
+		this.imageTypeService = imageTypeService;
+		this.createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+	}
 
-	// already on db, due to the db-data-test.sql
-	final var id = 1000L;
+	@Test
+	@Order(1)
+	@DisplayName("Get a image type by id")
+	void findImageTypeByIdTest() {
 
-	final var result = imageTypeService.findById(id);
+		// already on db, due to the db-data-test.sql
+		final var id = 1000L;
 
-	assertThat(result.id()) //
-			.as(format("Check response id is equal to ''{0}''", id)) //
-			.isEqualTo(id);
-    }
+		final var result = imageTypeService.findById(id);
 
-    @Test
-    @Order(2)
-    @DisplayName("Get all image types")
-    void findAllImageTypeTest() {
+		assertThat(result.id()) //
+				.as(format("Check response id is equal to ''{0}''", id)) //
+				.isEqualTo(id);
+	}
 
-	// already on db, due to the db-data-test.sql
-	final var id = 1000L;
+	@Test
+	@Order(2)
+	@DisplayName("Get all image types")
+	void findAllImageTypeTest() {
 
-	final var responses = imageTypeService.findAll();
+		// already on db, due to the db-data-test.sql
+		final var id = 1000L;
 
-	assertThat(responses) //
-			.as(format("Check if responses contains id ''{0}''", id)) //
-			.map(imageTypeResponse -> imageTypeResponse.id()) //
-			.contains(id);
+		final var responses = imageTypeService.findAll();
 
-	assertThat(responses) //
-			.as("Responses extensions contains 'png' and 'jpg'") //
-			.map(imageTypeResponse -> imageTypeResponse.extension()) //
-			.containsAll(List.of("png", "jpg")); // we have 'png' and 'jpg' at db-data-test.sql
-    }
+		assertThat(responses) //
+				.as(format("Check if responses contains id ''{0}''", id)) //
+				.map(imageTypeResponse -> imageTypeResponse.id()) //
+				.contains(id);
 
-    static Specification<ImageType> equalsExtension(final String extension) {
-	return (root, query, builder) -> builder.equal(root.get("extension"), extension);
-    }
+		assertThat(responses) //
+				.as("Responses extensions contains 'png' and 'jpg'") //
+				.map(imageTypeResponse -> imageTypeResponse.extension()) //
+				.containsAll(List.of("png", "jpg")); // we have 'png' and 'jpg' at db-data-test.sql
+	}
 
-    @Test
-    @Order(3)
-    @DisplayName("Get a image type by specification")
-    void findImageTypeBySpecificationTest() {
+	static Specification<ImageType> equalsExtension(final String extension) {
+		return (root, query, builder) -> builder.equal(root.get("extension"), extension);
+	}
 
-	// already on db, due to the db-data-test.sql
-	final var extension = "png";
+	@Test
+	@Order(3)
+	@DisplayName("Get a image type by specification")
+	void findImageTypeBySpecificationTest() {
 
-	final var responses1 = imageTypeService.findBySpecification(equalsExtension(extension), pageable);
+		// already on db, due to the db-data-test.sql
+		final var extension = "png";
 
-	assertThat(responses1) //
-			.as(format("Check if response1 contains the extension  ''{0}''", extension)) //
-			.map(imageTypeResponse -> imageTypeResponse.extension()) //
-			.containsAnyOf(extension);
+		final var responses1 = imageTypeService.findBySpecification(equalsExtension(extension), pageable);
 
-	// -----------------------
+		assertThat(responses1) //
+				.as(format("Check if response1 contains the extension  ''{0}''", extension)) //
+				.map(imageTypeResponse -> imageTypeResponse.extension()) //
+				.containsAnyOf(extension);
 
-	final var responses2 = imageTypeService.findBySpecification(null, pageable);
+		// -----------------------
 
-	assertThat(responses2) //
-			.as("Response2 contains two elements and its exensions are 'png' and 'jpg'") //
-			.hasSize(2) //
-			.map(imageTypeResponse -> imageTypeResponse.extension()) //
-			.containsAll(List.of("png", "jpg")); // we have 'png' and 'jpg' at db-data-test.sql
-    }
+		final var responses2 = imageTypeService.findBySpecification(null, pageable);
 
-    @Test
-    @Order(4)
-    @DisplayName("Create a new image type")
-    void createImageTypeTest() {
+		assertThat(responses2) //
+				.as("Response2 contains two elements and its exensions are 'png' and 'jpg'") //
+				.hasSize(2) //
+				.map(imageTypeResponse -> imageTypeResponse.extension()) //
+				.containsAll(List.of("png", "jpg")); // we have 'png' and 'jpg' at db-data-test.sql
+	}
 
-	final var response = imageTypeService.createImageType(createImageTypeRequest);
+	@Test
+	@Order(4)
+	@DisplayName("Create a new image type")
+	void createImageTypeTest() {
 
-	assertThat(response) //
-			.isNotNull() //
-			.as(format("Check if response is not null and has extension ''{0}'' and name ''{1}'' ", createImageTypeRequest.extension(), createImageTypeRequest.name())) //
-			.hasFieldOrPropertyWithValue("extension", createImageTypeRequest.extension()) //
-			.hasFieldOrPropertyWithValue("name", createImageTypeRequest.name()) //
-	;
-    }
+		final var response = imageTypeService.createImageType(createImageTypeRequest);
 
-    @Test
-    @Order(5)
-    @DisplayName("Update a image type")
-    void updateImageTypeTest() {
+		assertThat(response) //
+				.isNotNull() //
+				.as(format("Check if response is not null and has extension ''{0}'' and name ''{1}'' ",
+						createImageTypeRequest.extension(), createImageTypeRequest.name())) //
+				.hasFieldOrPropertyWithValue("extension", createImageTypeRequest.extension()) //
+				.hasFieldOrPropertyWithValue("name", createImageTypeRequest.name()) //
+		;
+	}
 
-	final var createResponse = imageTypeService.createImageType(createImageTypeRequest);
+	@Test
+	@Order(5)
+	@DisplayName("Update a image type")
+	void updateImageTypeTest() {
 
-	final var newTypeRequest = new ImageTypeRequest("BMP", "BitmapNew", "Device independent bitmap");
+		final var createResponse = imageTypeService.createImageType(createImageTypeRequest);
 
-	final var updateResponse = imageTypeService.updateImageType(createResponse.id(), newTypeRequest);
+		final var newTypeRequest = new ImageTypeRequest("BMP", "BitmapNew", "Device independent bitmap");
 
-	assertThat(updateResponse) //
-			.isNotNull() //
-			.as(format("Update response not changed id ''{0}'' and extension ''{1}'' ", createResponse.id(), createResponse.extension())) //
-			.hasFieldOrPropertyWithValue("id", createResponse.id()) //
-			.hasFieldOrPropertyWithValue("extension", createResponse.extension()); //
+		final var updateResponse = imageTypeService.updateImageType(createResponse.id(), newTypeRequest);
 
-	assertThat(updateResponse.name()) //
-			.isNotEmpty() //
-			.as(format("Update response changed name ''{0}'' ", updateResponse.name())) //
-			.isNotEqualTo(createResponse.name()).isEqualTo(newTypeRequest.name());
-    }
+		assertThat(updateResponse) //
+				.isNotNull() //
+				.as(format("Update response not changed id ''{0}'' and extension ''{1}'' ", createResponse.id(),
+						createResponse.extension())) //
+				.hasFieldOrPropertyWithValue("id", createResponse.id()) //
+				.hasFieldOrPropertyWithValue("extension", createResponse.extension()); //
 
-    @Test
-    @Order(6)
-    @DisplayName("Delete a new image type")
-    void deleteImageTypeTest() {
+		assertThat(updateResponse.name()) //
+				.isNotEmpty() //
+				.as(format("Update response changed name ''{0}'' ", updateResponse.name())) //
+				.isNotEqualTo(createResponse.name()).isEqualTo(newTypeRequest.name());
+	}
 
-	final var createResponse = imageTypeService.createImageType(createImageTypeRequest);
+	@Test
+	@Order(6)
+	@DisplayName("Delete a new image type")
+	void deleteImageTypeTest() {
 
-	final var findByIdResponse = imageTypeService.findById(createResponse.id());
+		final var createResponse = imageTypeService.createImageType(createImageTypeRequest);
 
-	assertThat(findByIdResponse.id()) //
-			.as(format("Check the imageType with id ''{0}'' was created", createResponse.id()))//
-			.isEqualTo(createResponse.id());
+		final var findByIdResponse = imageTypeService.findById(createResponse.id());
 
-	// ----------------------------------------------------------
+		assertThat(findByIdResponse.id()) //
+				.as(format("Check the imageType with id ''{0}'' was created", createResponse.id()))//
+				.isEqualTo(createResponse.id());
 
-	imageTypeService.deleteImageType(createResponse.id());
+		// ----------------------------------------------------------
 
-	// ----------------------------------------------------------
+		imageTypeService.deleteImageType(createResponse.id());
 
-	assertThatThrownBy(() -> imageTypeService.findById(createResponse.id()))  //
-			.as(format("Check the imageType with id ''{0}'' was deleted", createResponse.id()))//
-			.isInstanceOfAny(ElementNotFoundException.class);
-    }
+		// ----------------------------------------------------------
+
+		assertThatThrownBy(() -> imageTypeService.findById(createResponse.id())) //
+				.as(format("Check the imageType with id ''{0}'' was deleted", createResponse.id()))//
+				.isInstanceOfAny(ElementNotFoundException.class);
+	}
 }

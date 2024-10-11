@@ -51,7 +51,7 @@ class ImageTypeServiceUnhappyPathTest {
 
     @Autowired
     private ImageTypeService imageTypeService;
-    
+
     private final Pageable pageable = PageRequest.of(0, 10);
 
     @ParameterizedTest
@@ -61,9 +61,9 @@ class ImageTypeServiceUnhappyPathTest {
     @DisplayName("Search a image type that doesn't exist by id")
     void findImageTypeByIdTest(final Long id) {
 
-	assertThatThrownBy(() -> imageTypeService.findById(id)) //
-			.as(format("Check invalid values of id ''{0}''", id)) //
-			.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+        assertThatThrownBy(() -> imageTypeService.findById(id)) //
+                .as(format("Check invalid values of id ''{0}''", id)) //
+                .isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
 
     }
 
@@ -72,23 +72,26 @@ class ImageTypeServiceUnhappyPathTest {
     @DisplayName("Get a image type by invalid specification")
     void findImageTypeByInvalidExtensionTest() {
 
-	final var specFieldOneNotExists = (Specification<ImageType>) (root, query, builder) -> builder.equal(root.get("fieldOneNotExists"), "blabla");
-	final var specFieldTwoNotExists = (Specification<ImageType>) (root, query, builder) -> builder.equal(root.get("fieldTwoNotExists"), "blabla");
+        final var specFieldOneNotExists = (Specification<ImageType>) (root, query, builder) -> builder
+                .equal(root.get("fieldOneNotExists"), "blabla");
+        final var specFieldTwoNotExists = (Specification<ImageType>) (root, query, builder) -> builder
+                .equal(root.get("fieldTwoNotExists"), "blabla");
 
-	assertThatThrownBy(() -> imageTypeService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists), pageable))
-		.as(format("Check invalid Specification")) //
-		.isInstanceOf(ElementInvalidException.class);
+        assertThatThrownBy(
+                () -> imageTypeService.findBySpecification(specFieldOneNotExists.and(specFieldTwoNotExists), pageable))
+                .as(format("Check invalid Specification")) //
+                .isInstanceOf(ElementInvalidException.class);
     }
 
     Stream<Arguments> createImageTypeInvalidData() throws IOException {
 
-	final ImageTypeRequest nullCreateImageTypeRequest = null;
+        final ImageTypeRequest nullCreateImageTypeRequest = null;
 
-	return Stream.of( //
-			Arguments.of(new ImageTypeRequest(null, "BitMap", "Device independent bitmap")), //
-			Arguments.of(new ImageTypeRequest("BMP", null, "Device independent bitmap")), //
-			Arguments.of(nullCreateImageTypeRequest) //
-	);
+        return Stream.of( //
+                Arguments.of(new ImageTypeRequest(null, "BitMap", "Device independent bitmap")), //
+                Arguments.of(new ImageTypeRequest("BMP", null, "Device independent bitmap")), //
+                Arguments.of(nullCreateImageTypeRequest) //
+        );
     }
 
     @ParameterizedTest(name = "Pos {index} : request ''{0}'' ")
@@ -97,9 +100,9 @@ class ImageTypeServiceUnhappyPathTest {
     @DisplayName("Try to create a invalid image type")
     void createImageTypeInvalidTest(final ImageTypeRequest request) {
 
-	assertThatThrownBy(() -> imageTypeService.createImageType(request))
-		.as(format("Check invalid request ''{0}''", request)) //
-		.isInstanceOfAny(ConstraintViolationException.class);
+        assertThatThrownBy(() -> imageTypeService.createImageType(request))
+                .as(format("Check invalid request ''{0}''", request)) //
+                .isInstanceOfAny(ConstraintViolationException.class);
 
     }
 
@@ -108,27 +111,27 @@ class ImageTypeServiceUnhappyPathTest {
     @DisplayName("Create twice the same image type")
     void createSameImageTypeTest() {
 
-	final var createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
+        final var createImageTypeRequest = new ImageTypeRequest("BMP", "BitMap", "Device independent bitmap");
 
-	final var createImageTypeRequestAgain = new ImageTypeRequest("BMP", "Bla", "Bla bla bla bla");
+        final var createImageTypeRequestAgain = new ImageTypeRequest("BMP", "Bla", "Bla bla bla bla");
 
-	imageTypeService.createImageType(createImageTypeRequest);
+        imageTypeService.createImageType(createImageTypeRequest);
 
-	//
-	assertThatThrownBy(() -> imageTypeService.createImageType(createImageTypeRequestAgain))
-		.as(format("Check if throw an exception on same request ''{0}''", createImageTypeRequest)) //
-		.isInstanceOfAny(ElementAlreadyExistsException.class);
+        //
+        assertThatThrownBy(() -> imageTypeService.createImageType(createImageTypeRequestAgain))
+                .as(format("Check if throw an exception on same request ''{0}''", createImageTypeRequest)) //
+                .isInstanceOfAny(ElementAlreadyExistsException.class);
     }
 
     Stream<Arguments> updateImageTypeDoesNotExistData() throws IOException {
 
-	final ImageTypeRequest nullUpdateImageTypeRequest = null;
+        final ImageTypeRequest nullUpdateImageTypeRequest = null;
 
-	return Stream.of( //
-			Arguments.of(12_345L, new ImageTypeRequest(null, "BitmapNew", null)), //
-			Arguments.of(null, new ImageTypeRequest(null, "BitmapNew", null)), //
-			Arguments.of(1000L, nullUpdateImageTypeRequest) //
-	);
+        return Stream.of( //
+                Arguments.of(12_345L, new ImageTypeRequest(null, "BitmapNew", null)), //
+                Arguments.of(null, new ImageTypeRequest(null, "BitmapNew", null)), //
+                Arguments.of(1000L, nullUpdateImageTypeRequest) //
+        );
     }
 
     @ParameterizedTest(name = "Pos {index} : id ''{0}'', request ''{1}'' ")
@@ -137,9 +140,9 @@ class ImageTypeServiceUnhappyPathTest {
     @DisplayName("Try to update a image type that doesn't exist")
     void updateImageTypeDoesNotExistTest(final Long id, final ImageTypeRequest request) {
 
-	assertThatThrownBy(() -> imageTypeService.updateImageType(id, request))
-		.as(format("Check if throw a exception on invalid request ''{0}''", request)) //
-		.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+        assertThatThrownBy(() -> imageTypeService.updateImageType(id, request))
+                .as(format("Check if throw a exception on invalid request ''{0}''", request)) //
+                .isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
     }
 
     @ParameterizedTest
@@ -149,9 +152,9 @@ class ImageTypeServiceUnhappyPathTest {
     @DisplayName("Try to delete a image type that doesn't exist")
     void deleteImageTypeDoesNotExistTest(final Long id) {
 
-	assertThatThrownBy(() -> imageTypeService.deleteImageType(id))
-		.as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
-		.isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
+        assertThatThrownBy(() -> imageTypeService.deleteImageType(id))
+                .as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
+                .isInstanceOfAny(ConstraintViolationException.class, ElementNotFoundException.class);
     }
 
     @Test
@@ -159,11 +162,11 @@ class ImageTypeServiceUnhappyPathTest {
     @DisplayName("Try to delete a image type that has a relation with other record")
     void deleteImageTypeRestrictionTest() {
 
-	final var id = 1001L; // already exists and has a conversion image relation
+        final var id = 1001L; // already exists and has a conversion image relation
 
-	assertThatThrownBy(() -> imageTypeService.deleteImageType(id))
-		.as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
-		.isInstanceOfAny(ElementConflictException.class);
+        assertThatThrownBy(() -> imageTypeService.deleteImageType(id))
+                .as(format("Check if throw a exception on invalid delete, id ''{0}''", id)) //
+                .isInstanceOfAny(ElementConflictException.class);
     }
 
 }

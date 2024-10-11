@@ -9,33 +9,33 @@
 		<artifactId>allset-java</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<name>Image Converte Service</name>
-  	<description>
+	<description>
 		An API to image's text recognition using spring boot framework and others.
     </description>
-    <inceptionYear>2021</inceptionYear>
-    <url>https://${scm.platform}/${scm.account}/${project.artifactId}</url>
+	<inceptionYear>2021</inceptionYear>
+	<url>https://${scm.platform}/${scm.account}/${project.artifactId}</url>
 
 	<properties>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 
 		<spring-boot.version>2.7.15</spring-boot.version>
 		<spring-boot-cloud.version>2021.0.8</spring-boot-cloud.version>
 
-		<springdoc-openapi.version>1.6.8</springdoc-openapi.version> 
+		<springdoc-openapi.version>1.6.8</springdoc-openapi.version>
 
 		<junit-platform.version>5.10.0</junit-platform.version>
-    
+
 		<!-- <checkstyle.config.location>checkstyle-checks.xml</checkstyle.config.location> -->
 		<!-- <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location> -->
 
 	</properties>
-	
+
 	<dependencyManagement>
 		<dependencies>
-			
+
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
@@ -43,7 +43,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-		
+
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -64,7 +64,7 @@
 	</dependencyManagement>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -101,10 +101,10 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.springframework.cloud</groupId>
-		    <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
@@ -140,7 +140,7 @@
 			<version>1.8.0</version>
 		</dependency>
 		 -->
-		 
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -183,18 +183,18 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-csv</artifactId>
-		    <version>1.10.0</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.10.0</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-collections4</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -231,7 +231,7 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -267,8 +267,9 @@
 		<dependency>
 			<groupId>nl.jqno.equalsverifier</groupId>
 			<artifactId>equalsverifier</artifactId>
-			<version>3.15.7</version>
+			<version>3.16.2</version>
 			<scope>test</scope>
+
 		</dependency>
 
 		<dependency>
@@ -350,14 +351,14 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-surefire-plugin</artifactId>		    
+				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-			</plugin>			
-			
+			</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -367,11 +368,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
-			
-		    <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-scm-publish-plugin</artifactId>
-		    </plugin>			
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-publish-plugin</artifactId>
+			</plugin>
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -430,7 +431,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
@@ -456,13 +457,13 @@
 					<configLocation>default-extensions/checkstyle/checkstyle-checks.xml</configLocation>
 					<suppressionsLocation>default-extensions/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 					<suppressionsFileExpression>default-extensions/checkstyle/checkstyle-xpath-suppressions.xml</suppressionsFileExpression>
-				</configuration>				
+				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-			</plugin> 
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
