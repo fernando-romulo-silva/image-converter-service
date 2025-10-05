@@ -57,12 +57,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @SecurityRequirement(name = "BASIC")
 @Tag( //
-		name = "Image Type", //
-		description = """
-				Image Type API - Rest CRUD for image type :) .
-				If something went wrong, please put 'trace=true' (for all Http methods) at the end of the request to receive the stackStrace.
-				Ex: http://127.0.0.1:8080/rest/images/type?trace=true
-				     """ //
+    name = "Image Type", //
+    description = """
+        Image Type API - Rest CRUD for image type :) .
+        If something went wrong, please put 'trace=true' (for all Http methods) at the end of the request to receive the stackStrace.
+        Ex: http://127.0.0.1:8080/rest/images/type?trace=true
+             """ //
 )
 //
 @Loggable
@@ -71,159 +71,159 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping(REST_URL)
 public class ImageTypeRestController {
 
-    private final ImageTypeService imageTypeService;
+  private final ImageTypeService imageTypeService;
 
-    /**
-     * Default constructor.
-     * 
-     * @param imageConversionService The image type service
-     */
-    ImageTypeRestController(final ImageTypeService imageTypeService) {
-	super();
-	this.imageTypeService = imageTypeService;
-    }
+  /**
+   * Default constructor.
+   * 
+   * @param imageConversionService The image type service
+   */
+  ImageTypeRestController(final ImageTypeService imageTypeService) {
+    super();
+    this.imageTypeService = imageTypeService;
+  }
 
-    /**
-     * Get a image type by id.
-     * 
-     * @param id The image type's id
-     * @return A {@link ImageTypeResponse} object
-     * @exception ElementNotFoundException if a element with id not found
-     */
-    @ImageTypeRestGetByIdOpenApi
-    //
-    @ResponseStatus(OK)
-    @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
-    public ImageTypeResponse getById( //
-		    @Parameter(description = "The image type id's", example = "1000") //
-		    @PathVariable(name = "id", required = true) //
-		    final Long id) {
+  /**
+   * Get a image type by id.
+   * 
+   * @param id The image type's id
+   * @return A {@link ImageTypeResponse} object
+   * @exception ElementNotFoundException if a element with id not found
+   */
+  @ImageTypeRestGetByIdOpenApi
+  //
+  @ResponseStatus(OK)
+  @GetMapping(value = "/{id:[\\d]*}", produces = APPLICATION_JSON_VALUE)
+  public ImageTypeResponse getById( //
+      @Parameter(description = "The image type id's", example = "1000") //
+      @PathVariable(name = "id", required = true) //
+      final Long id) {
 
-	return imageTypeService.findById(id);
-    }
+    return imageTypeService.findById(id);
+  }
 
-    /**
-     * Get image types.
-     * 
-     * @param filter A object {@link Specification} that specific the filter the search, if you omit, bring all 
-     * @param page   A object {@link Pageable} that page the result
-     * @return A {@link List} or a empty list
-     */
-    @PageableAsQueryParam
-    @ImageTypeRestGet
-    //
-    @ResponseStatus(OK)
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public Page<ImageTypeResponse> getByFilter( //
-		    @Parameter(name = "filter", description = "Search's filter", required = true, example = "?filter=extension:'png'") //
-		    @Filter //
-		    final Specification<ImageType> filter, //
-		    //
-		    @PageableDefault(value = 10, page = 0)
-		    final Pageable page) {
+  /**
+   * Get image types.
+   * 
+   * @param filter A object {@link Specification} that specific the filter the
+   *               search, if you omit, bring all
+   * @param page   A object {@link Pageable} that page the result
+   * @return A {@link List} or a empty list
+   */
+  @PageableAsQueryParam
+  @ImageTypeRestGet
+  //
+  @ResponseStatus(OK)
+  @GetMapping(produces = APPLICATION_JSON_VALUE)
+  public Page<ImageTypeResponse> getByFilter( //
+      @Parameter(name = "filter", description = "Search's filter", required = true, example = "?filter=extension:'png'") //
+      @Filter //
+      final Specification<ImageType> filter, //
+      //
+      @PageableDefault(value = 10, page = 0) final Pageable page) {
 
-	return imageTypeService.findBySpecification(filter, page);
-    }
+    return imageTypeService.findBySpecification(filter, page);
+  }
 
-    /**
-     * Create a image type.
-     * 
-     * @param request A {@link ImageTypeRequest} object. It works as a structure to create a {@link org.imageconverter.domain.imagetype.ImageType}
-     * @return A string with image type's id
-     */
-    @ImageTypeRestPostOpenApi
-    //
-    @ResponseStatus(CREATED)
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
-    public void create(//
-		    //
-		    @CreateImageTypeRequestBody //
-		    @Valid //
-		    @RequestBody //
-		    final ImageTypeRequest request,
-		    //
-		    final HttpServletResponse response) {
+  /**
+   * Create a image type.
+   * 
+   * @param request A {@link ImageTypeRequest} object. It works as a structure to
+   *                create a {@link org.imageconverter.domain.imagetype.ImageType}
+   * @return A string with image type's id
+   */
+  @ImageTypeRestPostOpenApi
+  //
+  @ResponseStatus(CREATED)
+  @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { TEXT_PLAIN_VALUE, APPLICATION_JSON_VALUE })
+  public void create(//
+      //
+      @CreateImageTypeRequestBody //
+      @Valid //
+      @RequestBody //
+      final ImageTypeRequest request,
+      //
+      final HttpServletResponse response) {
 
-	final var result = imageTypeService.createImageType(request);
-	
-	response.addHeader("Location", REST_URL + "/" + result.id());
-    }
+    final var result = imageTypeService.createImageType(request);
 
-    /**
-     * Update a whole image type.
-     * 
-     * @param id      The image type's id
-     * 
-     * @param request A {@link ImageTypeRequest} object. It works as a structure to update a {@link org.imageconverter.domain.imagetype.ImageType}
-     */
-    @ImageTypeRestPutOpenApi
-    //
-    @ResponseStatus(NO_CONTENT)
-    @PutMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
-    public void update( //
-		    //
-		    @Parameter(description = "The image type id's", example = "1000") //
-		    @PathVariable(name = "id", required = true) //
-		    final Long id, //
+    response.addHeader("Location", REST_URL + "/" + result.id());
+  }
 
-		    @UpdateImageTypeRequestBody //
-		    @Valid //
-		    @RequestBody //
-		    final ImageTypeRequest request) {
+  /**
+   * Update a whole image type.
+   * 
+   * @param id      The image type's id
+   * 
+   * @param request A {@link ImageTypeRequest} object. It works as a structure to
+   *                update a {@link org.imageconverter.domain.imagetype.ImageType}
+   */
+  @ImageTypeRestPutOpenApi
+  //
+  @ResponseStatus(NO_CONTENT)
+  @PutMapping(value = "/{id:[\\d]*}", consumes = APPLICATION_JSON_VALUE)
+  public void update( //
+      //
+      @Parameter(description = "The image type id's", example = "1000") //
+      @PathVariable(name = "id", required = true) //
+      final Long id, //
 
-	imageTypeService.updateImageType(id, request);
-    }
+      @UpdateImageTypeRequestBody //
+      @Valid //
+      @RequestBody //
+      final ImageTypeRequest request) {
 
-    /**
-     * Update partially a image type.
-     * 
-     * @param id      The image type's id
-     * @param request A {@link JsonPatch} object to update the object
-     */
-    @ImageTypeRestPatchOpenApi
-    //
-    @ResponseStatus(NO_CONTENT)
-    @PatchMapping(path = "/{id}", consumes = "application/json")
-    public void update(		    
-		    @Parameter(description = "The image type id's", example = "1000") //
-    		    @PathVariable(name = "id", required = true) //
-		    final Long id, 
-		    
-		    @Parameter(description = "A json path structure", 
-		    	       example = """
-		     				 [
-		     				   { 
-		     				     "op":"replace",
-		     				     "path":"name",
-		     				     "value":"new name"
-		     				   },
-		     				   { 
-		     				     "op":"remove",
-		     				     "path":"name"
-		     				   }		     				   
-		     				 ]
-		     				""") //
-		    @RequestBody 
-		    final List<JsonPatch> jsonPatchs) {
+    imageTypeService.updateImageType(id, request);
+  }
 
-	imageTypeService.updateImageType(id, jsonPatchs);
-    }   
+  /**
+   * Update partially a image type.
+   * 
+   * @param id      The image type's id
+   * @param request A {@link JsonPatch} object to update the object
+   */
+  @ImageTypeRestPatchOpenApi
+  //
+  @ResponseStatus(NO_CONTENT)
+  @PatchMapping(path = "/{id}", consumes = "application/json")
+  public void update(
+      @Parameter(description = "The image type id's", example = "1000") //
+      @PathVariable(name = "id", required = true) //
+      final Long id,
 
-    /**
-     * Delete a image type.
-     * 
-     * @param id The image type's id
-     */
-    @ImageTypeRestDeleteOpenApi
-    //
-    @ResponseStatus(NO_CONTENT)
-    @DeleteMapping("/{id:[\\d]*}")
-    public void delete( //
-		    //
-		    @Parameter(description = "The image type id's", example = "1000") //
-		    @PathVariable(name = "id", required = true) //
-		    final Long id) {
+      @Parameter(description = "A json path structure", example = """
+           [
+             {
+               "op":"replace",
+               "path":"name",
+               "value":"new name"
+             },
+             {
+               "op":"remove",
+               "path":"name"
+             }
+           ]
+          """) //
+      @RequestBody final List<JsonPatch> jsonPatchs) {
 
-	imageTypeService.deleteImageType(id);
-    }
+    imageTypeService.updateImageType(id, jsonPatchs);
+  }
+
+  /**
+   * Delete a image type.
+   * 
+   * @param id The image type's id
+   */
+  @ImageTypeRestDeleteOpenApi
+  //
+  @ResponseStatus(NO_CONTENT)
+  @DeleteMapping("/{id:[\\d]*}")
+  public void delete( //
+      //
+      @Parameter(description = "The image type id's", example = "1000") //
+      @PathVariable(name = "id", required = true) //
+      final Long id) {
+
+    imageTypeService.deleteImageType(id);
+  }
 }

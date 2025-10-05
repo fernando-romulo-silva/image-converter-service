@@ -26,7 +26,7 @@
 
 		<springdoc-openapi.version>1.6.8</springdoc-openapi.version>
 
-		<junit-platform.version>5.10.0</junit-platform.version>
+		<junit-platform.version>5.14.0</junit-platform.version>
 
 		<!-- <checkstyle.config.location>checkstyle-checks.xml</checkstyle.config.location> -->
 		<!-- <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location> -->
